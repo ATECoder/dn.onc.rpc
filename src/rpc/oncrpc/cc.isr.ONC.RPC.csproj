@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard20</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+
+    <AssemblyName>cc.isr.ONC.RPC</AssemblyName>
+    <RootNamespace>cc.isr</RootNamespace>
+	
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <OutputType>Library</OutputType>
+    <NoWarn>1591</NoWarn>
+
+    <!-- Display name -->
+    <ApplicationTitle>cc.isr.ONC.XDR</ApplicationTitle>
+
+    <!-- App Identifier -->
+    <ApplicationId>cc.isr.onc.xdr</ApplicationId>
+
+    <!-- NuGet -->
+    <IsPackable>true</IsPackable>
+    <PackageId>cc.isr.ONC.RPC</PackageId>
+    <Description>A C# port of the RemoteTea ONC/RPC implementation.</Description>
+    <PackageTags>ONC RPC RemoteTea</PackageTags>
+
+    <!-- Documentation -->
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\items\readme.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\xdr\src\xdr\xdr\cc.isr.XDR.csproj" />
+  </ItemGroup>
+
+</Project>

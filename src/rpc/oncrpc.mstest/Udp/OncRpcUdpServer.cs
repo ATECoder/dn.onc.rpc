@@ -1,0 +1,333 @@
+using cc.isr.ONC.RPC.Portmap;
+using cc.isr.ONC.RPC.Server;
+
+#nullable disable
+
+namespace cc.isr.ONC.RPC.MSTest.Udp;
+
+/// <summary>   An ONC/RPC UDP server. </summary>
+/// <remarks>   2022-12-15. 
+/// <list type="bullet">Mapped error codes:<item>
+/// OncRpcException.RPC_SUCCESS -- Visa32.VISA.VI_SUCCESS</item><item>
+/// OncRpcException.RPC_SYSTEMERROR -- Visa32.VISA.VI_ERROR_SYSTEM_ERROR</item><item>
+/// OncRpcException.RPC_PROGUNAVAIL -- Visa32.VISA.VI_ERROR_INV_EXPR</item><item>
+/// </item>
+/// </list>
+/// TODO: Closing a client connected to the Mock local server throws an exception when destroying the link.
+/// </remarks>
+public partial class OncRpcUdpServer : OncRpcUdpServerBase
+{
+
+    #region " Construction and Cleanup "
+
+    /// <summary>   Default constructor. </summary>
+    /// <remarks>   2022-12-15. </remarks>
+    public OncRpcUdpServer() : this( null, 0 )
+    {
+    }
+
+    /// <summary>   Constructor. </summary>
+    /// <remarks>   2022-12-15. </remarks>
+    /// <param name="port"> The port number where the server will wait for incoming calls. </param>
+    public OncRpcUdpServer( int port ) : this( null, port )
+    {
+    }
+
+    /// <summary>   Constructor. </summary>
+    /// <remarks>   2022-12-15. </remarks>
+    /// <param name="device">   current device. </param>
+    /// <param name="bindAddr"> The local Internet Address the server will bind to. </param>
+    /// <param name="port">     The port number where the server will wait for incoming calls. </param>
+    public OncRpcUdpServer( IPAddress bindAddr, int port ) : base( bindAddr, port )
+    {
+        this._iPv4Address = bindAddr is null ? string.Empty : bindAddr.ToString();
+        this._readMessage = string.Empty;
+        this._writeMessage= string.Empty;   
+    }
+
+    #endregion
+
+    #region " Server Properties "
+
+    private int _portNumber;
+    /// <summary>   Gets or sets the port number. </summary>
+    /// <value> The port number. </value>
+    public int PortNumber
+    {
+        get => this._portNumber;
+        set => _ = this.SetProperty( ref this._portNumber, value );
+    }
+
+    private string _iPv4Address;
+    /// <summary>   Gets or sets the IPv4 address. </summary>
+    /// <value> The IPv4 address. </value>
+    public string IPv4Address
+    {
+        get => this._iPv4Address;
+        set => _ = this.SetProperty( ref this._iPv4Address, value );
+    }
+
+    #endregion
+
+    #region " I/O messages "
+
+    private string _writeMessage;
+    /// <summary>   Gets or sets a message that was sent to the device. </summary>
+    /// <value> The message that was sent to the device. </value>
+    public string WriteMessage
+    {
+        get => this._writeMessage;
+        set => _ = this.SetProperty( ref this._writeMessage, value );
+    }
+
+    private string _readMessage;
+    /// <summary>   Gets or sets a message that was received from the device. </summary>
+    /// <value> A message that was received from the device. </value>
+    public string ReadMessage
+    {
+        get => this._readMessage;
+        set => _ = this.SetProperty( ref this._readMessage, value );
+    }
+
+    #endregion
+
+    #region " Port mapper "
+
+    private static void EstablishPortmapService()
+    {
+
+        // Ignore all problems during unregistration.
+
+        OncRpcEmbeddedPortmapService epm;
+
+        Console.WriteLine( "Checking for portmap service: " );
+        bool externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
+        if ( externalPortmap )
+            Console.WriteLine( "A portmap service is already running." );
+        else
+            Console.WriteLine( "No portmap service available." );
+
+        // Create embedded portmap service and check whether is has sprung
+        // into action.
+
+        Console.WriteLine( "Creating embedded portmap instance: " );
+        try
+        {
+            epm = new OncRpcEmbeddedPortmapService();
+
+            if ( !epm.EmbeddedPortmapInUse() )
+                Console.WriteLine( "embedded service not used: " );
+            else
+                Console.WriteLine( "embedded service started: " );
+
+            if ( epm.EmbeddedPortmapInUse() == externalPortmap )
+            {
+                Console.WriteLine( "ERROR: no service available or both." );
+                return;
+            }
+        }
+        catch ( IOException e )
+        {
+            Console.WriteLine( $"ERROR: failed: {e}");
+        }
+        catch ( OncRpcException e )
+        {
+            Console.WriteLine( $"ERROR: failed: {e}");
+        }
+
+        Console.WriteLine( "Passed." );
+    }
+
+    #endregion
+
+    #region " START / STOP "
+
+    private bool _listening;
+    /// <summary>   Gets or sets a value indicating whether the listening. </summary>
+    /// <value> True if listening, false if not. </value>
+    public bool Listening
+    {
+        get => this._listening;
+        set => _ = this.SetProperty( ref this._listening, value );
+    }
+
+    /// <summary>
+    /// All inclusive convenience method: register server transports with port mapper, then Runs the
+    /// call dispatcher until the server is signaled to shut down, and finally deregister the
+    /// transports.
+    /// </summary>
+    /// <remarks>
+    /// All inclusive convenience method: register server transports with port mapper, then Runs the
+    /// call dispatcher until the server is signaled to shut down, and finally deregister the 
+    /// transports.
+    /// TODO: Implement on connected upon registration.
+    /// </remarks>
+    public override void Run()
+    {
+        OncRpcUdpServer.EstablishPortmapService();
+        base.Run();
+    }
+
+    /// <summary>
+    /// Process incoming remote procedure call requests from all specified transports.
+    /// </summary>
+    /// <remarks>
+    /// To end processing and to shut the server down signal the <see cref="OncRpcServerStubBase.shutdownSignal"/> object. 
+    /// Note that the thread on which <see cref="Run()"/> is called will ignore
+    /// any interruptions and will silently swallow them.
+    /// </remarks>
+    /// <param name="transports">   Array of server transport objects for which processing of remote
+    ///                             procedure call requests should be done. </param>
+    public override void Run( OncRpcServerTransportBase[] transports )
+    {
+        this.Listening = true;
+        base.Run( transports );
+    }
+
+    /// <summary>
+    /// Notify the RPC server to stop processing of remote procedure call requests as soon as
+    /// possible.
+    /// </summary>
+    /// <remarks>
+    /// Notify the RPC server to stop processing of remote procedure call requests as soon as
+    /// possible. Note that each transport has its own thread, so processing will not stop before the
+    /// transports have been closed by calling the <see cref="Close(OncRpcServerTransportBase[])"/>
+    /// method of the server.
+    /// </remarks>
+    public override void StopRpcProcessing()
+    {
+        this.Listening = false;
+        base.StopRpcProcessing();
+    }
+
+    /// <summary>   Shuts down this server. </summary>
+    public virtual void Shutdown()
+    {
+        this.StopRpcProcessing();
+    }
+
+    #endregion
+
+    #region " Handle Procedure calls "
+
+    /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>
+    /// <remarks>
+    /// This interface has some fairly deep semantics, so please read the description above for how
+    /// to use it properly. For background information about fairly deep semantics, please also refer
+    /// to <i>Gigzales</i>, <i>J</i>.: Semantics considered harmful. Addison-Reilly, 1992, ISBN 0-542-
+    /// 10815-X. <para>
+    /// See the introduction to this class for examples of how to use this interface properly.</para>
+    /// </remarks>
+    /// <param name="call">         <see cref="OncRpcCallInformation"/> about the call to handle, like the 
+    ///                             caller's Internet address, the ONC/RPC call header, etc. </param>
+    /// <param name="program">      Program number requested by client. </param>
+    /// <param name="version">      Version number requested. </param>
+    /// <param name="procedure">    Procedure number requested. </param>
+    public override void DispatchOncRpcCall( OncRpcCallInformation call, int program, int version, int procedure )
+    {
+        base.DispatchOncRpcCall( call, program , version, procedure );
+        if ( version == 1 )
+        {
+            OncRpcUdpServer.ProcessVersion1Calls( call, procedure );
+        }
+        else if ( version == 2 )
+        {
+            OncRpcUdpServer.ProcessVersion2Calls( call, procedure );
+        }
+        else if ( program == 42 && version == 42 && procedure == RemoteProcedures.RequestServerShutdown )
+        {
+            call.RetrieveCall( VoidXdrCodec.VoidXdrCodecInstance );
+            call.Reply( VoidXdrCodec.VoidXdrCodecInstance );
+            this.Shutdown();
+        }
+        else
+        {
+            call.ReplyProgramNotAvailable();
+        }
+    }
+
+    /// <summary>   Process the version 1 calls. </summary>
+    /// <remarks>   2022-12-26. </remarks>
+    /// <param name="call">         The call. </param>
+    /// <param name="procedure">    The procedure. </param>
+    private static void ProcessVersion1Calls( OncRpcCallInformation call, int procedure )
+    {
+        switch ( procedure )
+        {
+            case RemoteProcedures.Nop:
+                {
+                    // ping
+                    call.RetrieveCall( VoidXdrCodec.VoidXdrCodecInstance );
+                    OncRpcUdpServer.Nop();
+                    call.Reply( VoidXdrCodec.VoidXdrCodecInstance );
+                    break;
+                }
+            case RemoteProcedures.Echo:
+                {
+                    StringXdrCodec args = new();
+                    call.RetrieveCall( args );
+                    StringXdrCodec result = new( OncRpcUdpServer.EchoInput( args.Value ) );
+                    call.Reply( result );
+                    break;
+                }
+            default:
+                call.ReplyProcedureNotAvailable();
+                break;
+        }
+    }
+
+    /// <summary>   Process the version 2 calls. </summary>
+    /// <remarks>   2022-12-26. </remarks>
+    /// <param name="call">         <see cref="OncRpcCallInformation"/> about the call to handle, like the
+    ///                             caller's Internet address, the ONC/RPC
+    ///                             call header, etc. </param>
+    /// <param name="procedure">    Procedure number requested. </param>
+    private static void ProcessVersion2Calls( OncRpcCallInformation call, int procedure )
+    {
+        switch ( procedure )
+        {
+            case RemoteProcedures.Nop:
+                {
+                    // ping
+                    call.RetrieveCall( VoidXdrCodec.VoidXdrCodecInstance );
+                    OncRpcUdpServer.Nop();
+                    call.Reply( VoidXdrCodec.VoidXdrCodecInstance );
+                    break;
+                }
+            case RemoteProcedures.Echo:
+                {
+                    StringXdrCodec args = new();
+                    call.RetrieveCall( args );
+                    StringXdrCodec result = new( OncRpcUdpServer.EchoInput( args.Value ) );
+                    call.Reply( result );
+                    break;
+                }
+            default:
+                call.ReplyProcedureNotAvailable();
+                break;
+        }
+    }
+
+    #endregion
+
+    #region " Remote Procedures "
+
+    /// <summary>   No operation. </summary>
+    /// <remarks>   2022-12-22. </remarks>
+    public static void Nop()
+    {
+        // definitely nothing to do here...
+    }
+
+    /// <summary>   Echo the specified parameters. </summary>
+    /// <remarks>   2022-12-22. </remarks>
+    /// <param name="input">   value to echo. </param>
+    /// <returns>   A string. </returns>
+    public static string EchoInput( string input )
+    {
+        return input;
+    }
+
+    #endregion
+
+}

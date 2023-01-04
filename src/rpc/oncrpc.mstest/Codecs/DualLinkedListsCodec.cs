@@ -1,0 +1,41 @@
+#nullable disable
+namespace cc.isr.ONC.RPC.MSTest.Codecs;
+
+/// <summary>   (Serializable) a dual linked lists XBR encoder/decoder. </summary>
+/// <remarks>   2022-12-30. </remarks>
+[Serializable]
+internal class DualLinkedListsCodec : IXdrCodec
+{
+    /// <summary>   Gets or sets the list 1. </summary>
+    /// <value> The list 1. </value>
+    public LinkedListCodec List1 { get; set; }
+
+    /// <summary>   Gets or sets the list 2. </summary>
+    /// <value> The list 2. </value>
+    public LinkedListCodec List2 { get; set; }
+
+    /// <summary>
+    /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
+    /// </summary>
+    /// <remarks>
+    /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
+    /// </remarks>
+    /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
+    public void Encode( XdrEncodingStreamBase xdr )
+    {
+        this.List1.Encode( xdr );
+        this.List2.Encode( xdr );
+    }
+    /// <summary>
+    /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
+    /// </summary>
+    /// <remarks>
+    /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
+    /// </remarks>
+    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
+    public void Decode( XdrDecodingStreamBase xdr )
+    {
+        this.List1 = new LinkedListCodec( xdr );
+        this.List2 = new LinkedListCodec( xdr );
+    }
+};

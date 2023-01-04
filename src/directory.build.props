@@ -1,0 +1,86 @@
+<Project>
+
+  <!--
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);TRACE;PROJREF_;PACK;GitHub;</DefineConstants>
+  </PropertyGroup>
+ 
+  <PropertyGroup Condition="$(DefineConstants.Contains(';PACK;'))" >
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(DefineConstants.Contains(';PACK;GitHub;'))" >
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="$(DefineConstants.Contains(';GitHub;'))" >
+	<GitRepositoryRemoteName>hub</GitRepositoryRemoteName>
+    <PackageProjectUrl>https://github.com/AteCoder/dn.onc.rpc</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(DefineConstants.Contains(';PACK;GitHub_;'))" >
+    <PackageReference Include="Microsoft.SourceLink.Bitbucket.Git" Version="1.1.1" PrivateAssets="All" />
+  </ItemGroup>
+
+  <PropertyGroup Condition="$(DefineConstants.Contains(';GitHub_;'))" >
+	<GitRepositoryRemoteName>origin</GitRepositoryRemoteName>
+    <PackageProjectUrl>https://bitbucket.org/davidhary/dn.onc.rpc</PackageProjectUrl>
+  </PropertyGroup>
+  -->
+
+  <PropertyGroup>
+    <DefineConstants>$(DefineConstants);TRACE;PACK_;</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="$(DefineConstants.Contains(';PACK;'))" >
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(DefineConstants.Contains(';PACK;'))" >
+    <PackageReference Include="SourceLink.Copy.PdbFiles" Version="2.8.3" PrivateAssets="All" />
+  </ItemGroup>
+
+  <PropertyGroup Label="BasePath">
+    <!-- This fixed missing property when using from dotnet cli -->
+    <SolutionDir Condition="'$(SolutionDir)'==''">$(MSBuildThisFileDirectory)..\..\</SolutionDir>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <Datestamp>$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd"))</Datestamp>
+    <Timestamp>$([System.DateTime]::UtcNow.ToString("yyyy-MM-ddHHmm"))</Timestamp>
+    <LangVersion>latest</LangVersion>
+  	<Authors>David Hary</Authors>
+    <Owners>Integrated Scientific Resources</Owners>
+    <Company>Integrated Scientific Resources</Company>
+    <Copyright>(c) 2022 Integrated Scientific Resources, Inc. All rights reserved.</Copyright>
+    <NeutralLanguage>en-US</NeutralLanguage>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- NuGet -->
+	<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+	<RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+	<RepositoryType>Git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>ms-icon-70x70.png</PackageIcon>
+    <PackageOutputDir>..\..\.nuget\artifacts</PackageOutputDir>
+    <PackageOwners>Integrated Scientific Resources, Inc.</PackageOwners>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\items\ms-icon-70x70.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+      <Visible>false</Visible>
+    </None>
+  </ItemGroup>
+  
+  <Import Project="items\Version.build.props" />
+
+</Project>
+

@@ -1,0 +1,21 @@
+<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".props" #>
+<Project>
+  <PropertyGroup>
+    <AssemblyVersion><#= this.Major #>.<#= this.Minor #>.<#= this.BuildNumber #>.<#= this.RevisionNumber #></AssemblyVersion>
+    <FileVersion><#= this.Major #>.<#= this.Minor #>.<#= this.BuildNumber #>.<#= this.RevisionNumber #></FileVersion>
+    <Version><#= this.Major #>.<#= this.Minor #>.<#= this.BuildNumber #></Version>
+    <ApplicationDisplayVersion><#= this.Major #>.<#= this.Minor #>.<#= this.BuildNumber #></ApplicationDisplayVersion>
+    <ApplicationVersion><#= this.Major #></ApplicationVersion>
+  </PropertyGroup>
+</Project>
+<#+
+    int Major = 1;
+    int Minor = 0;
+    int BuildNumber = (int)Math.Floor((DateTime.UtcNow - new DateTime(2000,1,1)).TotalDays);
+    int RevisionNumber = (int)((DateTime.UtcNow - DateTime.UtcNow.Date).TotalSeconds / 2);
+#>
