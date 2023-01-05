@@ -21,9 +21,7 @@ public abstract class OncRpcCallMessageBase : OncRpcMessageBase
     /// <summary>
     /// (Immutable) Protocol version used by this ONC/RPC implementation. The protocol version 2
     /// is defined in RFC 1831. <para>
-    /// Renamed from ONCRPC_VERSION (=2);
-    /// </para>
-    /// </summary>
+    /// Renamed from <c>ONCRPC_VERSION (=2)</c> </para> </summary>
     public const int OncRpcProtocolVersion = 2;
 
     /// <summary>   Protocol version used by this ONC/RPC call message. </summary>

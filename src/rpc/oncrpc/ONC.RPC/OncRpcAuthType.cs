@@ -11,25 +11,25 @@ namespace cc.isr.ONC.RPC;
 public class OncRpcAuthType
 {
     /// <summary>   (Immutable) No authentication scheme used for this remote procedure call. <para>
-    /// Renamed from ONCRPC_AUTH_NONE = 0. </para> </summary>
+    /// Renamed from <c>ONCRPC_AUTH_NONE = 0</c>. </para> </summary>
     public const int OncRpcAuthTypeNone = 0;
 
     /// <summary>
     /// (Immutable) The so-called "Unix" authentication scheme is not supported. This one only sends
     /// the users id as well as her/his group identifiers, so this is simply far too weak to use in
     /// typical situations where authentication is requested. <para>
-    /// Renamed from ONCRPC_AUTH_UNIX = 1. </para> </summary>
+    /// Renamed from <c>ONCRPC_AUTH_UNIX = 1</c>. </para> </summary>
     public const int OncRpcAuthTypeUnix = 1;
 
     /// <summary>   (Immutable) The so-called "short hand Unix style" is not supported.  <para>
-    /// Renamed from ONCRPC_AUTH_SHORT = 2. </para> </summary>
+    /// Renamed from <c>ONCRPC_AUTH_SHORT = 2</c>. </para> </summary>
     public const int OncRpcAuthShortHandUnix = 2;
 
     /// <summary>
     /// (Immutable)
     /// The Data Encryption Standard (DES) authentication scheme (using encrypted time stamps) is not
     /// supported -- and besides, it's not a silver bullet either. <para>
-    /// Renamed from ONCRPC_AUTH_DES = 3. </para>
+    /// Renamed from <c>ONCRPC_AUTH_DES = 3</c>. </para>
     /// </summary>
     public const int OncRpcAuthDesType = 3;
 }

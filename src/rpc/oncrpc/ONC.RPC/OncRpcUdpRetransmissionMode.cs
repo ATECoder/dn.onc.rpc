@@ -14,7 +14,7 @@ public class OncRpcUdpRetransmissionMode
     /// In exponential back-off retransmission mode, UDP/IP-based ONC/RPC clients first wait a given
     /// retransmission timeout period before sending the ONC/RPC call again. The retransmission
     /// timeout then is doubled on each try. <para>
-    /// Renamed from EXPONENTIAL = 0 </para> </summary>
+    /// Renamed from <c>EXPONENTIAL = 0</c> </para> </summary>
     public const int OncRpcExponentialTimeout = 0;
 
     /// <summary>
@@ -22,6 +22,6 @@ public class OncRpcUdpRetransmissionMode
     /// In fixed retransmission mode, UDP/IP-based ONC/RPC clients wait a given retransmission
     /// timeout period before send the ONC/RPC call again. The retransmission timeout is not changed
     /// between consecutive tries but is fixed instead. <para>
-    /// Renamed from FIXED = 1 </para> </summary>
+    /// Renamed from <c>FIXED = 1</c> </para> </summary>
     public const int OncRpcFixedTimeout = 1;
 }

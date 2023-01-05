@@ -10,27 +10,27 @@ namespace cc.isr.ONC.RPC;
 public class OncRpcAuthStatus
 {
     /// <summary>   (Immutable) There is no authentication problem or error. <para>
-    /// Renamed from ONCRPC_AUTH_OK = 0. </para> </summary>
+    /// Renamed from <c>ONCRPC_AUTH_OK = 0</c>. </para> </summary>
     public const int OncRpcAuthOkay = 0;
 
     /// <summary>
     /// (Immutable)
     /// The ONC/RPC server detected a bad credential (that is, the seal was broken). <para>
-    /// Renamed from ONCRPC_AUTH_BADCRED = 1. </para>
+    /// Renamed from <c>ONCRPC_AUTH_BADCRED = 1</c>. </para>
     /// </summary>
     public const int OncRpcAuthBadCredential = 1;
 
     /// <summary>
     /// (Immutable)
     /// The ONC/RPC server has rejected the credential and forces the caller to begin a new session. <para>
-    /// Renamed from ONCRPC_AUTH_REJECTEDCRED = 2. </para>
+    /// Renamed from <c>ONCRPC_AUTH_REJECTEDCRED = 2</c>. </para>
     /// </summary>
     public const int OncRpcAuthRejectedCredential = 2;
 
     /// <summary>
     /// (Immutable)
     /// The ONC/RPC server detected a bad verifier (that is, the seal was broken). <para>
-    /// Renamed from ONCRPC_AUTH_BADVERF = 3. </para>
+    /// Renamed from <c>ONCRPC_AUTH_BADVERF = 3</c>. </para>
     /// </summary>
     public const int OncRpcAutoBadVerifier = 3;
 
@@ -38,23 +38,23 @@ public class OncRpcAuthStatus
     /// (Immutable)
     /// The ONC/RPC server detected an expired verifier (which can also happen if the verifier was
     /// replayed). <para>
-    /// Renamed from ONCRPC_AUTH_REJECTEDVERF = 4. </para>
+    /// Renamed from <c>ONCRPC_AUTH_REJECTEDVERF = 4</c>. </para>
     /// </summary>
     public const int OncRpcAuthRejectedVerifier = 4;
 
     /// <summary>
     /// (Immutable) The ONC/RPC server rejected the authentication for security reasons. <para>
-    /// Renamed from ONCRPC_AUTH_TOOWEAK = 5. </para>
+    /// Renamed from <c>ONCRPC_AUTH_TOOWEAK = 5</c>. </para>
     /// </summary>
     public const int OncRpcAuthTooWeak = 5;
 
     /// <summary>   (Immutable) The ONC/RPC client detected a bogus response verifier. <para>
-    /// Renamed from ONCRPC_AUTH_INVALIDRESP = 6. </para> </summary>
+    /// Renamed from <c>ONCRPC_AUTH_INVALIDRESP = 6</c>. </para> </summary>
     public const int OncRpcAuthInvalidResponse = 6;
 
     /// <summary>
     /// (Immutable) Authentication at the ONC/RPC client failed for an unknown reason. <para>
-    /// Renamed from ONCRPC_AUTH_FAILED = 7. </para>
+    /// Renamed from <c>ONCRPC_AUTH_FAILED = 7</c>. </para>
     /// </summary>
     public const int OncRpcAuthFailed = 7;
 }

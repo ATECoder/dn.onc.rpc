@@ -15,7 +15,7 @@ public class OncRpcMessageType
     /// <summary>
     /// (Immutable) Identifies an ONC/RPC call. By a "call" a client request that a server carries
     /// out a particular remote procedure. <para>
-    /// Renamed from ONCRPC_CALL = 0. </para>
+    /// Renamed from <c>ONCRPC_CALL = 0</c>. </para>
     /// </summary>
     public const int OncRpcCallMessageType = 0;
 
@@ -23,7 +23,7 @@ public class OncRpcMessageType
     /// (Immutable) Identifies an ONC/RPC reply.  A server responds with a "reply" after a client has
     /// sent a "call" for a particular remote procedure, sending back the results of calling that
     /// procedure.  <para>
-    /// Renamed from ONCRPC_REPLY = 1. </para>
+    /// Renamed from <c>ONCRPC_REPLY = 1</c>. </para>
     /// </summary>
     public const int OncRpcReplyMessageType = 1;
 }
