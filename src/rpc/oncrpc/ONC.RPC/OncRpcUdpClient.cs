@@ -570,7 +570,7 @@ public class OncRpcUdpClient : OncRpcClientBase
             // broadcast call to come in. In every case, we wait until the
             // (total) timeout expires.
 
-            // @dh: fix timeout; was ill defined.
+            // @atecoder: fix timeout; was ill defined.
             DateTime stopTime = DateTime.Now.Add( TimeSpan.FromMilliseconds( this.Timeout ) );
             do
                 try
@@ -582,7 +582,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                     TimeSpan currentTimeout = stopTime - DateTime.Now;
                     if ( currentTimeout.Ticks < 0 )
                         currentTimeout = new TimeSpan( 0 );
-                    // @dh: fix timeout; was .Seconds, that is, 1000 times larger.
+                    // @atecoder: fix timeout; was .Seconds, that is, 1000 times larger.
                     this._socket.ReceiveTimeout = currentTimeout.Milliseconds;
 
                     // Then wait for datagrams to arrive...

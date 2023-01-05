@@ -189,11 +189,29 @@ public abstract class OncRpcServerStubBase
     /// be stopped. This is because every server transport is handled by its own thread.
     /// </remarks>
     /// <param name="transports">   Array of server transport objects to close. </param>
-    public virtual void Close( OncRpcServerTransportBase[] transports )
+    private void Close( OncRpcServerTransportBase[] transports )
     {
         int size = transports.Length;
         for ( int idx = 0; idx < size; ++idx )
             transports[idx].Close();
+    }
+
+    /// <summary>   Close all transports listed in a set of server transports. </summary>
+    /// <remarks>
+    /// Only by calling this method processing of remote procedure calls by individual transports can
+    /// be stopped. This is because every server transport is handled by its own thread.
+    /// </remarks>
+    public virtual void Close()
+    {
+        try
+        {
+            this.Close( this._transports );
+        }
+        catch ( Exception ex )
+        {
+            Console.WriteLine( "Failed closing transports: " );
+            Console.Out.WriteLine( ex.ToString() );
+        }
     }
 
     /// <summary>

@@ -39,7 +39,7 @@ public class OncRpcTcpTests
         }
         catch ( Exception ex )
         {
-            Console.WriteLine( ex.ToString() );
+            Console.Out.WriteLine( $"Failed initializing fixture: \n{ex} " );
             CleanupFixture();
         }
     }
@@ -222,9 +222,9 @@ public class OncRpcTcpTests
         {
             Assert.Fail( $"received {nameof( OncRpcException )}: {e}" );
         }
-        catch ( Exception e )
+        catch ( Exception ex )
         {
-            Assert.Fail( $"received exception: {e}" );
+            Assert.Fail( $"received exception: {ex}" );
         }
     }
 

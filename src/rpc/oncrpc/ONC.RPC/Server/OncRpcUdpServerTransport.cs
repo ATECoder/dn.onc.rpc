@@ -531,8 +531,10 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
 
                 this.Dispatcher.DispatchOncRpcCall( callInfo, callInfo.CallMessage.Program, callInfo.CallMessage.Version, callInfo.CallMessage.Procedure );
             }
-            catch ( Exception e )
+            catch ( Exception ex )
             {
+
+                Console.Out.WriteLine( $"Failed dispatching ONC/RPC call: \n{ex} " );
 
                 // In case of some other runtime exception, we report back to
                 // the caller a system error.
@@ -568,7 +570,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
 
                 try
                 {
-                    if ( e is OncRpcAuthenticationException exception )
+                    if ( ex is OncRpcAuthenticationException exception )
                         callInfo.ReplyAuthError( exception.AuthStatus );
                     else
                         callInfo.ReplySystemError();

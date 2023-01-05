@@ -252,7 +252,7 @@ public class OncRpcEmbeddedPortmapService
             // from the portmap to respond okay to the client and I haven't figured out
             // any better way yet.
             Thread.Sleep( EmbeddedPortmapServiceThread.PostShutdownTimeout );
-            this._portmap.Close( this._portmap.GetTransports() );
+            this._portmap.Close();
             this._portmap.ServiceThread = null;
         }
 

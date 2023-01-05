@@ -525,8 +525,9 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
 
                 this.Dispatcher.DispatchOncRpcCall( callInfo, callInfo.CallMessage.Program, callInfo.CallMessage.Version, callInfo.CallMessage.Procedure );
             }
-            catch ( Exception e )
+            catch ( Exception ex )
             {
+                Console.WriteLine( $"Failed dispatching ONC/RPC Call: \n{ex} " );
 
                 // In case of some other runtime exception, we report back to
                 // the caller a system error. We cannot do this if we don't
@@ -567,8 +568,8 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
 
                 try
                 {
-                    if ( e is OncRpcAuthenticationException )
-                        callInfo.ReplyAuthError( (( OncRpcAuthenticationException ) e).AuthStatus );
+                    if ( ex is OncRpcAuthenticationException )
+                        callInfo.ReplyAuthError( (( OncRpcAuthenticationException ) ex).AuthStatus );
                     else
                         callInfo.ReplySystemError();
                 }

@@ -3,6 +3,8 @@ using System.ComponentModel;
 
 using cc.isr.ONC.RPC.MSTest.Tcp;
 
+using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
+
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 /// <summary>   (Unit Test Class) a broadcast client test. </summary>
@@ -42,6 +44,7 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
         }
         catch ( Exception ex )
         {
+            Console.WriteLine( "Failed initializing fixture: " );
             Console.WriteLine( ex.ToString() );
             CleanupFixture();
         }

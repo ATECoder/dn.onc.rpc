@@ -139,10 +139,9 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
             {
                 deadSocket.Close();
             }
-            catch ( Exception e )
+            catch ( Exception ex )
             {
-                Console.Out.WriteLine( e.Message );
-                Console.Out.WriteLine( e.StackTrace );
+                Console.Out.WriteLine( $"Failed closing: \n{ex} " );
             }
         }
 
