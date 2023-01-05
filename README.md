@@ -40,15 +40,19 @@ Clone the repository along with its requisite repositories to their respective r
 ### Repositories
 The repositories listed in [external repositories] are required:
 * [IDE Repository] - IDE support files.
+* [ISR's XDR] - eXternal Data Representation.
+* [ISR's ONC RPC] - ONC/RPC.
 
 ```
 git clone git@bitbucket.org:davidhary/vs.ide.git
+git clone https://github.com/ATECoder/dn.xdr.git
 git clone https://github.com/ATECoder/dn.onc.rpc.git
 ```
 
 Clone the repositories into the following folders (parents of the .git folder):
 ```
 %vslib%\core\ide
+%dnlib%\iot\xdr
 %dnlib%\iot\oncrpc
 ```
 where %dnlib% and %vslib% are  the root folders of the .NET libraries, e.g., %my%\lib\vs 
@@ -116,6 +120,7 @@ Integrated Scientific Resources, Inc., and any contributors reserve all other ri
 
 [ISR's ONC RPC]: https://github.com/ATECoder/dn.onc.rpc
 [IDE Repository]: https://www.bitbucket.org/davidhary/vs.ide
+[ISR's XDR]: https://github.com/ATECoder/dn.xdr
 [external repositories]: ExternalReposCommits.csv
 
 [ATE Coder]: https://www.IntegratedScientificResources.com
