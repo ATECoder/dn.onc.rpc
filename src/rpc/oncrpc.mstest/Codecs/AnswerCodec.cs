@@ -26,10 +26,10 @@ public class AnswerCodec : IXdrCodec
 
     /// <summary>   Constructor. </summary>
     /// <remarks>   2022-12-22. </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public AnswerCodec( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public AnswerCodec( XdrDecodingStreamBase decoder )
     {
-        this.Decode( xdr );
+        this.Decode( decoder );
     }
 
     /// <summary>   Gets or sets the value. </summary>
@@ -54,21 +54,21 @@ public class AnswerCodec : IXdrCodec
     /// <remarks>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
-    public virtual void Encode( XdrEncodingStreamBase xdr )
+    /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
+    public virtual void Encode( XdrEncodingStreamBase encoder )
     {
-        xdr.EncodeInt( this.Value );
+        encoder.EncodeInt( this.Value );
         switch ( this.Value )
         {
             case 40:
             case 41:
-                xdr.EncodeInt( this.Wrong );
+                encoder.EncodeInt( this.Wrong );
                 break;
             case 42:
-                xdr.EncodeInt( this.TheAnswer );
+                encoder.EncodeInt( this.TheAnswer );
                 break;
             default:
-                xdr.EncodeInt( this.CheckHash );
+                encoder.EncodeInt( this.CheckHash );
                 break;
         }
     }
@@ -79,21 +79,21 @@ public class AnswerCodec : IXdrCodec
     /// <remarks>
     /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public virtual void Decode( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public virtual void Decode( XdrDecodingStreamBase decoder )
     {
-        this.Value = xdr.DecodeInt();
+        this.Value = decoder.DecodeInt();
         switch ( this.Value )
         {
             case 40:
             case 41:
-                this.Wrong = xdr.DecodeInt();
+                this.Wrong = decoder.DecodeInt();
                 break;
             case 42:
-                this.TheAnswer = xdr.DecodeInt();
+                this.TheAnswer = decoder.DecodeInt();
                 break;
             default:
-                this.CheckHash = xdr.DecodeInt();
+                this.CheckHash = decoder.DecodeInt();
                 break;
         }
     }

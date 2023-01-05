@@ -47,13 +47,13 @@ public class OncRpcServerIdentifierCodec : IXdrCodec
     /// Constructs an server <see cref="OncRpcServerIdentifierCodec"/> object and restores its state from the given XDR
     /// stream.
     /// </summary>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public OncRpcServerIdentifierCodec( XdrDecodingStreamBase xdr )
+    public OncRpcServerIdentifierCodec( XdrDecodingStreamBase decoder )
     {
-        this.Decode( xdr );
+        this.Decode( decoder );
     }
 
     /// <summary>   Gets or sets the program number of the ONC/RPC server in question. </summary>
@@ -80,30 +80,30 @@ public class OncRpcServerIdentifierCodec : IXdrCodec
     /// <summary>
     /// Encodes -- that is: serializes -- an OncRpcServerIdent object into a XDR stream.
     /// </summary>
-    /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
+    /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public virtual void Encode( XdrEncodingStreamBase xdr )
+    public virtual void Encode( XdrEncodingStreamBase encoder )
     {
-        xdr.EncodeInt( this.Program );
-        xdr.EncodeInt( this.Version );
-        xdr.EncodeInt( this.Protocol );
-        xdr.EncodeInt( this.Port );
+        encoder.EncodeInt( this.Program );
+        encoder.EncodeInt( this.Version );
+        encoder.EncodeInt( this.Protocol );
+        encoder.EncodeInt( this.Port );
     }
 
     /// <summary>
     /// Decodes -- that is: deserializes -- an OncRpcServerIdent object from a XDR stream.
     /// </summary>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public virtual void Decode( XdrDecodingStreamBase xdr )
+    public virtual void Decode( XdrDecodingStreamBase decoder )
     {
-        this.Program = xdr.DecodeInt();
-        this.Version = xdr.DecodeInt();
-        this.Protocol = xdr.DecodeInt();
-        this.Port = xdr.DecodeInt();
+        this.Program = decoder.DecodeInt();
+        this.Version = decoder.DecodeInt();
+        this.Protocol = decoder.DecodeInt();
+        this.Port = decoder.DecodeInt();
     }
 }

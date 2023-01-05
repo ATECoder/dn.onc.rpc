@@ -92,8 +92,8 @@ public class OncRpcUdpClient : OncRpcClientBase
         // Create the necessary encoding and decoding streams, so we can
         // communicate at all.
 
-        this._sendingXdr = new XdrUdpEncodingStream( this._socket, bufferSize );
-        this._receivingXdr = new XdrUdpDecodingStream( this._socket, bufferSize );
+        this._encoder = new XdrUdpEncodingStream( this._socket, bufferSize );
+        this._decoder = new XdrUdpDecodingStream( this._socket, bufferSize );
     }
 
     /// <summary>
@@ -108,27 +108,27 @@ public class OncRpcUdpClient : OncRpcClientBase
             this._socket.Close();
             this._socket = null;
         }
-        if ( this._sendingXdr != null )
+        if ( this._encoder != null )
         {
             try
             {
-                this._sendingXdr.Close();
+                this._encoder.Close();
             }
             catch ( IOException )
             {
             }
-            this._sendingXdr = null;
+            this._encoder = null;
         }
-        if ( this._receivingXdr != null )
+        if ( this._decoder != null )
         {
             try
             {
-                this._receivingXdr.Close();
+                this._decoder.Close();
             }
             catch ( IOException )
             {
             }
-            this._receivingXdr = null;
+            this._decoder = null;
         }
     }
 
@@ -141,12 +141,12 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <summary>
     /// XDR encoding stream used for sending requests via UDP/IP to an ONC/RPC server.
     /// </summary>
-    private XdrUdpEncodingStream _sendingXdr;
+    private XdrUdpEncodingStream _encoder;
 
     /// <summary>
     /// XDR decoding stream used when receiving replies via UDP/IP from an ONC/RPC server.
     /// </summary>
-    private XdrUdpDecodingStream _receivingXdr;
+    private XdrUdpDecodingStream _decoder;
 
     #endregion
 
@@ -179,8 +179,8 @@ public class OncRpcUdpClient : OncRpcClientBase
     ///                                     <see langword="null"/>, the system's default encoding is to be used. </param>
     public override void SetCharacterEncoding( string characterEncoding )
     {
-        this._receivingXdr.CharacterEncoding = characterEncoding;
-        this._sendingXdr.CharacterEncoding = characterEncoding;
+        this._decoder.CharacterEncoding = characterEncoding;
+        this._encoder.CharacterEncoding = characterEncoding;
     }
 
     /// <summary>   Get the character encoding for serializing strings. </summary>
@@ -190,7 +190,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// </returns>
     public override string GetCharacterEncoding()
     {
-        return this._receivingXdr.CharacterEncoding;
+        return this._decoder.CharacterEncoding;
     }
 
     #endregion
@@ -255,10 +255,10 @@ public class OncRpcUdpClient : OncRpcClientBase
                         // "connected" the datagram socket, so the destination for the 
                         // datagram packets is already set.
 
-                        this._sendingXdr.BeginEncoding( this.Host, this.Port );
-                        callHeader.Encode( this._sendingXdr );
-                        requestCodec.Encode( this._sendingXdr );
-                        this._sendingXdr.EndEncoding();
+                        this._encoder.BeginEncoding( this.Host, this.Port );
+                        callHeader.Encode( this._encoder );
+                        requestCodec.Encode( this._encoder );
+                        this._encoder.EndEncoding();
                     }
                     catch ( IOException e )
                     {
@@ -290,14 +290,14 @@ public class OncRpcUdpClient : OncRpcClientBase
                                 // finite one.
                                 currentTimeout = 1;
                             this._socket.ReceiveTimeout = ( int ) currentTimeout;
-                            this._receivingXdr.BeginDecoding();
+                            this._decoder.BeginDecoding();
 
                             // Only accept incoming reply if it comes from the same
                             // address we've sent the ONC/RPC call to. Otherwise throw
                             // away the datagram packet containing the reply and start
                             // over again, waiting for the next reply to arrive.
 
-                            if ( this.Host.Equals( this._receivingXdr.GetSenderAddress() ) )
+                            if ( this.Host.Equals( this._decoder.GetSenderAddress() ) )
                             {
 
                                 // First, pull off the reply message header of the
@@ -311,7 +311,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                                 try
                                 {
-                                    replyHeader.Decode( this._receivingXdr );
+                                    replyHeader.Decode( this._decoder );
                                 }
                                 catch ( OncRpcException e )
                                 {
@@ -323,7 +323,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                                     // and ensure this way that the next call has a chance to start
                                     // from a clean state.
 
-                                    this._receivingXdr.EndDecoding();
+                                    this._decoder.EndDecoding();
                                     throw e;
                                 }
 
@@ -336,7 +336,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                                 {
                                     if ( !replyHeader.SuccessfullyAccepted() )
                                     {
-                                        this._receivingXdr.EndDecoding();
+                                        this._decoder.EndDecoding();
 
                                         // Check whether there was an authentication
                                         // problem. In this case first try to refresh the
@@ -367,7 +367,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                                     try
                                     {
-                                        replyCodec.Decode( this._receivingXdr );
+                                        replyCodec.Decode( this._decoder );
                                     }
                                     catch ( OncRpcException e )
                                     {
@@ -379,7 +379,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                                         // and ensure this way that the next call has a chance to start
                                         // from a clean state.
 
-                                        this._receivingXdr.EndDecoding();
+                                        this._decoder.EndDecoding();
                                         throw e;
                                     }
 
@@ -387,7 +387,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                                     // returning the reply to the caller through the result
                                     // object.
 
-                                    this._receivingXdr.EndDecoding();
+                                    this._decoder.EndDecoding();
                                     return;
                                 }
                             }
@@ -433,7 +433,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                             try
                             {
-                                this._receivingXdr.EndDecoding();
+                                this._decoder.EndDecoding();
                             }
                             catch ( IOException )
                             {
@@ -449,7 +449,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                             try
                             {
-                                this._receivingXdr.EndDecoding();
+                                this._decoder.EndDecoding();
                             }
                             catch ( IOException )
                             {
@@ -472,7 +472,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                         try
                         {
-                            this._receivingXdr.EndDecoding();
+                            this._decoder.EndDecoding();
                         }
                         catch ( IOException e )
                         {
@@ -556,10 +556,10 @@ public class OncRpcUdpClient : OncRpcClientBase
                 // "connected" the datagram socket, so the destination of the 
                 // datagram packets is already set.
 
-                this._sendingXdr.BeginEncoding( this.Host, this.Port );
-                callHeader.Encode( this._sendingXdr );
-                requestCodec.Encode( this._sendingXdr );
-                this._sendingXdr.EndEncoding();
+                this._encoder.BeginEncoding( this.Host, this.Port );
+                callHeader.Encode( this._encoder );
+                requestCodec.Encode( this._encoder );
+                this._encoder.EndEncoding();
             }
             catch ( IOException e )
             {
@@ -587,8 +587,8 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                     // Then wait for datagrams to arrive...
 
-                    this._receivingXdr.BeginDecoding();
-                    replyHeader.Decode( this._receivingXdr );
+                    this._decoder.BeginDecoding();
+                    replyHeader.Decode( this._decoder );
 
                     // Only deserialize the result, if the reply matches the call
                     // and if the reply signals a successful call. In case of an
@@ -603,15 +603,15 @@ public class OncRpcUdpClient : OncRpcClientBase
                             // ignore such replies and continue listening for other
                             // replies.
 
-                            this._receivingXdr.EndDecoding();
+                            this._decoder.EndDecoding();
 
-                        replyCodec.Decode( this._receivingXdr );
+                        replyCodec.Decode( this._decoder );
 
                         // Notify a potential listener of the reply.
 
                         if ( listener != null )
                         {
-                            OncRpcBroadcastEvent evt = new( this, this._receivingXdr.GetSenderAddress(), procedureNumber, requestCodec, replyCodec );
+                            OncRpcBroadcastEvent evt = new( this, this._decoder.GetSenderAddress(), procedureNumber, requestCodec, replyCodec );
                             listener.ReplyReceived( evt );
                         }
 
@@ -619,7 +619,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                         // returning the reply to the caller through the result
                         // object.
 
-                        this._receivingXdr.EndDecoding();
+                        this._decoder.EndDecoding();
                     }
                     else
 
@@ -629,7 +629,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                         try
                         {
-                            this._receivingXdr.EndDecoding();
+                            this._decoder.EndDecoding();
                         }
                         catch ( IOException e )
                         {

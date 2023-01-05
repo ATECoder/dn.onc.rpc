@@ -23,7 +23,7 @@ public class OncRpcAuthType
 
     /// <summary>   (Immutable) The so-called "short hand Unix style" is not supported.  <para>
     /// Renamed from <c>ONCRPC_AUTH_SHORT = 2</c>. </para> </summary>
-    public const int OncRpcAuthShortHandUnix = 2;
+    public const int OncRpcAuthTypeShortHandUnix = 2;
 
     /// <summary>
     /// (Immutable)
@@ -31,5 +31,5 @@ public class OncRpcAuthType
     /// supported -- and besides, it's not a silver bullet either. <para>
     /// Renamed from <c>ONCRPC_AUTH_DES = 3</c>. </para>
     /// </summary>
-    public const int OncRpcAuthDesType = 3;
+    public const int OncRpcAuthTypeDes = 3;
 }

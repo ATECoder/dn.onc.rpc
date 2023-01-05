@@ -2,7 +2,7 @@ namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
 /// The server <see cref="OncRpcServerAuthShort"/> class handles all protocol issues of the ONC/RPC
-/// authentication <see cref="OncRpcAuthType.OncRpcAuthShortHandUnix"/> on the server side.
+/// authentication <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/> on the server side.
 /// </summary>
 /// <remarks> <para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
@@ -12,22 +12,13 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// <summary>
     /// Constructs an server <see cref="OncRpcServerAuthShort"/> object and pulls its state off an XDR stream.
     /// </summary>
-    /// <param name="xdr">  XDR stream to retrieve the object state from. </param>
+    /// <param name="decoder">  XDR stream to retrieve the object state from. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public OncRpcServerAuthShort( XdrDecodingStreamBase xdr )
+    public OncRpcServerAuthShort( XdrDecodingStreamBase decoder ) : base( OncRpcAuthType.OncRpcAuthTypeShortHandUnix )
     {
-        this.DecodeCredentialAndVerfier( xdr );
-    }
-
-    /// <summary>
-    /// Returns the type (flavor) of <see cref="OncRpcAuthType">authentication</see> used.
-    /// </summary>
-    /// <returns>   Authentication type used by this authentication object. </returns>
-    public sealed override int GetAuthenticationType()
-    {
-        return OncRpcAuthType.OncRpcAuthShortHandUnix;
+        this.DecodeCredentialAndVerfier( decoder );
     }
 
     /// <summary> Contains the shorthand credential sent by the caller.</summary>
@@ -70,13 +61,13 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// Decodes -- that is: deserializes -- an ONC/RPC authentication object (credential and
     /// verifier) on the server side.
     /// </summary>
-    /// <param name="xdr">  XDR stream from which the authentication object is restored. </param>
+    /// <param name="decoder">  XDR stream from which the authentication object is restored. </param>
     ///
     /// <exception cref="OncRpcAuthenticationException">    Thrown when an ONC/RPC Authentication
     ///                                                     error condition occurs. </exception>
     /// <exception cref="OncRpcException">                  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">            Thrown when an I/O error condition occurs. </exception>
-    public sealed override void DecodeCredentialAndVerfier( XdrDecodingStreamBase xdr )
+    public sealed override void DecodeCredentialAndVerfier( XdrDecodingStreamBase decoder )
     {
 
         // Reset the authentication object's state properly...
@@ -87,7 +78,7 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
         // Pull off the shorthand credential information (opaque date) of
         // the XDR stream...
 
-        this._shorthandCredential = xdr.DecodeDynamicOpaque();
+        this._shorthandCredential = decoder.DecodeDynamicOpaque();
         if ( this._shorthandCredential.Length > OncRpcAuthConstants.OncRpcMaxAuthBytes )
             throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthBadCredential );
 
@@ -96,7 +87,7 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
 
-        if ( xdr.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || xdr.DecodeInt() != 0 )
+        if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
             throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
     }
 
@@ -104,19 +95,19 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// Encodes -- that is: serializes -- an ONC/RPC authentication object (its verifier) on the
     /// server side.
     /// </summary>
-    /// <param name="xdr">  XDR stream from which the authentication object is restored. </param>
+    /// <param name="encoder">  XDR stream from which the authentication object is restored. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public sealed override void EncodeVerfier( XdrEncodingStreamBase xdr )
+    public sealed override void EncodeVerfier( XdrEncodingStreamBase encoder )
     {
         if ( this._shorthandVerfier != null )
         {
 
             // Encode 'short' shorthand verifier (credential).
 
-            xdr.EncodeInt( OncRpcAuthType.OncRpcAuthShortHandUnix );
-            xdr.EncodeDynamicOpaque( this._shorthandVerfier );
+            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeShortHandUnix );
+            encoder.EncodeDynamicOpaque( this._shorthandVerfier );
         }
         else
         {
@@ -124,8 +115,8 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
             // Encode an 'none' verifier with zero length, if no shorthand
             // verifier (credential) has been supplied by now.
 
-            xdr.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
-            xdr.EncodeInt( 0 );
+            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+            encoder.EncodeInt( 0 );
         }
     }
 

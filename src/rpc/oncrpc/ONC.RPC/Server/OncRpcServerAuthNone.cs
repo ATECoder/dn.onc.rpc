@@ -9,13 +9,10 @@ namespace cc.isr.ONC.RPC.Server;
 /// </remarks>
 public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
 {
-    /// <summary>
-    /// Returns the type (flavor) of <see cref="OncRpcAuthType">authentication</see> used.
-    /// </summary>
-    /// <returns>   Authentication type used by this authentication object. </returns>
-    public sealed override int GetAuthenticationType()
+
+    /// <summary>   Default constructor. </summary>
+    public OncRpcServerAuthNone() : base( OncRpcAuthType.OncRpcAuthTypeNone )
     {
-        return OncRpcAuthType.OncRpcAuthTypeNone;
     }
 
     /// <summary>
@@ -24,17 +21,17 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
     /// </summary>
     /// <exception cref="OncRpcAuthenticationException">    Thrown when an ONC/RPC Authentication
     ///                                                     error condition occurs. </exception>
-    /// <param name="xdr">  XDR stream from which the authentication object is restored. </param>
+    /// <param name="decoder">  XDR stream from which the authentication object is restored. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public sealed override void DecodeCredentialAndVerfier( XdrDecodingStreamBase xdr )
+    public sealed override void DecodeCredentialAndVerfier( XdrDecodingStreamBase decoder )
     {
 
         // As the authentication type has already been pulled off the XDR
         // stream, we only need to make sure that really no opaque data follows.
 
-        if ( xdr.DecodeInt() != 0 )
+        if ( decoder.DecodeInt() != 0 )
             throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthBadCredential );
 
         // We also need to decode the verifier. This must be of type
@@ -42,7 +39,7 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
 
-        if ( xdr.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || xdr.DecodeInt() != 0 )
+        if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
             throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
     }
 
@@ -50,15 +47,15 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
     /// Encodes -- that is: serializes -- an ONC/RPC authentication object (its verifier) on the
     /// server side.
     /// </summary>
-    /// <param name="xdr">  XDR stream from which the authentication object is restored. </param>
+    /// <param name="encoder">  XDR stream from which the authentication object is restored. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public sealed override void EncodeVerfier( XdrEncodingStreamBase xdr )
+    public sealed override void EncodeVerfier( XdrEncodingStreamBase encoder )
     {
         // Encode an 'none' verifier with zero length.
-        xdr.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
-        xdr.EncodeInt( 0 );
+        encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+        encoder.EncodeInt( 0 );
     }
 
     /// <summary>

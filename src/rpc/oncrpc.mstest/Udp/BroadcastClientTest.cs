@@ -119,6 +119,9 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
     [TestMethod]
     public void ClientShouldBroadcast()
     {
+
+        Assert.IsTrue( _server?.Listening );
+
         // Create a portmap client object, which can then be used to contact
         // the local ONC/RPC 'OncRpcUdpServer' test server.
         // OncRpcUdpClient client = new( IPAddress.Parse( "255.255.255.255" ), 100000, 2, 111 );

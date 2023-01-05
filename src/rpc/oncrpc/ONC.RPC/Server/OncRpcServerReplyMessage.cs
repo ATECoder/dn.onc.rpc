@@ -41,15 +41,15 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
     /// <summary>
     /// Encodes -- that is: serializes -- a ONC/RPC reply header object into a XDR stream.
     /// </summary>
-    /// <param name="xdr">  An encoding XDR stream. </param>
+    /// <param name="encoder">  An encoding XDR stream. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public virtual void Encode( XdrEncodingStreamBase xdr )
+    public virtual void Encode( XdrEncodingStreamBase encoder )
     {
-        xdr.EncodeInt( this.MessageId );
-        xdr.EncodeInt( this.MessageType );
-        xdr.EncodeInt( this.ReplyStatus );
+        encoder.EncodeInt( this.MessageId );
+        encoder.EncodeInt( this.MessageType );
+        encoder.EncodeInt( this.ReplyStatus );
         switch ( this.ReplyStatus )
         {
             case OncRpcReplyStatus.OncRpcMessageAccepted:
@@ -63,11 +63,11 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
                     // to sending 'none' replies...
 
                     if ( this.Auth != null )
-                        this.Auth.EncodeVerfier( xdr );
+                        this.Auth.EncodeVerfier( encoder );
                     else
                     {
-                        xdr.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
-                        xdr.EncodeInt( 0 );
+                        encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+                        encoder.EncodeInt( 0 );
                     }
 
                     // Even if the call was accepted by the server, it can still
@@ -75,13 +75,13 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
                     // call we have to Sends back an indication about the range of
                     // versions we support of a particular program (server).
 
-                    xdr.EncodeInt( this.AcceptStatus );
+                    encoder.EncodeInt( this.AcceptStatus );
                     switch ( this.AcceptStatus )
                     {
                         case OncRpcAcceptStatus.OncRpcProgramVersionMismatch:
                             {
-                                xdr.EncodeInt( this.LowVersion );
-                                xdr.EncodeInt( this.HighVersion );
+                                encoder.EncodeInt( this.LowVersion );
+                                encoder.EncodeInt( this.HighVersion );
                                 break;
                             }
 
@@ -102,19 +102,19 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
 
                     // Encode the information returned for denied message calls.
 
-                    xdr.EncodeInt( this.RejectStatus );
+                    encoder.EncodeInt( this.RejectStatus );
                     switch ( this.RejectStatus )
                     {
                         case OncRpcRejectStatus.OncRpcWrongProtocolVersion:
                             {
-                                xdr.EncodeInt( this.LowVersion );
-                                xdr.EncodeInt( this.HighVersion );
+                                encoder.EncodeInt( this.LowVersion );
+                                encoder.EncodeInt( this.HighVersion );
                                 break;
                             }
 
                         case OncRpcRejectStatus.OncRpcAuthError:
                             {
-                                xdr.EncodeInt( this.AuthStatus );
+                                encoder.EncodeInt( this.AuthStatus );
                                 break;
                             }
 

@@ -10,14 +10,23 @@ namespace cc.isr.ONC.RPC.Server;
 /// </remarks>
 public abstract class OncRpcServerAuthBase
 {
+
+    /// <summary>   Specialized constructor for use only by derived class. </summary>
+    /// <param name="authenticationType">   Authentication type used by this authentication object. </param>
+    protected OncRpcServerAuthBase( int authenticationType )
+    {
+        this.AuthenticationType = authenticationType;
+    }
+
     /// <summary>
-    /// Returns the type (flavor) of <see cref="OncRpcAuthType">authentication</see> used.
+    /// Gets or sets or set (private) the type (flavor) of <see cref="OncRpcAuthType">authentication</see>
+    /// used.
     /// </summary>
-    /// <returns>   Authentication type used by this authentication object. </returns>
-    public abstract int GetAuthenticationType();
+    /// <value>   Authentication type used by this authentication object. </value>
+    public int AuthenticationType { get; private set; }
 
     /// <summary>   Restores (deserializes) an authentication object from an XDR stream. </summary>
-    /// <param name="xdr">      XDR stream from which the authentication object is restored. </param>
+    /// <param name="decoder">  XDR stream from which the authentication object is restored. </param>
     /// <param name="recycle">  old authentication object which is intended to be reused in case it
     ///                         is of the same authentication type as the new one just arriving from
     ///                         the XDR stream. </param>
@@ -30,7 +39,7 @@ public abstract class OncRpcServerAuthBase
     /// <exception cref="System.IO.IOException">          Thrown when an I/O error condition occurs. </exception>
     /// <exception cref="OncRpcAuthenticationException">  Thrown when an ONC/RPC Authentication
     ///                                                   error condition occurs. </exception>
-    public static OncRpcServerAuthBase NewOncRpcServerAuto( XdrDecodingStreamBase xdr, OncRpcServerAuthBase recycle )
+    public static OncRpcServerAuthBase NewOncRpcServerAuto( XdrDecodingStreamBase decoder, OncRpcServerAuthBase recycle )
     {
         OncRpcServerAuthBase auth;
 
@@ -38,15 +47,15 @@ public abstract class OncRpcServerAuthBase
         // to receive an authentication with the same type, we reuse the old
         // object.
 
-        int authType = xdr.DecodeInt();
-        if ( recycle != null && recycle.GetAuthenticationType() == authType )
+        int authType = decoder.DecodeInt();
+        if ( recycle != null && recycle.AuthenticationType == authType )
         {
 
             // Simply recycle authentication object and pull its new state
             // of the XDR stream.
 
             auth = recycle;
-            auth.DecodeCredentialAndVerfier( xdr );
+            auth.DecodeCredentialAndVerfier( decoder );
         }
         else
             switch ( authType )
@@ -58,19 +67,19 @@ public abstract class OncRpcServerAuthBase
                         // the XDR stream.
 
                         auth = OncRpcServerAuthNone.AuthNoneInstance;
-                        auth.DecodeCredentialAndVerfier( xdr );
+                        auth.DecodeCredentialAndVerfier( decoder );
                         break;
                     }
 
-                case OncRpcAuthType.OncRpcAuthShortHandUnix:
+                case OncRpcAuthType.OncRpcAuthTypeShortHandUnix:
                     {
-                        auth = new OncRpcServerAuthShort( xdr );
+                        auth = new OncRpcServerAuthShort( decoder );
                         break;
                     }
 
                 case OncRpcAuthType.OncRpcAuthTypeUnix:
                     {
-                        auth = new OncRpcServerAuthUnix( xdr );
+                        auth = new OncRpcServerAuthUnix( decoder );
                         break;
                     }
 
@@ -92,17 +101,17 @@ public abstract class OncRpcServerAuthBase
     /// Decodes -- that is: deserializes -- an ONC/RPC authentication object (credential and
     /// verifier) on the server side.
     /// </summary>
-    /// <param name="xdr">  XDR stream from which the authentication object is restored. </param>
+    /// <param name="decoder">  XDR stream from which the authentication object is restored. </param>
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public abstract void DecodeCredentialAndVerfier( XdrDecodingStreamBase xdr );
+    public abstract void DecodeCredentialAndVerfier( XdrDecodingStreamBase decoder );
 
     /// <summary>
     /// Encodes -- that is: serializes -- an ONC/RPC authentication object (its verifier) on the
     /// server side.
     /// </summary>
-    /// <param name="xdr">  XDR stream from which the authentication object is restored. </param>
+    /// <param name="encoder">  XDR stream from which the authentication object is restored. </param>
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public abstract void EncodeVerfier( XdrEncodingStreamBase xdr );
+    public abstract void EncodeVerfier( XdrEncodingStreamBase encoder );
 }

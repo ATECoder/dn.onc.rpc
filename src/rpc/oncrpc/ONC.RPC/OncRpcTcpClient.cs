@@ -148,8 +148,8 @@ public class OncRpcTcpClient : OncRpcClientBase
             this._socket.ReceiveBufferSize = bufferSize;
         // Create the necessary encoding and decoding streams, so we can
         // communicate at all.
-        this.SendingXdr = new XdrTcpEncodingStream( this._socket, bufferSize );
-        this.ReceivingXdr = new XdrTcpDecodingStream( this._socket, bufferSize );
+        this.Encoder = new XdrTcpEncodingStream( this._socket, bufferSize );
+        this.Decoder = new XdrTcpDecodingStream( this._socket, bufferSize );
     }
 
     /// <summary>
@@ -171,27 +171,27 @@ public class OncRpcTcpClient : OncRpcClientBase
             }
             this._socket = null;
         }
-        if ( this.SendingXdr != null )
+        if ( this.Encoder != null )
         {
             try
             {
-                this.SendingXdr.Close();
+                this.Encoder.Close();
             }
             catch ( System.IO.IOException )
             {
             }
-            this.SendingXdr = null;
+            this.Encoder = null;
         }
-        if ( this.ReceivingXdr != null )
+        if ( this.Decoder != null )
         {
             try
             {
-                this.ReceivingXdr.Close();
+                this.Decoder.Close();
             }
             catch ( System.IO.IOException )
             {
             }
-            this.ReceivingXdr = null;
+            this.Decoder = null;
         }
     }
 
@@ -210,14 +210,14 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// ONC/RPC server.
     /// </summary>
     /// <value> The sending XDR encoding stream. </value>
-    internal XdrTcpEncodingStream SendingXdr { get; private set; }
+    internal XdrTcpEncodingStream Encoder { get; private set; }
 
     /// <summary>
     /// Gets or sets or set the XDR decoding stream used when receiving replies via TCP/IP from an
     /// ONC/RPC server.
     /// </summary>
     /// <value> The receiving XDR decoding stream. </value>
-    internal XdrTcpDecodingStream ReceivingXdr { get; private set; }
+    internal XdrTcpDecodingStream Decoder { get; private set; }
 
     /// <summary>
     /// Gets or sets the timeout during the phase where data is sent within calls, or data is received within replies.
@@ -234,8 +234,8 @@ public class OncRpcTcpClient : OncRpcClientBase
     ///                                     <see langword="null"/>, the system's default encoding is to be used. </param>
     public override void SetCharacterEncoding( string characterEncoding )
     {
-        this.ReceivingXdr.CharacterEncoding = characterEncoding;
-        this.SendingXdr.CharacterEncoding = characterEncoding;
+        this.Decoder.CharacterEncoding = characterEncoding;
+        this.Encoder.CharacterEncoding = characterEncoding;
     }
 
     /// <summary>   Get the character encoding for serializing strings. </summary>
@@ -245,7 +245,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// </returns>
     public override string GetCharacterEncoding()
     {
-        return this.ReceivingXdr.CharacterEncoding;
+        return this.Decoder.CharacterEncoding;
     }
 
     #endregion
@@ -287,13 +287,13 @@ public class OncRpcTcpClient : OncRpcClientBase
                 try
                 {
                     this._socket.ReceiveTimeout = this.TransmissionTimeout;
-                    this.SendingXdr.BeginEncoding( null, 0 );
-                    callHeader.Encode( this.SendingXdr );
-                    requestCodec.Encode( this.SendingXdr );
+                    this.Encoder.BeginEncoding( null, 0 );
+                    callHeader.Encode( this.Encoder );
+                    requestCodec.Encode( this.Encoder );
                     if ( this.Timeout != 0 )
-                        this.SendingXdr.EndEncoding();
+                        this.Encoder.EndEncoding();
                     else
-                        this.SendingXdr.EndEncoding( false );
+                        this.Encoder.EndEncoding( false );
                 }
                 catch ( System.IO.IOException e )
                 {
@@ -310,7 +310,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                     while ( true )
                     {
                         this._socket.ReceiveTimeout = this.Timeout;
-                        this.ReceivingXdr.BeginDecoding();
+                        this.Decoder.BeginDecoding();
                         this._socket.ReceiveTimeout = this.TransmissionTimeout;
 
                         // First, pull off the reply message header of the
@@ -323,7 +323,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                         // be handled as any other rejected ONC/RPC call.
                         try
                         {
-                            replyHeader.Decode( this.ReceivingXdr );
+                            replyHeader.Decode( this.Decoder );
                         }
                         catch ( OncRpcException e )
                         {
@@ -333,21 +333,21 @@ public class OncRpcTcpClient : OncRpcClientBase
                             // been a buffer underflow. Whatever, end the decoding process
                             // and ensure this way that the next call has a chance to start
                             // from a clean state.
-                            this.ReceivingXdr.EndDecoding();
+                            this.Decoder.EndDecoding();
                             throw e;
                         }
                         // Only deserialize the result, if the reply matches the
                         // call. Otherwise skip this record.
                         if ( replyHeader.MessageId == callHeader.MessageId )
                             break;
-                        this.ReceivingXdr.EndDecoding();
+                        this.Decoder.EndDecoding();
                     }
                     // Make sure that the call was accepted. In case of unsuccessful
                     // calls, throw an exception, if it's not an authentication
                     // exception. In that case try to refresh the credential first.
                     if ( !replyHeader.SuccessfullyAccepted() )
                     {
-                        this.ReceivingXdr.EndDecoding();
+                        this.Decoder.EndDecoding();
 
                         // Check whether there was an authentication
                         // problem. In this case first try to refresh the
@@ -361,7 +361,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                     }
                     try
                     {
-                        replyCodec.Decode( this.ReceivingXdr );
+                        replyCodec.Decode( this.Decoder );
                     }
                     catch ( OncRpcException e )
                     {
@@ -371,13 +371,13 @@ public class OncRpcTcpClient : OncRpcClientBase
                         // been a buffer underflow. Whatever, end the decoding process
                         // and ensure this way that the next call has a chance to start
                         // from a clean state.
-                        this.ReceivingXdr.EndDecoding();
+                        this.Decoder.EndDecoding();
                         throw e;
                     }
                     // Free pending resources of buffer and exit the call loop,
                     // returning the reply to the caller through the result
                     // object.
-                    this.ReceivingXdr.EndDecoding();
+                    this.Decoder.EndDecoding();
                     return;
                 }
                 catch ( System.IO.IOException e )
@@ -432,10 +432,10 @@ public class OncRpcTcpClient : OncRpcClientBase
             try
             {
                 this._socket.SendTimeout = this.TransmissionTimeout;
-                this.SendingXdr.BeginEncoding( null, 0 );
-                callHeader.Encode( this.SendingXdr );
-                requestCodec.Encode( this.SendingXdr );
-                this.SendingXdr.EndEncoding( flush );
+                this.Encoder.BeginEncoding( null, 0 );
+                callHeader.Encode( this.Encoder );
+                requestCodec.Encode( this.Encoder );
+                this.Encoder.EndEncoding( flush );
             }
             catch ( System.IO.IOException e )
             {

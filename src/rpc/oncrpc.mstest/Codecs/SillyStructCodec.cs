@@ -170,10 +170,10 @@ public class SillyStructCodec : IXdrCodec
 
     /// <summary>   Constructor. </summary>
     /// <remarks>   2022-12-22. </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public SillyStructCodec( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public SillyStructCodec( XdrDecodingStreamBase decoder )
     {
-        this.Decode( xdr );
+        this.Decode( decoder );
     }
 
     /// <summary>
@@ -182,16 +182,16 @@ public class SillyStructCodec : IXdrCodec
     /// <remarks>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
-    public virtual void Encode( XdrEncodingStreamBase xdr )
+    /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
+    public virtual void Encode( XdrEncodingStreamBase encoder )
     {
-        xdr.EncodeByteVector( this._fixedBuffer, 512 );
-        xdr.EncodeByteVector( this._buffer );
-        xdr.EncodeOpaque( this._fixedBytes, MiscConstants.FixedBufferLength );
-        xdr.EncodeDynamicOpaque( this._bytes );
-        xdr.EncodeInt( this._ui1 );
-        xdr.EncodeInt( this._ui2 );
-        xdr.EncodeString( this._nonsense );
+        encoder.EncodeByteVector( this._fixedBuffer, 512 );
+        encoder.EncodeByteVector( this._buffer );
+        encoder.EncodeOpaque( this._fixedBytes, MiscConstants.FixedBufferLength );
+        encoder.EncodeDynamicOpaque( this._bytes );
+        encoder.EncodeInt( this._ui1 );
+        encoder.EncodeInt( this._ui2 );
+        encoder.EncodeString( this._nonsense );
     }
 
     /// <summary>
@@ -200,16 +200,16 @@ public class SillyStructCodec : IXdrCodec
     /// <remarks>
     /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public virtual void Decode( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public virtual void Decode( XdrDecodingStreamBase decoder )
     {
-        this._fixedBuffer = xdr.DecodeByteVector( 512 );
-        this._buffer = xdr.DecodeByteVector();
-        this._fixedBytes = xdr.DecodeOpaque( MiscConstants.FixedBufferLength );
-        this._bytes = xdr.DecodeDynamicOpaque();
-        this._ui1 = xdr.DecodeInt();
-        this._ui2 = xdr.DecodeInt();
-        this._nonsense = xdr.DecodeString();
+        this._fixedBuffer = decoder.DecodeByteVector( 512 );
+        this._buffer = decoder.DecodeByteVector();
+        this._fixedBytes = decoder.DecodeOpaque( MiscConstants.FixedBufferLength );
+        this._bytes = decoder.DecodeDynamicOpaque();
+        this._ui1 = decoder.DecodeInt();
+        this._ui2 = decoder.DecodeInt();
+        this._nonsense = decoder.DecodeString();
     }
 
 }

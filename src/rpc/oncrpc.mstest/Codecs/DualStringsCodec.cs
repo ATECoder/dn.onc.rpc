@@ -20,11 +20,11 @@ internal class DualStringsCodec : IXdrCodec
     /// <remarks>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
-    public void Encode( XdrEncodingStreamBase xdr )
+    /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
+    public void Encode( XdrEncodingStreamBase encoder )
     {
-        xdr.EncodeString( this.Arg1 );
-        xdr.EncodeString( this.Arg2 );
+        encoder.EncodeString( this.Arg1 );
+        encoder.EncodeString( this.Arg2 );
     }
 
     /// <summary>
@@ -33,10 +33,10 @@ internal class DualStringsCodec : IXdrCodec
     /// <remarks>
     /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public void Decode( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public void Decode( XdrDecodingStreamBase decoder )
     {
-        this.Arg1 = xdr.DecodeString();
-        this.Arg2 = xdr.DecodeString();
+        this.Arg1 = decoder.DecodeString();
+        this.Arg2 = decoder.DecodeString();
     }
 };

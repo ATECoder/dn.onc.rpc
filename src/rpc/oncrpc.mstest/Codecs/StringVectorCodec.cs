@@ -41,10 +41,10 @@ public class StringVectorCodec : IXdrCodec
 
     /// <summary>   Constructor. </summary>
     /// <remarks>   2022-12-22. </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public StringVectorCodec( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public StringVectorCodec( XdrDecodingStreamBase decoder )
     {
-        this.Decode( xdr );
+        this.Decode( decoder );
     }
 
     /// <summary>
@@ -53,14 +53,14 @@ public class StringVectorCodec : IXdrCodec
     /// <remarks>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
-    public virtual void Encode( XdrEncodingStreamBase xdr )
+    /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
+    public virtual void Encode( XdrEncodingStreamBase encoder )
     {
         {
             int size = this.Value.Length;
-            xdr.EncodeInt( size );
+            encoder.EncodeInt( size );
             for ( int idx = 0; idx < size; ++idx )
-                this.Value[idx].Encode( xdr );
+                this.Value[idx].Encode( encoder );
         }
     }
 
@@ -70,14 +70,14 @@ public class StringVectorCodec : IXdrCodec
     /// <remarks>
     /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public virtual void Decode( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public virtual void Decode( XdrDecodingStreamBase decoder )
     {
         {
-            int size = xdr.DecodeInt();
+            int size = decoder.DecodeInt();
             this.Value = new StringCodec[size];
             for ( int idx = 0; idx < size; ++idx )
-                this.Value[idx] = new StringCodec( xdr );
+                this.Value[idx] = new StringCodec( decoder );
         }
     }
 

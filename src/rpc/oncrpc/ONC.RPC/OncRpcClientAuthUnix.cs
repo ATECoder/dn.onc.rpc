@@ -4,7 +4,7 @@ namespace cc.isr.ONC.RPC;
 
 /// <summary>
 /// The <see cref="OncRpcClientAuthUnix"/> class handles protocol issues of ONC/RPC 
-/// <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> (and thus <see cref="OncRpcAuthType.OncRpcAuthShortHandUnix"/>)
+/// <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> (and thus <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>)
 /// authentication as defined in <see href="https://www.ibm.com/docs/en/aix/7.1?topic=authentication-unix"/>
 /// </summary>
 /// <remarks> <para>
@@ -15,7 +15,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// <summary>
     /// Constructs a new <see cref="OncRpcClientAuthUnix"/> authentication protocol handling object
     /// capable of handling <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> and
-    /// <see cref="OncRpcAuthType.OncRpcAuthShortHandUnix"/>.
+    /// <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>.
     /// </summary>
     /// <remarks>
     /// Please note that the credential information is typically only unique within a particular
@@ -38,7 +38,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// <summary>
     /// Constructs a new <see cref="OncRpcClientAuthUnix"/> authentication protocol handling object
     /// capable of handling <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/>
-    /// and <see cref="OncRpcAuthType.OncRpcAuthShortHandUnix"/>.
+    /// and <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>.
     /// </summary>
     /// <remarks>
     /// Please note that the credential information is typically only
@@ -58,17 +58,17 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// </summary>
     /// <remarks>
     /// The <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> authentication method only uses the credential
-    /// but no verifier. If the ONC/RPC server sent a <see cref="OncRpcAuthType.OncRpcAuthShortHandUnix"/>
+    /// but no verifier. If the ONC/RPC server sent a <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>
     /// "shorthand" credential together with the previous reply message, it
     /// is used instead of the original credential.
     /// </remarks>
     /// <exception cref="OncRpcAuthenticationException">    Thrown when an ONC/RPC Authentication
     ///                                                     error condition occurs. </exception>
-    /// <param name="xdr">  XDR stream where to encode the credential and the verifier to. </param>
+    /// <param name="encoder">  XDR stream where to encode the credential and the verifier to. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    internal override void EncodeCredentialAndVerfier( XdrEncodingStreamBase xdr )
+    internal override void EncodeCredentialAndVerfier( XdrEncodingStreamBase encoder )
     {
         if ( this.shorthandCred == null )
         {
@@ -79,33 +79,33 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
 
             if ( this.gids.Length > OncRpcAuthConstants.OncRpcMaxAllowedGroups || this.machinename.Length > OncRpcAuthConstants.OncRpcMaxMachineNameLength )
                 throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
-            xdr.EncodeInt( OncRpcAuthType.OncRpcAuthTypeUnix );
+            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeUnix );
 
             // length = length of timestamp + length of machine name + length of user id + length of group id + length of vector of group ids
 
             int len = 4 + (this.machinename.Length + 7 & ~3) + 4 + 4 + this.gids.Length * 4 + 4;
             if ( len > OncRpcAuthConstants.OncRpcMaxAuthBytes )
                 throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
-            xdr.EncodeInt( len );
-            xdr.EncodeInt( this.Timestamp );
-            xdr.EncodeString( this.machinename );
-            xdr.EncodeInt( this.uid );
-            xdr.EncodeInt( this.gid );
-            xdr.EncodeIntVector( this.gids );
+            encoder.EncodeInt( len );
+            encoder.EncodeInt( this.Timestamp );
+            encoder.EncodeString( this.machinename );
+            encoder.EncodeInt( this.uid );
+            encoder.EncodeInt( this.gid );
+            encoder.EncodeIntVector( this.gids );
         }
         else
         {
 
             // Use shorthand credential instead of original credential.
 
-            xdr.EncodeInt( OncRpcAuthType.OncRpcAuthShortHandUnix );
-            xdr.EncodeDynamicOpaque( this.shorthandCred );
+            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeShortHandUnix );
+            encoder.EncodeDynamicOpaque( this.shorthandCred );
         }
 
         // We also need to encode the verifier, which is always of type 'none'.
 
-        xdr.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
-        xdr.EncodeInt( 0 );
+        encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+        encoder.EncodeInt( 0 );
     }
 
     /// <summary>
@@ -113,14 +113,14 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// reply message.
     /// </summary>
     /// <exception cref="OncRpcAuthenticationException">    if the received verifier is not kosher. </exception>
-    /// <param name="xdr">  XDR stream from which to receive the verifier sent together with an
-    ///                     ONC/RPC reply message. </param>
+    /// <param name="decoder">  XDR stream from which to receive the verifier sent together with an
+    ///                         ONC/RPC reply message. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    internal override void DecodeVerfier( XdrDecodingStreamBase xdr )
+    internal override void DecodeVerfier( XdrDecodingStreamBase decoder )
     {
-        switch ( xdr.DecodeInt() )
+        switch ( decoder.DecodeInt() )
         {
             case OncRpcAuthType.OncRpcAuthTypeNone:
                 {
@@ -134,19 +134,19 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
                     // Anything different from this is not kosher and an authentication
                     // exception will be thrown.
 
-                    if ( xdr.DecodeInt() != 0 )
+                    if ( decoder.DecodeInt() != 0 )
                         throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
                     break;
                 }
 
-            case OncRpcAuthType.OncRpcAuthShortHandUnix:
+            case OncRpcAuthType.OncRpcAuthTypeShortHandUnix:
                 {
 
                     // Fetch the credential from the XDR stream and make sure that
                     // it does conform to the length restriction as set forth in
                     // the ONC/RPC protocol.
 
-                    this.shorthandCred = xdr.DecodeDynamicOpaque();
+                    this.shorthandCred = decoder.DecodeDynamicOpaque();
                     if ( this.shorthandCred.Length > OncRpcAuthConstants.OncRpcMaxAuthBytes )
                         throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
                     break;
@@ -265,7 +265,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     private int[] gids;
 
     /// <summary>
-    /// Holds the "shorthand" credentials of type <see cref="OncRpcAuthType.OncRpcAuthShortHandUnix"/>
+    /// Holds the "shorthand" credentials of type <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>
     /// optionally returned by an ONC/RPC server to be used on subsequent
     /// ONC/RPC calls.
     /// </summary>

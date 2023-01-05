@@ -38,10 +38,10 @@ public class LinkedListCodec : IXdrCodec
 
     /// <summary>   Constructor. </summary>
     /// <remarks>   2022-12-22. </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public LinkedListCodec( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public LinkedListCodec( XdrDecodingStreamBase decoder )
     {
-        this.Decode( xdr );
+        this.Decode( decoder );
     }
 
     /// <summary>
@@ -50,15 +50,15 @@ public class LinkedListCodec : IXdrCodec
     /// <remarks>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
-    public virtual void Encode( XdrEncodingStreamBase xdr )
+    /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
+    public virtual void Encode( XdrEncodingStreamBase encoder )
     {
         LinkedListCodec current = this;
         do
         {
-            xdr.EncodeInt( current.Foo );
+            encoder.EncodeInt( current.Foo );
             current = current.Next;
-            xdr.EcodeBoolean( current != null );
+            encoder.EcodeBoolean( current != null );
         } while ( current != null );
     }
 
@@ -68,15 +68,15 @@ public class LinkedListCodec : IXdrCodec
     /// <remarks>
     /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public virtual void Decode( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public virtual void Decode( XdrDecodingStreamBase decoder )
     {
         LinkedListCodec current = this;
         LinkedListCodec nextItem;
         do
         {
-            current.Foo = xdr.DecodeInt();
-            nextItem = xdr.DecodeBoolean() ? new LinkedListCodec() : null;
+            current.Foo = decoder.DecodeInt();
+            nextItem = decoder.DecodeBoolean() ? new LinkedListCodec() : null;
             current.Next = nextItem;
             current = nextItem;
         } while ( current != null );

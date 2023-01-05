@@ -31,14 +31,14 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
     /// <summary>
     /// Encodes -- that is: serializes -- the result of a <see cref="OncRpcPortmapServices.OncRpcPortmapListServersInfo"/> operating into a XDR stream.
     /// </summary>
-    /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
+    /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public virtual void Encode( XdrEncodingStreamBase xdr )
+    public virtual void Encode( XdrEncodingStreamBase encoder )
     {
         if ( this.ServerIdentifiers == null )
-            xdr.EcodeBoolean( false );
+            encoder.EcodeBoolean( false );
         else
         {
 
@@ -50,12 +50,12 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
             int index = 0;
             while ( count > 0 )
             {
-                xdr.EcodeBoolean( true );
-                this.ServerIdentifiers[index].Encode( xdr );
+                encoder.EcodeBoolean( true );
+                this.ServerIdentifiers[index].Encode( encoder );
                 index++;
                 count--;
             }
-            xdr.EcodeBoolean( false );
+            encoder.EcodeBoolean( false );
         }
     }
 
@@ -64,11 +64,11 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
     /// <see cref="OncRpcPortmapServices.OncRpcPortmapListServersInfo"/> remote procedure call from a
     /// XDR stream.
     /// </summary>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public virtual void Decode( XdrDecodingStreamBase xdr )
+    public virtual void Decode( XdrDecodingStreamBase decoder )
     {
 
         this.ServerIdentifiers.Clear();
@@ -77,7 +77,7 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
         // preceded by a boolean value indicating whether there is still an
         // object in the pipe.
 
-        while ( xdr.DecodeBoolean() )
-            this.ServerIdentifiers.Add( new OncRpcServerIdentifierCodec( xdr ) );
+        while ( decoder.DecodeBoolean() )
+            this.ServerIdentifiers.Add( new OncRpcServerIdentifierCodec( decoder ) );
     }
 }

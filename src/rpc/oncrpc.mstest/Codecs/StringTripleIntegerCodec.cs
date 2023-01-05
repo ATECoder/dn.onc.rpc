@@ -25,13 +25,13 @@ internal class StringTripleIntegerCodec : IXdrCodec
     /// <remarks>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
-    public void Encode( XdrEncodingStreamBase xdr )
+    /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
+    public void Encode( XdrEncodingStreamBase encoder )
     {
-        xdr.EncodeString( this.A );
-        xdr.EncodeInt( this.B );
-        xdr.EncodeInt( this.C );
-        xdr.EncodeInt( this.D );
+        encoder.EncodeString( this.A );
+        encoder.EncodeInt( this.B );
+        encoder.EncodeInt( this.C );
+        encoder.EncodeInt( this.D );
     }
     /// <summary>
     /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
@@ -39,12 +39,12 @@ internal class StringTripleIntegerCodec : IXdrCodec
     /// <remarks>
     /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public void Decode( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public void Decode( XdrDecodingStreamBase decoder )
     {
-        this.A = xdr.DecodeString();
-        this.B = xdr.DecodeInt();
-        this.C = xdr.DecodeInt();
-        this.D = xdr.DecodeInt();
+        this.A = decoder.DecodeString();
+        this.B = decoder.DecodeInt();
+        this.C = decoder.DecodeInt();
+        this.D = decoder.DecodeInt();
     }
 };

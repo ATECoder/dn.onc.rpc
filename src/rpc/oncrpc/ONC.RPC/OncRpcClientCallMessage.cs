@@ -26,31 +26,31 @@ public class OncRpcClientCallMessage : OncRpcCallMessageBase
     /// Encodes -- that is: serializes -- a ONC/RPC message header object into a XDR stream according
     /// to RFC 1831.
     /// </summary>
-    /// <param name="xdr">  An encoding XDR stream where to put the mess in. </param>
+    /// <param name="encoder">  An encoding XDR stream where to put the mess in. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public virtual void Encode( XdrEncodingStreamBase xdr )
+    public virtual void Encode( XdrEncodingStreamBase encoder )
     {
-        xdr.EncodeInt( this.MessageId );
-        xdr.EncodeInt( this.MessageType );
-        xdr.EncodeInt( this.ProtocolVersion );
-        xdr.EncodeInt( this.Program );
-        xdr.EncodeInt( this.Version );
-        xdr.EncodeInt( this.Procedure );
+        encoder.EncodeInt( this.MessageId );
+        encoder.EncodeInt( this.MessageType );
+        encoder.EncodeInt( this.ProtocolVersion );
+        encoder.EncodeInt( this.Program );
+        encoder.EncodeInt( this.Version );
+        encoder.EncodeInt( this.Procedure );
 
         // Now encode the authentication data. If we have an authentication
         // protocol handling object at hand, then we let do the dirty work
         // for us. Otherwise, we fall back to 'none' handling.
 
         if ( this.Auth != null )
-            this.Auth.EncodeCredentialAndVerfier( xdr );
+            this.Auth.EncodeCredentialAndVerfier( encoder );
         else
         {
-            xdr.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
-            xdr.EncodeInt( 0 );
-            xdr.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
-            xdr.EncodeInt( 0 );
+            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+            encoder.EncodeInt( 0 );
+            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+            encoder.EncodeInt( 0 );
         }
     }
 

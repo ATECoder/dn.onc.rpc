@@ -31,10 +31,10 @@ namespace cc.isr.ONC.RPC.MSTest.Codecs
 
         /// <summary>   Constructor. </summary>
         /// <remarks>   2022-12-22. </remarks>
-        /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-        public UnionCodec( XdrDecodingStreamBase xdr )
+        /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+        public UnionCodec( XdrDecodingStreamBase decoder )
         {
-            this.Decode( xdr );
+            this.Decode( decoder );
         }
 
         /// <summary>   The Okay. </summary>
@@ -49,19 +49,19 @@ namespace cc.isr.ONC.RPC.MSTest.Codecs
         /// <remarks>
         /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
         /// </remarks>
-        /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
-        public virtual void Encode( XdrEncodingStreamBase xdr )
+        /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
+        public virtual void Encode( XdrEncodingStreamBase encoder )
         {
-            xdr.EcodeBoolean( this.Okay );
+            encoder.EcodeBoolean( this.Okay );
             if ( this.Okay == true )
             {
                 if ( this.List != null )
                 {
-                    xdr.EcodeBoolean( true );
-                    this.List.Encode( xdr );
+                    encoder.EcodeBoolean( true );
+                    this.List.Encode( encoder );
                 }
                 else
-                    xdr.EcodeBoolean( false );
+                    encoder.EcodeBoolean( false );
 ;
             }
         }
@@ -72,12 +72,12 @@ namespace cc.isr.ONC.RPC.MSTest.Codecs
         /// <remarks>
         /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
         /// </remarks>
-        /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-        public virtual void Decode( XdrDecodingStreamBase xdr )
+        /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+        public virtual void Decode( XdrDecodingStreamBase decoder )
         {
-            this.Okay = xdr.DecodeBoolean();
+            this.Okay = decoder.DecodeBoolean();
             if ( this.Okay == true )
-                this.List = xdr.DecodeBoolean() ? new LinkedListCodec( xdr ) : null;
+                this.List = decoder.DecodeBoolean() ? new LinkedListCodec( decoder ) : null;
         }
 
     }

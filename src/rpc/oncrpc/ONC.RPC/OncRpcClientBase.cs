@@ -97,12 +97,12 @@ namespace cc.isr.ONC.RPC;
 /// class StringCodec : XdrCodec 
 /// {
 ///   public String question;
-///   public void Encode(XdrEncodingStream xdr)
-///   xdr.EncodeString(question);
+///   public void Encode(XdrEncodingStream encoder)
+///   encoder.EncodeString(question);
 /// }
-/// public void Decode(XdrDecodingStream xdr)
+/// public void Decode(XdrDecodingStream decoder)
 /// {
-///   question = xdr.DecodeString();
+///   question = decoder.DecodeString();
 /// }
 /// </code> <para>
 /// The <c>StringCodec</c> class implements <see cref="IXdrCodec"/>, so instances
@@ -118,11 +118,11 @@ namespace cc.isr.ONC.RPC;
 /// class AnswerCodec : XdrCodec
 /// {
 ///   public int DefinitiveAnswer { get; set; }
-///   public void Encode(XdrEncodingStream xdr) {
-///     xdr.EncodeInt(this.DefinitiveAnswer);
+///   public void Encode(XdrEncodingStream encoder) {
+///     encoder.EncodeInt(this.DefinitiveAnswer);
 ///   }
-///   public void Decode(XdrDecodingStream xdr) {
-///     this.DefinitiveAnswer = xdr.DecodeInt();
+///   public void Decode(XdrDecodingStream decoder) {
+///     this.DefinitiveAnswer = decoder.DecodeInt();
 ///   }
 /// }
 /// </code> <para>
@@ -156,7 +156,7 @@ namespace cc.isr.ONC.RPC;
 /// client.setAuth(auth);
 /// </code> <para>
 /// The <see cref="OncRpcClientAuthUnix"/> <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/>
-/// will handle shorthand credentials (of type <see cref="OncRpcAuthType.OncRpcAuthShortHandUnix"/>) transparently. If you do
+/// will handle shorthand credentials (of type <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>) transparently. If you do
 /// not set any authentication object after creating an ONC/RPC client object, <see cref="OncRpcAuthType.OncRpcAuthTypeNone"/>
 /// is used automatically. </para> <para>
 /// TCP-based ONC/RPC clients also support call batching (exception handling

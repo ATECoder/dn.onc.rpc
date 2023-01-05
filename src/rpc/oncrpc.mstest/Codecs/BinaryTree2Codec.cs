@@ -17,10 +17,10 @@ public class BinaryTree2Codec : IXdrCodec
 
     /// <summary>   Constructor. </summary>
     /// <remarks>   2022-12-22. </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public BinaryTree2Codec( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public BinaryTree2Codec( XdrDecodingStreamBase decoder )
     {
-        this.Decode( xdr );
+        this.Decode( decoder );
     }
 
     /// <summary>   Gets or sets the key. </summary>
@@ -45,24 +45,24 @@ public class BinaryTree2Codec : IXdrCodec
     /// <remarks>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
-    public virtual void Encode( XdrEncodingStreamBase xdr )
+    /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
+    public virtual void Encode( XdrEncodingStreamBase encoder )
     {
         BinaryTree2Codec currentBinaryTree = this;
         do
         {
-            xdr.EncodeString( currentBinaryTree.Key );
-            xdr.EncodeString( currentBinaryTree.Value );
+            encoder.EncodeString( currentBinaryTree.Key );
+            encoder.EncodeString( currentBinaryTree.Value );
             if ( currentBinaryTree.Left != null )
             {
-                xdr.EcodeBoolean( true );
-                currentBinaryTree.Left.Encode( xdr );
+                encoder.EcodeBoolean( true );
+                currentBinaryTree.Left.Encode( encoder );
             }
             else
-                xdr.EcodeBoolean( false );
+                encoder.EcodeBoolean( false );
 ;
             currentBinaryTree = currentBinaryTree.Right;
-            xdr.EcodeBoolean( currentBinaryTree != null );
+            encoder.EcodeBoolean( currentBinaryTree != null );
         } while ( currentBinaryTree != null );
     }
 
@@ -72,17 +72,17 @@ public class BinaryTree2Codec : IXdrCodec
     /// <remarks>
     /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public virtual void Decode( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public virtual void Decode( XdrDecodingStreamBase decoder )
     {
         BinaryTree2Codec currentBinaryTree = this;
         BinaryTree2Codec nextBinaryTree;
         do
         {
-            currentBinaryTree.Key = xdr.DecodeString();
-            currentBinaryTree.Value = xdr.DecodeString();
-            currentBinaryTree.Left = xdr.DecodeBoolean() ? new BinaryTree2Codec( xdr ) : null;
-            nextBinaryTree = xdr.DecodeBoolean() ? new BinaryTree2Codec() : null;
+            currentBinaryTree.Key = decoder.DecodeString();
+            currentBinaryTree.Value = decoder.DecodeString();
+            currentBinaryTree.Left = decoder.DecodeBoolean() ? new BinaryTree2Codec( decoder ) : null;
+            nextBinaryTree = decoder.DecodeBoolean() ? new BinaryTree2Codec() : null;
             currentBinaryTree.Right = nextBinaryTree;
             currentBinaryTree = nextBinaryTree;
         } while ( currentBinaryTree != null );

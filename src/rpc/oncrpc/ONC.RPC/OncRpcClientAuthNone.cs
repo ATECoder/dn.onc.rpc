@@ -13,23 +13,23 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
     /// Encodes ONC/RPC authentication information in form of a credential and a verifier when
     /// sending an ONC/RPC call message.
     /// </summary>
-    /// <param name="xdr">  XDR stream where to encode the credential and the verifier to. </param>
+    /// <param name="encoder">  XDR stream where to encode the credential and the verifier to. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    internal override void EncodeCredentialAndVerfier( XdrEncodingStreamBase xdr )
+    internal override void EncodeCredentialAndVerfier( XdrEncodingStreamBase encoder )
     {
         // The credential only consists of the indication of no authentication (none) with
         // no opaque authentication data following.
-        xdr.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
-        xdr.EncodeInt( 0 );
+        encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+        encoder.EncodeInt( 0 );
 
         // But we also need to encode the verifier. This is always of type
         // none too. For some obscure historical reasons, we have to
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
-        xdr.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
-        xdr.EncodeInt( 0 );
+        encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+        encoder.EncodeInt( 0 );
     }
 
     /// <summary>
@@ -37,17 +37,17 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
     /// reply message.
     /// </summary>
     /// <exception cref="OncRpcAuthenticationException">    if the received verifier is not kosher. </exception>
-    /// <param name="xdr">  XDR stream from which to receive the verifier sent together with an
-    ///                     ONC/RPC reply message. </param>
+    /// <param name="decoder">  XDR stream from which to receive the verifier sent together with an
+    ///                         ONC/RPC reply message. </param>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    internal override void DecodeVerfier( XdrDecodingStreamBase xdr )
+    internal override void DecodeVerfier( XdrDecodingStreamBase decoder )
     {
         // Make sure that we received a 'none' verifier and that it
         // does not contain any opaque data. Anything different from this
         // is not kosher and an authentication exception will be thrown.
-        if ( xdr.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || xdr.DecodeInt() != 0 )
+        if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
             throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
     }
 

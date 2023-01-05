@@ -116,23 +116,23 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
     /// <summary>
     /// Decodes -- that is: deserializes -- a ONC/RPC message header object from a XDR stream.
     /// </summary>
-    /// <param name="xdr">  The XDR decoding stream. </param>
+    /// <param name="decoder">  The XDR decoding stream. </param>
     ///
     /// <exception cref="OncRpcException">                  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="OncRpcAuthenticationException">    Thrown when an ONC/RPC Authentication
     ///                                                     error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">            Thrown when an I/O error condition occurs. </exception>
-    public virtual void Decode( XdrDecodingStreamBase xdr )
+    public virtual void Decode( XdrDecodingStreamBase decoder )
     {
-        this.MessageId = xdr.DecodeInt();
+        this.MessageId = decoder.DecodeInt();
 
         // Make sure that we are really decoding an ONC/RPC message call
         // header. Otherwise, throw the appropriate OncRpcException exception.
 
-        this.MessageType = xdr.DecodeInt();
+        this.MessageType = decoder.DecodeInt();
         if ( this.MessageType != OncRpcMessageType.OncRpcReplyMessageType )
             throw new OncRpcException( OncRpcException.OncRpcWrongMessageType );
-        this.ReplyStatus = xdr.DecodeInt();
+        this.ReplyStatus = decoder.DecodeInt();
         switch ( this.ReplyStatus )
         {
             case OncRpcReplyStatus.OncRpcMessageAccepted:
@@ -144,7 +144,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                     // handling of only the 'none' authentication.
 
                     if ( this.Auth != null )
-                        this.Auth.DecodeVerfier( xdr );
+                        this.Auth.DecodeVerfier( decoder );
                     else
                     {
 
@@ -153,9 +153,9 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                         // will throw an exception. Also we check that no-one is
                         // actually sending opaque information within 'none'.
 
-                        if ( xdr.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone )
+                        if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone )
                             throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
-                        if ( xdr.DecodeInt() != 0 )
+                        if ( decoder.DecodeInt() != 0 )
                             throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
                     }
 
@@ -164,13 +164,13 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                     // call we will receive an indication about the range of
                     // versions a particular program (server) supports.
 
-                    this.AcceptStatus = xdr.DecodeInt();
+                    this.AcceptStatus = decoder.DecodeInt();
                     switch ( this.AcceptStatus )
                     {
                         case OncRpcAcceptStatus.OncRpcProgramVersionMismatch:
                             {
-                                this.LowVersion = xdr.DecodeInt();
-                                this.HighVersion = xdr.DecodeInt();
+                                this.LowVersion = decoder.DecodeInt();
+                                this.HighVersion = decoder.DecodeInt();
                                 break;
                             }
 
@@ -191,19 +191,19 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
 
                     // Encode the information returned for denied message calls.
 
-                    this.RejectStatus = xdr.DecodeInt();
+                    this.RejectStatus = decoder.DecodeInt();
                     switch ( this.RejectStatus )
                     {
                         case OncRpcRejectStatus.OncRpcWrongProtocolVersion:
                             {
-                                this.LowVersion = xdr.DecodeInt();
-                                this.HighVersion = xdr.DecodeInt();
+                                this.LowVersion = decoder.DecodeInt();
+                                this.HighVersion = decoder.DecodeInt();
                                 break;
                             }
 
                         case OncRpcRejectStatus.OncRpcAuthError:
                             {
-                                this.AuthStatus = xdr.DecodeInt();
+                                this.AuthStatus = decoder.DecodeInt();
                                 break;
                             }
 

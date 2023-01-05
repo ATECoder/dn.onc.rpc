@@ -83,10 +83,10 @@ public class SomeResultCodec : IXdrCodec
 
     /// <summary>   Constructor. </summary>
     /// <remarks>   2022-12-22. </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public SomeResultCodec( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public SomeResultCodec( XdrDecodingStreamBase decoder )
     {
-        this.Decode( xdr );
+        this.Decode( decoder );
     }
 
     /// <summary>
@@ -95,12 +95,12 @@ public class SomeResultCodec : IXdrCodec
     /// <remarks>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream to which information is sent for encoding. </param>
-    public virtual void Encode( XdrEncodingStreamBase xdr )
+    /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
+    public virtual void Encode( XdrEncodingStreamBase encoder )
     {
-        xdr.EncodeInt( this._error );
-        xdr.EncodeString( this._typeDesc );
-        xdr.EncodeDynamicOpaque( this._data );
+        encoder.EncodeInt( this._error );
+        encoder.EncodeString( this._typeDesc );
+        encoder.EncodeDynamicOpaque( this._data );
     }
 
     /// <summary>
@@ -109,12 +109,12 @@ public class SomeResultCodec : IXdrCodec
     /// <remarks>
     /// Decodes -- that is: deserializes -- an object from a XDR stream in compliance to RFC 1832.
     /// </remarks>
-    /// <param name="xdr">  XDR stream from which decoded information is retrieved. </param>
-    public virtual void Decode( XdrDecodingStreamBase xdr )
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public virtual void Decode( XdrDecodingStreamBase decoder )
     {
-        this._error = xdr.DecodeInt();
-        this._typeDesc = xdr.DecodeString();
-        this._data = xdr.DecodeDynamicOpaque();
+        this._error = decoder.DecodeInt();
+        this._typeDesc = decoder.DecodeString();
+        this._data = decoder.DecodeDynamicOpaque();
     }
 
 }
