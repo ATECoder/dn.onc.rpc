@@ -133,6 +133,8 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
             // been closed before we could set the socket instance member to
             // null. Many thanks to Michael Smith for tracking down this one.
 
+            // TODO: uncomment this and test:
+            // this._socket.Shutdown( SocketShutdown.Both );
             Socket deadSocket = this._socket;
             this._socket = null;
             try
@@ -141,9 +143,12 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
             }
             catch ( Exception ex )
             {
-                Console.Out.WriteLine( $"Failed closing: \n{ex} " );
+                Console.WriteLine( $"Failed closing: \n{ex} " );
             }
         }
+
+        // close the base class codecs (should be none)
+        base.Close();
 
         // Now close all per-connection transports currently open...
 
@@ -167,13 +172,6 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     /// <summary>Collection containing currently open transports.</summary>
     private readonly TransportList _openTransports;
 
-    /// <summary>
-    /// Encoding to use when deserializing strings or <see langword="null"/> if
-    /// the system's default encoding should be used.
-    /// </summary>
-    private string _characterEncoding = null;
-
-
     #endregion
 
     #region " Configuration Methods "
@@ -189,29 +187,10 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     /// <value> The transmission timeout in milliseconds. </value>
     public int TransmissionTimeout { get; set; } = OncRpcServerTransportBase.DefaultTransmissionTimeout;
 
-    /// <summary>   Set the character encoding for serializing strings. </summary>
-    /// <param name="characterEncoding">    the encoding to use for serializing strings. If
-    ///                                     <see langword="null"/>, the system's default encoding is to be used. </param>
-    public override void SetCharacterEncoding( string characterEncoding )
-    {
-        this._characterEncoding = characterEncoding;
-    }
-
-    /// <summary>   Get the character encoding for serializing strings. </summary>
-    /// <returns>
-    /// the encoding currently used for serializing strings. If <see langword="null"/>, then the
-    /// system's default encoding is used.
-    /// </returns>
-    public override string GetCharacterEncoding()
-    {
-        return this._characterEncoding;
-    }
-
     #endregion
 
 
     #region " Operation Methods "
-
 
     /// <summary>
     /// Removes a TCP/IP server transport from the list of currently open transports.
@@ -265,30 +244,12 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     /// <summary>   Do not call. </summary>
     /// <exception cref="Exception">    because this method must not be called for a listening server
     ///                                 transport. </exception>
-    /// <returns>   Reference to decoding XDR stream. </returns>
-    internal override XdrDecodingStreamBase GetXdrDecodingStream()
-    {
-        throw new Exception( $"{nameof( OncRpcTcpServerTransport.GetXdrDecodingStream )} is abstract and cannot be called." );
-    }
-
-    /// <summary>   Do not call. </summary>
-    /// <exception cref="Exception">    because this method must not be called for a listening server
-    ///                                 transport. </exception>
     ///
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     internal override void EndDecoding()
     {
         throw new Exception( $"{nameof( OncRpcTcpServerTransport.EndDecoding )} is abstract and cannot be called." );
-    }
-
-    /// <summary>   Do not call. </summary>
-    /// <exception cref="Exception">    because this method must not be called for a listening server
-    ///                                 transport. </exception>
-    /// <returns>   Reference to encoding XDR stream. </returns>
-    internal override XdrEncodingStreamBase GetXdrEncodingStream()
-    {
-        throw new Exception( $"{nameof( OncRpcTcpServerTransport.GetXdrEncodingStream )} is abstract and cannot be called." );
     }
 
     /// <summary>   Do not call. </summary>

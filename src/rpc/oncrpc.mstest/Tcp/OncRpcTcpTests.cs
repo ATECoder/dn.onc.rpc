@@ -39,7 +39,7 @@ public class OncRpcTcpTests
         }
         catch ( Exception ex )
         {
-            Console.Out.WriteLine( $"Failed initializing fixture: \n{ex} " );
+            Console.WriteLine( $"Failed initializing fixture: \n{ex} " );
             CleanupFixture();
         }
     }
@@ -298,7 +298,7 @@ public class OncRpcTcpTests
             System.Console.Out.Write( $"checking echo of {message}: " );
             string echoed = client.CallRemoteProcedureEcho( message );
             Assert.AreEqual( message, echoed, $"answer '{echoed}' does not match '{message}' call" );
-            System.Console.Out.WriteLine( $"Okay: echoed {echoed}" );
+            System.Console.WriteLine( $"Okay: echoed {echoed}" );
         }
     }
 

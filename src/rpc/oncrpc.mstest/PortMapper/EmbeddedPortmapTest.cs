@@ -62,17 +62,17 @@ public class EmbeddedPortmapTest
         Console.Out.Write( "Deregistering non-existing program: " );
         bool actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsFalse( actual );
-        Console.Out.WriteLine( "Passed." );
+        Console.WriteLine( "Passed." );
 
         Console.Out.Write( "Registering dummy program: " );
         actual = pmap.SetPort( dummyProgram, dummyVersion, OncRpcProtocols.OncRpcTcp, dummyPort );
         Assert.IsTrue( actual );
-        Console.Out.WriteLine( "Passed." );
+        Console.WriteLine( "Passed." );
 
         Console.Out.Write( "Deregistering dummy program: " );
         actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsTrue( actual );
-        Console.Out.WriteLine( "Passed." );
+        Console.WriteLine( "Passed." );
 
         // let the service stop.
         int timeout = 1000;

@@ -420,9 +420,9 @@ public class OncRpcUdpClient : OncRpcClientBase
                             // as we might need to resend the (lost) RPC request
                             // datagram.
 
-                            //Console.Out.WriteLine("This is supposed to be ignored");
-                            //Console.Out.WriteLine(e.Message);
-                            //Console.Out.WriteLine(e.StackTrace);
+                            //Console.WriteLine("This is supposed to be ignored");
+                            //Console.WriteLine(e.Message);
+                            //Console.WriteLine(e.StackTrace);
                             break;
                         }
                         catch ( IOException e )

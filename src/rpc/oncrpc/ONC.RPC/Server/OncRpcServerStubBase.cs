@@ -103,7 +103,7 @@ public abstract class OncRpcServerStubBase
         }
         finally
         {
-            this.Close( this._transports );
+            this.Close();
         }
     }
 
@@ -158,8 +158,7 @@ public abstract class OncRpcServerStubBase
     /// </summary>
     /// <remarks>
     /// Note that each transport has its own thread, so processing will not stop before the
-    /// transports have been closed by calling the 
-    /// <see cref="cc.isr.ONC.RPC.Server.OncRpcServerStubBase.Close(OncRpcServerTransportBase[])"/> method of the server.
+    /// transports have been closed by calling the <see cref="Close()"/> method of the server.
     /// </remarks>
     public virtual void StopRpcProcessing()
     {
@@ -178,24 +177,11 @@ public abstract class OncRpcServerStubBase
     ///                                     to remove a non-existing entry from the portmapper. </exception>
     public virtual void Unregister( OncRpcServerTransportBase[] transports )
     {
-        int size = transports.Length;
-        for ( int idx = 0; idx < size; ++idx )
-            transports[idx].Unregister();
+        foreach ( var transport in this._transports )
+            transport.Unregister();
     }
 
     /// <summary>   Close all transports listed in a set of server transports. </summary>
-    /// <remarks>
-    /// Only by calling this method processing of remote procedure calls by individual transports can
-    /// be stopped. This is because every server transport is handled by its own thread.
-    /// </remarks>
-    /// <param name="transports">   Array of server transport objects to close. </param>
-    private void Close( OncRpcServerTransportBase[] transports )
-    {
-        int size = transports.Length;
-        for ( int idx = 0; idx < size; ++idx )
-            transports[idx].Close();
-    }
-
     /// <summary>   Close all transports listed in a set of server transports. </summary>
     /// <remarks>
     /// Only by calling this method processing of remote procedure calls by individual transports can
@@ -205,12 +191,12 @@ public abstract class OncRpcServerStubBase
     {
         try
         {
-            this.Close( this._transports );
+            foreach ( var transport in this._transports )
+                transport.Close();
         }
         catch ( Exception ex )
         {
-            Console.WriteLine( "Failed closing transports: " );
-            Console.Out.WriteLine( ex.ToString() );
+            Console.WriteLine( $"Failed closing transports: \n{ex}" );
         }
     }
 
@@ -227,9 +213,8 @@ public abstract class OncRpcServerStubBase
     public virtual void SetCharacterEncoding( string characterEncoding )
     {
         this._characterEncoding = characterEncoding;
-        int size = this._transports.Length;
-        for ( int idx = 0; idx < size; ++idx )
-            this._transports[idx].SetCharacterEncoding( characterEncoding );
+        foreach ( var transport in this._transports )
+            transport.CharacterEncoding = characterEncoding;
     }
 
     /// <summary>   Get the character encoding for deserializing strings. </summary>

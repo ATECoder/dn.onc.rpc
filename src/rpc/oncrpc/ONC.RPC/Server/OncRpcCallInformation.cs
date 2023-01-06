@@ -99,7 +99,7 @@ public class OncRpcCallInformation
     /// <returns>   Reference to decoding XDR stream. </returns>
     public virtual XdrDecodingStreamBase GetXdrDecodingStream()
     {
-        return this.Transport.GetXdrDecodingStream();
+        return this.Transport.Decoder;
     }
 
     /// <summary>   Finishes call parameter deserialization. </summary>
@@ -164,7 +164,7 @@ public class OncRpcCallInformation
     /// <returns>   Reference to encoding XDR stream. </returns>
     public virtual XdrEncodingStreamBase GetXdrEncodingStream()
     {
-        return this.Transport.GetXdrEncodingStream();
+        return this.Transport.Encoder;
     }
 
     /// <summary>   Finishes encoding the reply to this ONC/RPC call. </summary>

@@ -107,8 +107,8 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
         // Create the necessary encoding and decoding streams, so we can
         // communicate at all.
 
-        this._encoder = new XdrUdpEncodingStream( this._socket, bufferSize );
-        this._decoder = new XdrUdpDecodingStream( this._socket, bufferSize );
+        this.Encoder = new XdrUdpEncodingStream( this._socket, bufferSize );
+        this.Decoder = new XdrUdpDecodingStream( this._socket, bufferSize );
     }
 
     /// <summary>   Close the server transport and free any resources associated with it. </summary>
@@ -139,37 +139,16 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
             Socket deadSocket = this._socket;
             this._socket = null;
             deadSocket.Close();
-        }
-        if ( this._encoder != null )
-        {
-            XdrEncodingStreamBase deadXdrStream = this._encoder;
-            this._encoder = null;
             try
             {
-                deadXdrStream.Close();
+                deadSocket.Close();
             }
-            catch ( IOException )
+            catch ( Exception ex )
             {
-            }
-            catch ( OncRpcException )
-            {
+                Console.WriteLine( $"Failed closing: \n{ex} " );
             }
         }
-        if ( this._decoder != null )
-        {
-            XdrDecodingStreamBase deadXdrStream = this._decoder;
-            this._decoder = null;
-            try
-            {
-                deadXdrStream.Close();
-            }
-            catch ( IOException )
-            {
-            }
-            catch ( OncRpcException )
-            {
-            }
-        }
+        base.Close();
     }
 
     /// <summary>   UDP socket used for datagram-based communication with ONC/RPC clients. </summary>
@@ -179,42 +158,6 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     ///  Thread which manages listening on the socket
     /// </summary>
     private Thread _listener;
-
-    /// <summary>
-    /// XDR encoding stream used for sending replies via UDP/IP back to an ONC/RPC client.
-    /// </summary>
-    private XdrUdpEncodingStream _encoder;
-
-    /// <summary>
-    /// XDR decoding stream used when receiving requests via UDP/IP from ONC/RPC clients.
-    /// </summary>
-    private XdrUdpDecodingStream _decoder;
-
-    #endregion
-
-    #region " CONFIGURATION "
-
-    /// <summary>
-    /// Set the character encoding for serializing strings. Phew. Done with the error reply. So
-    /// let's wait for new incoming ONC/RPC calls...
-    /// </summary>
-    /// <param name="characterEncoding">    the encoding to use for serializing strings. If 
-    ///                                     <see langword="null"/>, the system's default encoding is to be used. </param>
-    public override void SetCharacterEncoding( string characterEncoding )
-    {
-        this._encoder.CharacterEncoding = characterEncoding;
-        this._decoder.CharacterEncoding = characterEncoding;
-    }
-
-    /// <summary>   Get the character encoding for serializing strings. </summary>
-    /// <returns>
-    /// the encoding currently used for serializing strings. If <see langword="null"/>, then the
-    /// system's default encoding is used.
-    /// </returns>
-    public override string GetCharacterEncoding()
-    {
-        return this._encoder.CharacterEncoding;
-    }
 
     #endregion
 
@@ -268,29 +211,17 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     ///                                     failures over the network, etc. </exception>
     internal override void RetrieveCall( IXdrCodec call )
     {
-        call.Decode( this._decoder );
+        call.Decode( this.Decoder );
         if ( this._pendingDecoding )
         {
             this._pendingDecoding = false;
-            this._decoder.EndDecoding();
+            this.Decoder.EndDecoding();
         }
-    }
-
-    /// <summary>
-    /// Returns XDR stream which can be used for deserializing the parameters of this ONC/RPC call.
-    /// </summary>
-    /// <remarks>
-    /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
-    /// </remarks>
-    /// <returns>   Reference to decoding XDR stream. </returns>
-    internal override XdrDecodingStreamBase GetXdrDecodingStream()
-    {
-        return this._decoder;
     }
 
     /// <summary>   Finishes call parameter deserialization. </summary>
     /// <remarks>
-    /// Afterwards the XDR stream returned by <see cref="GetXdrDecodingStream()"/>
+    /// Afterwards the XDR stream returned by <see cref="Decoder"/>
     /// must not be used any more. This method belongs to the lower-level access pattern when
     /// handling ONC/RPC calls.
     /// </remarks>
@@ -304,20 +235,8 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
         if ( this._pendingDecoding )
         {
             this._pendingDecoding = false;
-            this._decoder.EndDecoding();
+            this.Decoder.EndDecoding();
         }
-    }
-
-    /// <summary>
-    /// Returns XDR stream which can be used for serializing the reply to this ONC/RPC call.
-    /// </summary>
-    /// <remarks>
-    /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
-    /// </remarks>
-    /// <returns>   Reference to encoding XDR stream. </returns>
-    internal override XdrEncodingStreamBase GetXdrEncodingStream()
-    {
-        return this._encoder;
     }
 
     /// <summary>   Begins the sending phase for ONC/RPC replies. </summary>
@@ -341,18 +260,18 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
         if ( this._pendingDecoding )
         {
             this._pendingDecoding = false;
-            this._decoder.EndDecoding();
+            this.Decoder.EndDecoding();
         }
 
         // Now start encoding using the reply message header first...
 
-        this._encoder.BeginEncoding( callInfo.PeerIPAddress, callInfo.PeerPort );
-        state.Encode( this._encoder );
+        this.Encoder.BeginEncoding( callInfo.PeerIPAddress, callInfo.PeerPort );
+        state.Encode( this.Encoder );
     }
 
     /// <summary>   Finishes encoding the reply to this ONC/RPC call. </summary>
     /// <remarks>
-    /// Afterwards you must not use the XDR stream returned by <see cref="GetXdrEncodingStream()"/>
+    /// Afterwards you must not use the XDR stream returned by <see cref="Encoder"/>
     /// any longer.
     /// </remarks>
     ///
@@ -364,7 +283,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     {
 
         // Close the case. 
-        this._encoder.EndEncoding();
+        this.Encoder.EndEncoding();
     }
 
     /// <summary> Sends back an ONC/RPC reply to the original caller. </summary>
@@ -387,7 +306,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     internal override void Reply( OncRpcCallInformation callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
     {
         this.BeginEncoding( callInfo, state );
-        reply?.Encode( this._encoder );
+        reply?.Encode( this.Encoder );
         this.EndEncoding();
     }
 
@@ -417,16 +336,15 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
 
     #endregion
 
-    #region " HELPERS "
-
+    #region " Thread Aware Listener implementation "
 
     private sealed class TransportHelper
     {
         /// <summary>   Constructor. </summary>
-        /// <param name="enclosingtransport">   The enclosing. </param>
-        public TransportHelper( OncRpcUdpServerTransport enclosingtransport )
+        /// <param name="enclosingTransport">   The enclosing transport. </param>
+        public TransportHelper( OncRpcUdpServerTransport enclosingTransport )
         {
-            this._enclosing = enclosingtransport;
+            this._enclosing = enclosingTransport;
         }
 
         /// <summary>   Runs this object. </summary>
@@ -456,9 +374,9 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
             try
             {
                 this._pendingDecoding = true;
-                this._decoder.BeginDecoding();
-                callInfo.PeerIPAddress = this._decoder.GetSenderAddress();
-                callInfo.PeerPort = this._decoder.GetSenderPort();
+                this.Decoder.BeginDecoding();
+                callInfo.PeerIPAddress = this.Decoder.GetSenderAddress();
+                callInfo.PeerPort = this.Decoder.GetSenderPort();
             }
             catch ( SocketException )
             {
@@ -483,7 +401,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
 
                 // Pull off the ONC/RPC call header of the XDR stream.
 
-                callInfo.CallMessage.Decode( this._decoder );
+                callInfo.CallMessage.Decode( this.Decoder );
             }
             catch ( IOException )
             {
@@ -508,7 +426,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
                     this._pendingDecoding = false;
                     try
                     {
-                        this._decoder.EndDecoding();
+                        this.Decoder.EndDecoding();
                     }
                     catch ( IOException )
                     {
@@ -534,7 +452,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
             catch ( Exception ex )
             {
 
-                Console.Out.WriteLine( $"Failed dispatching ONC/RPC call: \n{ex} " );
+                Console.WriteLine( $"Failed dispatching ONC/RPC call: \n{ex} " );
 
                 // In case of some other runtime exception, we report back to
                 // the caller a system error.
@@ -552,7 +470,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
                     this._pendingDecoding = false;
                     try
                     {
-                        this._decoder.EndDecoding();
+                        this.Decoder.EndDecoding();
                     }
                     catch ( IOException )
                     {

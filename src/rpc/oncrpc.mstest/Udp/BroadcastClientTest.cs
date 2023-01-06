@@ -143,12 +143,12 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
         {
             Console.WriteLine( $"method call failed unexpectedly: \n{e}" );
         }
-        Console.Out.WriteLine( "done." );
+        Console.WriteLine( "done." );
 
         // Print addresses of all port mappers found...
 
         for ( int idx = 0; idx < this._portmappers.Count; ++idx )
-            Console.Out.WriteLine( $"Found: {( IPAddress ) this._portmappers[idx]!}" );
+            Console.WriteLine( $"Found: {( IPAddress ) this._portmappers[idx]!}" );
 
         // Release resources bound by portmap client object as soon as possible.
 

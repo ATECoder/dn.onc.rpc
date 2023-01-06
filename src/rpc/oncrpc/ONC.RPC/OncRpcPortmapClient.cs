@@ -291,8 +291,8 @@ public class OncRpcPortmapClient
         catch ( OncRpcException e )
         {
             // Temp output
-            Console.Out.WriteLine( e.Message );
-            Console.Out.WriteLine( e.StackTrace );
+            Console.WriteLine( e.Message );
+            Console.WriteLine( e.StackTrace );
             throw new OncRpcException( OncRpcException.OncRpcPortMapServiceFailure );
         }
         return replyCodec.Value;

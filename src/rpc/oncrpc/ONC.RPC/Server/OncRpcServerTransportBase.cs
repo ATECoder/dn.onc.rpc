@@ -1,3 +1,6 @@
+using System.IO;
+using System.Net.Sockets;
+
 using cc.isr.XDR;
 
 namespace cc.isr.ONC.RPC.Server;
@@ -45,7 +48,7 @@ public abstract class OncRpcServerTransportBase
     /// <param name="port">         Number of port where the server will wait for incoming calls. </param>
     /// <param name="info">         Array of program and version number tuples of the ONC/RPC
     ///                             programs and versions handled by this transport. </param>
-    internal OncRpcServerTransportBase( IOncRpcDispatchable dispatcher, int port, OncRpcServerTransportRegistrationInfo[] info )
+    protected OncRpcServerTransportBase( IOncRpcDispatchable dispatcher, int port, OncRpcServerTransportRegistrationInfo[] info )
     {
         this.Dispatcher = dispatcher;
         this.Port = port;
@@ -106,7 +109,39 @@ public abstract class OncRpcServerTransportBase
     /// Wait for handler threads to complete their current ONC/RPC request (with timeout), then close
     /// connections and kill the threads. </item></list>
     /// </remarks>
-    public abstract void Close();
+    public virtual void Close()
+    {
+        if ( this.Encoder != null )
+        {
+            XdrEncodingStreamBase deadXdrStream = this.Encoder;
+            this.Encoder = null;
+            try
+            {
+                deadXdrStream.Close();
+            }
+            catch ( System.IO.IOException )
+            {
+            }
+            catch ( OncRpcException )
+            {
+            }
+        }
+        if ( this.Decoder != null )
+        {
+            XdrDecodingStreamBase deadXdrStream = this.Decoder;
+            this.Decoder = null;
+            try
+            {
+                deadXdrStream.Close();
+            }
+            catch ( System.IO.IOException )
+            {
+            }
+            catch ( OncRpcException )
+            {
+            }
+        }
+    }
 
     /// <summary>
     /// Creates a new thread and uses this thread to listen to incoming ONC/RPC requests, then
@@ -126,18 +161,24 @@ public abstract class OncRpcServerTransportBase
     /// <value> The Port number where we're listening for incoming ONC/RPC requests. </value>
     internal int Port { get; set; }
 
-    /// <summary>   Set the character encoding for serializing strings. </summary>
-    /// <param name="characterEncoding">    the encoding to use for serializing strings. If
-    ///                                     <see langword="null"/>, the system's default
-    ///                                     encoding is to be used. </param>
-    public abstract void SetCharacterEncoding( string characterEncoding );
-
-    /// <summary>   Get the character encoding for serializing strings. </summary>
-    /// <returns>
-    /// the encoding currently used for serializing strings. If <see langword="null"/>, then the
+    private string _characterEncoding;
+    /// <summary>
+    /// Gets or sets the character encoding for serializing strings. If <see langword="null"/>, the
+    /// system's default encoding is to be used.
+    /// </summary>
+    /// <value>
+    /// The encoding for serializing strings. If <see langword="null"/>, then the
     /// system's default encoding is used.
-    /// </returns>
-    public abstract string GetCharacterEncoding();
+    /// </value>
+    public string CharacterEncoding
+    {
+        get => this._characterEncoding;
+        set {
+            this._characterEncoding = value;
+            if ( this.Encoder is not null ) this.Encoder.CharacterEncoding = value;
+            if ( this.Decoder is not null ) this.Decoder.CharacterEncoding = value;
+        }
+    }
 
     /// <summary>   Retrieves the parameters sent within an ONC/RPC call message. </summary>
     /// <remarks>
@@ -160,11 +201,11 @@ public abstract class OncRpcServerTransportBase
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </remarks>
     /// <returns>   Reference to decoding XDR stream. </returns>
-    internal abstract XdrDecodingStreamBase GetXdrDecodingStream();
+    public XdrDecodingStreamBase Decoder { get; set; }
 
     /// <summary>   Finishes call parameter deserialization. </summary>
     /// <remarks>
-    /// Afterwards the XDR stream returned by <see cref="GetXdrDecodingStream()"/>
+    /// Afterwards the XDR stream returned by <see cref="Decoder"/>
     /// must not be used any more. This method belongs to the lower-level access pattern when
     /// handling ONC/RPC calls.
     /// </remarks>
@@ -181,8 +222,8 @@ public abstract class OncRpcServerTransportBase
     /// <remarks>
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </remarks>
-    /// <returns>   Reference to encoding XDR stream. </returns>
-    internal abstract XdrEncodingStreamBase GetXdrEncodingStream();
+    /// <value>   Reference to encoding XDR stream. </value>
+    public XdrEncodingStreamBase Encoder { get; set; }
 
     /// <summary>   Begins the sending phase for ONC/RPC replies. </summary>
     /// <remarks>
@@ -198,7 +239,7 @@ public abstract class OncRpcServerTransportBase
 
     /// <summary>   Finishes encoding the reply to this ONC/RPC call. </summary>
     /// <remarks>
-    /// Afterwards you must not use the XDR stream returned by <see cref="GetXdrEncodingStream()"/> any longer.
+    /// Afterwards you must not use the XDR stream returned by <see cref="Encoder"/> any longer.
     /// </remarks>
     /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
     ///                                             could not be successfully serialized. </exception>
