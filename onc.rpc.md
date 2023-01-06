@@ -1,6 +1,6 @@
 # ONC RPC
 
-Open Network Computing (ONC) Remote Procedure Call (RPC), commonly known as [Sun RPC]is a remote procedure call system.
+Open Network Computing (ONC) Remote Procedure Call (RPC), commonly known as [Sun RPC] is a remote procedure call system.
 
 ONC is based on calling conventions used in Unix and the C programming language. It serializes data using the [eXternal Data Representation (XDR)](#External-Data-Representation). ONC then delivers the XDR payload using either UDP or TCP. Access to RPC services on a machine are provided via a port mapper that listens for queries on a well-known port (number 111) over UDP and TCP.
 
