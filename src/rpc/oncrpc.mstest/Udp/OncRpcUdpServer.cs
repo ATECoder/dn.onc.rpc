@@ -13,7 +13,7 @@ namespace cc.isr.ONC.RPC.MSTest.Udp;
 /// OncRpcException.RPC_PROGUNAVAIL -- Visa32.VISA.VI_ERROR_INV_EXPR</item><item>
 /// </item>
 /// </list>
-/// TODO: Closing a client connected to the Mock local server throws an exception when destroying the link.
+/// Closing a client connected to the Mock local server no longer throws an exception when destroying the link.
 /// </remarks>
 public partial class OncRpcUdpServer : OncRpcUdpServerBase
 {

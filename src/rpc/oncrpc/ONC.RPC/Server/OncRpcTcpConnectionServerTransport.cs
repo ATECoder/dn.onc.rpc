@@ -116,16 +116,28 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
             // been closed before we could set the socket instance member to
             // null. Many thanks to Michael Smith for tracking down this one.
 
-            // TODO: uncomment this and test:
-            // this._socket.Shutdown( SocketShutdown.Both );
+            // @atecoder: added shutdown
+            try
+            {
+                if ( this._socket.Connected )
+                    this._socket.Shutdown( SocketShutdown.Both );
+            }
+            catch ( Exception ex )
+            {
+                Console.WriteLine( $"Failed socket shutdown: \n{ex} " );
+            }
             Socket deadSocket = this._socket;
             this._socket = null;
             try
             {
                 deadSocket.Close();
+                // close is a wrapper class around dispose so this 
+                // is superfluous unless the close changes.
+                deadSocket.Dispose();
             }
-            catch ( System.IO.IOException )
+            catch ( Exception ex )
             {
+                Console.WriteLine( $"Failed closing the socket: \n{ex} " );
             }
         }
         base.Close();
