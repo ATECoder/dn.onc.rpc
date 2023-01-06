@@ -124,7 +124,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// </remarks>
     public override void Close()
     {
-        if ( this._socket != null )
+        if ( this._socket is not null )
         {
 
             // Since there is a non-zero chance of getting race conditions,

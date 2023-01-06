@@ -146,6 +146,7 @@ public class OncRpcTcpClient : OncRpcClientBase
             this._socket.SendBufferSize = bufferSize;
         if ( this._socket.ReceiveBufferSize < bufferSize )
             this._socket.ReceiveBufferSize = bufferSize;
+
         // Create the necessary encoding and decoding streams, so we can
         // communicate at all.
         this.Encoder = new XdrTcpEncodingStream( this._socket, bufferSize );
@@ -160,7 +161,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public override void Close()
     {
-        if ( this._socket != null )
+        if ( this._socket is not null )
         {
             try
             {
@@ -229,23 +230,19 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <value> The timeout used during transmission of data. </value>
     public int TransmissionTimeout { get; set; } = OncRpcClientBase.DefaultTransmissionTimeout;
 
-    /// <summary>   Set the character encoding for serializing strings. </summary>
-    /// <param name="characterEncoding">    the encoding to use for serializing strings. If 
-    ///                                     <see langword="null"/>, the system's default encoding is to be used. </param>
-    public override void SetCharacterEncoding( string characterEncoding )
+    /// <summary>
+    /// Gets or sets the encoding to use when serializing strings. If <see langword="null"/>, the
+    /// system's default encoding is to be used.
+    /// </summary>
+    /// <value> The character encoding. </value>
+    public override string CharacterEncoding
     {
-        this.Decoder.CharacterEncoding = characterEncoding;
-        this.Encoder.CharacterEncoding = characterEncoding;
-    }
-
-    /// <summary>   Get the character encoding for serializing strings. </summary>
-    /// <returns>
-    /// the encoding currently used for serializing strings. If <see langword="null"/>, then the
-    /// system's default encoding is used.
-    /// </returns>
-    public override string GetCharacterEncoding()
-    {
-        return this.Decoder.CharacterEncoding;
+        get => base.CharacterEncoding;
+        set {
+            base.CharacterEncoding = value;
+            this.Decoder.CharacterEncoding = value;
+            this.Encoder.CharacterEncoding = value;
+        }
     }
 
     #endregion

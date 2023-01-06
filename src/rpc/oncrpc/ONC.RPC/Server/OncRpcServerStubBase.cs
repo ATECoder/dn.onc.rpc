@@ -200,31 +200,20 @@ public abstract class OncRpcServerStubBase
         }
     }
 
-    /// <summary>
-    /// Encoding to use when deserializing strings or <see langword="null"/> if
-    /// the system's default encoding should be used.
-    /// </summary>
     private string _characterEncoding;
-
-    /// <summary>   Set the character encoding for deserializing strings. </summary>
-    /// <param name="characterEncoding">    the encoding to use for deserializing strings. If 
-    ///                                     <see langword="null"/>, the system's default 
-    ///                                     encoding is to be used. </param>
-    public virtual void SetCharacterEncoding( string characterEncoding )
+    /// <summary>
+    /// Gets or sets the encoding to use when serializing strings. If <see langword="null"/>, the system's
+    /// default encoding is to be used.
+    /// </summary>
+    /// <value> The character encoding. </value>
+    public string CharacterEncoding
     {
-        this._characterEncoding = characterEncoding;
-        foreach ( var transport in this._transports )
-            transport.CharacterEncoding = characterEncoding;
-    }
-
-    /// <summary>   Get the character encoding for deserializing strings. </summary>
-    /// <returns>
-    /// the encoding currently used for deserializing strings. If <see langword="null"/>, then the
-    /// system's default encoding is used.
-    /// </returns>
-    public virtual string GetCharacterEncoding()
-    {
-        return this._characterEncoding;
+        get => this._characterEncoding;
+        set {
+            this._characterEncoding = value;
+            foreach ( var transport in this._transports )
+                transport.CharacterEncoding = value;
+        }
     }
 
 }

@@ -386,18 +386,12 @@ public abstract class OncRpcClientBase
     /// </value>
     public OncRpcClientAuthBase Auth { get; set; }
 
-    /// <summary>   Set the character encoding for serializing strings. </summary>
-    /// <param name="characterEncoding">    the encoding to use for serializing strings. If
-    ///                                     <see langword="null"/>, the system's default encoding is to
-    ///                                     be used. </param>
-    public abstract void SetCharacterEncoding( string characterEncoding );
-
-    /// <summary>   Get the character encoding for serializing strings. </summary>
-    /// <returns>
-    /// The encoding currently used for serializing strings. If <see langword="null"/>, then the
-    /// system's default encoding is used.
-    /// </returns>
-    public abstract string GetCharacterEncoding();
+    /// <summary>
+    /// Gets or sets the encoding to use when serializing strings. If <see langword="null"/>, the system's
+    /// default encoding is to be used.
+    /// </summary>
+    /// <value> The character encoding. </value>
+    public virtual string CharacterEncoding { get; set; }
 
     /// <summary>   Create next transaction (message) identifier. </summary>
     internal virtual void NextTransactionId()

@@ -103,7 +103,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public override void Close()
     {
-        if ( this._socket != null )
+        if ( this._socket is not null )
         {
             this._socket.Close();
             this._socket = null;
@@ -174,23 +174,19 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <value> The retransmission timeout. </value>
     public int RetransmissionTimeout { get; set; }
 
-    /// <summary>   Set the character encoding for serializing strings. </summary>
-    /// <param name="characterEncoding">    the encoding to use for serializing strings. If 
-    ///                                     <see langword="null"/>, the system's default encoding is to be used. </param>
-    public override void SetCharacterEncoding( string characterEncoding )
+    /// <summary>
+    /// Gets or sets the encoding to use when serializing strings. If <see langword="null"/>, the
+    /// system's default encoding is to be used.
+    /// </summary>
+    /// <value> The character encoding. </value>
+    public override string CharacterEncoding
     {
-        this._decoder.CharacterEncoding = characterEncoding;
-        this._encoder.CharacterEncoding = characterEncoding;
-    }
-
-    /// <summary>   Get the character encoding for serializing strings. </summary>
-    /// <returns>
-    /// the encoding currently used for serializing strings. If <see langword="null"/>, then the
-    /// system's default encoding is used.
-    /// </returns>
-    public override string GetCharacterEncoding()
-    {
-        return this._decoder.CharacterEncoding;
+        get => base.CharacterEncoding;
+        set {
+            base.CharacterEncoding = value;
+            this._decoder.CharacterEncoding = value;
+            this._encoder.CharacterEncoding = value;
+        }
     }
 
     #endregion
