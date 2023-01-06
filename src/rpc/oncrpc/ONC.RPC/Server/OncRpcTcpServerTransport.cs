@@ -91,7 +91,7 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcTcpServerTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddr, int port,
-        OncRpcServerTransportRegistrationInfo[] info, int bufferSize ) : base( dispatcher, port, info )
+        OncRpcServerTransportRegistrationInfo[] info, int bufferSize ) : base( dispatcher, port, OncRpcProtocols.OncRpcTcp, info )
     {
         this._openTransports = new TransportList( this );
 
@@ -189,7 +189,6 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
 
     #endregion
 
-
     #region " Operation Methods "
 
     /// <summary>
@@ -201,32 +200,6 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     {
         lock ( this._openTransports )
             _ = this._openTransports.Remove( transport );
-    }
-
-    /// <summary>
-    /// Register the TCP/IP port where this server transport waits for incoming requests with the
-    /// ONC/RPC portmapper.
-    /// </summary>
-    /// <exception cref="OncRpcException">  if the portmapper could not be contacted successfully of
-    ///                                     if the portmapper rejected port registration(s). </exception>
-    public override void Register()
-    {
-        try
-        {
-            OncRpcPortmapClient portmapper = new( IPAddress.Loopback );
-            int size = this.TransportRegistrationInfo.Length;
-            for ( int idx = 0; idx < size; ++idx )
-
-                // Try to register the port for our transport with the local ONC/RPC
-                // portmapper. If this fails, bail out with an exception.
-
-                if ( !portmapper.SetPort( this.TransportRegistrationInfo[idx].Program, this.TransportRegistrationInfo[idx].Version, OncRpcProtocols.OncRpcTcp, this.Port ) )
-                    throw new OncRpcException( OncRpcException.OncRpcCannotRegisterTransport );
-        }
-        catch ( System.IO.IOException )
-        {
-            throw new OncRpcException( OncRpcException.OncRpcFailed );
-        }
     }
 
     /// <summary>   Do not call. </summary>

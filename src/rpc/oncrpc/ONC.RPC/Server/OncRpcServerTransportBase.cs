@@ -32,68 +32,31 @@ public abstract class OncRpcServerTransportBase
     /// <summary>   (Immutable) the default transmission timeout. </summary>
     public const int DefaultTransmissionTimeout = 30000;
 
+    #region " CONSTRUCTION and CLEANUP "
+
     /// <summary>
-    /// Create a new instance of a server <see cref="OncRpcServerTransportBase"/> which encapsulates XDR streams
-    /// of an ONC/RPC server.
+    /// Create a new instance of a server <see cref="OncRpcServerTransportBase"/> which encapsulates
+    /// XDR streams of an ONC/RPC server.
     /// </summary>
     /// <remarks>
     /// Using a server transport, ONC/RPC calls are received and the corresponding replies are sent
     /// back. <para>
-    /// We do not create any XDR streams here, as it is the responsibility
-    /// of derived classes to create appropriate XDR stream objects for the respective kind of
-    /// transport mechanism used (like TCP/IP and UDP/IP).</para>
+    /// We do not create any XDR streams here, as it is the responsibility of derived classes to
+    /// create appropriate XDR stream objects for the respective kind of transport mechanism used
+    /// (like TCP/IP and UDP/IP).</para>
     /// </remarks>
     /// <param name="dispatcher">   Reference to interface of an object capable of dispatching
     ///                             (handling) ONC/RPC calls. </param>
     /// <param name="port">         Number of port where the server will wait for incoming calls. </param>
+    /// <param name="protocol">     The protocol, .e.g., <see cref="OncRpcProtocols.OncRpcTcp"/> or <see cref="OncRpcProtocols.OncRpcUdp"/></param>
     /// <param name="info">         Array of program and version number tuples of the ONC/RPC
     ///                             programs and versions handled by this transport. </param>
-    protected OncRpcServerTransportBase( IOncRpcDispatchable dispatcher, int port, OncRpcServerTransportRegistrationInfo[] info )
+    protected OncRpcServerTransportBase( IOncRpcDispatchable dispatcher, int port, int protocol, OncRpcServerTransportRegistrationInfo[] info )
     {
         this.Dispatcher = dispatcher;
         this.Port = port;
+        this.Protocol= protocol;
         this.TransportRegistrationInfo = info;
-    }
-
-    /// <summary>
-    /// Register the port where this server transport waits for incoming requests with the ONC/RPC
-    /// portmapper.
-    /// </summary>
-    /// <remarks>
-    /// The contract of this method is, that derived classes implement the appropriate communication
-    /// with the portmapper, so the transport is registered only for the protocol supported by a
-    /// particular kind of server transport.
-    /// </remarks>
-    /// 
-    /// <exception cref="OncRpcException">  if the portmapper could not be contacted successfully. </exception>
-    public abstract void Register();
-
-    /// <summary>
-    /// Unregisters the port where this server transport waits for incoming requests from the ONC/RPC
-    /// port mapper.
-    /// </summary>
-    /// <remarks>
-    /// Note that due to the way Sun decided to implement its ONC/RPC portmapper process,
-    /// deregistering one server transports causes all entries for the same program and version to be
-    /// removed, regardless of the protocol (UDP/IP or TCP/IP) used. Sigh.
-    /// </remarks>
-    /// <exception cref="OncRpcException">  with a reason of <see cref="OncRpcException.OncRpcFailed"/>
-    ///                                     if the portmapper could not be contacted successfully. 
-    ///                                     Note that it is not considered an error to remove a non-existing 
-    ///                                     entry from the portmapper. </exception>
-    public virtual void Unregister()
-    {
-        try
-        {
-            OncRpcPortmapClient portmapper = new( IPAddress.Loopback );
-            int size = this.TransportRegistrationInfo.Length;
-            for ( int idx = 0; idx < size; ++idx )
-                _ = portmapper.UnsetPort( this.TransportRegistrationInfo[idx].Program, this.TransportRegistrationInfo[idx].Version );
-        }
-        catch ( System.IO.IOException )
-        {
-            throw new OncRpcException( OncRpcException.OncRpcFailed );
-        }
     }
 
     /// <summary>   Close the server transport and free any resources associated with it. </summary>
@@ -143,16 +106,9 @@ public abstract class OncRpcServerTransportBase
         }
     }
 
-    /// <summary>
-    /// Creates a new thread and uses this thread to listen to incoming ONC/RPC requests, then
-    /// dispatches them and finally sends back the appropriate reply messages.
-    /// </summary>
-    /// <remarks>
-    /// Note that you have to supply an implementation for this abstract
-    /// method in derived classes. Your implementation needs to create a new thread to wait for
-    /// incoming requests. The method has to return immediately for the calling thread.
-    /// </remarks>
-    public abstract void Listen();
+    #endregion
+
+    #region " SETTINGS "
 
     /// <summary>
     /// Gets or sets the port number of socket this server transport listens on for incoming ONC/RPC
@@ -160,6 +116,10 @@ public abstract class OncRpcServerTransportBase
     /// </summary>
     /// <value> The Port number where we're listening for incoming ONC/RPC requests. </value>
     internal int Port { get; set; }
+
+    /// <summary>   Gets or sets the protocol, e.g., <see cref="OncRpcProtocols.OncRpcTcp"/> or <see cref="OncRpcProtocols.OncRpcTcp"/>. </summary>
+    /// <value> The protocol. </value>
+    internal int Protocol { get; private set; }
 
     private string _characterEncoding;
     /// <summary>
@@ -179,6 +139,90 @@ public abstract class OncRpcServerTransportBase
             if ( this.Decoder is not null ) this.Decoder.CharacterEncoding = value;
         }
     }
+
+    /// <summary>
+    /// Gets or sets the transport registration information consisting of the program and version
+    /// number tuples handled by this server transport.
+    /// </summary>
+    /// <value> Information describing the transport registration. </value>
+    internal OncRpcServerTransportRegistrationInfo[] TransportRegistrationInfo { get; set; }
+
+    #endregion
+
+    #region " OPERATIONS "
+
+    /// <summary>
+    /// Register the <see cref="Protocol"/> (UDP/IP or TCP/IP) port where this server transport waits for incoming requests with the
+    /// ONC/RPC portmapper.
+    /// </summary>
+    /// <remarks>
+    /// The contract of this method is, that derived classes implement the appropriate communication
+    /// with the portmapper, so the transport is registered only for the protocol supported by a
+    /// particular kind of server transport.
+    /// </remarks>
+    /// <exception cref="OncRpcException">  if the portmapper could not be contacted successfully. </exception>
+    public virtual void Register()
+    {
+        try
+        {
+            OncRpcPortmapClient portmapper = new( IPAddress.Loopback );
+            foreach ( var transportRegistrationInfo in this.TransportRegistrationInfo )
+            {
+                // Try to register the port for our transport with the local ONC/RPC
+                // portmapper. If this fails, bail out with an exception.
+
+                if ( !portmapper.SetPort( transportRegistrationInfo.Program, transportRegistrationInfo.Version, this.Protocol, this.Port ) )
+                    throw new OncRpcException( OncRpcException.OncRpcCannotRegisterTransport );
+            }
+        }
+        catch ( IOException )
+        {
+            throw new OncRpcException( OncRpcException.OncRpcFailed );
+        }
+    }
+
+    /// <summary>
+    /// Unregisters the port where this server transport waits for incoming requests from the ONC/RPC
+    /// port mapper.
+    /// </summary>
+    /// <remarks>
+    /// Note that due to the way Sun decided to implement its ONC/RPC portmapper process,
+    /// deregistering one server transports causes all entries for the same program and version to be
+    /// removed, regardless of the protocol (UDP/IP or TCP/IP) used. Sigh.
+    /// </remarks>
+    /// <exception cref="OncRpcException">  with a reason of <see cref="OncRpcException.OncRpcFailed"/>
+    ///                                     if the portmapper could not be contacted successfully. 
+    ///                                     Note that it is not considered an error to remove a non-existing 
+    ///                                     entry from the portmapper. </exception>
+    public virtual void Unregister()
+    {
+        try
+        {
+            OncRpcPortmapClient portmapper = new( IPAddress.Loopback );
+            int size = this.TransportRegistrationInfo.Length;
+            for ( int idx = 0; idx < size; ++idx )
+                _ = portmapper.UnsetPort( this.TransportRegistrationInfo[idx].Program, this.TransportRegistrationInfo[idx].Version );
+        }
+        catch ( System.IO.IOException )
+        {
+            throw new OncRpcException( OncRpcException.OncRpcFailed );
+        }
+    }
+
+    /// <summary>
+    /// Creates a new thread and uses this thread to listen to incoming ONC/RPC requests, then
+    /// dispatches them and finally sends back the appropriate reply messages.
+    /// </summary>
+    /// <remarks>
+    /// Note that you have to supply an implementation for this abstract
+    /// method in derived classes. Your implementation needs to create a new thread to wait for
+    /// incoming requests. The method has to return immediately for the calling thread.
+    /// </remarks>
+    public abstract void Listen();
+
+    #endregion
+
+    #region " Encoding / Decoding "
 
     /// <summary>   Retrieves the parameters sent within an ONC/RPC call message. </summary>
     /// <remarks>
@@ -275,10 +319,6 @@ public abstract class OncRpcServerTransportBase
     /// <value> The dispatcher. </value>
     internal IOncRpcDispatchable Dispatcher { get; set; }
 
-    /// <summary>
-    /// Gets or sets the transport registration information consisting of the program and version
-    /// number tuples handled by this server transport.
-    /// </summary>
-    /// <value> Information describing the transport registration. </value>
-    internal OncRpcServerTransportRegistrationInfo[] TransportRegistrationInfo { get; set; }
+    #endregion
+
 }

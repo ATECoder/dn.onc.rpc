@@ -86,7 +86,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcUdpServerTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddr, int port,
-        OncRpcServerTransportRegistrationInfo[] info, int bufferSize ) : base( dispatcher, port, info )
+        OncRpcServerTransportRegistrationInfo[] info, int bufferSize ) : base( dispatcher, port, OncRpcProtocols.OncRpcUdp, info )
     {
 
         // Make sure the buffer is large enough and resize system buffers
@@ -162,32 +162,6 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     #endregion
 
     #region " OPERATIONS "
-
-
-    /// <summary>
-    /// Register the UDP/IP port where this server transport waits for incoming requests with the
-    /// ONC/RPC portmapper.
-    /// </summary>
-    /// <exception cref="OncRpcException">  if the portmapper could not be contacted successfully. </exception>
-    public override void Register()
-    {
-        try
-        {
-            OncRpcPortmapClient portmapper = new( IPAddress.Loopback );
-            int size = this.TransportRegistrationInfo.Length;
-            for ( int idx = 0; idx < size; ++idx )
-
-                // Try to register the port for our transport with the local ONC/RPC
-                // portmapper. If this fails, bail out with an exception.
-
-                if ( !portmapper.SetPort( this.TransportRegistrationInfo[idx].Program, this.TransportRegistrationInfo[idx].Version, OncRpcProtocols.OncRpcUdp, this.Port ) )
-                    throw new OncRpcException( OncRpcException.OncRpcCannotRegisterTransport );
-        }
-        catch ( IOException )
-        {
-            throw new OncRpcException( OncRpcException.OncRpcFailed );
-        }
-    }
 
     /// <summary>
     /// Indicates that <see cref="XdrDecodingStreamBase.BeginDecoding()"/> has been called for the

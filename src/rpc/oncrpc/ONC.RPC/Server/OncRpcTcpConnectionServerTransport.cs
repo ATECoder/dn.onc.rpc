@@ -67,7 +67,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcTcpConnectionServerTransport( IOncRpcDispatchable dispatcher, Socket socket,
         OncRpcServerTransportRegistrationInfo[] info, int bufferSize, OncRpcTcpServerTransport parent,
-        int transmissionTimeout ) : base( dispatcher, 0, info )
+        int transmissionTimeout ) : base( dispatcher, 0, OncRpcProtocols.OncRpcTcp, info )
     {
         this._parent = parent;
         this._transmissionTimeout = transmissionTimeout;
@@ -139,8 +139,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// <summary>   Finalizer. </summary>
     ~OncRpcTcpConnectionServerTransport()
     {
-        if ( this._parent != null )
-            this._parent.RemoveTransport( this );
+        this._parent?.RemoveTransport( this );
     }
 
     /// <summary>
@@ -183,7 +182,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     ///                                 TCP/IP-based server transport. </exception>
     public override void Register()
     {
-        throw new Exception( $"{nameof( OncRpcTcpServerTransport.Register )} is abstract and cannot be called." );
+        throw new InvalidOperationException( $"{nameof( OncRpcTcpServerTransport.Register )} must not be called for an individual TCP/IP-based server transport." );
     }
 
     /// <summary>   Retrieves the parameters sent within an ONC/RPC call message. </summary>
@@ -297,8 +296,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     internal override void Reply( OncRpcCallInformation callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
     {
         this.BeginEncoding( callInfo, state );
-        if ( reply != null )
-            reply.Encode( this.Encoder );
+        reply?.Encode( this.Encoder );
         this.EndEncoding();
     }
 
@@ -479,8 +477,8 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
 
                 try
                 {
-                    if ( ex is OncRpcAuthenticationException )
-                        callInfo.ReplyAuthError( (( OncRpcAuthenticationException ) ex).AuthStatus );
+                    if ( ex is OncRpcAuthenticationException exception )
+                        callInfo.ReplyAuthError( exception.AuthStatus );
                     else
                         callInfo.ReplySystemError();
                 }
