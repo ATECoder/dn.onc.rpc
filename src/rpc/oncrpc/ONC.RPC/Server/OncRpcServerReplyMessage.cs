@@ -62,7 +62,7 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
                     // from the call information object, then we can still fall back
                     // to sending 'none' replies...
 
-                    if ( this.Auth != null )
+                    if ( this.Auth is not null )
                         this.Auth.EncodeVerfier( encoder );
                     else
                     {

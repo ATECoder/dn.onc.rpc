@@ -15,22 +15,15 @@ public abstract class OncRpcServerStubBase : IDisposable
     #region " Construction and Cleanup "
 
     /// <summary>   Close all transports listed in a set of server transports. </summary>
-    /// <summary>   Close all transports listed in a set of server transports. </summary>
     /// <remarks>
     /// Only by calling this method processing of remote procedure calls by individual transports can
     /// be stopped. This is because every server transport is handled by its own thread.
     /// </remarks>
     public virtual void Close()
     {
-        try
-        {
+        if ( this._transports is not null )
             foreach ( var transport in this._transports )
                 transport.Close();
-        }
-        catch ( Exception ex )
-        {
-            Console.WriteLine( $"Failed closing transports: \n{ex}" );
-        }
     }
 
     #region " IDisposable Implementation "
@@ -286,7 +279,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// </remarks>
     public virtual void StopRpcProcessing()
     {
-        if ( this.ShutdownSignal != null )
+        if ( this.ShutdownSignal is not null )
             lock ( this.ShutdownSignal )
                 Monitor.Pulse( this.ShutdownSignal );
     }

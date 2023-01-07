@@ -101,7 +101,7 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public sealed override void EncodeVerfier( XdrEncodingStreamBase encoder )
     {
-        if ( this._shorthandVerfier != null )
+        if ( this._shorthandVerfier is not null )
         {
 
             // Encode 'short' shorthand verifier (credential).

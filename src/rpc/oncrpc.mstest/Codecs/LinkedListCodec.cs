@@ -58,8 +58,8 @@ public class LinkedListCodec : IXdrCodec
         {
             encoder.EncodeInt( current.Foo );
             current = current.Next;
-            encoder.EcodeBoolean( current != null );
-        } while ( current != null );
+            encoder.EcodeBoolean( current is not null );
+        } while ( current is not null );
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ public class LinkedListCodec : IXdrCodec
             nextItem = decoder.DecodeBoolean() ? new LinkedListCodec() : null;
             current.Next = nextItem;
             current = nextItem;
-        } while ( current != null );
+        } while ( current is not null );
     }
 
 }

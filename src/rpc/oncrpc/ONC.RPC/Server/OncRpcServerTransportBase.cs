@@ -76,37 +76,79 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// </remarks>
     public virtual void Close()
     {
-        if ( this.Encoder != null )
+        if ( this.Encoder is not null )
         {
             XdrEncodingStreamBase xdrStream = this.Encoder;
             this.Encoder = null;
-            try
-            {
-                xdrStream.Close();
-            }
-            catch ( System.IO.IOException )
-            {
-            }
-            catch ( OncRpcException )
-            {
-            }
+            xdrStream.Close();
         }
-        if ( this.Decoder != null )
+        if ( this.Decoder is not null )
         {
             XdrDecodingStreamBase xdrStream = this.Decoder;
             this.Decoder = null;
-            try
-            {
-                xdrStream.Close();
-            }
-            catch ( System.IO.IOException )
-            {
-            }
-            catch ( OncRpcException )
-            {
-            }
+            xdrStream.Close();
         }
     }
+
+    #region " IDisposable Implementation "
+
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
+    /// resources.
+    /// </summary>
+    /// <remarks> 
+    /// Takes account of and updates <see cref="IsDisposed"/>.
+    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// </remarks>
+    public void Dispose()
+    {
+        if ( this.IsDisposed ) { return; }
+        try
+        {
+            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            this.Dispose( true );
+
+            // uncomment the following line if Finalize() is overridden above.
+            GC.SuppressFinalize( this );
+        }
+        finally
+        {
+            this.IsDisposed = true;
+        }
+    }
+
+    /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
+    /// <value> True if this object is disposed, false if not. </value>
+    protected bool IsDisposed { get; private set; }
+
+    /// <summary>
+    /// Releases the unmanaged resources used by the XdrDecodingStreamBase and optionally releases
+    /// the managed resources.
+    /// </summary>
+    /// <param name="disposing">    True to release both managed and unmanaged resources; false to
+    ///                             release only unmanaged resources. </param>
+    protected virtual void Dispose( bool disposing )
+    {
+        if ( disposing )
+        {
+            // dispose managed state (managed objects)
+        }
+
+        // free unmanaged resources and override finalizer
+        // I am assuming that the socket used in the derived classes include unmanaged resources.
+        this.Close();
+
+        // set large fields to null
+    }
+
+    /// <summary>   Finalizer. </summary>
+    ~OncRpcServerTransportBase()
+    {
+        if ( this.IsDisposed ) { return; }
+        this.Dispose( false );
+    }
+
+    #endregion
 
     #endregion
 
@@ -329,63 +371,4 @@ public abstract class OncRpcServerTransportBase : IDisposable
 
     #endregion
 
-    #region " IDisposable Implementation "
-
-    /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
-    /// resources.
-    /// </summary>
-    /// <remarks> 
-    /// Takes account of and updates <see cref="IsDisposed"/>.
-    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
-    /// </remarks>
-    public void Dispose()
-    {
-        if ( this.IsDisposed ) { return; }
-        try
-        {
-            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
-            this.Dispose( true );
-
-            // uncomment the following line if Finalize() is overridden above.
-            GC.SuppressFinalize( this );
-        }
-        finally
-        {
-            this.IsDisposed = true;
-        }
-    }
-
-    /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
-    /// <value> True if this object is disposed, false if not. </value>
-    protected bool IsDisposed { get; private set; }
-
-    /// <summary>
-    /// Releases the unmanaged resources used by the XdrDecodingStreamBase and optionally releases
-    /// the managed resources.
-    /// </summary>
-    /// <param name="disposing">    True to release both managed and unmanaged resources; false to
-    ///                             release only unmanaged resources. </param>
-    protected virtual void Dispose( bool disposing )
-    {
-        if ( disposing )
-        {
-            // dispose managed state (managed objects)
-        }
-
-        // free unmanaged resources and override finalizer
-        // I am assuming that the socket used in the derived classes include unmanaged resources.
-        this.Close();
-
-        // set large fields to null
-    }
-
-    /// <summary>   Finalizer. </summary>
-    ~OncRpcServerTransportBase()
-    {
-        if ( this.IsDisposed ) { return; }
-        this.Dispose( false );
-    }
-
-    #endregion
 }

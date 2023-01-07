@@ -102,55 +102,27 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public override void Close()
     {
-        if ( this._socket != null )
+        if ( this._socket is not null )
         {
             Socket socket = this._socket;
-            try
-            {
-                if ( socket.Connected )
-                    socket.Shutdown( SocketShutdown.Both );
-            }
-            catch ( Exception ex )
-            {
-                Console.WriteLine( $"Failed socket shutdown: \n{ex} " );
-            }
+            if ( socket.Connected )
+                socket.Shutdown( SocketShutdown.Both );
             this._socket = null;
-            try
-            {
-                socket.Close();
-            }
-            catch ( Exception ex )
-            {
-                Console.WriteLine( $"Failed closing the socket: \n{ex} " );
-            }
+            socket.Close();
         }
 
-        if ( this._encoder != null )
+        if ( this._encoder is not null )
         {
             XdrEncodingStreamBase  xdrStream = this._encoder;
             this._encoder = null;
-            try
-            {
-                xdrStream.Close();
-            }
-            catch ( Exception ex )
-            {
-                Console.WriteLine( $"Failed closing the encoder: \n{ex} " );
-            }
+            xdrStream.Close();
         }
 
-        if ( this._decoder != null )
+        if ( this._decoder is not null )
         {
             XdrDecodingStreamBase xdrStream = this._decoder;
             this._decoder = null;
-            try
-            {
-                xdrStream.Close();
-            }
-            catch ( Exception ex )
-            {
-                Console.WriteLine( $"Failed closing the decoder: \n{ex} " );
-            }
+            xdrStream.Close();
         }
     }
 
@@ -360,7 +332,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                                         // credentials.
 
                                         if ( refreshesLeft > 0 && replyHeader.ReplyStatus == OncRpcReplyStatus.OncRpcMessageDenied &&
-                                            replyHeader.RejectStatus == OncRpcRejectStatus.OncRpcAuthError && this.Auth != null && this.Auth.CanRefreshCredential() )
+                                            replyHeader.RejectStatus == OncRpcRejectStatus.OncRpcAuthError && this.Auth is not null && this.Auth.CanRefreshCredential() )
                                         {
 
                                             // Think about using a TAB size of four ;)
@@ -626,7 +598,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                         // Notify a potential listener of the reply.
 
-                        if ( listener != null )
+                        if ( listener is not null )
                         {
                             OncRpcBroadcastEvent evt = new( this, this._decoder.GetSenderAddress(), procedureNumber, requestCodec, replyCodec );
                             listener.ReplyReceived( evt );

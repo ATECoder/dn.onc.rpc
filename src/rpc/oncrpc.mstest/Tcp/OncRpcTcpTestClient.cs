@@ -71,18 +71,8 @@ public class OncRpcTcpTestClient : IDisposable
     /// <remarks>   2022-12-02. </remarks>
     public void Close()
     {
-        try
-        {
-            this._coreClient?.Close();
-        }
-        catch
-        {
-            throw;
-        }
-        finally
-        {
-            this._coreClient = null;
-        }
+        this._coreClient?.Close();
+        this._coreClient = null;
     }
 
     #endregion

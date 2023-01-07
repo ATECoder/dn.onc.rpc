@@ -427,7 +427,7 @@ public class OncRpcTcpTests
         node2.Next = node3;
         LinkedListCodec list = client.CallRemoteProcedureBuildLinkedList( node1 );
         Console.Write( "Okay. Echo: " );
-        while ( list != null )
+        while ( list is not null )
         {
             Console.Write( list.Foo + ", " );
             list = list.Next;
@@ -453,7 +453,7 @@ public class OncRpcTcpTests
         node2.Next = node3;
         LinkedListCodec list = client.CallRemoteProcedureLinkListItems( node2, node1 );
         Console.Write( "Okay. Echo: " );
-        while ( list != null )
+        while ( list is not null )
         {
             Console.Write( list.Foo + ", " );
             list = list.Next;

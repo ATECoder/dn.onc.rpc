@@ -53,15 +53,8 @@ public abstract class OncRpcClientStubBase : IDisposable
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void Close()
     {
-        if ( this.Client != null )
-            try
-            {
-                this.Client.Close();
-            }
-            finally
-            {
-                this.Client = null;
-            }
+        this.Client?.Close();
+        this.Client = null;
     }
 
     /// <summary>

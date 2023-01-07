@@ -143,7 +143,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                     // object, we use that. Otherwise we fall back to the default
                     // handling of only the 'none' authentication.
 
-                    if ( this.Auth != null )
+                    if ( this.Auth is not null )
                         this.Auth.DecodeVerfier( decoder );
                     else
                     {

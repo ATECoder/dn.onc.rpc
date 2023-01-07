@@ -43,7 +43,7 @@ public class OncRpcClientCallMessage : OncRpcCallMessageBase
         // protocol handling object at hand, then we let do the dirty work
         // for us. Otherwise, we fall back to 'none' handling.
 
-        if ( this.Auth != null )
+        if ( this.Auth is not null )
             this.Auth.EncodeCredentialAndVerfier( encoder );
         else
         {

@@ -173,7 +173,7 @@ public class OncRpcPortmapClient
     /// <summary>   Closes the connection to the portmapper. </summary>
     public virtual void Close()
     {
-        this.PortmapClient.Close();
+        this.PortmapClient?.Close();
     }
 
     /// <summary>

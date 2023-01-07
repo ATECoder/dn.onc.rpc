@@ -135,26 +135,12 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
             // been closed before we could set the socket instance member to
             // null. Many thanks to Michael Smith for tracking down this one.
 
-            // @atecoder: added try..catch around shutdown
+            // @atecoder: added shutdown
             Socket socket = this._socket;
-            try
-            {
-                if ( socket.Connected )
-                    socket.Shutdown( SocketShutdown.Both );
-            }
-            catch ( Exception ex )
-            {
-                Console.WriteLine( $"Failed socket shutdown: \n{ex} " );
-            }
+            if ( socket.Connected )
+                socket.Shutdown( SocketShutdown.Both );
             this._socket = null;
-            try
-            {
-                socket.Close();
-            }
-            catch ( Exception ex )
-            {
-                Console.WriteLine( $"Failed closing the socket: \n{ex} " );
-            }
+            socket.Close();
         }
         base.Close();
     }

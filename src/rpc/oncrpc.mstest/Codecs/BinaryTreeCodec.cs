@@ -65,7 +65,7 @@ public class BinaryTreeCodec : IXdrCodec
         {
             encoder.EncodeString( currentBinaryTree.Key );
             encoder.EncodeString( currentBinaryTree.Value );
-            if ( currentBinaryTree.Left != null )
+            if ( currentBinaryTree.Left is not null )
             {
                 encoder.EcodeBoolean( true );
                 currentBinaryTree.Left.Encode( encoder );
@@ -74,8 +74,8 @@ public class BinaryTreeCodec : IXdrCodec
                 encoder.EcodeBoolean( false );
 ;
             currentBinaryTree = currentBinaryTree.Right;
-            encoder.EcodeBoolean( currentBinaryTree != null );
-        } while ( currentBinaryTree != null );
+            encoder.EcodeBoolean( currentBinaryTree is not null );
+        } while ( currentBinaryTree is not null );
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ public class BinaryTreeCodec : IXdrCodec
             nextBinaryTree = decoder.DecodeBoolean() ? new BinaryTreeCodec() : null;
             currentBinaryTree.Right = nextBinaryTree;
             currentBinaryTree = nextBinaryTree;
-        } while ( currentBinaryTree != null );
+        } while ( currentBinaryTree is not null );
     }
 
 }

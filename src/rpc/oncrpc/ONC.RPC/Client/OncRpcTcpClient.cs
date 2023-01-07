@@ -162,55 +162,27 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public override void Close()
     {
-        if ( this._socket != null )
+        if ( this._socket is not null )
         {
             Socket socket = this._socket;
-            try
-            {
-                if ( socket.Connected )
-                    socket.Shutdown( SocketShutdown.Both );
-            }
-            catch ( Exception ex )
-            {
-                Console.WriteLine( $"Failed socket shutdown: \n{ex} " );
-            }
+            if ( socket.Connected )
+                socket.Shutdown( SocketShutdown.Both );
             this._socket = null;
-            try
-            {
-                socket.Close();
-            }
-            catch ( Exception ex )
-            {
-                Console.WriteLine( $"Failed closing the socket: \n{ex} " );
-            }
+            socket.Close();
         }
 
-        if ( this.Encoder != null )
+        if ( this.Encoder is not null )
         {
             XdrEncodingStreamBase xdrStream = this.Encoder;
             this.Encoder = null;
-            try
-            {
-                xdrStream.Close();
-            }
-            catch ( Exception ex )
-            {
-                Console.WriteLine( $"Failed closing the encoder: \n{ex} " );
-            }
+            xdrStream.Close();
         }
 
-        if ( this.Decoder != null )
+        if ( this.Decoder is not null )
         {
             XdrDecodingStreamBase xdrStream = this.Decoder;
             this.Decoder = null;
-            try
-            {
-                xdrStream.Close();
-            }
-            catch ( Exception ex )
-            {
-                Console.WriteLine( $"Failed closing the decoder: \n{ex} " );
-            }
+            xdrStream.Close();
         }
     }
 
@@ -367,7 +339,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                         // problem. In this case first try to refresh the
                         // credentials.
                         if ( refreshesLeft > 0 && replyHeader.ReplyStatus == OncRpcReplyStatus.OncRpcMessageDenied &&
-                            replyHeader.RejectStatus == OncRpcRejectStatus.OncRpcAuthError && this.Auth != null && this.Auth.CanRefreshCredential() )
+                            replyHeader.RejectStatus == OncRpcRejectStatus.OncRpcAuthError && this.Auth is not null && this.Auth.CanRefreshCredential() )
                             // continue Refresh;
                             continue;
                         // Nope. No chance. This gets tough.

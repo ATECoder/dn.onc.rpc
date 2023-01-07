@@ -55,7 +55,7 @@ namespace cc.isr.ONC.RPC.MSTest.Codecs
             encoder.EcodeBoolean( this.Okay );
             if ( this.Okay == true )
             {
-                if ( this.List != null )
+                if ( this.List is not null )
                 {
                     encoder.EcodeBoolean( true );
                     this.List.Encode( encoder );
