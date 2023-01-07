@@ -23,7 +23,7 @@ public class OncRpcEmbeddedPortmapService : IDisposable
     /// <summary>   (Immutable) the default timeout. </summary>
     public const int DefaultTimeout = 3000;
 
-    #region " CONSTRUCTION and CLEANUP "
+    #region " construction and cleanup "
 
     /// <summary>
     /// Constructs an embeddable portmap service of class

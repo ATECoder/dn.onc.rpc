@@ -417,7 +417,7 @@ public abstract class OncRpcClientBase : IDisposable
     /// <value> The identifier of the next transaction. </value>
     internal int MessageId { get; private set; }
 
-    #region " IDisposable Implementation "
+    #region " disposable implementation "
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged

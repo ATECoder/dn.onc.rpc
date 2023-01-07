@@ -15,7 +15,7 @@ namespace cc.isr.ONC.RPC.Client;
 public class OncRpcUdpClient : OncRpcClientBase
 {
 
-    #region " CONSTRUCTION and CLEANUP "
+    #region " construction and cleanup "
 
     /// <summary>
     /// Constructs a new <see cref="OncRpcUdpClient"/> object, which connects to the ONC/RPC server at
@@ -144,7 +144,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     #endregion
 
-    #region " SETTINGS "
+    #region " settings "
 
     /// <summary>
     /// Gets or sets the retransmission mode used when resending ONC/RPC calls. Default mode is
@@ -184,7 +184,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     #endregion
 
-    #region " OPERATIONS "
+    #region " operations "
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>

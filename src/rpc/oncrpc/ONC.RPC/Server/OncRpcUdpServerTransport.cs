@@ -15,7 +15,7 @@ namespace cc.isr.ONC.RPC.Server;
 public class OncRpcUdpServerTransport : OncRpcServerTransportBase
 {
 
-    #region " CONSTRUCTION and CLEANUP "
+    #region " construction and cleanup "
 
     /// <summary>
     /// Create a new instance of a <see cref="OncRpcUdpServerTransport"/> which encapsulates UDP/IP-
@@ -155,7 +155,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
 
     #endregion
 
-    #region " OPERATIONS "
+    #region " operations "
 
     /// <summary>
     /// Indicates that <see cref="XdrDecodingStreamBase.BeginDecoding()"/> has been called for the

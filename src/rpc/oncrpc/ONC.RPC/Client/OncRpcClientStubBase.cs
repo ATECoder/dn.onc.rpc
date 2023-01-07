@@ -64,7 +64,7 @@ public abstract class OncRpcClientStubBase : IDisposable
     /// <value> ONC/RPC client proxy. </value>
     public OncRpcClientBase Client { get; private set; }
 
-    #region " IDisposable Implementation "
+    #region " disposable implementation "
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged

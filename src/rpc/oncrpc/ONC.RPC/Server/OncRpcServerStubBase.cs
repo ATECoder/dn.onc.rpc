@@ -12,7 +12,7 @@ namespace cc.isr.ONC.RPC.Server;
 public abstract class OncRpcServerStubBase : IDisposable
 {
 
-    #region " Construction and Cleanup "
+    #region " construction and cleanup "
 
     /// <summary>   Close all transports listed in a set of server transports. </summary>
     /// <remarks>
@@ -26,7 +26,7 @@ public abstract class OncRpcServerStubBase : IDisposable
                 transport.Close();
     }
 
-    #region " IDisposable Implementation "
+    #region " disposable implementation "
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged

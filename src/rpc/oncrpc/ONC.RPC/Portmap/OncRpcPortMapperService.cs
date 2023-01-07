@@ -25,7 +25,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     /// <summary>   (Immutable) the default buffer size. </summary>
     public const int DefaultBufferSize = 32768;
 
-    #region " CONSTRUCTION and CLEANUP "
+    #region " construction and cleanup "
 
     /// <summary> 
     /// Creates a new portmap service instance. Creates the transport registration information and UDP and TCP-
@@ -106,7 +106,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
 
     #endregion
 
-    #region " Settings "
+    #region " settings "
 
     /// <summary>  Gets List of IP addresses assigned to this host. </summary>
     /// <value> The locals. </value>
@@ -125,7 +125,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
 
     #endregion
 
-    #region " Operations "
+    #region " operations "
 
     /// <summary>   Lookup port for (program, version, protocol). </summary>
     /// <remarks>

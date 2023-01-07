@@ -34,7 +34,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// <summary>   (Immutable) the default transmission timeout. </summary>
     public const int DefaultTransmissionTimeout = 30000;
 
-    #region " CONSTRUCTION and CLEANUP "
+    #region " construction and cleanup "
 
     /// <summary>
     /// Create a new instance of a server <see cref="OncRpcServerTransportBase"/> which encapsulates
@@ -90,7 +90,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
         }
     }
 
-    #region " IDisposable Implementation "
+    #region " disposable implementation "
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
@@ -152,7 +152,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
 
     #endregion
 
-    #region " SETTINGS "
+    #region " settings "
 
     /// <summary>
     /// Gets or sets the port number of socket this server transport listens on for incoming ONC/RPC
@@ -199,7 +199,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
 
     #endregion
 
-    #region " OPERATIONS "
+    #region " operations "
 
     /// <summary>
     /// Register the <see cref="Protocol"/> (UDP/IP or TCP/IP) port where this server transport waits for incoming requests with the
