@@ -1,4 +1,4 @@
-namespace cc.isr.ONC.RPC;
+namespace cc.isr.ONC.RPC.Client;
 
 /// <summary>
 /// The <see cref="OncRpcReplyMessageBase"/> class represents an ONC/RPC reply message as defined by
@@ -99,7 +99,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                     {
                         case OncRpcRejectStatus.OncRpcAuthError:
                             {
-                                return new OncRpcAuthenticationException( this.AuthStatus );
+                                return new OncRpcAuthException( this.AuthStatus );
                             }
 
                         case OncRpcRejectStatus.OncRpcWrongProtocolVersion:
@@ -119,7 +119,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
     /// <param name="decoder">  The XDR decoding stream. </param>
     ///
     /// <exception cref="OncRpcException">                  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="OncRpcAuthenticationException">    Thrown when an ONC/RPC Authentication
+    /// <exception cref="OncRpcAuthException">    Thrown when an ONC/RPC Authentication
     ///                                                     error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">            Thrown when an I/O error condition occurs. </exception>
     public virtual void Decode( XdrDecodingStreamBase decoder )
@@ -154,9 +154,9 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                         // actually sending opaque information within 'none'.
 
                         if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone )
-                            throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
+                            throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
                         if ( decoder.DecodeInt() != 0 )
-                            throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
+                            throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
                     }
 
                     // Even if the call was accepted by the server, it can still

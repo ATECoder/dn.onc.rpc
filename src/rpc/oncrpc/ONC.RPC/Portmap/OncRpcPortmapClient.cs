@@ -1,8 +1,8 @@
-
+using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.XDR.Codecs;
 
-namespace cc.isr.ONC.RPC;
+namespace cc.isr.ONC.RPC.Portmap;
 
 /// <summary>
 /// The class <see cref="OncRpcPortmapClient"/> is a specialized ONC/RPC client, which can talk to
@@ -213,7 +213,7 @@ public class OncRpcPortmapClient
         // found.
         try
         {
-            this.PortmapClient.Call( OncRpcPortmapServices.OncRpcPortmapGetPortNumber, requestCodec, replyCodec );
+            this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber, requestCodec, replyCodec );
         }
         catch ( OncRpcException )
         {
@@ -252,7 +252,7 @@ public class OncRpcPortmapClient
         // failure exception.
         try
         {
-            this.PortmapClient.Call( OncRpcPortmapServices.OncRpcPortmapRegisterServer, requestCodec, resultCodec );
+            this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapRegisterServer, requestCodec, resultCodec );
         }
         catch ( OncRpcException )
         {
@@ -286,7 +286,7 @@ public class OncRpcPortmapClient
         // failure exception.
         try
         {
-            this.PortmapClient.Call( OncRpcPortmapServices.OncRpcPortmapUnregisterServer, requestCodec, replyCodec );
+            this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer, requestCodec, replyCodec );
         }
         catch ( OncRpcException e )
         {
@@ -318,7 +318,7 @@ public class OncRpcPortmapClient
         // as a generic portmap failure exception.
         try
         {
-            this.PortmapClient.Call( OncRpcPortmapServices.OncRpcPortmapListServersInfo, VoidXdrCodec.VoidXdrCodecInstance, result );
+            this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo, VoidXdrCodec.VoidXdrCodecInstance, result );
         }
         catch ( OncRpcException )
         {

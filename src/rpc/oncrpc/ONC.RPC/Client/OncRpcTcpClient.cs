@@ -1,7 +1,7 @@
 
 using System.Net.Sockets;
 
-namespace cc.isr.ONC.RPC;
+namespace cc.isr.ONC.RPC.Client;
 
 /// <summary>
 /// ONC/RPC client which communicates with ONC/RPC servers over the network using the stream-
@@ -124,9 +124,9 @@ public class OncRpcTcpClient : OncRpcClientBase
         // Let the host operating system choose which port (and network
         // interface) to use. Then set the buffer sizes for sending and
         // receiving UDP datagrams. Finally set the destination of packets.
-        if ( bufferSize == 0 ) bufferSize = OncRpcClientBase.DefaultBufferSize;
+        if ( bufferSize == 0 ) bufferSize = DefaultBufferSize;
         // default setting
-        if ( bufferSize < OncRpcClientBase.DefaultMinBufferSize ) bufferSize = OncRpcClientBase.DefaultMinBufferSize;
+        if ( bufferSize < DefaultMinBufferSize ) bufferSize = DefaultMinBufferSize;
 
         // Note that we use this.port at this time, because the superclass
         // might have resolved the port number in case the caller specified
@@ -161,38 +161,60 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public override void Close()
     {
-        if ( this._socket is not null )
+        if ( this._socket != null )
         {
+            Socket deadSocket = this._socket;
             try
             {
-                this._socket.Close();
+                if ( deadSocket.Connected )
+                    deadSocket.Shutdown( SocketShutdown.Both );
             }
-            catch ( System.IO.IOException )
+            catch ( Exception ex )
             {
+                Console.WriteLine( $"Failed socket shutdown: \n{ex} " );
             }
             this._socket = null;
+            try
+            {
+                deadSocket.Close();
+                // close is a wrapper class around dispose so this 
+                // is superfluous unless the close changes.
+                deadSocket.Dispose();
+            }
+            catch ( Exception ex )
+            {
+                Console.WriteLine( $"Failed closing the socket: \n{ex} " );
+            }
         }
+
         if ( this.Encoder != null )
         {
+            XdrTcpEncodingStream deadEncoder = this.Encoder;
+            this.Encoder = null;
             try
             {
-                this.Encoder.Close();
+                deadEncoder.Close();
+                deadEncoder.Dispose();
             }
-            catch ( System.IO.IOException )
+            catch ( Exception ex )
             {
+                Console.WriteLine( $"Failed closing the encoder: \n{ex} " );
             }
-            this.Encoder = null;
         }
+
         if ( this.Decoder != null )
         {
+            XdrTcpDecodingStream deadDecoder = this.Decoder;
+            this.Decoder = null;
             try
             {
-                this.Decoder.Close();
+                deadDecoder.Close();
+                deadDecoder.Dispose();
             }
-            catch ( System.IO.IOException )
+            catch ( Exception ex )
             {
+                Console.WriteLine( $"Failed closing the decoder: \n{ex} " );
             }
-            this.Decoder = null;
         }
     }
 
@@ -228,7 +250,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// timeout, an exception is thrown. The timeout must be positive.
     /// </remarks>
     /// <value> The timeout used during transmission of data. </value>
-    public int TransmissionTimeout { get; set; } = OncRpcClientBase.DefaultTransmissionTimeout;
+    public int TransmissionTimeout { get; set; } = DefaultTransmissionTimeout;
 
     /// <summary>
     /// Gets or sets the encoding to use when serializing strings. If <see langword="null"/>, the

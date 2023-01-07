@@ -1,4 +1,4 @@
-namespace cc.isr.ONC.RPC;
+namespace cc.isr.ONC.RPC.Portmap;
 
 /// <summary>
 /// A collection of constants used for ONC/RPC messages to identify the remote procedure calls
@@ -7,8 +7,12 @@ namespace cc.isr.ONC.RPC;
 /// <remarks> <para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcPortmapServices
+public class OncRpcPortmapServiceProcedure
 {
+
+    /// <summary>   (Immutable) Procedure number for the portmap ping. </summary>
+    public const int OncRpcPortmapPing = 0;
+
     /// <summary>
     /// (Immutable) Procedure number of portmap service to register an ONC/RPC server. <para>
     /// Renamed from <c>PMAP_SET (=1)</c></para> </summary>

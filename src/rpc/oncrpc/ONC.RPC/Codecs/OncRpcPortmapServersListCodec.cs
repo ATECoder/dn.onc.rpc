@@ -4,7 +4,8 @@ using System.Collections.Generic;
 namespace cc.isr.ONC.RPC.Codecs;
 
 /// <summary>
-/// Objects of class <see cref="OncRpcPortmapServersListCodec"/> represent the outcome of the <see cref="OncRpcPortmapServices.OncRpcPortmapListServersInfo"/>
+/// Objects of class <see cref="OncRpcPortmapServersListCodec"/> represent the outcome of the 
+/// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo"/>
 /// operation on a portmapper.
 /// </summary>
 /// <remarks> <para>
@@ -29,7 +30,8 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
     }
 
     /// <summary>
-    /// Encodes -- that is: serializes -- the result of a <see cref="OncRpcPortmapServices.OncRpcPortmapListServersInfo"/> operating into a XDR stream.
+    /// Encodes -- that is: serializes -- the result of a 
+    /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo"/> operating into a XDR stream.
     /// </summary>
     /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
     ///
@@ -61,7 +63,7 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
 
     /// <summary>
     /// Decodes -- that is: deserializes -- the result from a 
-    /// <see cref="OncRpcPortmapServices.OncRpcPortmapListServersInfo"/> remote procedure call from a
+    /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo"/> remote procedure call from a
     /// XDR stream.
     /// </summary>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>

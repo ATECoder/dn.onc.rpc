@@ -1,7 +1,9 @@
 
 using System.ComponentModel;
 
+using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.MSTest.Tcp;
+using cc.isr.ONC.RPC.Portmap;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 

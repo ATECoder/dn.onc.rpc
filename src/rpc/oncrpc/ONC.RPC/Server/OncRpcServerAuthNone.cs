@@ -19,7 +19,7 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
     /// Decodes -- that is: deserializes -- an ONC/RPC authentication object (credential and
     /// verifier) on the server side.
     /// </summary>
-    /// <exception cref="OncRpcAuthenticationException">    Thrown when an ONC/RPC Authentication
+    /// <exception cref="OncRpcAuthException">    Thrown when an ONC/RPC Authentication
     ///                                                     error condition occurs. </exception>
     /// <param name="decoder">  XDR stream from which the authentication object is restored. </param>
     ///
@@ -32,7 +32,7 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
         // stream, we only need to make sure that really no opaque data follows.
 
         if ( decoder.DecodeInt() != 0 )
-            throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthBadCredential );
+            throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthBadCredential );
 
         // We also need to decode the verifier. This must be of type
         // 'none' too. For some obscure historical reasons, we have to
@@ -40,7 +40,7 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
         // according to Sun's specification.
 
         if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
-            throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
+            throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
     }
 
     /// <summary>

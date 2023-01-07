@@ -1,4 +1,4 @@
-namespace cc.isr.ONC.RPC;
+namespace cc.isr.ONC.RPC.Client;
 
 /// <summary>
 /// The <see cref="OncRpcClientAuthNone"/> class handles protocol issues of ONC/RPC 
@@ -36,7 +36,7 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
     /// Decodes ONC/RPC authentication information in form of a verifier when receiving an ONC/RPC
     /// reply message.
     /// </summary>
-    /// <exception cref="OncRpcAuthenticationException">    if the received verifier is not kosher. </exception>
+    /// <exception cref="OncRpcAuthException">    if the received verifier is not kosher. </exception>
     /// <param name="decoder">  XDR stream from which to receive the verifier sent together with an
     ///                         ONC/RPC reply message. </param>
     ///
@@ -48,7 +48,7 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
         // does not contain any opaque data. Anything different from this
         // is not kosher and an authentication exception will be thrown.
         if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
-            throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
+            throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
     }
 
     /// <summary>   Indicates whether the ONC/RPC authentication credential can be refreshed. </summary>

@@ -34,6 +34,32 @@ public class ConcurrentToken<T> : IDisposable
     protected bool IsDisposed { get; private set; }
 
     /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
+    /// resources.
+    /// </summary>
+    /// <remarks> 
+    /// Takes account of and updates <see cref="IsDisposed"/>.
+    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// </remarks>
+    public void Dispose()
+    {
+        if ( this.IsDisposed ) { return; }
+        try
+        {
+            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            this.Dispose( true );
+
+            // uncomment the following line if Finalize() is overridden above.
+            GC.SuppressFinalize( this );
+        }
+        finally
+        {
+            this.IsDisposed = true;
+        }
+
+    }
+
+    /// <summary>
     /// Releases the unmanaged resources used by the isr.Std.Models.ThreadSafeToken{T} and
     /// optionally releases the managed resources.
     /// </summary>
@@ -42,30 +68,16 @@ public class ConcurrentToken<T> : IDisposable
     /// release only unmanaged resources. </param>
     protected virtual void Dispose( bool disposing )
     {
-        if ( this.IsDisposed ) return;
-        try
+        if ( disposing )
         {
-            if ( disposing )
-                this._slimLock?.Dispose();
+            // dispose managed state (managed objects)
         }
-        finally
-        {
-            this.IsDisposed = true;
-        }
-    }
 
-    /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
-    /// resources.
-    /// </summary>
-    /// <remarks> David, 2020-09-22. </remarks>
-    public void Dispose()
-    {
-        // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
-        this.Dispose( true );
+        // free unmanaged resources and override finalizer
+        // i am assuming the slim lock depends on unmanaged resources.
+        this._slimLock?.Dispose();
 
-        // uncomment the following line if Finalize() is overridden above.
-        GC.SuppressFinalize( this );
+        // set large fields to null
     }
 
     /// <summary>
@@ -76,6 +88,7 @@ public class ConcurrentToken<T> : IDisposable
     /// <remarks> David, 2020-09-22. </remarks>
     ~ConcurrentToken()
     {
+        if ( this.IsDisposed ) { return; }
         // Do not re-create Dispose clean-up code here.
         // Calling Dispose(false) is optimal for readability and maintainability.
         this.Dispose( false );

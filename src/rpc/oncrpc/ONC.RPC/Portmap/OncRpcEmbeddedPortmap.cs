@@ -1,3 +1,5 @@
+using System.Net.Sockets;
+
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.ONC.RPC.Server;
 
@@ -15,7 +17,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// has been deregistered. <para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcEmbeddedPortmapService
+public class OncRpcEmbeddedPortmapService : IDisposable
 {
 
     /// <summary>   (Immutable) the default timeout. </summary>
@@ -60,6 +62,91 @@ public class OncRpcEmbeddedPortmapService
             this._embeddedPortmapService.ServiceThread.Start();
         }
     }
+
+    /// <summary> Gets or sets the sentinel to detect redundant calls. </summary>
+    /// <value> The sentinel to detect redundant calls. </value>
+    protected bool IsDisposed { get; private set; }
+
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
+    /// resources.
+    /// </summary>
+    /// <remarks> 
+    /// Takes account of and updates <see cref="IsDisposed"/>.
+    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// </remarks>
+    public void Dispose()
+    {
+        if ( this.IsDisposed ) { return; }
+        try
+        {
+            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            this.Dispose( true );
+
+            // uncomment the following line if Finalize() is overridden above.
+            GC.SuppressFinalize( this );
+        }
+        finally
+        {
+            this.IsDisposed = true;
+        }
+
+    }
+
+    /// <summary>
+    /// Releases the unmanaged resources used by the isr.Std.Models.ThreadSafeToken{T} and
+    /// optionally releases the managed resources.
+    /// </summary>
+    /// <remarks> David, 2020-09-22. </remarks>
+    /// <param name="disposing"> True to release both managed and unmanaged resources; false to
+    /// release only unmanaged resources. </param>
+    protected virtual void Dispose( bool disposing )
+    {
+        if ( disposing )
+        {
+            // dispose managed state (managed objects)
+        }
+
+        // free unmanaged resources and override finalizer
+        // i am assuming the slim lock depends on unmanaged resources.
+        try
+        {
+            this.Shutdown();
+        }
+        catch ( Exception ex )
+        {
+            Console.WriteLine( $"Failed shutting down the port mapper: \n{ex} " );
+        }
+
+        OncRpcServerStubBase? portmap = this._embeddedPortmapService;
+        this._embeddedPortmapService = null;
+        try
+        {
+            portmap?.Close();
+            portmap?.Dispose();
+        }
+        catch ( Exception ex )
+        {
+            Console.WriteLine( $"Failed closing the port mapper: \n{ex} " );
+        }
+
+        // set large fields to null
+    }
+
+    /// <summary>
+    /// This destructor will Runs only if the Dispose method does not get called. It gives the base
+    /// class the opportunity to finalize. Do not provide destructors in types derived from this
+    /// class.
+    /// </summary>
+    /// <remarks> David, 2020-09-22. </remarks>
+    ~OncRpcEmbeddedPortmapService()
+    {
+        if ( this.IsDisposed ) { return; }
+        // Do not re-create Dispose clean-up code here.
+        // Calling Dispose(false) is optimal for readability and maintainability.
+        this.Dispose( false );
+    }
+
 
     #endregion
 
@@ -138,7 +225,7 @@ public class OncRpcEmbeddedPortmapService
     /// if no embedded portmap service is necessary because the operating system already supplies one
     /// or another port mapper is already running.
     /// </summary>
-    private readonly EmbeddedPortmapService? _embeddedPortmapService;
+    private EmbeddedPortmapService? _embeddedPortmapService;
 
     /// <summary>   Returns object implementing the embedded portmap service. </summary>
     /// <returns>

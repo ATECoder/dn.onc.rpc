@@ -3,7 +3,7 @@ using System.Net.Sockets;
 using System.IO;
 using cc.isr.XDR;
 
-namespace cc.isr.ONC.RPC;
+namespace cc.isr.ONC.RPC.Client;
 
 /// <summary>
 /// ONC/RPC client which communicates with ONC/RPC servers over the network using the datagram-
@@ -36,7 +36,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     ///
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="IOException">      Thrown when an I/O error condition occurs. </exception>
-    public OncRpcUdpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, OncRpcClientBase.DefaultBufferSize )
+    public OncRpcUdpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, DefaultBufferSize )
     {
     }
 
@@ -62,7 +62,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <exception cref="IOException">      Thrown when an I/O error condition occurs. </exception>
     public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize ) : base( host, program, version, port, OncRpcProtocols.OncRpcUdp )
     {
-        this.RetransmissionTimeout = base.Timeout;
+        this.RetransmissionTimeout = Timeout;
 
         // Constructs the inherited part of our object. This will also try to
         // lookup the port of the desired ONC/RPC server, if no port number
@@ -73,7 +73,7 @@ public class OncRpcUdpClient : OncRpcClientBase
         // interface) to use. Then set the buffer sizes for sending and
         // receiving UDP datagrams. Finally set the destination of packets.
 
-        if ( bufferSize < OncRpcClientBase.DefaultMinBufferSize ) bufferSize = OncRpcClientBase.DefaultMinBufferSize;
+        if ( bufferSize < DefaultMinBufferSize ) bufferSize = DefaultMinBufferSize;
         this._socket = new Socket( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp );
         if ( this._socket.SendBufferSize < bufferSize )
             this._socket.SendBufferSize = bufferSize;
@@ -103,32 +103,60 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public override void Close()
     {
-        if ( this._socket is not null )
+        if ( this._socket != null )
         {
-            this._socket.Close();
+            Socket deadSocket = this._socket;
+            try
+            {
+                if ( deadSocket.Connected )
+                    deadSocket.Shutdown( SocketShutdown.Both );
+            }
+            catch ( Exception ex )
+            {
+                Console.WriteLine( $"Failed socket shutdown: \n{ex} " );
+            }
             this._socket = null;
+            try
+            {
+                deadSocket.Close();
+                // close is a wrapper class around dispose so this 
+                // is superfluous unless the close changes.
+                deadSocket.Dispose();
+            }
+            catch ( Exception ex )
+            {
+                Console.WriteLine( $"Failed closing the socket: \n{ex} " );
+            }
         }
+
         if ( this._encoder != null )
         {
+            XdrUdpEncodingStream  deadEncoder = this._encoder;
+            this._encoder = null;
             try
             {
-                this._encoder.Close();
+                deadEncoder.Close();
+                deadEncoder.Dispose();
             }
-            catch ( IOException )
+            catch ( Exception ex )
             {
+                Console.WriteLine( $"Failed closing the encoder: \n{ex} " );
             }
-            this._encoder = null;
         }
+
         if ( this._decoder != null )
         {
+            XdrUdpDecodingStream deadDecoder = this._decoder;
+            this._decoder = null;
             try
             {
-                this._decoder.Close();
+                deadDecoder.Close();
+                deadDecoder.Dispose();
             }
-            catch ( IOException )
+            catch ( Exception ex )
             {
+                Console.WriteLine( $"Failed closing the decoder: \n{ex} " );
             }
-            this._decoder = null;
         }
     }
 

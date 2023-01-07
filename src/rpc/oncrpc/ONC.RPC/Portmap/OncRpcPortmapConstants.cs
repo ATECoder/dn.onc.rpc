@@ -1,4 +1,4 @@
-namespace cc.isr.ONC.RPC;
+namespace cc.isr.ONC.RPC.Portmap;
 
 /// <summary>
 /// A collection of constants used for ONC/RPC messages to identify the 

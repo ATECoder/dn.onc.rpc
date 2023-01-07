@@ -1,22 +1,22 @@
 namespace cc.isr.ONC.RPC;
 
 /// <summary>
-/// The class <see cref="OncRpcAuthenticationException"/> indicates an authentication exception.
+/// The class <see cref="OncRpcAuthException"/> indicates an authentication exception.
 /// </summary>
 /// <remarks> <para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 [Serializable]
-public class OncRpcAuthenticationException : OncRpcException
+public class OncRpcAuthException : OncRpcException
 {
     /// <summary>
-    /// Initializes an <see cref="OncRpcAuthenticationException"/>
+    /// Initializes an <see cref="OncRpcAuthException"/>
     /// with a reason of <see cref="OncRpcException.OncRpcAuthenticationError"/>
     /// and the specified <see cref="OncRpcAuthStatus">authentication status</see> failure reason.
     /// </summary>
     /// <param name="authStatus">   The authentication status, which can be any one of the
     ///                             <see cref="OncRpcAuthStatus"/>. </param>
-    public OncRpcAuthenticationException( int authStatus ) : base( OncRpcException.OncRpcAuthenticationError )
+    public OncRpcAuthException( int authStatus ) : base( OncRpcException.OncRpcAuthenticationError )
     {
         this.AuthStatus = authStatus;
     }

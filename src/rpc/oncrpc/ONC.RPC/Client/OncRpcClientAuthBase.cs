@@ -1,4 +1,4 @@
-namespace cc.isr.ONC.RPC;
+namespace cc.isr.ONC.RPC.Client;
 
 /// <summary>
 /// The <see cref="OncRpcClientAuthBase"/> class is the base class for handling all protocol issues of
@@ -34,7 +34,7 @@ public abstract class OncRpcClientAuthBase
     /// Decodes ONC/RPC authentication information in form of a verifier when receiving an ONC/RPC
     /// reply message.
     /// </summary>
-    /// <exception cref="OncRpcAuthenticationException">    if the received verifier is not kosher. </exception>
+    /// <exception cref="OncRpcAuthException">    if the received verifier is not kosher. </exception>
     /// <exception cref="OncRpcException">                  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">            Thrown when an I/O error condition occurs. </exception>
     /// <exception cref="OncRpcException">                  . </exception>

@@ -1,6 +1,6 @@
 using static System.Net.WebRequestMethods;
 
-namespace cc.isr.ONC.RPC;
+namespace cc.isr.ONC.RPC.Client;
 
 /// <summary>
 /// The <see cref="OncRpcClientAuthUnix"/> class handles protocol issues of ONC/RPC 
@@ -62,7 +62,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// "shorthand" credential together with the previous reply message, it
     /// is used instead of the original credential.
     /// </remarks>
-    /// <exception cref="OncRpcAuthenticationException">    Thrown when an ONC/RPC Authentication
+    /// <exception cref="OncRpcAuthException">    Thrown when an ONC/RPC Authentication
     ///                                                     error condition occurs. </exception>
     /// <param name="encoder">  XDR stream where to encode the credential and the verifier to. </param>
     ///
@@ -78,14 +78,14 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
             // is encoded as a variable-sized bunch of octets.
 
             if ( this.gids.Length > OncRpcAuthConstants.OncRpcMaxAllowedGroups || this.machinename.Length > OncRpcAuthConstants.OncRpcMaxMachineNameLength )
-                throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
+                throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
             encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeUnix );
 
             // length = length of timestamp + length of machine name + length of user id + length of group id + length of vector of group ids
 
             int len = 4 + (this.machinename.Length + 7 & ~3) + 4 + 4 + this.gids.Length * 4 + 4;
             if ( len > OncRpcAuthConstants.OncRpcMaxAuthBytes )
-                throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
+                throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
             encoder.EncodeInt( len );
             encoder.EncodeInt( this.Timestamp );
             encoder.EncodeString( this.machinename );
@@ -112,7 +112,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// Decodes ONC/RPC authentication information in form of a verifier when receiving an ONC/RPC
     /// reply message.
     /// </summary>
-    /// <exception cref="OncRpcAuthenticationException">    if the received verifier is not kosher. </exception>
+    /// <exception cref="OncRpcAuthException">    if the received verifier is not kosher. </exception>
     /// <param name="decoder">  XDR stream from which to receive the verifier sent together with an
     ///                         ONC/RPC reply message. </param>
     ///
@@ -135,7 +135,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
                     // exception will be thrown.
 
                     if ( decoder.DecodeInt() != 0 )
-                        throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
+                        throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
                     break;
                 }
 
@@ -148,7 +148,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
 
                     this.shorthandCred = decoder.DecodeDynamicOpaque();
                     if ( this.shorthandCred.Length > OncRpcAuthConstants.OncRpcMaxAuthBytes )
-                        throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthFailed );
+                        throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
                     break;
                 }
 
@@ -157,7 +157,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
 
                     // Do not accept any other kind of verifier sent.
 
-                    throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthInvalidResponse );
+                    throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthInvalidResponse );
                 }
         }
     }

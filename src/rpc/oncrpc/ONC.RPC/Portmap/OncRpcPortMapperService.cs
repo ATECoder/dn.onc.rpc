@@ -273,7 +273,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
             if ( version == OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber )
                 switch ( procedure )
                 {
-                    case 0:
+                    case OncRpcPortmapServiceProcedure.OncRpcPortmapPing:
                         {
                             // handle NULL call.
                             call.RetrieveCall( VoidXdrCodec.VoidXdrCodecInstance );
@@ -281,7 +281,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                             break;
                         }
 
-                    case OncRpcPortmapServices.OncRpcPortmapGetPortNumber:
+                    case OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber:
                         {
                             // handle port query
                             OncRpcServerIdentifierCodec requestCodec = new();
@@ -291,7 +291,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                             break;
                         }
 
-                    case OncRpcPortmapServices.OncRpcPortmapRegisterServer:
+                    case OncRpcPortmapServiceProcedure.OncRpcPortmapRegisterServer:
                         {
                             // handle port registration
 
@@ -305,7 +305,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                             break;
                         }
 
-                    case OncRpcPortmapServices.OncRpcPortmapUnregisterServer:
+                    case OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer:
                         {
                             // handle port deregistration
                             OncRpcServerIdentifierCodec requestCodec = new();
@@ -317,7 +317,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                             break;
                         }
 
-                    case OncRpcPortmapServices.OncRpcPortmapListServersInfo:
+                    case OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo:
                         {
                             // list all registrations
                             call.RetrieveCall( VoidXdrCodec.VoidXdrCodecInstance );

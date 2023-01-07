@@ -1,4 +1,4 @@
-namespace cc.isr.ONC.RPC;
+namespace cc.isr.ONC.RPC.Client;
 
 /// <summary>
 /// The <see cref="OncRpcClientCallMessage"/> class represents a remote procedure call message on

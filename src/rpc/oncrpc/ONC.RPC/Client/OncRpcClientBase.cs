@@ -1,4 +1,6 @@
-namespace cc.isr.ONC.RPC;
+using cc.isr.ONC.RPC.Portmap;
+
+namespace cc.isr.ONC.RPC.Client;
 
 /// <summary>
 /// The abstract <see cref="OncRpcClientBase"/> class is the foundation for protocol-specific ONC/RPC
@@ -179,7 +181,7 @@ namespace cc.isr.ONC.RPC;
 /// </code>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.
 /// </remarks>
-public abstract class OncRpcClientBase
+public abstract class OncRpcClientBase : IDisposable
 {
 
     /// <summary>   (Immutable) the default buffer size. </summary>
@@ -352,7 +354,7 @@ public abstract class OncRpcClientBase
     /// reply message is expected. </para>
     /// </remarks>
     /// <value> The timeout in milliseconds. </value>
-    public int Timeout { get; set; } = OncRpcClientBase.DefaultTimeout;
+    public int Timeout { get; set; } = DefaultTimeout;
 
     /// <summary>
     /// Gets or sets (private) the program number of the ONC/RPC server to communicate with.
@@ -409,4 +411,63 @@ public abstract class OncRpcClientBase
     /// <value> The identifier of the next transaction. </value>
     internal int MessageId { get; private set; }
 
+    #region " IDisposable Implementation "
+
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
+    /// resources.
+    /// </summary>
+    /// <remarks> 
+    /// Takes account of and updates <see cref="IsDisposed"/>.
+    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// </remarks>
+    public void Dispose()
+    {
+        if ( this.IsDisposed ) { return; }
+        try
+        {
+            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            this.Dispose( true );
+
+            // uncomment the following line if Finalize() is overridden above.
+            GC.SuppressFinalize( this );
+        }
+        finally
+        {
+            this.IsDisposed = true;
+        }
+    }
+
+    /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
+    /// <value> True if this object is disposed, false if not. </value>
+    protected bool IsDisposed { get; private set; }
+
+    /// <summary>
+    /// Releases the unmanaged resources used by the XdrDecodingStreamBase and optionally releases
+    /// the managed resources.
+    /// </summary>
+    /// <param name="disposing">    True to release both managed and unmanaged resources; false to
+    ///                             release only unmanaged resources. </param>
+    protected virtual void Dispose( bool disposing )
+    {
+        if ( disposing )
+        {
+            // dispose managed state (managed objects)
+        }
+
+        // free unmanaged resources and override finalizer
+        // I am assuming that the socket used in the derived classes include unmanaged resources.
+        this.Close();
+
+        // set large fields to null
+    }
+
+    /// <summary>   Finalizer. </summary>
+    ~OncRpcClientBase()
+    {
+        if ( this.IsDisposed ) { return; }
+        this.Dispose( false );
+    }
+
+    #endregion
 }

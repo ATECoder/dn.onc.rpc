@@ -117,16 +117,16 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
             // null. Many thanks to Michael Smith for tracking down this one.
 
             // @atecoder: added shutdown
+            Socket deadSocket = this._socket;
             try
             {
-                if ( this._socket.Connected )
-                    this._socket.Shutdown( SocketShutdown.Both );
+                if ( deadSocket.Connected )
+                    deadSocket.Shutdown( SocketShutdown.Both );
             }
             catch ( Exception ex )
             {
                 Console.WriteLine( $"Failed socket shutdown: \n{ex} " );
             }
-            Socket deadSocket = this._socket;
             this._socket = null;
             try
             {
@@ -489,7 +489,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
 
                 try
                 {
-                    if ( ex is OncRpcAuthenticationException exception )
+                    if ( ex is OncRpcAuthException exception )
                         callInfo.ReplyAuthError( exception.AuthStatus );
                     else
                         callInfo.ReplySystemError();

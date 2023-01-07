@@ -37,7 +37,7 @@ public abstract class OncRpcServerAuthBase
     ///
     /// <exception cref="OncRpcException">                Thrown when an ONC/RPC error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">          Thrown when an I/O error condition occurs. </exception>
-    /// <exception cref="OncRpcAuthenticationException">  Thrown when an ONC/RPC Authentication
+    /// <exception cref="OncRpcAuthException">  Thrown when an ONC/RPC Authentication
     ///                                                   error condition occurs. </exception>
     public static OncRpcServerAuthBase NewOncRpcServerAuto( XdrDecodingStreamBase decoder, OncRpcServerAuthBase recycle )
     {
@@ -91,7 +91,7 @@ public abstract class OncRpcServerAuthBase
                         // ONC/RPC implementation does it. But don't ask me why they do
                         // it this way...!
 
-                        throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAuthRejectedCredential );
+                        throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthRejectedCredential );
                     }
             }
         return auth;

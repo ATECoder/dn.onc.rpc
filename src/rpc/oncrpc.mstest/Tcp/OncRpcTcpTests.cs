@@ -210,11 +210,11 @@ public class OncRpcTcpTests
         {
             client.CallAuthenticate( AuthenticationConstants.MachineName, userId, groupId );
         }
-        catch ( OncRpcAuthenticationException ae )
+        catch ( OncRpcAuthException ae )
         {
             if ( ae.AuthStatus != OncRpcAuthStatus.OncRpcAuthBadCredential )
             {
-                Assert.Fail( $"received {nameof( OncRpcAuthenticationException )} with a incorrect status of {ae.AuthStatus}" );
+                Assert.Fail( $"received {nameof( OncRpcAuthException )} with a incorrect status of {ae.AuthStatus}" );
             }
             Console.WriteLine( "okay" );
         }
@@ -260,9 +260,9 @@ public class OncRpcTcpTests
             client.CallAuthenticate( AuthenticationConstants.MachineName, userId, groupId );
             Console.WriteLine( "okay" );
         }
-        catch ( OncRpcAuthenticationException ae )
+        catch ( OncRpcAuthException ae )
         {
-            Assert.Fail( $"received {nameof( OncRpcAuthenticationException )} with a status of {ae.AuthStatus}: {ae}" );
+            Assert.Fail( $"received {nameof( OncRpcAuthException )} with a status of {ae.AuthStatus}: {ae}" );
         }
     }
 

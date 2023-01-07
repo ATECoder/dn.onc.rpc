@@ -1,3 +1,5 @@
+using cc.isr.ONC.RPC.Client;
+
 namespace cc.isr.ONC.RPC;
 
 /// <summary>

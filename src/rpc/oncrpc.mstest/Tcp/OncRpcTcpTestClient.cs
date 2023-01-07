@@ -1,3 +1,4 @@
+using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.MSTest.Codecs;
 
 #nullable enable

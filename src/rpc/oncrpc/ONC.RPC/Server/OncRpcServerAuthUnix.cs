@@ -79,7 +79,7 @@ public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
     /// verifier) on the server side.
     /// </summary>
     /// <exception cref="OncRpcException">                  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="OncRpcAuthenticationException">    Thrown when an ONC/RPC Authentication
+    /// <exception cref="OncRpcAuthException">    Thrown when an ONC/RPC Authentication
     ///                                                     error condition occurs. </exception>
     /// <exception cref="System.IO.IOException">            Thrown when an I/O error condition occurs. </exception>
     /// <param name="decoder">  XDR stream from which the authentication object is restored. </param>
@@ -118,7 +118,7 @@ public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
         // according to Sun's specification.
 
         if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
-            throw new OncRpcAuthenticationException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
+            throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
     }
 
     /// <summary>
