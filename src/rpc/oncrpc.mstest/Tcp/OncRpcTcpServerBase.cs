@@ -31,6 +31,8 @@ public abstract class OncRpcTcpServerBase : OncRpcServerStubBase, IOncRpcDispatc
             new OncRpcTcpServerTransport(this, bindAddr, port, info, 32768)
         };
         this.SetTransports( transports );
+
+        this.CharacterEncoding = XdrTcpEncodingStream.DefaultEncoding;
     }
 
 

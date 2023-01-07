@@ -388,12 +388,18 @@ public abstract class OncRpcClientBase : IDisposable
     /// </value>
     public OncRpcClientAuthBase Auth { get; set; }
 
+    /// <summary>   Gets or sets the default encoding. </summary>
+    /// <remarks>
+    /// The default encoding for VXI-11 is <see cref="Encoding.ASCII"/>, which is a subset of <see cref="Encoding.UTF8"/>
+    /// </remarks>
+    /// <value> The default encoding. </value>
+    public static Encoding DefaultEncoding { get; set; } = Encoding.UTF8;
+
     /// <summary>
-    /// Gets or sets the encoding to use when serializing strings. If <see langword="null"/>, the system's
-    /// default encoding is to be used.
+    /// Gets or sets the encoding to use when serializing strings. 
     /// </summary>
     /// <value> The character encoding. </value>
-    public virtual string CharacterEncoding { get; set; }
+    public virtual Encoding CharacterEncoding { get; set; } = XdrDecodingStreamBase.DefaultEncoding;
 
     /// <summary>   Create next transaction (message) identifier. </summary>
     internal virtual void NextTransactionId()

@@ -151,6 +151,7 @@ public class OncRpcTcpClient : OncRpcClientBase
         // communicate at all.
         this.Encoder = new XdrTcpEncodingStream( this._socket, bufferSize );
         this.Decoder = new XdrTcpDecodingStream( this._socket, bufferSize );
+        this.CharacterEncoding = OncRpcClientBase.DefaultEncoding;
     }
 
     /// <summary>
@@ -163,11 +164,11 @@ public class OncRpcTcpClient : OncRpcClientBase
     {
         if ( this._socket != null )
         {
-            Socket deadSocket = this._socket;
+            Socket socket = this._socket;
             try
             {
-                if ( deadSocket.Connected )
-                    deadSocket.Shutdown( SocketShutdown.Both );
+                if ( socket.Connected )
+                    socket.Shutdown( SocketShutdown.Both );
             }
             catch ( Exception ex )
             {
@@ -176,10 +177,7 @@ public class OncRpcTcpClient : OncRpcClientBase
             this._socket = null;
             try
             {
-                deadSocket.Close();
-                // close is a wrapper class around dispose so this 
-                // is superfluous unless the close changes.
-                deadSocket.Dispose();
+                socket.Close();
             }
             catch ( Exception ex )
             {
@@ -189,12 +187,11 @@ public class OncRpcTcpClient : OncRpcClientBase
 
         if ( this.Encoder != null )
         {
-            XdrTcpEncodingStream deadEncoder = this.Encoder;
+            XdrEncodingStreamBase xdrStream = this.Encoder;
             this.Encoder = null;
             try
             {
-                deadEncoder.Close();
-                deadEncoder.Dispose();
+                xdrStream.Close();
             }
             catch ( Exception ex )
             {
@@ -204,12 +201,11 @@ public class OncRpcTcpClient : OncRpcClientBase
 
         if ( this.Decoder != null )
         {
-            XdrTcpDecodingStream deadDecoder = this.Decoder;
+            XdrDecodingStreamBase xdrStream = this.Decoder;
             this.Decoder = null;
             try
             {
-                deadDecoder.Close();
-                deadDecoder.Dispose();
+                xdrStream.Close();
             }
             catch ( Exception ex )
             {
@@ -253,11 +249,10 @@ public class OncRpcTcpClient : OncRpcClientBase
     public int TransmissionTimeout { get; set; } = DefaultTransmissionTimeout;
 
     /// <summary>
-    /// Gets or sets the encoding to use when serializing strings. If <see langword="null"/>, the
-    /// system's default encoding is to be used.
+    /// Gets or sets the encoding to use when serializing strings.
     /// </summary>
     /// <value> The character encoding. </value>
-    public override string CharacterEncoding
+    public override Encoding CharacterEncoding
     {
         get => base.CharacterEncoding;
         set {

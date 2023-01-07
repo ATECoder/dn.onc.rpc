@@ -1,6 +1,7 @@
 using System.IO;
 using System.Net.Sockets;
 
+using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Portmap;
 using cc.isr.XDR;
 
@@ -77,11 +78,11 @@ public abstract class OncRpcServerTransportBase : IDisposable
     {
         if ( this.Encoder != null )
         {
-            XdrEncodingStreamBase deadXdrStream = this.Encoder;
+            XdrEncodingStreamBase xdrStream = this.Encoder;
             this.Encoder = null;
             try
             {
-                deadXdrStream.Close();
+                xdrStream.Close();
             }
             catch ( System.IO.IOException )
             {
@@ -92,11 +93,11 @@ public abstract class OncRpcServerTransportBase : IDisposable
         }
         if ( this.Decoder != null )
         {
-            XdrDecodingStreamBase deadXdrStream = this.Decoder;
+            XdrDecodingStreamBase xdrStream = this.Decoder;
             this.Decoder = null;
             try
             {
-                deadXdrStream.Close();
+                xdrStream.Close();
             }
             catch ( System.IO.IOException )
             {
@@ -122,16 +123,22 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// <value> The protocol. </value>
     internal int Protocol { get; private set; }
 
-    private string _characterEncoding;
+    /// <summary>   Gets or sets the default encoding. </summary>
+    /// <remarks>
+    /// The default encoding for VXI-11 is <see cref="Encoding.ASCII"/>, which is a subset of <see cref="Encoding.UTF8"/>
+    /// </remarks>
+    /// <value> The default encoding. </value>
+    public static Encoding DefaultEncoding { get; set; } = Encoding.UTF8;
+
+    private Encoding _characterEncoding;
     /// <summary>
-    /// Gets or sets the character encoding for serializing strings. If <see langword="null"/>, the
-    /// system's default encoding is to be used.
+    /// Gets or sets the character encoding for serializing strings. 
     /// </summary>
     /// <value>
     /// The encoding for serializing strings. If <see langword="null"/>, then the
     /// system's default encoding is used.
     /// </value>
-    public string CharacterEncoding
+    public Encoding CharacterEncoding
     {
         get => this._characterEncoding;
         set {

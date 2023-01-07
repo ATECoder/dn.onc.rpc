@@ -62,7 +62,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <exception cref="IOException">      Thrown when an I/O error condition occurs. </exception>
     public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize ) : base( host, program, version, port, OncRpcProtocols.OncRpcUdp )
     {
-        this.RetransmissionTimeout = Timeout;
+        this.RetransmissionTimeout = this.Timeout;
 
         // Constructs the inherited part of our object. This will also try to
         // lookup the port of the desired ONC/RPC server, if no port number
@@ -80,8 +80,7 @@ public class OncRpcUdpClient : OncRpcClientBase
         if ( this._socket.ReceiveBufferSize < bufferSize )
             this._socket.ReceiveBufferSize = bufferSize;
 
-        // Note: we don't do a
-        //   socket.connect(host, this.port);
+        // Note: we don't do a socket.connect(host, this.port);
         // here anymore. XdrUdpEncodingStream long since then supported
         // specifying the destination of an ONC/RPC UDP packet when
         // start serialization. In addition, connecting a UDP socket disables
@@ -105,11 +104,11 @@ public class OncRpcUdpClient : OncRpcClientBase
     {
         if ( this._socket != null )
         {
-            Socket deadSocket = this._socket;
+            Socket socket = this._socket;
             try
             {
-                if ( deadSocket.Connected )
-                    deadSocket.Shutdown( SocketShutdown.Both );
+                if ( socket.Connected )
+                    socket.Shutdown( SocketShutdown.Both );
             }
             catch ( Exception ex )
             {
@@ -118,10 +117,7 @@ public class OncRpcUdpClient : OncRpcClientBase
             this._socket = null;
             try
             {
-                deadSocket.Close();
-                // close is a wrapper class around dispose so this 
-                // is superfluous unless the close changes.
-                deadSocket.Dispose();
+                socket.Close();
             }
             catch ( Exception ex )
             {
@@ -131,12 +127,11 @@ public class OncRpcUdpClient : OncRpcClientBase
 
         if ( this._encoder != null )
         {
-            XdrUdpEncodingStream  deadEncoder = this._encoder;
+            XdrEncodingStreamBase  xdrStream = this._encoder;
             this._encoder = null;
             try
             {
-                deadEncoder.Close();
-                deadEncoder.Dispose();
+                xdrStream.Close();
             }
             catch ( Exception ex )
             {
@@ -146,12 +141,11 @@ public class OncRpcUdpClient : OncRpcClientBase
 
         if ( this._decoder != null )
         {
-            XdrUdpDecodingStream deadDecoder = this._decoder;
+            XdrDecodingStreamBase xdrStream = this._decoder;
             this._decoder = null;
             try
             {
-                deadDecoder.Close();
-                deadDecoder.Dispose();
+                xdrStream.Close();
             }
             catch ( Exception ex )
             {
@@ -203,11 +197,10 @@ public class OncRpcUdpClient : OncRpcClientBase
     public int RetransmissionTimeout { get; set; }
 
     /// <summary>
-    /// Gets or sets the encoding to use when serializing strings. If <see langword="null"/>, the
-    /// system's default encoding is to be used.
+    /// Gets or sets the encoding to use when serializing strings. 
     /// </summary>
     /// <value> The character encoding. </value>
-    public override string CharacterEncoding
+    public override Encoding CharacterEncoding
     {
         get => base.CharacterEncoding;
         set {

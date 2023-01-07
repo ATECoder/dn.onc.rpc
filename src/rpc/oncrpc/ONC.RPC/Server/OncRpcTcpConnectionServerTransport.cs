@@ -117,11 +117,11 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
             // null. Many thanks to Michael Smith for tracking down this one.
 
             // @atecoder: added shutdown
-            Socket deadSocket = this._socket;
+            Socket socket = this._socket;
             try
             {
-                if ( deadSocket.Connected )
-                    deadSocket.Shutdown( SocketShutdown.Both );
+                if ( socket.Connected )
+                    socket.Shutdown( SocketShutdown.Both );
             }
             catch ( Exception ex )
             {
@@ -130,28 +130,25 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
             this._socket = null;
             try
             {
-                deadSocket.Close();
-                // close is a wrapper class around dispose so this 
-                // is superfluous unless the close changes.
-                deadSocket.Dispose();
+                socket.Close();
             }
             catch ( Exception ex )
             {
                 Console.WriteLine( $"Failed closing the socket: \n{ex} " );
             }
         }
+
         base.Close();
-        if ( this._parent != null )
-        {
-            this._parent.RemoveTransport( this );
-            this._parent = null;
-        }
+
+        this._parent?.RemoveTransport( this );
+        this._parent = null;
     }
 
     /// <summary>   Finalizer. </summary>
     ~OncRpcTcpConnectionServerTransport()
     {
-        this._parent?.RemoveTransport( this );
+        if ( this.IsDisposed ) return;
+        this.Dispose( false );
     }
 
     /// <summary>

@@ -4,7 +4,6 @@ using System.Net.Sockets;
 
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.ONC.RPC.Server;
-using cc.isr.XDR.Codecs;
 
 #nullable enable
 
@@ -49,6 +48,8 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
             new OncRpcTcpServerTransport( this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, info, OncRpcPortMapService.DefaultBufferSize)
         };
         this.SetTransports( transports );
+
+        this.CharacterEncoding = XdrTcpEncodingStream.DefaultEncoding;
 
         // Finally, we add ourself to the list of registered ONC/RPC servers.
         // This is just a convenience.
