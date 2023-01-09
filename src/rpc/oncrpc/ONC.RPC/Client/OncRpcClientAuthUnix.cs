@@ -103,6 +103,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
         // We also need to encode the verifier, which is always of type 'none'.
 
         encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
+        // and the length the 'none' credentials.
         encoder.EncodeInt( 0 );
     }
 

@@ -89,7 +89,7 @@ public abstract class OncRpcServerStubBase : IDisposable
 
     #endregion
 
-    #region " settings "
+    #region " members "
 
     private Encoding _characterEncoding;
     /// <summary>

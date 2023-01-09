@@ -66,8 +66,9 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
                         this.Auth.EncodeVerfier( encoder );
                     else
                     {
-                        encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
-                        encoder.EncodeInt( 0 );
+                        // encode the authentication type as none as set length to zero.
+                        encoder.EncodeInt( ( int ) OncRpcServerAuthNone.AuthType );
+                        encoder.EncodeInt( OncRpcServerAuthNone.AuthMessageLength );
                     }
 
                     // Even if the call was accepted by the server, it can still
@@ -128,7 +129,8 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
         }
     }
 
-    /// <summary>   gets or sets the authentication protocol handling object. </summary>
+    /// <summary>   gets or sets the authentication protocol handling object. 
+    /// <defaults to <see cref="OncRpcServerAuthNone"/> </summary>
     /// <value> The authentication. </value>
-    internal OncRpcServerAuthBase Auth { get; private set; }
+    internal OncRpcServerAuthBase Auth { get; private set; } = new OncRpcServerAuthNone();
 }

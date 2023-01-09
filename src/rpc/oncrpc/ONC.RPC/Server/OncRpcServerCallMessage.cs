@@ -1,3 +1,5 @@
+using cc.isr.ONC.RPC.Client;
+
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -56,9 +58,9 @@ public class OncRpcServerCallMessage : OncRpcCallMessageBase
 
     /// <summary>
     /// Gets or sets the authentication protocol handling object retrieved together with the call
-    /// message itself.
+    /// message itself. Defaults to <see cref="OncRpcServerAuthNone"/>
     /// </summary>
     /// <value> The authentication. </value>
-    public OncRpcServerAuthBase Auth { get; set; }
+    public OncRpcServerAuthBase Auth { get; set; } = new OncRpcServerAuthNone();
 
 }

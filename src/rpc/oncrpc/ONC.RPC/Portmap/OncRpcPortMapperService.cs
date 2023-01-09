@@ -106,7 +106,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
 
     #endregion
 
-    #region " settings "
+    #region " members "
 
     /// <summary>  Gets List of IP addresses assigned to this host. </summary>
     /// <value> The locals. </value>

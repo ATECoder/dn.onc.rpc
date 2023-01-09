@@ -9,6 +9,13 @@ namespace cc.isr.ONC.RPC.Client;
 /// </remarks>
 public class OncRpcClientAuthNone : OncRpcClientAuthBase
 {
+
+    /// <summary>   (Immutable) type of the authentication for this authentication class. </summary>
+    public const OncRpcAuthType AuthType = OncRpcAuthType.OncRpcAuthTypeNone;
+
+    /// <summary>   (Immutable) length of the authentication message for this authentication class. </summary>
+    public const int AuthMessageLength = 0;
+
     /// <summary>
     /// Encodes ONC/RPC authentication information in form of a credential and a verifier when
     /// sending an ONC/RPC call message.
@@ -19,17 +26,18 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     internal override void EncodeCredentialAndVerfier( XdrEncodingStreamBase encoder )
     {
+
         // The credential only consists of the indication of no authentication (none) with
         // no opaque authentication data following.
-        encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
-        encoder.EncodeInt( 0 );
+        encoder.EncodeInt( ( int ) OncRpcClientAuthNone.AuthType );
+        encoder.EncodeInt( OncRpcClientAuthNone.AuthMessageLength );
 
         // But we also need to encode the verifier. This is always of type
         // none too. For some obscure historical reasons, we have to
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
-        encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
-        encoder.EncodeInt( 0 );
+        encoder.EncodeInt( ( int ) OncRpcClientAuthNone.AuthType );
+        encoder.EncodeInt( OncRpcClientAuthNone.AuthMessageLength );
     }
 
     /// <summary>
@@ -47,7 +55,7 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
         // Make sure that we received a 'none' verifier and that it
         // does not contain any opaque data. Anything different from this
         // is not kosher and an authentication exception will be thrown.
-        if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
+        if ( decoder.DecodeInt() != ( int ) OncRpcClientAuthNone.AuthType || decoder.DecodeInt() != OncRpcClientAuthNone.AuthMessageLength )
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
     }
 

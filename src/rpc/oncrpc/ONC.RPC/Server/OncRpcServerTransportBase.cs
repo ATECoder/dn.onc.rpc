@@ -152,7 +152,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
 
     #endregion
 
-    #region " settings "
+    #region " members "
 
     /// <summary>
     /// Gets or sets the port number of socket this server transport listens on for incoming ONC/RPC

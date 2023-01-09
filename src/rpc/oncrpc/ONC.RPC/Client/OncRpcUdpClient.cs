@@ -144,7 +144,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     #endregion
 
-    #region " settings "
+    #region " members "
 
     /// <summary>
     /// Gets or sets the retransmission mode used when resending ONC/RPC calls. Default mode is

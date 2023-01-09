@@ -10,6 +10,14 @@ namespace cc.isr.ONC.RPC.Server;
 public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
 {
 
+    /// <summary>   (Immutable) type of the authentication for this authentication class. </summary>
+    public const OncRpcAuthType AuthType = OncRpcAuthType.OncRpcAuthTypeNone;
+
+    /// <summary>   (Immutable) length of the authentication message for this authentication class. </summary>
+    public const int AuthMessageLength = 0;
+
+    #region " construction and cleanup "
+
     /// <summary>   Default constructor. </summary>
     public OncRpcServerAuthNone() : base( OncRpcAuthType.OncRpcAuthTypeNone )
     {
@@ -34,14 +42,18 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
         if ( decoder.DecodeInt() != 0 )
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthBadCredential );
 
-        // We also need to decode the verifier. This must be of type
-        // 'none' too. For some obscure historical reasons, we have to
+        // We also need to decode the verifier and length. The verifier must be of type
+        // 'none' too with a length of 0. For some obscure historical reasons, we have to
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
 
-        if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
+        if ( decoder.DecodeInt() != ( int ) OncRpcServerAuthNone.AuthType  || decoder.DecodeInt() != OncRpcServerAuthNone.AuthMessageLength )
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
     }
+
+    #endregion
+
+    #region " members "
 
     /// <summary>
     /// Encodes -- that is: serializes -- an ONC/RPC authentication object (its verifier) on the
@@ -58,10 +70,6 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
         encoder.EncodeInt( 0 );
     }
 
-    /// <summary>
-    /// (Immutable)
-    /// Singleton to use when an authentication object for <see cref="OncRpcAuthType.OncRpcAuthTypeNone"/>
-    /// is needed.
-    /// </summary>
-    public static readonly OncRpcServerAuthNone AuthNoneInstance = new();
+    #endregion
+
 }

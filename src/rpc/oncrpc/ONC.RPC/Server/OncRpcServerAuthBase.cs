@@ -66,7 +66,7 @@ public abstract class OncRpcServerAuthBase
                         // Create a new authentication object and pull its state off
                         // the XDR stream.
 
-                        auth = OncRpcServerAuthNone.AuthNoneInstance;
+                        auth = new OncRpcServerAuthNone();
                         auth.DecodeCredentialAndVerfier( decoder );
                         break;
                     }

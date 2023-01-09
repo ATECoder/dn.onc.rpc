@@ -194,7 +194,7 @@ public class OncRpcTcpClient : OncRpcClientBase
 
     #endregion
 
-    #region " settings "
+    #region " members "
 
     /// <summary>
     /// Gets or sets or set the XDR encoding stream used for sending requests via TCP/IP to an
