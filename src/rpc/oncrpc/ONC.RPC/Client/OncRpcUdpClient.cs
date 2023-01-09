@@ -1,7 +1,6 @@
 
 using System.Net.Sockets;
 using System.IO;
-using cc.isr.XDR;
 
 namespace cc.isr.ONC.RPC.Client;
 
@@ -251,7 +250,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                     }
                     catch ( IOException e )
                     {
-                        throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotSend, e.Message );
+                        throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotSend, e );
                     }
 
                     // Receive reply message from server -- at least try to do so...
@@ -409,9 +408,6 @@ public class OncRpcUdpClient : OncRpcClientBase
                             // as we might need to resend the (lost) RPC request
                             // datagram.
 
-                            //Console.WriteLine("This is supposed to be ignored");
-                            //Console.WriteLine(e.Message);
-                            //Console.WriteLine(e.StackTrace);
                             break;
                         }
                         catch ( IOException e )
@@ -428,7 +424,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                             {
                             }
                             // skip UDP record
-                            throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotReceive, e.Message );
+                            throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotReceive, e );
                         }
                         catch ( OncRpcException e )
                         {
@@ -465,7 +461,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                         }
                         catch ( IOException e )
                         {
-                            throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotReceive, e.Message );
+                            throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotReceive, e );
                         }
                     }
                     // @jmw 12/18/2009 fix for refresh/continue in the c# implementation
@@ -552,7 +548,7 @@ public class OncRpcUdpClient : OncRpcClientBase
             }
             catch ( IOException e )
             {
-                throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotSend, e.Message );
+                throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotSend, e );
             }
 
             // Now enter the great loop where sit waiting for replies to our
@@ -622,7 +618,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                         }
                         catch ( IOException e )
                         {
-                            throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotReceive, e.Message );
+                            throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotReceive, e );
                         }
                 }
                 catch ( SocketException )
@@ -641,7 +637,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                     // Argh. Trouble with the transport. Seems like we can't
                     // receive data. Gosh. Go away!
 
-                    throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotReceive, e.Message );
+                    throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotReceive, e );
                 }
             while ( DateTime.Now < stopTime );
             return;

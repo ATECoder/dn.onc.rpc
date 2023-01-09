@@ -129,9 +129,11 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
         // Make sure that we are really decoding an ONC/RPC message call
         // header. Otherwise, throw the appropriate OncRpcException exception.
 
-        this.MessageType = decoder.DecodeInt();
+        this.MessageType = ( OncRpcMessageType ) decoder.DecodeInt();
         if ( this.MessageType != OncRpcMessageType.OncRpcReplyMessageType )
-            throw new OncRpcException( OncRpcExceptionReason.OncRpcWrongMessageType );
+            throw new OncRpcException(
+                $"; expected {nameof( OncRpcMessageType.OncRpcCallMessageType )}({OncRpcMessageType.OncRpcCallMessageType}); actual: {this.MessageType}",
+                OncRpcExceptionReason.OncRpcWrongMessageType );
         this.ReplyStatus = decoder.DecodeInt();
         switch ( this.ReplyStatus )
         {
@@ -152,12 +154,17 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                         // reply using another authentication scheme than 'none', we
                         // will throw an exception. Also we check that no-one is
                         // actually sending opaque information within 'none'.
-
-                        if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone )
-                            throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
+                        int replyAuthType = decoder.DecodeInt();
+                        if ( replyAuthType != ( int ) OncRpcAuthType.OncRpcAuthTypeNone )
+                            throw new OncRpcAuthException(
+                                $"; expected {nameof( OncRpcAuthType.OncRpcAuthTypeNone )}({OncRpcAuthType.OncRpcAuthTypeNone}); actual: {replyAuthType}",
+                                OncRpcAuthStatus.OncRpcAuthFailed );
                         // then check on the message value.
-                        if ( decoder.DecodeInt() != 0 )
-                            throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
+                        int replyAuthLength = decoder.DecodeInt();
+                        if ( replyAuthLength != OncRpcClientAuthNone.AuthMessageLength )
+                            throw new OncRpcAuthException(
+                                $"; expected {nameof( OncRpcClientAuthNone.AuthMessageLength )}({OncRpcClientAuthNone.AuthMessageLength}); actual: {replyAuthLength}",
+                                OncRpcAuthStatus.OncRpcAuthFailed );
                     }
 
                     // Even if the call was accepted by the server, it can still

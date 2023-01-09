@@ -1,5 +1,3 @@
-using System.Net.Sockets;
-
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.ONC.RPC.Server;
 

@@ -298,7 +298,9 @@ public abstract class OncRpcClientBase : IDisposable
 
             default:
                 {
-                    throw new OncRpcException( OncRpcExceptionReason.OncRpcUnknownIpProtocol );
+                    throw new OncRpcException(
+                                $"; expected {nameof( OncRpcProtocols.OncRpcUdp )}({OncRpcProtocols.OncRpcUdp}) or {nameof( OncRpcProtocols.OncRpcTcp )}({OncRpcProtocols.OncRpcTcp}); actual: {protocol}",
+                                 OncRpcExceptionReason.OncRpcUnknownIpProtocol );
                 }
         }
     }

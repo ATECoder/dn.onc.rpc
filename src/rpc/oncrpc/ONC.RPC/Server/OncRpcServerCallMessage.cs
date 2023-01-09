@@ -1,5 +1,3 @@
-using cc.isr.ONC.RPC.Client;
-
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -31,16 +29,19 @@ public class OncRpcServerCallMessage : OncRpcCallMessageBase
         // Make sure that we are really decoding an ONC/RPC message call
         // header. Otherwise, throw the appropriate OncRpcException exception.
 
-        this.MessageType = decoder.DecodeInt();
+        this.MessageType = ( OncRpcMessageType ) decoder.DecodeInt();
         if ( this.MessageType != OncRpcMessageType.OncRpcCallMessageType )
-            throw new OncRpcException( OncRpcExceptionReason.OncRpcWrongMessageType );
+            throw new OncRpcException(
+                $"; expected {nameof( OncRpcMessageType.OncRpcCallMessageType )}({OncRpcMessageType.OncRpcCallMessageType}); actual: {this.MessageType}",
+                OncRpcExceptionReason.OncRpcWrongMessageType );
 
         // Make sure that the other side is talking the right slang --
         // we will only understand version 2 slang of ONC/RPC.
 
         this.ProtocolVersion = decoder.DecodeInt();
-        if ( this.ProtocolVersion != OncRpcProtocolVersion )
-            throw new OncRpcException( OncRpcExceptionReason.OncRpcClientServerVersionMismatch );
+        if ( this.ProtocolVersion != OncRpcServerCallMessage.OncRpcProtocolVersion )
+            throw new OncRpcException( $"; expected {nameof( OncRpcServerCallMessage.OncRpcProtocolVersion )}({OncRpcServerCallMessage.OncRpcProtocolVersion}); actual: {this.ProtocolVersion}",
+                OncRpcExceptionReason.OncRpcClientServerVersionMismatch );
 
         // Now decode the remaining fields of the call header.
 

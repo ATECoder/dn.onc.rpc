@@ -1,6 +1,5 @@
 using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Codecs;
-using cc.isr.XDR.Codecs;
 
 namespace cc.isr.ONC.RPC.Portmap;
 
@@ -165,7 +164,9 @@ public class OncRpcPortmapClient
 
             default:
                 {
-                    throw new OncRpcException( OncRpcExceptionReason.OncRpcUnknownIpProtocol );
+                    throw new OncRpcException(
+                                $"; expected {nameof( OncRpcProtocols.OncRpcUdp )}({OncRpcProtocols.OncRpcUdp}) or {nameof( OncRpcProtocols.OncRpcTcp )}({OncRpcProtocols.OncRpcTcp}); actual: {protocol}",
+                                OncRpcExceptionReason.OncRpcUnknownIpProtocol );
                 }
         }
     }
@@ -188,8 +189,6 @@ public class OncRpcPortmapClient
     /// number of a particular ONC/RPC server identified by the information tuple {program number,
     /// program version, protocol}.
     /// </summary>
-    /// <exception cref="OncRpcException">                      if the portmapper is not available
-    ///                                                         (reason is <see cref="OncRpcExceptionReason.OncRpcPortMapServiceFailure"/> ). </exception>
     /// <exception cref="OncRpcProgramNotRegisteredException">  if the requested program is not available. </exception>
     /// <param name="program">  Program number of the remote procedure call in question. </param>
     /// <param name="version">  Program version number. </param>
@@ -211,18 +210,19 @@ public class OncRpcPortmapClient
         // zero, then no appropriate server was found. In this case,
         // throw an exception, that the program requested could not be
         // found.
-        try
-        {
-            this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber, requestCodec, replyCodec );
-        }
-        catch ( OncRpcException )
-        {
-            throw new OncRpcException( OncRpcExceptionReason.OncRpcPortMapServiceFailure );
-        }
+
+        // @atecode: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
+        // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
+        // as the end point for these exceptions.
+
+        this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber, requestCodec, replyCodec );
 
         // In case the program is not registered, throw an exception too.
+        // @atecode: the specific 'Program Not Registered' exception was removed in favor of
+        // keeping things simple and adding a suffix message.
         return replyCodec.Port == 0
-            ? throw new OncRpcProgramNotRegisteredException()
+            ? throw new OncRpcException( "; the Portmap service returned a port number 0 where a non-zero port, e.g., 1024 for VXI-11, was expected",
+                                         OncRpcExceptionReason.OncRpcProgramNotRegistered )
             : replyCodec.Port;
     }
 
@@ -230,8 +230,6 @@ public class OncRpcPortmapClient
     /// Register an ONC/RPC with the given program number, version and protocol at the given port
     /// with the portmapper.
     /// </summary>
-    /// <exception cref="OncRpcException">  if the portmapper is not available (reason is
-    ///                                     <see cref="OncRpcExceptionReason.OncRpcPortMapServiceFailure"/>). </exception>
     /// <param name="program">  The number of the program to be registered. </param>
     /// <param name="version">  The version number of the program. </param>
     /// <param name="protocol"> The protocol spoken by the ONC/RPC server. Can be one of the
@@ -250,14 +248,13 @@ public class OncRpcPortmapClient
         // Try to contact the portmap process. If something goes "boing"
         // at this stage, then rethrow the exception as a generic portmap
         // failure exception.
-        try
-        {
-            this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapRegisterServer, requestCodec, resultCodec );
-        }
-        catch ( OncRpcException )
-        {
-            throw new OncRpcException( OncRpcExceptionReason.OncRpcPortMapServiceFailure );
-        }
+
+        // @atecode: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
+        // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
+        // as the end point for these exceptions.
+
+        this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapRegisterServer, requestCodec, resultCodec );
+
         return resultCodec.Value;
     }
 
@@ -266,15 +263,12 @@ public class OncRpcPortmapClient
     /// The portmapper will remove all entries with the same program number and version, regardless
     /// of the protocol and port number.
     /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="program">  The number of the program to be unregistered. </param>
     /// <param name="version">  The version number of the program. </param>
     /// <returns>
     /// Indicates whether deregistration succeeded (<see cref="T:true"/>)
     /// or was denied by the portmapper (<see cref="T:false"/>).
     /// </returns>
-    /// <exception cref="OncRpcException">  if the portmapper is not available (reason is
-    ///                                     <see cref="OncRpcExceptionReason.OncRpcPortMapServiceFailure"/>). </exception>
     public virtual bool UnsetPort( int program, int version )
     {
         // Fill in the request codec.
@@ -284,17 +278,13 @@ public class OncRpcPortmapClient
         // Try to contact the portmap process. If something goes "boing"
         // at this stage, then rethrow the exception as a generic portmap
         // failure exception.
-        try
-        {
-            this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer, requestCodec, replyCodec );
-        }
-        catch ( OncRpcException e )
-        {
-            // Temp output
-            Console.WriteLine( e.Message );
-            Console.WriteLine( e.StackTrace );
-            throw new OncRpcException( OncRpcExceptionReason.OncRpcPortMapServiceFailure );
-        }
+
+        // @atecode: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
+        // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
+        // as the end point for these exceptions.
+
+        this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer, requestCodec, replyCodec );
+
         return replyCodec.Value;
     }
 
@@ -303,9 +293,6 @@ public class OncRpcPortmapClient
     /// portmapper.
     /// </summary>
     /// <remarks>   2022-12-24. </remarks>
-    /// <exception cref="OncRpcException">  if the portmapper is not available with 
-    ///                                     <see cref="OncRpcException.Reason"/> = <see cref="OncRpcExceptionReason.OncRpcPortMapServiceFailure"/>). 
-    ///                                     </exception>
     /// <returns>
     /// vector of server descriptions <see cref="OncRpcServerIdentifierCodec"/>.
     /// </returns>
@@ -316,14 +303,12 @@ public class OncRpcPortmapClient
 
         // Try to contact the portmap process. On failure, rethrow the exception 
         // as a generic portmap failure exception.
-        try
-        {
-            this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo, VoidXdrCodec.VoidXdrCodecInstance, result );
-        }
-        catch ( OncRpcException )
-        {
-            throw new OncRpcException( OncRpcExceptionReason.OncRpcPortMapServiceFailure );
-        }
+
+        // @atecode: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
+        // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
+        // as the end point for these exceptions.
+
+        this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo, VoidXdrCodec.VoidXdrCodecInstance, result );
 
         // Copy the server identities from the Vector into the vector (array).
         OncRpcServerIdentifierCodec[] info = new OncRpcServerIdentifierCodec[result.ServerIdentifiers.Count];
@@ -332,18 +317,13 @@ public class OncRpcPortmapClient
     }
 
     /// <summary>   Pings the portmapper (try to call procedure 0). </summary>
-    /// <exception cref="OncRpcException">  if the portmapper is not available (reason is
-    ///                                     <see cref="OncRpcExceptionReason.OncRpcPortMapServiceFailure"/> ). </exception>
     public virtual void Ping()
     {
-        try
-        {
-            this.PortmapClient.Call( 0, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance );
-        }
-        catch ( OncRpcException )
-        {
-            throw new OncRpcException( OncRpcExceptionReason.OncRpcPortMapServiceFailure );
-        }
+        // @atecode: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
+        // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
+        // as the end point for these exceptions.
+
+        this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance );
     }
 
 }

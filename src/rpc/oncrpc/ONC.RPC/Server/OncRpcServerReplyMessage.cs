@@ -48,7 +48,7 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
         encoder.EncodeInt( this.MessageId );
-        encoder.EncodeInt( this.MessageType );
+        encoder.EncodeInt( ( int ) this.MessageType );
         encoder.EncodeInt( this.ReplyStatus );
         switch ( this.ReplyStatus )
         {
@@ -130,7 +130,7 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
     }
 
     /// <summary>   gets or sets the authentication protocol handling object. 
-    /// <defaults to <see cref="OncRpcServerAuthNone"/> </summary>
+    /// defaults to <see cref="OncRpcServerAuthNone"/> </summary>
     /// <value> The authentication. </value>
     internal OncRpcServerAuthBase Auth { get; private set; } = new OncRpcServerAuthNone();
 }

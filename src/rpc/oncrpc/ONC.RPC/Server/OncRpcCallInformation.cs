@@ -1,5 +1,3 @@
-using cc.isr.XDR;
-
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>

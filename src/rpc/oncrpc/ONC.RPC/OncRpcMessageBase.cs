@@ -16,15 +16,15 @@ public abstract class OncRpcMessageBase
     public const int DefaultMessageId = 0;
 
     /// <summary>
-    /// Constructs  a new server <see cref="OncRpcMessageBase"/> object with default values: a given message type
-    /// and no particular message identifier. The <see cref="MessageType"/> is initialized as 'not-specified'=-1.
+    /// Constructs a new <see cref="OncRpcMessageBase"/> object with default values: a given message id.
+    /// The <see cref="MessageType"/> is initialized as <see cref="OncRpcMessageType.NotSpecified"/> (-1).
     /// </summary>
     /// <param name="messageId">    The message id is used to identify matching ONC/RPC calls and
     ///                             replies. </param>
     public OncRpcMessageBase( int messageId )
     {
         this.MessageId = messageId;
-        this.MessageType = -1;
+        this.MessageType = OncRpcMessageType.NotSpecified;
     }
 
     /// <summary>
@@ -37,8 +37,8 @@ public abstract class OncRpcMessageBase
     /// <summary>
     /// The kind of ONC/RPC message, which can be either a call or a reply.  Can be one of the
     /// constants defined in <see cref="OncRpcMessageType"/>. The <see cref="MessageType"/> is
-    /// initialized as 'not-specified'=-1.
+    /// initialized as <see cref="OncRpcMessageType.NotSpecified"/> (-1).
     /// </summary>
     /// <value> The type of the message. </value>
-    public int MessageType { get; set; }
+    public OncRpcMessageType MessageType { get; set; }
 }

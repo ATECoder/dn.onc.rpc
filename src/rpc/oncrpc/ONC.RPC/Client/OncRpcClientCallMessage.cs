@@ -33,7 +33,7 @@ public class OncRpcClientCallMessage : OncRpcCallMessageBase
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
         encoder.EncodeInt( this.MessageId );
-        encoder.EncodeInt( this.MessageType );
+        encoder.EncodeInt( ( int ) this.MessageType );
         encoder.EncodeInt( this.ProtocolVersion );
         encoder.EncodeInt( this.Program );
         encoder.EncodeInt( this.Version );

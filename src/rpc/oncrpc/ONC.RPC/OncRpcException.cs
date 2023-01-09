@@ -1,6 +1,4 @@
-using System;
 using System.ComponentModel;
-using System.Linq;
 
 namespace cc.isr.ONC.RPC;
 
@@ -27,24 +25,21 @@ public class OncRpcException : Exception
     }
 
     /// <summary>
-    /// Constructs an <see cref="OncRpcException"/> with the specified detail message.
-    /// </summary>
-    /// <param name="message"> The detail message. </param>
-    public OncRpcException( string message ) : base()
-    {
-        this.Reason = OncRpcExceptionReason.OncRpcFailed;
-        this._message = message;
-    }
-
-    /// <summary>
     /// Constructs an <see cref="OncRpcException"/> with the specified detail reason and message.
     /// </summary>
     /// <param name="reason">  The detail reason. </param>
     /// <param name="message"> The detail message. </param>
-    public OncRpcException( OncRpcExceptionReason reason, string message ) : base()
+    public OncRpcException( OncRpcExceptionReason reason, string message ) : base( message )
     {
         this.Reason = reason;
-        this._message = message;
+    }
+
+    /// <summary>
+    /// Constructs an <see cref="OncRpcException"/> with the specified detail message.
+    /// </summary>
+    /// <param name="message"> The detail message. </param>
+    public OncRpcException( string message ) : this( OncRpcExceptionReason.OncRpcFailed, message )
+    {
     }
 
     /// <summary>
@@ -53,10 +48,28 @@ public class OncRpcException : Exception
     /// <remarks>   The detail message is derived automatically from the <paramref name="reason"/>. </remarks>
     /// <param name="reason">   The reason. This can be one of the constants -- oops, that should be
     ///                         "public final static integers" -- defined in this interface. </param>
-    public OncRpcException( OncRpcExceptionReason reason ) : base()
+    public OncRpcException( OncRpcExceptionReason reason ) : this( reason, Support.GetDescription( reason ) )
+    {
+    }
+
+    /// <summary>
+    /// Constructs an <see cref="OncRpcException"/> with the specified detail reason and inner exception.
+    /// </summary>
+    /// <param name="reason">           The detail reason. </param>
+    /// <param name="innerException">   The inner exception. </param>
+    public OncRpcException( OncRpcExceptionReason reason, Exception innerException ) : base( Support.GetDescription( reason ), innerException )
     {
         this.Reason = reason;
-        this._message = Support.GetDescription( reason );
+    }
+
+    /// <summary>
+    /// Constructs an <see cref="OncRpcException"/> with the specified reason and a message to append
+    /// to the default message.
+    /// </summary>
+    /// <param name="suffixMessage">    Message to append to default message. </param>
+    /// <param name="reason">           The detail reason. </param>
+    public OncRpcException( string suffixMessage, OncRpcExceptionReason reason ) : this( reason, Support.GetDescription( reason ) + suffixMessage )
+    {
     }
 
     /// <summary>   Converts a reason to a short description. </summary>
@@ -133,15 +146,6 @@ public class OncRpcException : Exception
                 return "unknown";
         }
     }
-
-    private readonly string _message;
-
-    /// <summary>   Returns the error message string of this ONC/RPC object. </summary>
-    /// <value>
-    /// The error message string of this <see cref="OncRpcException"/>
-    /// object if it was created either with an error message string or an ONC/RPC error code.
-    /// </value>
-    public override string Message => this._message;
 
     /// <summary>
     /// Specific (reason) for this <see cref="OncRpcException"/> <see cref="OncRpcException"/>, like
