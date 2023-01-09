@@ -24,12 +24,10 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// object will result in communication with the portmap process at
     /// <paramref name="host"/>.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="host">     The host where the ONC/RPC server resides. </param>
     /// <param name="program">  Program number of the ONC/RPC server to call. </param>
     /// <param name="version">  Program version number. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcTcpClient( IPAddress host, int program, int version ) : this( host, program, version, 0, 0 )
     {
     }
@@ -43,15 +41,13 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// object will result in communication with the portmap process at
     /// <paramref name="host"/> if <paramref name="port"/> is <c>0</c>. 
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="host">     The host where the ONC/RPC server resides. </param>
     /// <param name="program">  Program number of the ONC/RPC server to call. </param>
     /// <param name="version">  Program version number. </param>
     /// <param name="port">     The port number where the ONC/RPC server can be contacted. If <c>0</c>,
     ///                         then the <see cref="OncRpcUdpClient"/> object will ask the
     ///                         portmapper at <paramref name="host"/> for the port number. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcTcpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, 0 )
     {
     }
@@ -65,6 +61,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// object will result in communication with the portmap process at
     /// <paramref name="host"/> if <paramref name="port"/> is <c>0</c>.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="host">         The host where the ONC/RPC server resides. </param>
     /// <param name="program">      Program number of the ONC/RPC server to call. </param>
     /// <param name="version">      Program version number. </param>
@@ -78,9 +75,6 @@ public class OncRpcTcpClient : OncRpcClientBase
     ///                             long messages automatically into suitable pieces. Specifying zero
     ///                             will select the <see cref="OncRpcClientBase.DefaultBufferSize"/> (currently
     ///                             8192 bytes). </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcTcpClient( IPAddress host, int program, int version, int port, int bufferSize ) : this( host, program, version, port, bufferSize, -1 )
     {
     }
@@ -94,6 +88,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// object will result in communication with the portmap process at
     /// <paramref name="host"/> if <paramref name="port"/> is <c>0</c>.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="host">         The host where the ONC/RPC server resides. </param>
     /// <param name="program">      Program number of the ONC/RPC server to call. </param>
     /// <param name="version">      Program version number. </param>
@@ -111,9 +106,6 @@ public class OncRpcTcpClient : OncRpcClientBase
     ///                             server. If negative, a default implementation-specific timeout
     ///                             setting will apply. <i>Note that this timeout only applies to the
     ///                             connection phase, but <b>not</b> to later communication.</i> </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcTcpClient( IPAddress host, int program, int version, int port, int bufferSize, int timeout ) : base( host, program,
         version, port, OncRpcProtocols.OncRpcTcp )
     {
@@ -157,9 +149,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <summary>
     /// Close the connection to an ONC/RPC server and free all network-related resources.
     /// </summary>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public override void Close()
     {
         if ( this._socket is not null )
@@ -236,7 +226,7 @@ public class OncRpcTcpClient : OncRpcClientBase
 
     #endregion
 
-    #region " operations "
+    #region " actions "
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>
@@ -245,12 +235,11 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <see cref="BatchCall(int, IXdrCodec, bool)"/>
     /// as it provides better control over when the batch should be flushed to the server.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
     /// <param name="versionNumber">    Protocol version number. </param>
     /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
-    ///
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public override void Call( int procedureNumber, int versionNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
         lock ( this )
@@ -393,12 +382,11 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// client.call( 43, myFinalRequestCodec, myFinalResultCodec );
     /// </code>
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
     /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
     /// <param name="flush">            Make sure that all pending batched calls are sent to the
     ///                                 server. </param>
-    ///
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void BatchCall( int procedureNumber, IXdrCodec requestCodec, bool flush )
     {
         lock ( this )

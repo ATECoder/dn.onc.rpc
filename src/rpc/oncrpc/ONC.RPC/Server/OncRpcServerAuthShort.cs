@@ -12,10 +12,8 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// <summary>
     /// Constructs an server <see cref="OncRpcServerAuthShort"/> object and pulls its state off an XDR stream.
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="decoder">  XDR stream to retrieve the object state from. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcServerAuthShort( XdrDecodingStreamBase decoder ) : base( OncRpcAuthType.OncRpcAuthTypeShortHandUnix )
     {
         this.DecodeCredentialAndVerfier( decoder );
@@ -71,13 +69,8 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// verifier) to the original credentials of the caller. The caller saves network bandwidth and
     /// server CPU time when the shorthand credentials are used.
     /// </remarks>
-    /// <exception cref="OncRpcAuthException">  Thrown when an ONC/RPC Authentication
-    ///                                                   error condition occurs. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="decoder">  XDR stream from which the authentication object is restored. </param>
-    ///
-    /// ### <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition
-    ///                                                 occurs. </exception>
-    /// ### <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public sealed override void DecodeCredentialAndVerfier( XdrDecodingStreamBase decoder )
     {
 
@@ -107,10 +100,8 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// Encodes -- that is: serializes -- an ONC/RPC authentication object (its verifier) on the
     /// server side.
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="encoder">  XDR stream from which the authentication object is restored. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public sealed override void EncodeVerfier( XdrEncodingStreamBase encoder )
     {
         if ( this._shorthandVerfier is not null )

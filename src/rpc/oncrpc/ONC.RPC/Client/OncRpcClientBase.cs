@@ -13,7 +13,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// In order to communicate with an ONC/RPC server, you need to create an
 /// ONC/RPC client, represented by classes derived from <see cref="OncRpcClientBase"/>. The most
 /// generic way to generate an ONC/RPC client is as follows: use
-/// <see cref="NewOncRpcClient(IPAddress, int, int, int)"/> and specify: </para>
+/// <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocols)"/> and specify: </para>
 /// <list type="bullet"> <item>
 /// the host (of class <see cref="IPAddress"/>) where the ONC/RPC server resides, </item><item>
 /// the ONC/RPC program number of the server to contact,</item><item>
@@ -48,20 +48,13 @@ namespace cc.isr.ONC.RPC.Client;
 /// }
 /// </code> <para>
 /// This code snippet also shows exception handling. The most common error you'll see is
-/// probably an
-/// <see cref="OncRpcProgramNotRegisteredException"/>,
+/// probably an <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/> exception,
 /// in case no such program number is currently registered at the specified host.
-/// An <see cref="OncRpcProgramNotRegisteredException"/>
-/// is a subclass of <see cref="OncRpcException"/> with an <see cref="OncRpcException.Reason"/> of
-/// <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/>. </para>
-/// In case no ONC/RPC port mapper is available at the specified host, you'll get an
-/// <see cref="OncRpcTimeoutException"/> instead (which is again a subclass of
-/// <see cref="OncRpcException"/> with an <see cref="OncRpcException.Reason"/> of
-/// <see cref="OncRpcExceptionReason.OncRpcProcedureCallTimedOut"/>).
+/// In case no ONC/RPC port mapper is available at the specified host, you might get an
+/// <see cref="OncRpcExceptionReason.OncRpcProcedureCallTimedOut"/> instead.
 /// You might also get an IOException when using TCP/IP and the server
-/// cannot be contacted because it does not accept new connections. <para>
-/// Instead of calling
-/// <see cref="NewOncRpcClient(IPAddress, int, int, int)"/>
+/// cannot be contacted because it does not accept new connections.  </para> <para>
+/// Instead of calling <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocols)"/>
 /// you can also directly create objects of classes <see cref="OncRpcTcpClient"/>
 /// and <see cref="OncRpcUdpClient"/>
 /// if you know at compile time which kind of IP protocol you will use. </para> <para>
@@ -196,6 +189,8 @@ public abstract class OncRpcClientBase : IDisposable
     /// <summary>   (Immutable) the default transmission timeout. </summary>
     public const int DefaultTransmissionTimeout = 30000;
 
+    #region " construction and cleanup "
+
     /// <summary>   Constructs an <see cref="OncRpcClientBase"/> object (the generic part). </summary>
     /// <remarks>
     /// If no port number is given (that is, <paramref name="port"/> is <c>0</c>), then a port lookup
@@ -210,7 +205,7 @@ public abstract class OncRpcClientBase : IDisposable
     /// <param name="protocol"> <see cref="OncRpcProtocols">Protocol</see> to be used for
     ///                         ONC/RPC calls. This information is necessary, so port lookups through 
     ///                         the portmapper can be done. </param>
-    internal OncRpcClientBase( IPAddress host, int program, int version, int port, int protocol )
+    internal OncRpcClientBase( IPAddress host, int program, int version, int port, OncRpcProtocols protocol )
     {
         // Set up the basics...
         this.Host = host;
@@ -248,16 +243,14 @@ public abstract class OncRpcClientBase : IDisposable
     /// Creates a new ONC/RPC client object, which can handle the requested
     /// <paramref name="protocol"/>.
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="host">     Host address where the desired ONC/RPC server resides. </param>
     /// <param name="program">  Program number of the desired ONC/RPC server. </param>
     /// <param name="version">  Version number of the desired ONC/RPC server. </param>
     /// <param name="protocol"> <see cref="OncRpcProtocols">Protocol</see>
     ///                         to be used for ONC/RPC calls. </param>
     /// <returns>   An OncRpcClient. </returns>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, int protocol )
+    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, OncRpcProtocols protocol )
     {
         return NewOncRpcClient( host, program, version, 0, protocol );
     }
@@ -276,10 +269,7 @@ public abstract class OncRpcClientBase : IDisposable
     /// <param name="protocol"> <see cref="OncRpcProtocols">Protocol</see>
     ///                         to be used for ONC/RPC calls. </param>
     /// <returns>   An OncRpcClient. </returns>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
-    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, int port, int protocol )
+    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, int port, OncRpcProtocols protocol )
     {
         switch ( protocol )
         {
@@ -308,12 +298,74 @@ public abstract class OncRpcClientBase : IDisposable
     /// <summary>
     /// Closes the connection to an ONC/RPC server and free all network-related resources.
     /// </summary>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void Close()
     {
     }
+
+    #region " disposable implementation "
+
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
+    /// resources.
+    /// </summary>
+    /// <remarks> 
+    /// Takes account of and updates <see cref="IsDisposed"/>.
+    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// </remarks>
+    public void Dispose()
+    {
+        if ( this.IsDisposed ) { return; }
+        try
+        {
+            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            this.Dispose( true );
+
+            // uncomment the following line if Finalize() is overridden above.
+            GC.SuppressFinalize( this );
+        }
+        finally
+        {
+            this.IsDisposed = true;
+        }
+    }
+
+    /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
+    /// <value> True if this object is disposed, false if not. </value>
+    protected bool IsDisposed { get; private set; }
+
+    /// <summary>
+    /// Releases the unmanaged resources used by the XdrDecodingStreamBase and optionally releases
+    /// the managed resources.
+    /// </summary>
+    /// <param name="disposing">    True to release both managed and unmanaged resources; false to
+    ///                             release only unmanaged resources. </param>
+    protected virtual void Dispose( bool disposing )
+    {
+        if ( disposing )
+        {
+            // dispose managed state (managed objects)
+        }
+
+        // free unmanaged resources and override finalizer
+        // I am assuming that the socket used in the derived classes include unmanaged resources.
+        this.Close();
+
+        // set large fields to null
+    }
+
+    /// <summary>   Finalizer. </summary>
+    ~OncRpcClientBase()
+    {
+        if ( this.IsDisposed ) { return; }
+        this.Dispose( false );
+    }
+
+    #endregion
+
+    #endregion
+
+    #region " actions "
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>
@@ -323,12 +375,10 @@ public abstract class OncRpcClientBase : IDisposable
     /// timeout, sends a new request and then waits again for a reply. In every case the client will
     /// wait no longer than the total timeout set through the <see cref="Timeout"/> property.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
     /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public virtual void Call( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
         lock ( this )
@@ -344,6 +394,10 @@ public abstract class OncRpcClientBase : IDisposable
     /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
     public abstract void Call( int procedureNumber, int versionNumber, IXdrCodec requestCodec, IXdrCodec replyCodec );
+
+    #endregion
+
+    #region " members "
 
     /// <summary>
     /// Gets or sets the timeout (in milliseconds) for communication with an ONC/RPC server.
@@ -419,63 +473,6 @@ public abstract class OncRpcClientBase : IDisposable
     /// <value> The identifier of the next transaction. </value>
     internal int MessageId { get; private set; }
 
-    #region " disposable implementation "
-
-    /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
-    /// resources.
-    /// </summary>
-    /// <remarks> 
-    /// Takes account of and updates <see cref="IsDisposed"/>.
-    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
-    /// </remarks>
-    public void Dispose()
-    {
-        if ( this.IsDisposed ) { return; }
-        try
-        {
-            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
-            this.Dispose( true );
-
-            // uncomment the following line if Finalize() is overridden above.
-            GC.SuppressFinalize( this );
-        }
-        finally
-        {
-            this.IsDisposed = true;
-        }
-    }
-
-    /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
-    /// <value> True if this object is disposed, false if not. </value>
-    protected bool IsDisposed { get; private set; }
-
-    /// <summary>
-    /// Releases the unmanaged resources used by the XdrDecodingStreamBase and optionally releases
-    /// the managed resources.
-    /// </summary>
-    /// <param name="disposing">    True to release both managed and unmanaged resources; false to
-    ///                             release only unmanaged resources. </param>
-    protected virtual void Dispose( bool disposing )
-    {
-        if ( disposing )
-        {
-            // dispose managed state (managed objects)
-        }
-
-        // free unmanaged resources and override finalizer
-        // I am assuming that the socket used in the derived classes include unmanaged resources.
-        this.Close();
-
-        // set large fields to null
-    }
-
-    /// <summary>   Finalizer. </summary>
-    ~OncRpcClientBase()
-    {
-        if ( this.IsDisposed ) { return; }
-        this.Dispose( false );
-    }
-
     #endregion
+
 }

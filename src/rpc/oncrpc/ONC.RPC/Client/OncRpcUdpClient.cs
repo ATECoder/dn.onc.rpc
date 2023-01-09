@@ -26,6 +26,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// object will result in communication with the portmap process at
     /// <paramref name="host"/> if <paramref name="port"/> is <c>0</c>.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="host">     The host where the ONC/RPC server resides. </param>
     /// <param name="program">  Program number of the ONC/RPC server to call. </param>
     /// <param name="version">  Program version number. </param>
@@ -33,8 +34,6 @@ public class OncRpcUdpClient : OncRpcClientBase
     ///                         , then the <see cref="OncRpcUdpClient"/> object will ask the portmapper at <paramref name="host"/>
     ///                         for the port number. </param>
     ///
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="IOException">      Thrown when an I/O error condition occurs. </exception>
     public OncRpcUdpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, DefaultBufferSize )
     {
     }
@@ -57,8 +56,6 @@ public class OncRpcUdpClient : OncRpcClientBase
     ///                             the portmapper at <paramref name="host"/> for the port number. </param>
     /// <param name="bufferSize">   The buffer size used for sending and receiving UDP datagrams. </param>
     ///
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="IOException">      Thrown when an I/O error condition occurs. </exception>
     public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize ) : base( host, program, version, port, OncRpcProtocols.OncRpcUdp )
     {
         this.RetransmissionTimeout = this.Timeout;
@@ -97,7 +94,6 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <summary>
     /// Close the connection to an ONC/RPC server and free all network-related resources.
     /// </summary>
-    ///
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public override void Close()
     {
@@ -183,7 +179,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     #endregion
 
-    #region " operations "
+    #region " actions "
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>
@@ -193,9 +189,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// timeout, sends a new request and then waits again for a reply. In every case the client will
     /// wait no longer than the total timeout set through the <see cref="OncRpcClientBase.Timeout"/> property.
     /// </remarks>
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="OncRpcTimeoutException">   Thrown when an ONC/RPC Timeout error condition
-    ///                                             occurs. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
     /// <param name="versionNumber">    Protocol version number. </param>
     /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
@@ -489,7 +483,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                 // and hide yourself in the dark with all your zombies (or maybe
                 // kangaroos).
 
-                throw new OncRpcTimeoutException();
+                throw new OncRpcException( OncRpcExceptionReason.OncRpcProcedureCallTimedOut );
             }
     }
 

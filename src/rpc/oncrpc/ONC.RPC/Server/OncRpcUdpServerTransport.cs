@@ -26,6 +26,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// back. This constructor is a convenience constructor for those transports handling only a
     /// single ONC/RPC program and version number.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="dispatcher">   Reference to interface of an object capable of dispatching
     ///                             (handling) ONC/RPC calls. </param>
     /// <param name="port">         Number of port where the server will wait for incoming calls. </param>
@@ -33,9 +34,6 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// <param name="version">      Version number of ONC/RPC program handled. </param>
     /// <param name="bufferSize">   Size of buffer for receiving and sending UDP/IP datagrams
     ///                             containing ONC/RPC call and reply messages. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcUdpServerTransport( IOncRpcDispatchable dispatcher, int port, int program, int version, int bufferSize ) : this( dispatcher, port, new
         OncRpcServerTransportRegistrationInfo[] { new OncRpcServerTransportRegistrationInfo( program, version ) }, bufferSize )
     {
@@ -50,6 +48,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// back. This constructor is a convenience constructor for those transports handling only a
     /// single ONC/RPC program and version number.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="dispatcher">   Reference to interface of an object capable of dispatching
     ///                             (handling) ONC/RPC calls. </param>
     /// <param name="port">         Number of port where the server will wait for incoming calls. </param>
@@ -57,9 +56,6 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     ///                             programs and versions handled by this transport. </param>
     /// <param name="bufferSize">   Size of buffer for receiving and sending UDP/IP datagrams
     ///                             containing ONC/RPC call and reply messages. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcUdpServerTransport( IOncRpcDispatchable dispatcher, int port,
         OncRpcServerTransportRegistrationInfo[] info, int bufferSize ) : this( dispatcher, null, port, info, bufferSize )
     {
@@ -74,6 +70,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// back. This constructor is a convenience constructor for those transports handling only a
     /// single ONC/RPC program and version number.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="dispatcher">   Reference to interface of an object capable of dispatching
     ///                             (handling) ONC/RPC calls. </param>
     /// <param name="bindAddr">     The local Internet Address the server will bind to. </param>
@@ -82,9 +79,6 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     ///                             programs and versions handled by this transport. </param>
     /// <param name="bufferSize">   Size of buffer for receiving and sending UDP/IP datagrams
     ///                             containing ONC/RPC call and reply messages. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcUdpServerTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddr, int port,
         OncRpcServerTransportRegistrationInfo[] info, int bufferSize ) : base( dispatcher, port, OncRpcProtocols.OncRpcUdp, info )
     {
@@ -155,7 +149,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
 
     #endregion
 
-    #region " operations "
+    #region " actions "
 
     /// <summary>
     /// Indicates that <see cref="XdrDecodingStreamBase.BeginDecoding()"/> has been called for the
@@ -171,12 +165,8 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// <see cref="XdrDecodingStreamBase.EndDecoding()"/>
     /// to free any pending resources from the decoding stage.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="call"> The call. </param>
-    ///
-    /// <exception cref="OncRpcException">  if an ONC/RPC exception occurs, like the data could
-    ///                                     not be successfully deserialized. </exception>
-    /// <exception cref="IOException">      if an I/O exception occurs, like transmission
-    ///                                     failures over the network, etc. </exception>
     internal override void RetrieveCall( IXdrCodec call )
     {
         call.Decode( this.Decoder );
@@ -193,11 +183,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// must not be used any more. This method belongs to the lower-level access pattern when
     /// handling ONC/RPC calls.
     /// </remarks>
-    ///
-    /// <exception cref="OncRpcException">  if an ONC/RPC exception occurs, like the data could
-    ///                                     not be successfully deserialized. </exception>
-    /// <exception cref="IOException">      if an I/O exception occurs, like transmission
-    ///                                     failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     internal override void EndDecoding()
     {
         if ( this._pendingDecoding )
@@ -211,13 +197,10 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// <remarks>
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="callInfo"> Information about ONC/RPC call for which we are about to send back
     ///                         the reply. </param>
     /// <param name="state">    ONC/RPC reply header indicating success or failure. </param>
-    ///
-    /// <exception cref="OncRpcException">  if an ONC/RPC exception occurs, like the data could
-    ///                                     not be successfully serialized. </exception>
-    /// <exception cref="IOException">      if an I/O exception occurs, like transmission. </exception>
     internal override void BeginEncoding( OncRpcCallInformation
          callInfo, OncRpcServerReplyMessage state )
     {
@@ -242,11 +225,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// Afterwards you must not use the XDR stream returned by <see cref="Encoder"/>
     /// any longer.
     /// </remarks>
-    ///
-    /// <exception cref="OncRpcException">  if an ONC/RPC exception occurs, like the data could
-    ///                                     not be successfully serialized. </exception>
-    /// <exception cref="IOException">      if an I/O exception occurs, like transmission
-    ///                                     failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     internal override void EndEncoding()
     {
 
@@ -260,17 +239,13 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// ONC/RPC calls have to use the <see cref="OncRpcCallInformation.Reply(IXdrCodec)"/>
     /// method instead on the call object supplied to the handler.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="callInfo"> information about the original call, which are necessary to send back
     ///                         the reply to the appropriate caller. </param>
     /// <param name="state">    ONC/RPC reply message header indicating success or failure and
     ///                         containing associated state information. </param>
     /// <param name="reply">    If not <see langword="null"/>, then this parameter references the reply to
     ///                         be serialized after the reply message header. </param>
-    ///
-    /// <exception cref="OncRpcException">  if an ONC/RPC exception occurs, like the data could
-    ///                                     not be successfully serialized. </exception>
-    /// <exception cref="IOException">      if an I/O exception occurs, like transmission
-    ///                                     failures over the network, etc. </exception>
     internal override void Reply( OncRpcCallInformation callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
     {
         this.BeginEncoding( callInfo, state );
@@ -288,11 +263,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// receiving multiple calls. Instead, later calls have to wait for
     /// the current call to finish before they are handled. </para>
     /// </remarks>
-    ///
-    /// <exception cref="OncRpcException">  if an ONC/RPC exception occurs, like the data could
-    ///                                     not be successfully serialized. </exception>
-    /// <exception cref="IOException">      if an I/O exception occurs, like transmission
-    ///                                     failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public override void Listen()
     {
         TransportHelper t = new( this );

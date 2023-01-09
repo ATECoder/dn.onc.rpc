@@ -20,10 +20,8 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
     /// Encodes ONC/RPC authentication information in form of a credential and a verifier when
     /// sending an ONC/RPC call message.
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="encoder">  XDR stream where to encode the credential and the verifier to. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     internal override void EncodeCredentialAndVerfier( XdrEncodingStreamBase encoder )
     {
 
@@ -47,9 +45,6 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
     /// <exception cref="OncRpcAuthException">    if the received verifier is not kosher. </exception>
     /// <param name="decoder">  XDR stream from which to receive the verifier sent together with an
     ///                         ONC/RPC reply message. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     internal override void DecodeVerfier( XdrDecodingStreamBase decoder )
     {
         // Make sure that we received a 'none' verifier and that it

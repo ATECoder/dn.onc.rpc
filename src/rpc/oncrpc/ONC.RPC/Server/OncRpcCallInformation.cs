@@ -79,12 +79,8 @@ public class OncRpcCallInformation
     /// It also makes sure that the deserialization process is properly finished after the call
     /// parameters have been retrieved.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="call"> The call. </param>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
     public virtual void RetrieveCall( IXdrCodec call )
     {
         this.Transport.RetrieveCall( call );
@@ -106,11 +102,7 @@ public class OncRpcCallInformation
     /// must not be used any more. This method belongs to the lower-level access pattern when
     /// handling ONC/RPC calls.
     /// </remarks>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void EndDecoding()
     {
         this.Transport.EndDecoding();
@@ -124,12 +116,8 @@ public class OncRpcCallInformation
     /// <see cref="GetXdrEncodingStream()"/>.
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="state">    ONC/RPC reply header indicating success or failure. </param>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
     public virtual void BeginEncoding( OncRpcServerReplyMessage state )
     {
         this.Transport.BeginEncoding( this, state );
@@ -141,11 +129,7 @@ public class OncRpcCallInformation
     /// serialization can be obtained using <see cref="GetXdrEncodingStream()"/>.
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </remarks>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void BeginEncoding()
     {
         this.Transport.BeginEncoding( this, new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted,
@@ -169,11 +153,7 @@ public class OncRpcCallInformation
     /// <remarks>
     /// Afterwards you must not use the XDR stream returned by <see cref="GetXdrEncodingStream()"/> any longer.
     /// </remarks>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void EndEncoding()
     {
         this.Transport.EndEncoding();
@@ -185,15 +165,11 @@ public class OncRpcCallInformation
     /// use the other <see cref="Reply(IXdrCodec)">reply method</see> which just expects a serializable
     /// object to Sends back to the caller.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="state">    ONC/RPC reply message header indicating success or failure and
     ///                         containing associated state information. </param>
     /// <param name="reply">    If not <see langword="null"/>, then this parameter references the reply to
     ///                         be serialized after the reply message header. </param>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
     public virtual void Reply( OncRpcServerReplyMessage state, IXdrCodec reply )
     {
         this.Transport.Reply( this, state, reply );
@@ -204,12 +180,8 @@ public class OncRpcCallInformation
     /// This automatically sends an ONC/RPC reply header before the reply part, indicating success
     /// within the header.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="rply"> Reply body the ONC/RPC reply message. </param>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
     public virtual void Reply( IXdrCodec rply )
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcSuccess,
@@ -221,11 +193,7 @@ public class OncRpcCallInformation
     /// Sends back an ONC/RPC failure indication about invalid arguments to the caller who sent in
     /// this call reporting <see cref="OncRpcAcceptStatus.OncRpcUnableToDecodingArguments"/>
     /// </summary>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void ReplyUnableToDecodingArguments()
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcUnableToDecodingArguments,
@@ -237,11 +205,7 @@ public class OncRpcCallInformation
     /// Sends back an ONC/RPC failure indication about an unavailable procedure call to the caller who
     /// sent in this call reporting <see cref="OncRpcAcceptStatus.OncRpcProcedureNotAvailable"/>
     /// </summary>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void ReplyProcedureNotAvailable()
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcProcedureNotAvailable,
@@ -253,11 +217,7 @@ public class OncRpcCallInformation
     /// Sends back an ONC/RPC failure indication about an unavailable program to the caller who sent
     /// in this call sending <see cref="OncRpcAcceptStatus.OncRpcProgramNotAvailable"/>
     /// </summary>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void ReplyProgramNotAvailable()
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcProgramNotAvailable,
@@ -269,13 +229,9 @@ public class OncRpcCallInformation
     /// Sends back an ONC/RPC failure indication about a program version mismatch to the caller who
     /// sent in this call replying <see cref="OncRpcAcceptStatus.OncRpcProgramVersionMismatch"/>
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="lowVersion">   lowest supported program version. </param>
     /// <param name="highVersion">  highest supported program version. </param>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
     public virtual void ReplyProgramVersionMismatch( int lowVersion, int highVersion )
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcProgramVersionMismatch,
@@ -286,11 +242,7 @@ public class OncRpcCallInformation
     /// Sends back an ONC/RPC failure indication about a system error to the caller who sent in this
     /// call replying <see cref="OncRpcAcceptStatus.OncRpcSystemError"/>
     /// </summary>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void ReplySystemError()
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcSystemError,
@@ -302,11 +254,7 @@ public class OncRpcCallInformation
     /// Sends back an ONC/RPC failure indication about a ONC/RPC version mismatch call to the caller
     /// who sent in this call replying <see cref="OncRpcRejectStatus.OncRpcWrongProtocolVersion"/>
     /// </summary>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void RerplyWrongProtocolVersion()
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageDenied, OncRpcReplyMessageBase.UnusedMessageParameter,
@@ -318,12 +266,8 @@ public class OncRpcCallInformation
     /// Sends back an ONC/RPC failure indication about a failed authentication to the caller who sent
     /// in this call replying <see cref="OncRpcRejectStatus.OncRpcAuthError"/>
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="authStatus">   <see cref="OncRpcAuthStatus">Reason</see> why authentication failed. </param>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
     public virtual void ReplyAuthError( OncRpcAuthStatus authStatus )
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageDenied,

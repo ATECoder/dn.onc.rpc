@@ -158,11 +158,9 @@ public abstract class OncRpcServerStubBase : IDisposable
     }
 
     /// <summary>   Register a set of server transports with the local port mapper. </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="transports">   Array of server transport objects to register, which will later
     ///                             handle incoming remote procedure call requests. </param>
-    ///
-    /// <exception cref="OncRpcException">  if the port mapper could not be contacted
-    ///                                         successfully. </exception>
     public virtual void Register( OncRpcServerTransportBase[] transports )
     {
         int size = transports.Length;
@@ -171,13 +169,8 @@ public abstract class OncRpcServerStubBase : IDisposable
     }
 
     /// <summary>   Unregister a set of server transports from the local portmapper. </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="transports">   Array of server transport objects to unregister. </param>
-    ///
-    /// <exception cref="OncRpcException">  with a reason of
-    ///                                     <see cref="OncRpcExceptionReason.OncRpcFailed"/>
-    ///                                     if the portmapper could not be contacted
-    ///                                     successfully. Note that it is not considered an error
-    ///                                     to remove a non-existing entry from the portmapper. </exception>
     public virtual void Unregister( OncRpcServerTransportBase[] transports )
     {
         foreach ( var transport in this._transports )
@@ -200,13 +193,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// call dispatcher until the server is signaled to shut down, and finally deregister the
     /// transports.
     /// </summary>
-    ///
-    /// <exception cref="OncRpcException">          if the port mapper cannot be contacted
-    ///                                             successfully. </exception>
-    /// <exception cref="System.IO.IOException">    if a severe network I/O error occurs in the
-    ///                                             server from which it cannot recover (like severe
-    ///                                             exceptions thrown when waiting for now
-    ///                                             connections on a server socket). </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void Run()
     {
 

@@ -29,10 +29,8 @@ public class OncRpcGetPortCodec : IXdrCodec
     /// Encodes -- that is: serializes -- an server <see cref="OncRpcGetPortCodec"/>
     /// object into a XDR stream.
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
         encoder.EncodeInt( this.Port );
@@ -42,10 +40,8 @@ public class OncRpcGetPortCodec : IXdrCodec
     /// Decodes -- that is: deserializes -- an server <see cref="OncRpcGetPortCodec"/>
     /// object from a XDR stream.
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public virtual void Decode( XdrDecodingStreamBase decoder )
     {
         this.Port = decoder.DecodeInt();

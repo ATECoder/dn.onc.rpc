@@ -41,10 +41,8 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
     /// <summary>
     /// Encodes -- that is: serializes -- a ONC/RPC reply header object into a XDR stream.
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="encoder">  An encoding XDR stream. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
         encoder.EncodeInt( this.MessageId );

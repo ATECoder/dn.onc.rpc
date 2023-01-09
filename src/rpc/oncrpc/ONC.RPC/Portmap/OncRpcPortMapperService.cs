@@ -31,8 +31,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     /// Creates a new portmap service instance. Creates the transport registration information and UDP and TCP-
     /// based transports, which will be bound later to port 111.
     /// </summary>
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public OncRpcPortMapService()
     {
         // We only need to register one {program, version}.
@@ -125,7 +124,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
 
     #endregion
 
-    #region " operations "
+    #region " actions "
 
     /// <summary>   Lookup port for (program, version, protocol). </summary>
     /// <remarks>
@@ -258,14 +257,12 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
 
     /// <summary>   Dispatch incoming ONC/RPC calls to the individual handler functions. </summary>
     /// <remarks>   The CALLIT method is currently unimplemented. </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="call">         The ONC/RPC call, with references to the transport and XDR
     ///                             streams to use for retrieving parameters and sending replies. </param>
     /// <param name="program">      the portmap's program number, 100000. </param>
     /// <param name="version">      the portmap's protocol version, 2. </param>
     /// <param name="procedure">    the procedure to call. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public virtual void DispatchOncRpcCall( OncRpcCallInformation call, int program, int version, int procedure )
     {
         // Make sure it's the right program and version that we can handle.

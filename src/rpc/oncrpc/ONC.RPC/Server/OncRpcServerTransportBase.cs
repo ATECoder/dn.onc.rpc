@@ -50,7 +50,8 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// <param name="protocol">     The protocol, .e.g., <see cref="OncRpcProtocols.OncRpcTcp"/> or <see cref="OncRpcProtocols.OncRpcUdp"/></param>
     /// <param name="info">         Array of program and version number tuples of the ONC/RPC
     ///                             programs and versions handled by this transport. </param>
-    protected OncRpcServerTransportBase( IOncRpcDispatchable dispatcher, int port, int protocol, OncRpcServerTransportRegistrationInfo[] info )
+    protected OncRpcServerTransportBase( IOncRpcDispatchable dispatcher, int port, OncRpcProtocols protocol,
+                                         OncRpcServerTransportRegistrationInfo[] info )
     {
         this.Dispatcher = dispatcher;
         this.Port = port;
@@ -160,7 +161,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
 
     /// <summary>   Gets or sets the protocol, e.g., <see cref="OncRpcProtocols.OncRpcTcp"/> or <see cref="OncRpcProtocols.OncRpcTcp"/>. </summary>
     /// <value> The protocol. </value>
-    internal int Protocol { get; private set; }
+    internal OncRpcProtocols Protocol { get; private set; }
 
     /// <summary>   Gets or sets the default encoding. </summary>
     /// <remarks>
@@ -196,7 +197,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
 
     #endregion
 
-    #region " operations "
+    #region " actions "
 
     /// <summary>
     /// Register the <see cref="Protocol"/> (UDP/IP or TCP/IP) port where this server transport waits for incoming requests with the
@@ -207,7 +208,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// with the portmapper, so the transport is registered only for the protocol supported by a
     /// particular kind of server transport.
     /// </remarks>
-    /// <exception cref="OncRpcException">  if the portmapper could not be contacted successfully. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void Register()
     {
         try
@@ -237,10 +238,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// deregistering one server transports causes all entries for the same program and version to be
     /// removed, regardless of the protocol (UDP/IP or TCP/IP) used. Sigh.
     /// </remarks>
-    /// <exception cref="OncRpcException">  with a reason of <see cref="OncRpcExceptionReason.OncRpcFailed"/>
-    ///                                     if the portmapper could not be contacted successfully. 
-    ///                                     Note that it is not considered an error to remove a non-existing 
-    ///                                     entry from the portmapper. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void Unregister()
     {
         try
@@ -277,12 +275,8 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// parameters have been retrieved. Under the hood this method therefore calls <see cref="XdrDecodingStreamBase.EndDecoding()"/>
     /// to free any pending resources from the decoding stage.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="call"> The call. </param>
-    /// 
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
     internal abstract void RetrieveCall( IXdrCodec call );
 
     /// <summary>
@@ -300,11 +294,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// must not be used any more. This method belongs to the lower-level access pattern when
     /// handling ONC/RPC calls.
     /// </remarks>
-    /// 
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     internal abstract void EndDecoding();
 
     /// <summary>
@@ -320,9 +310,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// <remarks>
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </remarks>
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully serialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="callInfo"> Information about ONC/RPC call for which we are about to send back
     ///                         the reply. </param>
     /// <param name="state">    ONC/RPC reply header indicating success or failure. </param>
@@ -332,10 +320,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// <remarks>
     /// Afterwards you must not use the XDR stream returned by <see cref="Encoder"/> any longer.
     /// </remarks>
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully serialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     internal abstract void EndEncoding();
 
     /// <summary> Sends back an ONC/RPC reply to the original caller. </summary>
@@ -347,10 +332,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// as it is dependent on the type of transport (whether UDP/IP or TCP/IP)
     /// used. </para>
     /// </remarks>
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully serialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="callInfo"> <see cref="OncRpcCallInformation"/> about the original call, 
     ///                         which are necessary to Sends back the reply to the appropriate caller. </param>
     /// <param name="state">    ONC/RPC reply message header indicating success or failure and

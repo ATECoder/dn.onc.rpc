@@ -24,6 +24,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// constructor is a convenience constructor for those transports handling only a single ONC/RPC
     /// program and version number.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="dispatcher">           Reference to interface of an object capable of
     ///                                     dispatching (handling) ONC/RPC calls. </param>
     /// <param name="socket">               TCP/IP-based socket of new connection. </param>
@@ -35,9 +36,6 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     ///                                     ONC/RPC call and reply messages. </param>
     /// <param name="parent">               Parent server transport which created us. </param>
     /// <param name="transmissionTimeout">  Inherited transmission timeout. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcTcpConnectionServerTransport( IOncRpcDispatchable dispatcher, Socket socket, int program, int version, int bufferSize,
         OncRpcTcpServerTransport parent, int transmissionTimeout ) : this( dispatcher, socket,
              new OncRpcServerTransportRegistrationInfo[] { new OncRpcServerTransportRegistrationInfo( program, version ) },
@@ -52,6 +50,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// <remarks>
     /// This particular server transport handles individual ONC/RPC connections over TCP/IP.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="dispatcher">           Reference to interface of an object capable of
     ///                                     dispatching (handling) ONC/RPC calls. </param>
     /// <param name="socket">               TCP/IP-based socket of new connection. </param>
@@ -62,9 +61,6 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     ///                                     ONC/RPC call and reply messages. </param>
     /// <param name="parent">               Parent server transport which created us. </param>
     /// <param name="transmissionTimeout">  Inherited transmission timeout. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcTcpConnectionServerTransport( IOncRpcDispatchable dispatcher, Socket socket,
         OncRpcServerTransportRegistrationInfo[] info, int bufferSize, OncRpcTcpServerTransport parent,
         int transmissionTimeout ) : base( dispatcher, 0, OncRpcProtocols.OncRpcTcp, info )
@@ -187,12 +183,8 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// <see cref="XdrDecodingStreamBase.EndDecoding()"/>
     /// to free any pending resources from the decoding stage.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="call"> The call. </param>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
     internal override void RetrieveCall( IXdrCodec call )
     {
         call.Decode( this.Decoder );
@@ -209,11 +201,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// must not be used any more. This method belongs to the lower-level access pattern when
     /// handling ONC/RPC calls.
     /// </remarks>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully deserialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     internal override void EndDecoding()
     {
         if ( this._pendingDecoding )
@@ -227,14 +215,10 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// <remarks>
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="callInfo"> Information about ONC/RPC call for which we are about to send back
     ///                         the reply. </param>
     /// <param name="state">    ONC/RPC reply header indicating success or failure. </param>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                                 could not be successfully serialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like
-    ///                                                 transmission. </exception>
     internal override void BeginEncoding( OncRpcCallInformation callInfo, OncRpcServerReplyMessage state )
     {
 
@@ -259,11 +243,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// Afterwards you must not use the XDR stream returned by <see cref="Encoder"/>
     /// any longer.
     /// </remarks>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully serialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     internal override void EndEncoding()
     {
         // Close the case
@@ -277,17 +257,13 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// ONC/RPC calls have to use the <see cref="OncRpcCallInformation.Reply(IXdrCodec)"/>
     /// method instead on the call object supplied to the handler.
     /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="callInfo"> information about the original call, which are necessary to send back
     ///                         the reply to the appropriate caller. </param>
     /// <param name="state">    ONC/RPC reply message header indicating success or failure and
     ///                         containing associated state information. </param>
     /// <param name="reply">    If not <see langword="null"/>, then this parameter references the reply to
     ///                         be serialized after the reply message header. </param>
-    ///
-    /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
-    ///                                             could not be successfully serialized. </exception>
-    /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
-    ///                                             failures over the network, etc. </exception>
     internal override void Reply( OncRpcCallInformation callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
     {
         this.BeginEncoding( callInfo, state );

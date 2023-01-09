@@ -16,6 +16,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// </remarks>
 public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
 {
+
     /// <summary>
     /// Initializes a new <see cref="OncRpcReplyMessageBase"/> object to represent an invalid state.
     /// </summary>
@@ -31,97 +32,17 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
     }
 
     /// <summary>
-    /// Check whether this <see cref="OncRpcReplyMessageBase"/> represents an accepted and successfully
-    /// executed remote procedure call.
+    /// Client-side authentication protocol handling object to use when decoding the reply message.
     /// </summary>
-    /// <returns>
-    /// <see cref="T:true"/> if remote procedure call was accepted and
-    /// successfully executed.
-    /// </returns>
-    public virtual bool SuccessfullyAccepted()
-    {
-        return this.ReplyStatus == OncRpcReplyStatus.OncRpcMessageAccepted && this.AcceptStatus == OncRpcAcceptStatus.OncRpcSuccess;
-    }
-
-    /// <summary>
-    /// Return an appropriate exception object according to the state this reply message header
-    /// object is in.
-    /// </summary>
-    /// <returns>
-    /// Exception object of class
-    /// <see cref="OncRpcException"/>
-    /// or a subclass thereof.
-    /// </returns>
-    public virtual OncRpcException NewException()
-    {
-        switch ( this.ReplyStatus )
-        {
-            case OncRpcReplyStatus.OncRpcMessageAccepted:
-                {
-                    switch ( this.AcceptStatus )
-                    {
-                        case OncRpcAcceptStatus.OncRpcSuccess:
-                            {
-                                return new OncRpcException( OncRpcExceptionReason.OncRpcSuccess );
-                            }
-
-                        case OncRpcAcceptStatus.OncRpcProcedureNotAvailable:
-                            {
-                                return new OncRpcException( OncRpcExceptionReason.OncRpcProcedureNotAvailable );
-                            }
-
-                        case OncRpcAcceptStatus.OncRpcProgramVersionMismatch:
-                            {
-                                return new OncRpcException( OncRpcExceptionReason.OncRpcProgramVersionNotSupported );
-                            }
-
-                        case OncRpcAcceptStatus.OncRpcProgramNotAvailable:
-                            {
-                                return new OncRpcException( OncRpcExceptionReason.OncRpcProgramNotAvailable );
-                            }
-
-                        case OncRpcAcceptStatus.OncRpcUnableToDecodingArguments:
-                            {
-                                return new OncRpcException( OncRpcExceptionReason.OncRpcCannotDecodeArgs );
-                            }
-
-                        case OncRpcAcceptStatus.OncRpcSystemError:
-                            {
-                                return new OncRpcException( OncRpcExceptionReason.OncRpcSystemError );
-                            }
-                    }
-                    break;
-                }
-
-            case OncRpcReplyStatus.OncRpcMessageDenied:
-                {
-                    switch ( this.RejectStatus )
-                    {
-                        case OncRpcRejectStatus.OncRpcAuthError:
-                            {
-                                return new OncRpcAuthException( this.AuthStatus );
-                            }
-
-                        case OncRpcRejectStatus.OncRpcWrongProtocolVersion:
-                            {
-                                return new OncRpcException( OncRpcExceptionReason.OncRpcFailed );
-                            }
-                    }
-                    break;
-                }
-        }
-        return new OncRpcException();
-    }
+    /// <value> The authentication. </value>
+    internal OncRpcClientAuthBase Auth { get; private set; }
 
     /// <summary>
     /// Decodes -- that is: deserializes -- a ONC/RPC message header object from a XDR stream.
     /// </summary>
+    /// <exception cref="OncRpcAuthException">  Thrown when an ONC/RPC Authentication error condition occurs. </exception>
+    /// <exception cref="OncRpcException">      Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="decoder">  The XDR decoding stream. </param>
-    ///
-    /// <exception cref="OncRpcException">                  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="OncRpcAuthException">    Thrown when an ONC/RPC Authentication
-    ///                                                     error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">            Thrown when an I/O error condition occurs. </exception>
     public virtual void Decode( XdrDecodingStreamBase decoder )
     {
         this.MessageId = decoder.DecodeInt();
@@ -225,9 +146,4 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
         }
     }
 
-    /// <summary>
-    /// Client-side authentication protocol handling object to use when decoding the reply message.
-    /// </summary>
-    /// <value> The authentication. </value>
-    internal OncRpcClientAuthBase Auth { get; private set; }
 }

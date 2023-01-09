@@ -60,12 +60,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// but no verifier. If the ONC/RPC server sent a <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>
     /// "shorthand" credential together with the previous reply message, it is used instead of the original credential.
     /// </remarks>
-    /// <exception cref="OncRpcAuthException">    Thrown when an ONC/RPC Authentication
-    ///                                                     error condition occurs. </exception>
-    /// <param name="encoder">  XDR stream where to encode the credential and the verifier to. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     internal override void EncodeCredentialAndVerfier( XdrEncodingStreamBase encoder )
     {
         if ( this._shorthandCredentials == null )
@@ -111,12 +106,9 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// Decodes ONC/RPC authentication information in form of a verifier when receiving an ONC/RPC
     /// reply message.
     /// </summary>
-    /// <exception cref="OncRpcAuthException">    if the received verifier is not kosher. </exception>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="decoder">  XDR stream from which to receive the verifier sent together with an
     ///                         ONC/RPC reply message. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     internal override void DecodeVerfier( XdrDecodingStreamBase decoder )
     {
         switch ( ( OncRpcAuthType ) decoder.DecodeInt() )

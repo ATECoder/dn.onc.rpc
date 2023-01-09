@@ -26,6 +26,7 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     /// server transports to handle individual connections. This constructor is a convenience
     /// constructor for those transports handling only a single ONC/RPC program and version number.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">  because this method must not be called for a listening server transport. </exception>
     /// <param name="dispatcher">   Reference to interface of an object capable of dispatching
     ///                             (handling) ONC/RPC calls. </param>
     /// <param name="port">         Number of port where the server will wait for incoming calls. </param>
@@ -34,9 +35,6 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     /// <param name="bufferSize">   Size of buffer used when receiving and sending chunks of XDR
     ///                             fragments over TCP/IP. The fragments built up to form ONC/RPC
     ///                             call and reply messages. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcTcpServerTransport( IOncRpcDispatchable dispatcher, int port, int program, int version, int bufferSize ) : this( dispatcher, port,
         new OncRpcServerTransportRegistrationInfo[] { new OncRpcServerTransportRegistrationInfo( program, version ) }, bufferSize )
     {
@@ -52,6 +50,7 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     /// <see cref="OncRpcTcpConnectionServerTransport"/>
     /// server transports to handle individual connections.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">  because this method must not be called for a listening server transport. </exception>
     /// <param name="dispatcher">   Reference to interface of an object capable of dispatching
     ///                             (handling) ONC/RPC calls. </param>
     /// <param name="port">         Number of port where the server will wait for incoming calls. </param>
@@ -60,9 +59,6 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     /// <param name="bufferSize">   Size of buffer used when receiving and sending chunks of XDR
     ///                             fragments over TCP/IP. The fragments built up to form ONC/RPC
     ///                             call and reply messages. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcTcpServerTransport( IOncRpcDispatchable dispatcher, int port,
         OncRpcServerTransportRegistrationInfo[] info, int bufferSize ) : this( dispatcher, null, port, info, bufferSize )
     {
@@ -78,6 +74,7 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     /// <see cref="OncRpcTcpConnectionServerTransport"/>
     /// server transports to handle individual connections.
     /// </remarks>
+    /// <exception cref="InvalidOperationException">  because this method must not be called for a listening server transport. </exception>
     /// <param name="dispatcher">   Reference to interface of an object capable of dispatching
     ///                             (handling) ONC/RPC calls. </param>
     /// <param name="bindAddr">     The local Internet Address the server will bind to. </param>
@@ -87,9 +84,6 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     /// <param name="bufferSize">   Size of buffer used when receiving and sending chunks of XDR
     ///                             fragments over TCP/IP. The fragments built up to form ONC/RPC
     ///                             call and reply messages. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcTcpServerTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddr, int port,
         OncRpcServerTransportRegistrationInfo[] info, int bufferSize ) : base( dispatcher, port, OncRpcProtocols.OncRpcTcp, info )
     {
@@ -198,56 +192,39 @@ public class OncRpcTcpServerTransport : OncRpcServerTransportBase
     }
 
     /// <summary>   Do not call. </summary>
-    /// <exception cref="Exception">    because this method must not be called for a listening server
-    ///                                 transport. </exception>
+    /// <exception cref="InvalidOperationException">  because this method must not be called for a listening server transport. </exception>
     /// <param name="call"> The call. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     internal override void RetrieveCall( IXdrCodec call )
     {
         throw new Exception( $"{nameof( OncRpcTcpServerTransport.RetrieveCall )} is abstract and cannot be called." );
     }
 
     /// <summary>   Do not call. </summary>
-    /// <exception cref="Exception">    because this method must not be called for a listening server
-    ///                                 transport. </exception>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
+    /// <exception cref="InvalidOperationException">  because this method must not be called for a listening server transport. </exception>
     internal override void EndDecoding()
     {
-        throw new Exception( $"{nameof( OncRpcTcpServerTransport.EndDecoding )} is abstract and cannot be called." );
+        throw new InvalidOperationException( $"{nameof( OncRpcTcpServerTransport.EndDecoding )} is abstract and cannot be called." );
     }
 
     /// <summary>   Do not call. </summary>
-    /// <exception cref="Exception">    because this method must not be called for a listening server
-    ///                                 transport. </exception>
+    /// <exception cref="InvalidOperationException">  because this method must not be called for a listening server transport. </exception>
     /// <param name="callInfo"> Information about ONC/RPC call for which we are about to send back
     ///                         the reply. </param>
     /// <param name="state">    ONC/RPC reply header indicating success or failure. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     internal override void BeginEncoding( OncRpcCallInformation callInfo, OncRpcServerReplyMessage state )
     {
-        throw new Exception( $"{nameof( OncRpcTcpServerTransport.BeginEncoding )} is abstract and cannot be called." );
+        throw new InvalidOperationException( $"{nameof( OncRpcTcpServerTransport.BeginEncoding )} is abstract and cannot be called." );
     }
 
     /// <summary>   Do not call. </summary>
-    /// <exception cref="Exception">    because this method must not be called for a listening server
-    ///                                 transport. </exception>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
+    /// <exception cref="InvalidOperationException">  because this method must not be called for a listening server transport. </exception>
     internal override void EndEncoding()
     {
-        throw new Exception( $"{nameof( OncRpcTcpServerTransport.EndEncoding )} is abstract and cannot be called." );
+        throw new InvalidOperationException( $"{nameof( OncRpcTcpServerTransport.EndEncoding )} is abstract and cannot be called." );
     }
 
     /// <summary>   Do not call. </summary>
-    /// <exception cref="Exception">    because this method must not be called for a listening server
-    ///                                 transport. </exception>
+    /// <exception cref="InvalidOperationException">  because this method must not be called for a listening server transport. </exception>
     /// <param name="callInfo"> information about the original call, which are necessary to send back
     ///                         the reply to the appropriate caller. </param>
     /// <param name="state">    ONC/RPC reply message header indicating success or failure and

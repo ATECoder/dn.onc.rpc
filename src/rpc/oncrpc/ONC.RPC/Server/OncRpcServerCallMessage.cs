@@ -20,8 +20,6 @@ public class OncRpcServerCallMessage : OncRpcCallMessageBase
     /// </summary>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="decoder">  A decoding XDR stream from which to receive all the mess. </param>
-    ///
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public virtual void Decode( XdrDecodingStreamBase decoder )
     {
         this.MessageId = decoder.DecodeInt();

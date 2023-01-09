@@ -118,9 +118,6 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
     }
 
     /// <summary>   (Unit Test Method) client should broadcast. </summary>
-    /// <remarks>   2022-12-22. </remarks>
-    /// <exception cref="OncRpcException"></exception>
-    /// <exception cref="IOException"></exception>
     [TestMethod]
     public void ClientShouldBroadcast()
     {

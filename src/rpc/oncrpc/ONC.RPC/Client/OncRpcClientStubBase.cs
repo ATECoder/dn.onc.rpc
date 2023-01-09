@@ -28,7 +28,7 @@ public abstract class OncRpcClientStubBase : IDisposable
     ///                         to be used for ONC/RPC calls. This
     ///                         information is necessary, so port lookups
     ///                         through the portmapper can be done. </param>
-    public OncRpcClientStubBase( IPAddress host, int program, int version, int port, int protocol )
+    public OncRpcClientStubBase( IPAddress host, int program, int version, int port, OncRpcProtocols protocol )
     {
         this.Client = OncRpcClientBase.NewOncRpcClient( host, program, version, port, protocol );
     }
@@ -37,10 +37,8 @@ public abstract class OncRpcClientStubBase : IDisposable
     /// Constructs a new <see cref="OncRpcClientStubBase"/> which uses the given client proxy object for
     /// communication with a remote ONC/RPC server.
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="client">   ONC/RPC client proxy object implementing a particular IP protocol. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public OncRpcClientStubBase( OncRpcClientBase client )
     {
         this.Client = client;
@@ -49,7 +47,6 @@ public abstract class OncRpcClientStubBase : IDisposable
     /// <summary>
     /// Close the connection to an ONC/RPC server and free all network-related resources.
     /// </summary>
-    ///
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void Close()
     {

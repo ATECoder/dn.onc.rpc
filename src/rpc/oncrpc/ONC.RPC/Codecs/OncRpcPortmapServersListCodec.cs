@@ -33,10 +33,8 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
     /// Encodes -- that is: serializes -- the result of a 
     /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo"/> operating into a XDR stream.
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
         if ( this.ServerIdentifiers == null )
@@ -66,10 +64,8 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
     /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo"/> remote procedure call from a
     /// XDR stream.
     /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
-    ///
-    /// <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public virtual void Decode( XdrDecodingStreamBase decoder )
     {
 
