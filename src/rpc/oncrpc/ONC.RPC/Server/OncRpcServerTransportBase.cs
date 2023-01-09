@@ -222,12 +222,12 @@ public abstract class OncRpcServerTransportBase : IDisposable
                 // portmapper. If this fails, bail out with an exception.
 
                 if ( !portmapper.SetPort( transportRegistrationInfo.Program, transportRegistrationInfo.Version, this.Protocol, this.Port ) )
-                    throw new OncRpcException( OncRpcException.OncRpcCannotRegisterTransport );
+                    throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotRegisterTransport );
             }
         }
         catch ( IOException )
         {
-            throw new OncRpcException( OncRpcException.OncRpcFailed );
+            throw new OncRpcException( OncRpcExceptionReason.OncRpcFailed );
         }
     }
 
@@ -240,7 +240,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// deregistering one server transports causes all entries for the same program and version to be
     /// removed, regardless of the protocol (UDP/IP or TCP/IP) used. Sigh.
     /// </remarks>
-    /// <exception cref="OncRpcException">  with a reason of <see cref="OncRpcException.OncRpcFailed"/>
+    /// <exception cref="OncRpcException">  with a reason of <see cref="OncRpcExceptionReason.OncRpcFailed"/>
     ///                                     if the portmapper could not be contacted successfully. 
     ///                                     Note that it is not considered an error to remove a non-existing 
     ///                                     entry from the portmapper. </exception>
@@ -255,7 +255,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
         }
         catch ( System.IO.IOException )
         {
-            throw new OncRpcException( OncRpcException.OncRpcFailed );
+            throw new OncRpcException( OncRpcExceptionReason.OncRpcFailed );
         }
     }
 

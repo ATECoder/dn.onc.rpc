@@ -37,7 +37,7 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     /// <see cref="OncRpcAcceptStatus.OncRpcSuccess"/>
     /// result data will follow the reply message header. </para>
     /// </summary>
-    public int AcceptStatus { get; set; }
+    public OncRpcAcceptStatus AcceptStatus { get; set; }
 
     /// <summary>
     /// Reject status in case this reply sent in response to a rejected call (<see cref="OncRpcReplyStatus.OncRpcMessageDenied"/>
@@ -63,10 +63,10 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     public int HighVersion { get; set; }
 
     /// <summary>
-    /// Contains the reason for authentication failure in the case of
+    /// Contains the <see cref="OncRpcAuthStatus"/> reason for authentication failure in the case of
     /// <see cref="OncRpcRejectStatus.OncRpcAuthError"/>.
     /// </summary>
-    public int AuthStatus { get; set; }
+    public OncRpcAuthStatus AuthStatus { get; set; }
 
     /// <summary>
     /// Initializes a new <see cref="OncRpcReplyMessageBase"/> object to represent an invalid state.
@@ -95,14 +95,14 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     /// can be specified as server <see cref="OncRpcReplyMessageBase.UnusedMessageParameter"/>.
     /// </remarks>
     /// <param name="call">         The ONC/RPC call this reply message corresponds to. </param>
-    /// <param name="replyStatus">  The reply status (<see cref="OncRpcReplyStatus"/>). </param>
-    /// <param name="acceptStatus"> The acceptance state (<see cref="OncRpcAcceptStatus"/>). </param>
-    /// <param name="rejectStatus"> The rejection state (<see cref="OncRpcRejectStatus"/>). </param>
+    /// <param name="replyStatus">  The reply status <see cref="OncRpcReplyStatus"/>. </param>
+    /// <param name="acceptStatus"> The acceptance status <see cref="OncRpcAcceptStatus"/>. </param>
+    /// <param name="rejectStatus"> The rejection state <see cref="OncRpcRejectStatus"/>. </param>
     /// <param name="lowVersion">   lowest supported version. </param>
     /// <param name="highVersion">  highest supported version. </param>
     /// <param name="authStatus">   The authentication state <see cref="OncRpcAuthStatus"/>. </param>
-    public OncRpcReplyMessageBase( OncRpcCallMessageBase call, int replyStatus, int acceptStatus, int rejectStatus,
-        int lowVersion, int highVersion, int authStatus ) : base( call.MessageId )
+    public OncRpcReplyMessageBase( OncRpcCallMessageBase call, int replyStatus, OncRpcAcceptStatus acceptStatus, int rejectStatus,
+        int lowVersion, int highVersion, OncRpcAuthStatus authStatus ) : base( call.MessageId )
     {
         this.MessageType = OncRpcMessageType.OncRpcReplyMessageType;
         this.ReplyStatus = replyStatus;

@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace cc.isr.ONC.RPC;
 
 /// <summary>
@@ -8,28 +10,29 @@ namespace cc.isr.ONC.RPC;
 /// this package.  <para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcAuthType
+public enum OncRpcAuthType
 {
-    /// <summary>   (Immutable) No authentication scheme used for this remote procedure call. <para>
+    /// <summary>   No authentication scheme used for this remote procedure call. <para>
     /// Renamed from <c>ONCRPC_AUTH_NONE = 0</c>. </para> </summary>
-    public const int OncRpcAuthTypeNone = 0;
+    [Description( "No authentication scheme used for this remote procedure call." )]
+    OncRpcAuthTypeNone = 0,
 
     /// <summary>
-    /// (Immutable) The so-called "Unix" authentication scheme is not supported. This one only sends
-    /// the users id as well as her/his group identifiers, so this is simply far too weak to use in
-    /// typical situations where authentication is requested. <para>
+    /// The client identifies itself using the users id as well as the user's group identifier. <para>
     /// Renamed from <c>ONCRPC_AUTH_UNIX = 1</c>. </para> </summary>
-    public const int OncRpcAuthTypeUnix = 1;
+    [Description( "The client identifies itself using the users id as well as the user's group identifier.." )]
+    OncRpcAuthTypeUnix = 1,
 
-    /// <summary>   (Immutable) The so-called "short hand Unix style" is not supported.  <para>
+    /// <summary>   The client identifies itself using the short-hand verifier received from the server
+    ///             in response to the <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> call.  <para>
     /// Renamed from <c>ONCRPC_AUTH_SHORT = 2</c>. </para> </summary>
-    public const int OncRpcAuthTypeShortHandUnix = 2;
+    [Description( "The client identifies itself using the short-hand verifier received from the server in response to the Unix authentication call" )]
+    OncRpcAuthTypeShortHandUnix = 2,
 
     /// <summary>
-    /// (Immutable)
-    /// The Data Encryption Standard (DES) authentication scheme (using encrypted time stamps) is not
-    /// supported -- and besides, it's not a silver bullet either. <para>
+    /// The Data Encryption Standard (DES) authentication scheme (using encrypted time stamps). <para>
     /// Renamed from <c>ONCRPC_AUTH_DES = 3</c>. </para>
     /// </summary>
-    public const int OncRpcAuthTypeDes = 3;
+    [Description( "The Data Encryption Standard (DES) authentication scheme (using encrypted time stamps)." )]
+    OncRpcAuthTypeDes = 3,
 }

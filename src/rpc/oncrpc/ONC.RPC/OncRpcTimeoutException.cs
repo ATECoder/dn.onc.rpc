@@ -12,9 +12,9 @@ public class OncRpcTimeoutException : OncRpcException
 
     /// <summary>
     /// Initializes an <see cref="OncRpcTimeoutException"/> with a detail of
-    /// <see cref="OncRpcException.OncRpcProcedureCallTimedOut"/>.
+    /// <see cref="OncRpcExceptionReason.OncRpcProcedureCallTimedOut"/>.
     /// </summary>
-    public OncRpcTimeoutException() : base( OncRpcException.OncRpcProcedureCallTimedOut )
+    public OncRpcTimeoutException() : base( OncRpcExceptionReason.OncRpcProcedureCallTimedOut )
     {
     }
 }

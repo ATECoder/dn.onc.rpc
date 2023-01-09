@@ -20,7 +20,7 @@ For some clues on using [ISR's ONC RPC] see the [ISR's ONC RPC] MS Test project.
 
 ## Departures from [GB1.RemoteTea.Net]
 
-* The XDR classes were removed in favor of using [ISR's XDR] package;
+* The XDR classes were moved to the [ISR's XDR] package;
 * The base namespace was changed from org.acplt to cc.isr;
 * The ONC/RPC namespace was changed from org.acplt.oncrpc to cc.isr.ONC.RPC;
 * The casing of namespace suffices, such as server and web, were changed to Pascal.
@@ -29,7 +29,11 @@ For some clues on using [ISR's ONC RPC] see the [ISR's ONC RPC] MS Test project.
 * Base class names are suffixes with Base;
 * the xdrAble interface was renamed to IXdrCodec;
 * The xdr prefixes were removed from the codec methods;
-* Uppercase constant names were converted to Pascal casing while retaining the original constant names in the code documentation.
+* Uppercase constant names were converted to Pascal casing while retaining the original constant names in the code documentation;
+* The namespace of the ONC/REPC client classes was changed fro isr.cc.ONC.RPC.Clients;
+* Getters and setters, such as Get and Set Character Encoding, where changed to properties where possible.
+* Static constant classes were converted to Enum constructs.
+
 
 ## Feedback
 

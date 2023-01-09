@@ -53,11 +53,11 @@ namespace cc.isr.ONC.RPC.Client;
 /// in case no such program number is currently registered at the specified host.
 /// An <see cref="OncRpcProgramNotRegisteredException"/>
 /// is a subclass of <see cref="OncRpcException"/> with an <see cref="OncRpcException.Reason"/> of
-/// <see cref="OncRpcException.OncRpcProgramNotRegistered"/>. </para>
+/// <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/>. </para>
 /// In case no ONC/RPC port mapper is available at the specified host, you'll get an
 /// <see cref="OncRpcTimeoutException"/> instead (which is again a subclass of
 /// <see cref="OncRpcException"/> with an <see cref="OncRpcException.Reason"/> of
-/// <see cref="OncRpcException.OncRpcProcedureCallTimedOut"/>).
+/// <see cref="OncRpcExceptionReason.OncRpcProcedureCallTimedOut"/>).
 /// You might also get an IOException when using TCP/IP and the server
 /// cannot be contacted because it does not accept new connections. <para>
 /// Instead of calling
@@ -298,7 +298,7 @@ public abstract class OncRpcClientBase : IDisposable
 
             default:
                 {
-                    throw new OncRpcException( OncRpcException.OncRpcUnknownIpProtocol );
+                    throw new OncRpcException( OncRpcExceptionReason.OncRpcUnknownIpProtocol );
                 }
         }
     }

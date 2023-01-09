@@ -13,17 +13,17 @@ public abstract class OncRpcServerAuthBase
 
     /// <summary>   Specialized constructor for use only by derived class. </summary>
     /// <param name="authenticationType">   Authentication type used by this authentication object. </param>
-    protected OncRpcServerAuthBase( int authenticationType )
+    protected OncRpcServerAuthBase( OncRpcAuthType authenticationType )
     {
         this.AuthenticationType = authenticationType;
     }
 
     /// <summary>
-    /// Gets or sets or set (private) the type (flavor) of <see cref="OncRpcAuthType">authentication</see>
+    /// Gets or sets or set (private) the type (flavor) of <see cref="OncRpcAuthType">authentication type</see>
     /// used.
     /// </summary>
     /// <value>   Authentication type used by this authentication object. </value>
-    public int AuthenticationType { get; private set; }
+    public OncRpcAuthType AuthenticationType { get; private set; }
 
     /// <summary>   Restores (deserializes) an authentication object from an XDR stream. </summary>
     /// <param name="decoder">  XDR stream from which the authentication object is restored. </param>
@@ -47,7 +47,7 @@ public abstract class OncRpcServerAuthBase
         // to receive an authentication with the same type, we reuse the old
         // object.
 
-        int authType = decoder.DecodeInt();
+        OncRpcAuthType authType = (OncRpcAuthType ) decoder.DecodeInt();
         if ( recycle is not null && recycle.AuthenticationType == authType )
         {
 

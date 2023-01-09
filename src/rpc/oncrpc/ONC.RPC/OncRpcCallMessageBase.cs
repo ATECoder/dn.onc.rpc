@@ -24,18 +24,6 @@ public abstract class OncRpcCallMessageBase : OncRpcMessageBase
     /// Renamed from <c>ONCRPC_VERSION (=2)</c> </para> </summary>
     public const int OncRpcProtocolVersion = 2;
 
-    /// <summary>   Protocol version used by this ONC/RPC call message. </summary>
-    public int ProtocolVersion { get; set; }
-
-    /// <summary>   Program number of this particular remote procedure call message. </summary>
-    public int Program { get; set; }
-
-    /// <summary>   Program version number of this particular remote procedure call message. </summary>
-    public int Version { get; set; }
-
-    /// <summary>   Number (identifier) of remote procedure to call. </summary>
-    public int Procedure { get; set; }
-
     /// <summary>   Constructs and initializes a new ONC/RPC call message header. </summary>
     /// <param name="messageId">    An identifier chosen by an ONC/RPC client to uniquely identify
     ///                             matching call and reply messages. </param>
@@ -64,4 +52,18 @@ public abstract class OncRpcCallMessageBase : OncRpcMessageBase
         this.Version = 0;
         this.Procedure = 0;
     }
+
+    /// <summary>   Protocol version used by this ONC/RPC call message. </summary>
+    public int ProtocolVersion { get; set; }
+
+    /// <summary>   Program number of this particular remote procedure call message. </summary>
+    public int Program { get; set; }
+
+    /// <summary>   Program version number of this particular remote procedure call message. </summary>
+    public int Version { get; set; }
+
+    /// <summary>   Number (identifier) of remote procedure to call. </summary>
+    public int Procedure { get; set; }
+
+
 }

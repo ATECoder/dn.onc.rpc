@@ -67,7 +67,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// incoming ONC/RPC calls. If the ONC/RPC program is not registered with the particular ONC/RPC
 /// portmapper, an <see cref="OncRpcProgramNotRegisteredException"/>
 /// is thrown (which is a subclass of <see cref="OncRpcException"/>
-/// with a <see cref="OncRpcException.Reason"/> of <see cref="OncRpcException.OncRpcProgramNotRegistered"/>. </para> <para>
+/// with a <see cref="OncRpcException.Reason"/> of <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/>. </para> <para>
 /// A second typical example of how to use the portmapper is retrieving a list of the
 /// currently registered servers. We use the <see cref="ListServers()"/>
 /// method for this purpose in the following example, and print the list we got. </para>
@@ -165,7 +165,7 @@ public class OncRpcPortmapClient
 
             default:
                 {
-                    throw new OncRpcException( OncRpcException.OncRpcUnknownIpProtocol );
+                    throw new OncRpcException( OncRpcExceptionReason.OncRpcUnknownIpProtocol );
                 }
         }
     }
@@ -189,7 +189,7 @@ public class OncRpcPortmapClient
     /// program version, protocol}.
     /// </summary>
     /// <exception cref="OncRpcException">                      if the portmapper is not available
-    ///                                                         (reason is <see cref="OncRpcException.OncRpcPortMapServiceFailure"/> ). </exception>
+    ///                                                         (reason is <see cref="OncRpcExceptionReason.OncRpcPortMapServiceFailure"/> ). </exception>
     /// <exception cref="OncRpcProgramNotRegisteredException">  if the requested program is not available. </exception>
     /// <param name="program">  Program number of the remote procedure call in question. </param>
     /// <param name="version">  Program version number. </param>
@@ -217,7 +217,7 @@ public class OncRpcPortmapClient
         }
         catch ( OncRpcException )
         {
-            throw new OncRpcException( OncRpcException.OncRpcPortMapServiceFailure );
+            throw new OncRpcException( OncRpcExceptionReason.OncRpcPortMapServiceFailure );
         }
 
         // In case the program is not registered, throw an exception too.
@@ -231,7 +231,7 @@ public class OncRpcPortmapClient
     /// with the portmapper.
     /// </summary>
     /// <exception cref="OncRpcException">  if the portmapper is not available (reason is
-    ///                                     <see cref="OncRpcException.OncRpcPortMapServiceFailure"/>). </exception>
+    ///                                     <see cref="OncRpcExceptionReason.OncRpcPortMapServiceFailure"/>). </exception>
     /// <param name="program">  The number of the program to be registered. </param>
     /// <param name="version">  The version number of the program. </param>
     /// <param name="protocol"> The protocol spoken by the ONC/RPC server. Can be one of the
@@ -256,7 +256,7 @@ public class OncRpcPortmapClient
         }
         catch ( OncRpcException )
         {
-            throw new OncRpcException( OncRpcException.OncRpcPortMapServiceFailure );
+            throw new OncRpcException( OncRpcExceptionReason.OncRpcPortMapServiceFailure );
         }
         return resultCodec.Value;
     }
@@ -274,7 +274,7 @@ public class OncRpcPortmapClient
     /// or was denied by the portmapper (<see cref="T:false"/>).
     /// </returns>
     /// <exception cref="OncRpcException">  if the portmapper is not available (reason is
-    ///                                     <see cref="OncRpcException.OncRpcPortMapServiceFailure"/>). </exception>
+    ///                                     <see cref="OncRpcExceptionReason.OncRpcPortMapServiceFailure"/>). </exception>
     public virtual bool UnsetPort( int program, int version )
     {
         // Fill in the request codec.
@@ -293,7 +293,7 @@ public class OncRpcPortmapClient
             // Temp output
             Console.WriteLine( e.Message );
             Console.WriteLine( e.StackTrace );
-            throw new OncRpcException( OncRpcException.OncRpcPortMapServiceFailure );
+            throw new OncRpcException( OncRpcExceptionReason.OncRpcPortMapServiceFailure );
         }
         return replyCodec.Value;
     }
@@ -304,7 +304,7 @@ public class OncRpcPortmapClient
     /// </summary>
     /// <remarks>   2022-12-24. </remarks>
     /// <exception cref="OncRpcException">  if the portmapper is not available with 
-    ///                                     <see cref="OncRpcException.Reason"/> = <see cref="OncRpcException.OncRpcPortMapServiceFailure"/>). 
+    ///                                     <see cref="OncRpcException.Reason"/> = <see cref="OncRpcExceptionReason.OncRpcPortMapServiceFailure"/>). 
     ///                                     </exception>
     /// <returns>
     /// vector of server descriptions <see cref="OncRpcServerIdentifierCodec"/>.
@@ -322,7 +322,7 @@ public class OncRpcPortmapClient
         }
         catch ( OncRpcException )
         {
-            throw new OncRpcException( OncRpcException.OncRpcPortMapServiceFailure );
+            throw new OncRpcException( OncRpcExceptionReason.OncRpcPortMapServiceFailure );
         }
 
         // Copy the server identities from the Vector into the vector (array).
@@ -333,7 +333,7 @@ public class OncRpcPortmapClient
 
     /// <summary>   Pings the portmapper (try to call procedure 0). </summary>
     /// <exception cref="OncRpcException">  if the portmapper is not available (reason is
-    ///                                     <see cref="OncRpcException.OncRpcPortMapServiceFailure"/> ). </exception>
+    ///                                     <see cref="OncRpcExceptionReason.OncRpcPortMapServiceFailure"/> ). </exception>
     public virtual void Ping()
     {
         try
@@ -342,7 +342,7 @@ public class OncRpcPortmapClient
         }
         catch ( OncRpcException )
         {
-            throw new OncRpcException( OncRpcException.OncRpcPortMapServiceFailure );
+            throw new OncRpcException( OncRpcExceptionReason.OncRpcPortMapServiceFailure );
         }
     }
 

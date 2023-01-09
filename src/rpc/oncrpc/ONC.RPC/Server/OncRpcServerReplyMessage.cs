@@ -26,14 +26,14 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
     /// can be specified as server <see cref="OncRpcReplyMessageBase.UnusedMessageParameter"/>.
     /// </remarks>
     /// <param name="call">         The ONC/RPC call this reply message corresponds to. </param>
-    /// <param name="replyStatus">  The reply status (see <see cref="OncRpcReplyStatus"/>). </param>
-    /// <param name="acceptStatus"> The acceptance state (<see cref="OncRpcAcceptStatus"/>). </param>
-    /// <param name="rejectStatus"> The rejection state (<see cref="OncRpcRejectStatus"/>). </param>
+    /// <param name="replyStatus">  The reply status <see cref="OncRpcReplyStatus"/>. </param>
+    /// <param name="acceptStatus"> The acceptance status <see cref="OncRpcAcceptStatus"/>. </param>
+    /// <param name="rejectStatus"> The rejection status <see cref="OncRpcRejectStatus"/>. </param>
     /// <param name="lowVersion">   lowest supported version. </param>
     /// <param name="highVersion">  highest supported version. </param>
-    /// <param name="authStatus">   The authentication state (<see cref="OncRpcAuthStatus"/>). </param>
-    public OncRpcServerReplyMessage( OncRpcServerCallMessage call, int replyStatus, int acceptStatus, int rejectStatus,
-        int lowVersion, int highVersion, int authStatus ) : base( call, replyStatus, acceptStatus, rejectStatus, lowVersion, highVersion, authStatus )
+    /// <param name="authStatus">   The authentication status (<see cref="OncRpcAuthStatus"/>). </param>
+    public OncRpcServerReplyMessage( OncRpcServerCallMessage call, int replyStatus, OncRpcAcceptStatus acceptStatus, int rejectStatus,
+        int lowVersion, int highVersion, OncRpcAuthStatus authStatus ) : base( call, replyStatus, acceptStatus, rejectStatus, lowVersion, highVersion, authStatus )
     {
         this.Auth = call.Auth;
     }
@@ -66,7 +66,7 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
                         this.Auth.EncodeVerfier( encoder );
                     else
                     {
-                        encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+                        encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
                         encoder.EncodeInt( 0 );
                     }
 
@@ -75,7 +75,7 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
                     // call we have to Sends back an indication about the range of
                     // versions we support of a particular program (server).
 
-                    encoder.EncodeInt( this.AcceptStatus );
+                    encoder.EncodeInt( (int) this.AcceptStatus );
                     switch ( this.AcceptStatus )
                     {
                         case OncRpcAcceptStatus.OncRpcProgramVersionMismatch:
@@ -114,7 +114,7 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
 
                         case OncRpcRejectStatus.OncRpcAuthError:
                             {
-                                encoder.EncodeInt( this.AuthStatus );
+                                encoder.EncodeInt( ( int ) this.AuthStatus );
                                 break;
                             }
 

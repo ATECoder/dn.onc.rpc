@@ -47,9 +47,9 @@ public class OncRpcClientCallMessage : OncRpcCallMessageBase
             this.Auth.EncodeCredentialAndVerfier( encoder );
         else
         {
-            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+            encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
             encoder.EncodeInt( 0 );
-            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+            encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
             encoder.EncodeInt( 0 );
         }
     }

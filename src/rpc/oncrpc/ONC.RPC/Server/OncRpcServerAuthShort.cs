@@ -43,11 +43,11 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// calls. If you don't set the verifier or set it to <see langword="null"/>, then the verifier
     /// returned to the caller will be of type <see cref="OncRpcAuthType.OncRpcAuthTypeNone"/>.
     /// </remarks>
-    /// <param name="shorthandVerf">    Contains the shorthand authentication verifier (credential)
-    ///                                 to return to the caller to be used with the next ONC/RPC calls. </param>
-    public void SetShorthandVerifier( byte[] shorthandVerf )
+    /// <param name="verifier">    Contains the shorthand authentication verifier (credential)
+    ///                            to return to the caller to be used with the next ONC/RPC calls. </param>
+    public void SetShorthandVerifier( byte[] verifier )
     {
-        this._shorthandVerfier = shorthandVerf;
+        this._shorthandVerfier = verifier;
     }
 
     /// <summary>   Returns the shorthand verifier to be sent back to the caller. </summary>
@@ -61,12 +61,23 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// Decodes -- that is: deserializes -- an ONC/RPC authentication object (credential and
     /// verifier) on the server side.
     /// </summary>
+    /// <remarks>
+    /// The value of the discriminant in the response verifier of the reply message from the server
+    /// is either <see cref="OncRpcAuthType.OncRpcAuthTypeNone"/> or <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>.
+    /// If the value is the later, the bytes of the response verifier's string encode an opaque structure.
+    /// The new opaque structure can then be passed to the server in place of the original 
+    /// <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> credentials. The server maintains a cache that
+    /// maps shorthand opaque structures (passed back by way of an AUTH_SHORT-style response
+    /// verifier) to the original credentials of the caller. The caller saves network bandwidth and
+    /// server CPU time when the shorthand credentials are used.
+    /// </remarks>
+    /// <exception cref="OncRpcAuthException">  Thrown when an ONC/RPC Authentication
+    ///                                                   error condition occurs. </exception>
     /// <param name="decoder">  XDR stream from which the authentication object is restored. </param>
     ///
-    /// <exception cref="OncRpcAuthException">    Thrown when an ONC/RPC Authentication
-    ///                                                     error condition occurs. </exception>
-    /// <exception cref="OncRpcException">                  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <exception cref="System.IO.IOException">            Thrown when an I/O error condition occurs. </exception>
+    /// ### <exception cref="OncRpcException">          Thrown when an ONC/RPC error condition
+    ///                                                 occurs. </exception>
+    /// ### <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     public sealed override void DecodeCredentialAndVerfier( XdrDecodingStreamBase decoder )
     {
 
@@ -87,7 +98,8 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
 
-        if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
+        if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
+
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
     }
 
@@ -106,7 +118,7 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
 
             // Encode 'short' shorthand verifier (credential).
 
-            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeShortHandUnix );
+            encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeShortHandUnix );
             encoder.EncodeDynamicOpaque( this._shorthandVerfier );
         }
         else
@@ -115,7 +127,7 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
             // Encode an 'none' verifier with zero length, if no shorthand
             // verifier (credential) has been supplied by now.
 
-            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+            encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
             encoder.EncodeInt( 0 );
         }
     }

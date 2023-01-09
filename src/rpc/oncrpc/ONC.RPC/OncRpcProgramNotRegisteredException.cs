@@ -13,9 +13,9 @@ public class OncRpcProgramNotRegisteredException : OncRpcException
 
     /// <summary>
     /// Constructs an ONC/RPC program not registered exception with a detail code of 
-    /// <see cref="OncRpcException.OncRpcProgramNotRegistered"/> and an appropriate clear-text detail message.
+    /// <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/> and an appropriate clear-text detail message.
     /// </summary>
-    public OncRpcProgramNotRegisteredException() : base( OncRpcException.OncRpcProgramNotRegistered )
+    public OncRpcProgramNotRegisteredException() : base( OncRpcExceptionReason.OncRpcProgramNotRegistered )
     {
     }
 }

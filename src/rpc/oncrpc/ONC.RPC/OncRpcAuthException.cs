@@ -11,20 +11,20 @@ public class OncRpcAuthException : OncRpcException
 {
     /// <summary>
     /// Initializes an <see cref="OncRpcAuthException"/>
-    /// with a reason of <see cref="OncRpcException.OncRpcAuthenticationError"/>
+    /// with a reason of <see cref="OncRpcExceptionReason.OncRpcAuthenticationError"/>
     /// and the specified <see cref="OncRpcAuthStatus">authentication status</see> failure reason.
     /// </summary>
     /// <param name="authStatus">   The authentication status, which can be any one of the
     ///                             <see cref="OncRpcAuthStatus"/>. </param>
-    public OncRpcAuthException( int authStatus ) : base( OncRpcException.OncRpcAuthenticationError )
+    public OncRpcAuthException( OncRpcAuthStatus authStatus ) : base( OncRpcExceptionReason.OncRpcAuthenticationError )
     {
         this.AuthStatus = authStatus;
     }
 
     /// <summary>
-    /// Gets or sets pr set the specific authentication status (reason why this authentication
-    /// exception was thrown).
+    /// Gets or sets pr set the specific <see cref="OncRpcAuthStatus"/>, that is, the reason why this
+    /// authentication exception was thrown.
     /// </summary>
     /// <value> The authentication status of this exception. </value>
-    public int AuthStatus { get; private set; }
+    public OncRpcAuthStatus AuthStatus { get; private set; }
 }

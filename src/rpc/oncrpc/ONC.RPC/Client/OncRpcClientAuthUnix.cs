@@ -1,4 +1,3 @@
-using static System.Net.WebRequestMethods;
 
 namespace cc.isr.ONC.RPC.Client;
 
@@ -21,18 +20,18 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// Please note that the credential information is typically only unique within a particular
     /// domain of machines, user IDs and group IDs.
     /// </remarks>
-    /// <param name="machinename">  Name of the caller's machine (like "ebankruptcy-dot-com", just
+    /// <param name="machinename">  Name of the caller's machine (like "coder-dot-com", just
     ///                             for instance...). </param>
-    /// <param name="uid">          Caller's effective user ID. </param>
-    /// <param name="gid">          Caller's effective group ID. </param>
-    /// <param name="gids">         Array of group IDs the caller is a member of. </param>
-    public OncRpcClientAuthUnix( string machinename, int uid, int gid, int[] gids )
+    /// <param name="userId">          Caller's effective user ID. </param>
+    /// <param name="groupId">         Caller's effective group ID. </param>
+    /// <param name="groupIds">        Array of group IDs the caller is a member of. </param>
+    public OncRpcClientAuthUnix( string machinename, int userId, int groupId, int[] groupIds )
     {
         this.Timestamp = ( int ) (DateTime.Now.Ticks / (TimeSpan.TicksPerMillisecond * 1000));
-        this.machinename = machinename;
-        this.uid = uid;
-        this.gid = gid;
-        this.gids = gids;
+        this.MachineName = machinename;
+        this.UserId = userId;
+        this.GroupId = groupId;
+        this._groupIds = groupIds;
     }
 
     /// <summary>
@@ -44,11 +43,11 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// Please note that the credential information is typically only
     /// unique within a particular domain of machines, user IDs and group IDs.
     /// </remarks>
-    /// <param name="machinename">  Name of the caller's machine (like "ebankruptcy-dot-com", just
+    /// <param name="machinename">  Name of the caller's machine (like "coder-dot-com", just
     ///                             for instance...). </param>
-    /// <param name="uid">          Caller's effective user ID. </param>
-    /// <param name="gid">          Caller's effective group ID. </param>
-    public OncRpcClientAuthUnix( string machinename, int uid, int gid ) : this( machinename, uid, gid, Array.Empty<int>() )
+    /// <param name="userId">       Caller's effective user ID. </param>
+    /// <param name="groupId">      Caller's effective group ID. </param>
+    public OncRpcClientAuthUnix( string machinename, int userId, int groupId ) : this( machinename, userId, groupId, Array.Empty<int>() )
     {
     }
 
@@ -59,8 +58,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// <remarks>
     /// The <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> authentication method only uses the credential
     /// but no verifier. If the ONC/RPC server sent a <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>
-    /// "shorthand" credential together with the previous reply message, it
-    /// is used instead of the original credential.
+    /// "shorthand" credential together with the previous reply message, it is used instead of the original credential.
     /// </remarks>
     /// <exception cref="OncRpcAuthException">    Thrown when an ONC/RPC Authentication
     ///                                                     error condition occurs. </exception>
@@ -70,41 +68,41 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     internal override void EncodeCredentialAndVerfier( XdrEncodingStreamBase encoder )
     {
-        if ( this.shorthandCred == null )
+        if ( this._shorthandCredentials == null )
         {
 
             // Encode the credential, which contains some unsecured information
             // about user and group ID, etc. Note that the credential itself
             // is encoded as a variable-sized bunch of octets.
 
-            if ( this.gids.Length > OncRpcAuthConstants.OncRpcMaxAllowedGroups || this.machinename.Length > OncRpcAuthConstants.OncRpcMaxMachineNameLength )
+            if ( this._groupIds.Length > OncRpcAuthConstants.OncRpcMaxAllowedGroups || this.MachineName.Length > OncRpcAuthConstants.OncRpcMaxMachineNameLength )
                 throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
-            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeUnix );
+            encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeUnix );
 
             // length = length of timestamp + length of machine name + length of user id + length of group id + length of vector of group ids
 
-            int len = 4 + (this.machinename.Length + 7 & ~3) + 4 + 4 + this.gids.Length * 4 + 4;
+            int len = 4 + (this.MachineName.Length + 7 & ~3) + 4 + 4 + this._groupIds.Length * 4 + 4;
             if ( len > OncRpcAuthConstants.OncRpcMaxAuthBytes )
                 throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
             encoder.EncodeInt( len );
             encoder.EncodeInt( this.Timestamp );
-            encoder.EncodeString( this.machinename );
-            encoder.EncodeInt( this.uid );
-            encoder.EncodeInt( this.gid );
-            encoder.EncodeIntVector( this.gids );
+            encoder.EncodeString( this.MachineName );
+            encoder.EncodeInt( this.UserId );
+            encoder.EncodeInt( this.GroupId );
+            encoder.EncodeIntVector( this._groupIds );
         }
         else
         {
 
             // Use shorthand credential instead of original credential.
 
-            encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeShortHandUnix );
-            encoder.EncodeDynamicOpaque( this.shorthandCred );
+            encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeShortHandUnix );
+            encoder.EncodeDynamicOpaque( this._shorthandCredentials );
         }
 
         // We also need to encode the verifier, which is always of type 'none'.
 
-        encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+        encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
         encoder.EncodeInt( 0 );
     }
 
@@ -120,7 +118,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// <exception cref="System.IO.IOException">    Thrown when an I/O error condition occurs. </exception>
     internal override void DecodeVerfier( XdrDecodingStreamBase decoder )
     {
-        switch ( decoder.DecodeInt() )
+        switch ( ( OncRpcAuthType ) decoder.DecodeInt() )
         {
             case OncRpcAuthType.OncRpcAuthTypeNone:
                 {
@@ -146,8 +144,8 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
                     // it does conform to the length restriction as set forth in
                     // the ONC/RPC protocol.
 
-                    this.shorthandCred = decoder.DecodeDynamicOpaque();
-                    if ( this.shorthandCred.Length > OncRpcAuthConstants.OncRpcMaxAuthBytes )
+                    this._shorthandCredentials = decoder.DecodeDynamicOpaque();
+                    if ( this._shorthandCredentials.Length > OncRpcAuthConstants.OncRpcMaxAuthBytes )
                         throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
                     break;
                 }
@@ -170,14 +168,14 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
         // If we don't use a shorthand credential at this time, then there's
         // no hope to refresh the credentials.
 
-        if ( this.shorthandCred == null )
+        if ( this._shorthandCredentials == null )
             return false;
 
         // Otherwise just dump the shorthand credentials and let the caller
         // retry. This will probably result in the ONC/RPC server replying
         // with a new shorthand credential.
 
-        this.shorthandCred = null;
+        this._shorthandCredentials = null;
 
         // Ah, yes. We need to update the "stamp" (more a timestamp, but
         // Sun coding style is sometimes interesting). As is my style too.
@@ -193,82 +191,38 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// <value> The timestamp. </value>
     public int Timestamp { get; set; }
 
-    /// <summary>Contains the machine name of caller supplied through credential.</summary>
-    private string machinename;
+    /// <summary>   Gets or sets the machine name of caller supplied through credential. </summary>
+    /// <value> The machine name. </value>
+    public string MachineName { get; set; }
 
-    /// <summary>   Sets the machine name information in the credential. </summary>
-    /// <param name="machinename">  Machine name. </param>
-    public virtual void setMachinename( string machinename )
-    {
-        this.machinename = machinename;
-    }
+    /// <summary>   Gets or sets the user ID of caller supplied through credential. </summary>
+    /// <value> The identifier of the user. </value>
+    private int UserId { get; set; }
 
-    /// <summary>   Returns the machine name information from the credential. </summary>
-    /// <returns>   machine name. </returns>
-    public virtual string getMachinename()
-    {
-        return this.machinename;
-    }
+    /// <summary>Contains the group ID of caller supplied through credential.</summary>
+    private int GroupId { get; set; }
 
-    /// <summary>   Sets the user ID in the credential. </summary>
-    /// <param name="uid">  User ID. </param>
-    public virtual void setUid( int uid )
-    {
-        this.uid = uid;
-    }
-
-    /// <summary>   Returns the user ID from the credential. </summary>
-    /// <returns>   user ID. </returns>
-    public virtual int getUid()
-    {
-        return this.uid;
-    }
-
-    /// <summary>   Sets the group ID in the credential. </summary>
-    /// <param name="gid">  Group ID. </param>
-    public virtual void setGid( int gid )
-    {
-        this.gid = gid;
-    }
-
-    /// <summary>   Returns the group ID from the credential. </summary>
-    /// <returns>   group ID. </returns>
-    public virtual int getGid()
-    {
-        return this.gid;
-    }
+    private int[] _groupIds;
 
     /// <summary>   Sets the group IDs in the credential. </summary>
     /// <param name="gids"> Array of group IDs. </param>
-    public virtual void setGids( int[] gids )
+    public virtual void SetGroupIds( int[] gids )
     {
-        this.gids = gids;
+        this._groupIds = gids;
     }
 
     /// <summary>   Returns the group IDs from the credential. </summary>
     /// <returns>   array of group IDs. </returns>
-    public virtual int[] getGids()
+    public virtual int[] GetGroupIds()
     {
-        return this.gids;
+        return this._groupIds;
     }
-
-    /// <summary>Contains the user ID of caller supplied through credential.</summary>
-    private int uid;
-
-    /// <summary>Contains the group ID of caller supplied through credential.</summary>
-    private int gid;
-
-    /// <summary>
-    /// Contains a set of group IDs the caller belongs to, as supplied
-    /// through credential.
-    /// </summary>
-    private int[] gids;
 
     /// <summary>
     /// Holds the "shorthand" credentials of type <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>
     /// optionally returned by an ONC/RPC server to be used on subsequent
     /// ONC/RPC calls.
     /// </summary>
-    private byte[] shorthandCred;
+    private byte[] _shorthandCredentials;
 
 }

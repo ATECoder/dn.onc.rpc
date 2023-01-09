@@ -62,32 +62,32 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                     {
                         case OncRpcAcceptStatus.OncRpcSuccess:
                             {
-                                return new OncRpcException( OncRpcException.OncRpcSuccess );
+                                return new OncRpcException( OncRpcExceptionReason.OncRpcSuccess );
                             }
 
                         case OncRpcAcceptStatus.OncRpcProcedureNotAvailable:
                             {
-                                return new OncRpcException( OncRpcException.OncRpcProcedureNotAvailable );
+                                return new OncRpcException( OncRpcExceptionReason.OncRpcProcedureNotAvailable );
                             }
 
                         case OncRpcAcceptStatus.OncRpcProgramVersionMismatch:
                             {
-                                return new OncRpcException( OncRpcException.OncRpcProgramVersionNotSupported );
+                                return new OncRpcException( OncRpcExceptionReason.OncRpcProgramVersionNotSupported );
                             }
 
                         case OncRpcAcceptStatus.OncRpcProgramNotAvailable:
                             {
-                                return new OncRpcException( OncRpcException.OncRpcProgramNotAvailable );
+                                return new OncRpcException( OncRpcExceptionReason.OncRpcProgramNotAvailable );
                             }
 
                         case OncRpcAcceptStatus.OncRpcUnableToDecodingArguments:
                             {
-                                return new OncRpcException( OncRpcException.OncRpcCannotDecodeArgs );
+                                return new OncRpcException( OncRpcExceptionReason.OncRpcCannotDecodeArgs );
                             }
 
                         case OncRpcAcceptStatus.OncRpcSystemError:
                             {
-                                return new OncRpcException( OncRpcException.OncRpcSystemError );
+                                return new OncRpcException( OncRpcExceptionReason.OncRpcSystemError );
                             }
                     }
                     break;
@@ -104,7 +104,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
 
                         case OncRpcRejectStatus.OncRpcWrongProtocolVersion:
                             {
-                                return new OncRpcException( OncRpcException.OncRpcFailed );
+                                return new OncRpcException( OncRpcExceptionReason.OncRpcFailed );
                             }
                     }
                     break;
@@ -131,7 +131,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
 
         this.MessageType = decoder.DecodeInt();
         if ( this.MessageType != OncRpcMessageType.OncRpcReplyMessageType )
-            throw new OncRpcException( OncRpcException.OncRpcWrongMessageType );
+            throw new OncRpcException( OncRpcExceptionReason.OncRpcWrongMessageType );
         this.ReplyStatus = decoder.DecodeInt();
         switch ( this.ReplyStatus )
         {
@@ -153,8 +153,9 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                         // will throw an exception. Also we check that no-one is
                         // actually sending opaque information within 'none'.
 
-                        if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone )
+                        if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone )
                             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
+                        // then check on the message value.
                         if ( decoder.DecodeInt() != 0 )
                             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
                     }
@@ -164,7 +165,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                     // call we will receive an indication about the range of
                     // versions a particular program (server) supports.
 
-                    this.AcceptStatus = decoder.DecodeInt();
+                    this.AcceptStatus = ( OncRpcAcceptStatus ) decoder.DecodeInt();
                     switch ( this.AcceptStatus )
                     {
                         case OncRpcAcceptStatus.OncRpcProgramVersionMismatch:
@@ -203,7 +204,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
 
                         case OncRpcRejectStatus.OncRpcAuthError:
                             {
-                                this.AuthStatus = decoder.DecodeInt();
+                                this.AuthStatus = ( OncRpcAuthStatus ) decoder.DecodeInt();
                                 break;
                             }
 

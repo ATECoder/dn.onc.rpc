@@ -20,8 +20,12 @@ public class OncRpcServerAcceptedCallMessage : OncRpcServerReplyMessage
     /// </summary>
     /// <param name="call"> The call message header, which is used to Constructs the matching reply
     ///                     message header from. </param>
-    public OncRpcServerAcceptedCallMessage( OncRpcServerCallMessage call ) : base( call, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcSuccess,
-        OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcAuthStatus.OncRpcAuthOkay )
+    public OncRpcServerAcceptedCallMessage( OncRpcServerCallMessage call ) : base( call, OncRpcReplyStatus.OncRpcMessageAccepted,
+                                                                                   OncRpcAcceptStatus.OncRpcSuccess,
+                                                                                   OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                                                   OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                                                   OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                                                   OncRpcAuthStatus.OncRpcAuthOkay )
     {
     }
 
@@ -30,15 +34,17 @@ public class OncRpcServerAcceptedCallMessage : OncRpcServerReplyMessage
     /// which was not necessarily successfully carried out.
     /// </summary>
     /// <remarks>
-    /// The <paramref name="acceptStatus"/> will then indicate the exact outcome of the ONC/RPC call.
+    /// The <paramref name="acceptStatus"/> indicates the exact outcome of the ONC/RPC call.
     /// </remarks>
     /// <param name="call">         The call message header, which is used to Constructs the matching
     ///                             reply message header from. </param>
-    /// <param name="acceptStatus"> The accept status of the call. This can be any one of the
-    ///                             constants defined in the <see cref="OncRpcAcceptStatus"/> interface. </param>
-    public OncRpcServerAcceptedCallMessage( OncRpcServerCallMessage call, int acceptStatus ) : base( call, OncRpcReplyStatus.OncRpcMessageAccepted,
-        acceptStatus, OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter,
-        OncRpcAuthStatus.OncRpcAuthOkay )
+    /// <param name="acceptStatus"> The <see cref="OncRpcAcceptStatus"/> of the call. </param>
+    public OncRpcServerAcceptedCallMessage( OncRpcServerCallMessage call,
+                                            OncRpcAcceptStatus acceptStatus ) : base( call, OncRpcReplyStatus.OncRpcMessageAccepted,
+                                                                                      acceptStatus, OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                                                      OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                                                      OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                                                      OncRpcAuthStatus.OncRpcAuthOkay )
     {
     }
 
@@ -53,9 +59,9 @@ public class OncRpcServerAcceptedCallMessage : OncRpcServerReplyMessage
     ///                     message header from. </param>
     /// <param name="low">  Lowest program version supported by this ONC/RPC server. </param>
     /// <param name="high"> Highest program version supported by this ONC/RPC server. </param>
-    public OncRpcServerAcceptedCallMessage( OncRpcServerCallMessage
-         call, int low, int high ) : base( call, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcProgramVersionMismatch,
-             OncRpcReplyMessageBase.UnusedMessageParameter, low, high, OncRpcAuthStatus.OncRpcAuthOkay )
+    public OncRpcServerAcceptedCallMessage( OncRpcServerCallMessage call, int low, int high ) : base( call, OncRpcReplyStatus.OncRpcMessageAccepted,
+                                                                                                      OncRpcAcceptStatus.OncRpcProgramVersionMismatch,
+                                                                                                      OncRpcReplyMessageBase.UnusedMessageParameter, low, high, OncRpcAuthStatus.OncRpcAuthOkay )
     {
     }
 }

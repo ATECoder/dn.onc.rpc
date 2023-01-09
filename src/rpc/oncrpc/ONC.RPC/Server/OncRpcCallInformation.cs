@@ -320,16 +320,19 @@ public class OncRpcCallInformation
     /// Sends back an ONC/RPC failure indication about a failed authentication to the caller who sent
     /// in this call replying <see cref="OncRpcRejectStatus.OncRpcAuthError"/>
     /// </summary>
-    /// <param name="authStatus">   <see cref="OncRpcAuthStatus">Reason</see>
-    ///                             why authentication failed. </param>
+    /// <param name="authStatus">   <see cref="OncRpcAuthStatus">Reason</see> why authentication failed. </param>
     ///
     /// <exception cref="OncRpcException">          if an ONC/RPC exception occurs, like the data
     ///                                             could not be successfully deserialized. </exception>
     /// <exception cref="System.IO.IOException">    if an I/O exception occurs, like transmission
     ///                                             failures over the network, etc. </exception>
-    public virtual void ReplyAuthError( int authStatus )
+    public virtual void ReplyAuthError( OncRpcAuthStatus authStatus )
     {
-        this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageDenied, OncRpcReplyMessageBase.UnusedMessageParameter,
-            OncRpcRejectStatus.OncRpcAuthError, OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter, authStatus ), null );
+        this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageDenied,
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                        OncRpcRejectStatus.OncRpcAuthError,
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                        authStatus ), null );
     }
 }

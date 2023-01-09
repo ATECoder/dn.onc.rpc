@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace cc.isr.ONC.RPC;
 
 /// <summary>
@@ -7,54 +9,62 @@ namespace cc.isr.ONC.RPC;
 /// <remarks> <para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcAuthStatus
+public enum OncRpcAuthStatus
 {
-    /// <summary>   (Immutable) There is no authentication problem or error. <para>
+    /// <summary>   There is no authentication problem or error. <para>
     /// Renamed from <c>ONCRPC_AUTH_OK = 0</c>. </para> </summary>
-    public const int OncRpcAuthOkay = 0;
+    [Description( "There is no authentication problem or error." )]
+    OncRpcAuthOkay = 0,
 
     /// <summary>
     /// (Immutable)
     /// The ONC/RPC server detected a bad credential (that is, the seal was broken). <para>
     /// Renamed from <c>ONCRPC_AUTH_BADCRED = 1</c>. </para>
     /// </summary>
-    public const int OncRpcAuthBadCredential = 1;
+    [Description( "The ONC/RPC server detected a bad credential (that is, the seal was broken)." )]
+    OncRpcAuthBadCredential = 1,
 
     /// <summary>
     /// (Immutable)
     /// The ONC/RPC server has rejected the credential and forces the caller to begin a new session. <para>
     /// Renamed from <c>ONCRPC_AUTH_REJECTEDCRED = 2</c>. </para>
     /// </summary>
-    public const int OncRpcAuthRejectedCredential = 2;
+    [Description( "The ONC/RPC server has rejected the credential and forces the caller to begin a new session." )]
+    OncRpcAuthRejectedCredential = 2,
 
     /// <summary>
     /// (Immutable)
     /// The ONC/RPC server detected a bad verifier (that is, the seal was broken). <para>
     /// Renamed from <c>ONCRPC_AUTH_BADVERF = 3</c>. </para>
     /// </summary>
-    public const int OncRpcAutoBadVerifier = 3;
+    [Description( "The ONC/RPC server detected a bad verifier (that is, the seal was broken)." )]
+    OncRpcAutoBadVerifier = 3,
 
     /// <summary>
     /// (Immutable)
-    /// The ONC/RPC server detected an expired verifier (which can also happen if the verifier was
-    /// replayed). <para>
+    /// The ONC/RPC server detected an expired verifier (which can also happen if the verifier was replayed). <para>
     /// Renamed from <c>ONCRPC_AUTH_REJECTEDVERF = 4</c>. </para>
     /// </summary>
-    public const int OncRpcAuthRejectedVerifier = 4;
+    [Description( "The ONC/RPC server detected an expired verifier (which can also happen if the verifier was replayed)" )]
+    OncRpcAuthRejectedVerifier = 4,
 
     /// <summary>
-    /// (Immutable) The ONC/RPC server rejected the authentication for security reasons. <para>
+    /// The ONC/RPC server rejected the authentication for security reasons. <para>
     /// Renamed from <c>ONCRPC_AUTH_TOOWEAK = 5</c>. </para>
     /// </summary>
-    public const int OncRpcAuthTooWeak = 5;
+    [Description( "The ONC/RPC server rejected the authentication for security reasons." )]
+    OncRpcAuthTooWeak = 5,
 
-    /// <summary>   (Immutable) The ONC/RPC client detected a bogus response verifier. <para>
+    /// <summary>   The ONC/RPC client detected a bogus response verifier. <para>
     /// Renamed from <c>ONCRPC_AUTH_INVALIDRESP = 6</c>. </para> </summary>
-    public const int OncRpcAuthInvalidResponse = 6;
+    [Description( "The ONC/RPC client detected a bogus response verifier." )]
+    OncRpcAuthInvalidResponse = 6,
 
     /// <summary>
-    /// (Immutable) Authentication at the ONC/RPC client failed for an unknown reason. <para>
+    /// Authentication at the ONC/RPC client failed for an unknown reason. <para>
     /// Renamed from <c>ONCRPC_AUTH_FAILED = 7</c>. </para>
     /// </summary>
-    public const int OncRpcAuthFailed = 7;
+    [Description( "Authentication at the ONC/RPC client failed for an unknown reason." )]
+    OncRpcAuthFailed = 7,
+
 }

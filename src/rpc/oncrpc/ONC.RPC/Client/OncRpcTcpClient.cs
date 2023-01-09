@@ -283,7 +283,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                 }
                 catch ( System.IO.IOException e )
                 {
-                    throw new OncRpcException( OncRpcException.OncRpcCannotSend, e.Message );
+                    throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotSend, e.Message );
                 }
                 // Receive reply message from server -- at least try to do so...
                 // In case of batched calls we don't need no answer, so
@@ -370,7 +370,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                 {
                     // Argh. Trouble with the transport. Seems like we can't
                     // receive data. Gosh. Go away!
-                    throw new OncRpcException( OncRpcException.OncRpcCannotReceive, e.Message );
+                    throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotReceive, e.Message );
                 }
             }
     }
@@ -425,7 +425,7 @@ public class OncRpcTcpClient : OncRpcClientBase
             }
             catch ( System.IO.IOException e )
             {
-                throw new OncRpcException( OncRpcException.OncRpcCannotSend, e.Message );
+                throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotSend, e.Message );
             }
         }
     }

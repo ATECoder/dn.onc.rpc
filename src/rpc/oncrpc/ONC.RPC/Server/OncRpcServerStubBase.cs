@@ -97,7 +97,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// default encoding is to be used.
     /// </summary>
     /// <value> The character encoding. </value>
-    public Encoding CharacterEncoding
+    public virtual Encoding CharacterEncoding
     {
         get => this._characterEncoding;
         set {
@@ -174,7 +174,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// <param name="transports">   Array of server transport objects to unregister. </param>
     ///
     /// <exception cref="OncRpcException">  with a reason of
-    ///                                     <see cref="OncRpcException.OncRpcFailed"/>
+    ///                                     <see cref="OncRpcExceptionReason.OncRpcFailed"/>
     ///                                     if the portmapper could not be contacted
     ///                                     successfully. Note that it is not considered an error
     ///                                     to remove a non-existing entry from the portmapper. </exception>

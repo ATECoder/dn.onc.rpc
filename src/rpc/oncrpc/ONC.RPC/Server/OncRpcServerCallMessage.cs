@@ -31,14 +31,14 @@ public class OncRpcServerCallMessage : OncRpcCallMessageBase
 
         this.MessageType = decoder.DecodeInt();
         if ( this.MessageType != OncRpcMessageType.OncRpcCallMessageType )
-            throw new OncRpcException( OncRpcException.OncRpcWrongMessageType );
+            throw new OncRpcException( OncRpcExceptionReason.OncRpcWrongMessageType );
 
         // Make sure that the other side is talking the right slang --
         // we will only understand version 2 slang of ONC/RPC.
 
         this.ProtocolVersion = decoder.DecodeInt();
         if ( this.ProtocolVersion != OncRpcProtocolVersion )
-            throw new OncRpcException( OncRpcException.OncRpcClientServerVersionMismatch );
+            throw new OncRpcException( OncRpcExceptionReason.OncRpcClientServerVersionMismatch );
 
         // Now decode the remaining fields of the call header.
 

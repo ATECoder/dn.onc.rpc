@@ -39,7 +39,7 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
 
-        if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
+        if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
     }
 
@@ -54,7 +54,7 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
     public sealed override void EncodeVerfier( XdrEncodingStreamBase encoder )
     {
         // Encode an 'none' verifier with zero length.
-        encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+        encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
         encoder.EncodeInt( 0 );
     }
 

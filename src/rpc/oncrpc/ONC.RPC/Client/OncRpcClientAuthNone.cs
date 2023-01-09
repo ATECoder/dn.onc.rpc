@@ -21,14 +21,14 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
     {
         // The credential only consists of the indication of no authentication (none) with
         // no opaque authentication data following.
-        encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+        encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
         encoder.EncodeInt( 0 );
 
         // But we also need to encode the verifier. This is always of type
         // none too. For some obscure historical reasons, we have to
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
-        encoder.EncodeInt( OncRpcAuthType.OncRpcAuthTypeNone );
+        encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
         encoder.EncodeInt( 0 );
     }
 
@@ -47,7 +47,7 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
         // Make sure that we received a 'none' verifier and that it
         // does not contain any opaque data. Anything different from this
         // is not kosher and an authentication exception will be thrown.
-        if ( decoder.DecodeInt() != OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
+        if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
     }
 

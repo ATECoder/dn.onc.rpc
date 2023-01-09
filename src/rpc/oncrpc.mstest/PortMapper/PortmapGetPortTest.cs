@@ -52,7 +52,7 @@ public class PortmapGetPortTest
         }
         catch ( OncRpcException e )
         {
-            if ( e.Reason != OncRpcException.OncRpcProgramNotRegistered )
+            if ( e.Reason != OncRpcExceptionReason.OncRpcProgramNotRegistered )
             {
                 Assert.Fail( $"method call failed unexpectedly: {e}" );
             }
