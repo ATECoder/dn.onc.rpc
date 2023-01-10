@@ -76,7 +76,7 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
                     // call we have to Sends back an indication about the range of
                     // versions we support of a particular program (server).
 
-                    encoder.EncodeInt( (int) this.AcceptStatus );
+                    encoder.EncodeInt( ( int ) this.AcceptStatus );
                     switch ( this.AcceptStatus )
                     {
                         case OncRpcAcceptStatus.OncRpcProgramVersionMismatch:

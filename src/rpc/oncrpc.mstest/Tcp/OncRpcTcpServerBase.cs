@@ -11,15 +11,15 @@ namespace cc.isr.ONC.RPC.MSTest.Tcp;
 public abstract class OncRpcTcpServerBase : OncRpcServerStubBase, IOncRpcDispatchable
 {
 
-    public OncRpcTcpServerBase() : this(0)
+    public OncRpcTcpServerBase() : this( 0 )
     {
     }
 
-    public OncRpcTcpServerBase(int port) : this(null, port)
+    public OncRpcTcpServerBase( int port ) : this( null, port )
     {
     }
 
-    public OncRpcTcpServerBase(IPAddress bindAddr, int port)
+    public OncRpcTcpServerBase( IPAddress bindAddr, int port )
     {
         OncRpcServerTransportRegistrationInfo[] info = new OncRpcServerTransportRegistrationInfo[] {
             new OncRpcServerTransportRegistrationInfo(RpcProgramConstants.ProgramNumber, 1),
@@ -50,7 +50,7 @@ public abstract class OncRpcTcpServerBase : OncRpcServerStubBase, IOncRpcDispatc
     /// <param name="program">      Program number requested by client. </param>
     /// <param name="version">      Version number requested. </param>
     /// <param name="procedure">    Procedure number requested. </param>
-    public virtual void DispatchOncRpcCall(OncRpcCallInformation call, int program, int version, int procedure)
+    public virtual void DispatchOncRpcCall( OncRpcCallInformation call, int program, int version, int procedure )
     {
     }
 }

@@ -148,7 +148,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// just create an authentication object and hand it over to the ONC/RPC client object. </para>
 /// <code>
 /// OncRpcClientAuthBase auth = new OncRpcClientAuthUnix("marvin@ford.prefect", 42, 1001, new int[0]);
-/// client.setAuth(auth);
+/// client.Auth = auth;
 /// </code> <para>
 /// The <see cref="OncRpcClientAuthUnix"/> <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/>
 /// will handle shorthand credentials (of type <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>) transparently. If you do

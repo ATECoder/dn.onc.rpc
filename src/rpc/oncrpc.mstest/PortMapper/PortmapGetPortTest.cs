@@ -14,7 +14,7 @@ public class PortmapGetPortTest
     /// <summary>   (Unit Test Method) portmap should get port. </summary>
     /// <remarks>   2022-12-22. </remarks>
     [TestMethod]
-	public void PortmapShouldGetPort()
+    public void PortmapShouldGetPort()
     {
 
         EmbeddedPortmapTest.AssertPortmapServiceShouldStart();

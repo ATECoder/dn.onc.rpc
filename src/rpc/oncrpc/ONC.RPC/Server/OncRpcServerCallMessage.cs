@@ -52,7 +52,7 @@ public class OncRpcServerCallMessage : OncRpcCallMessageBase
         // protocol handling object if it is of the same authentication type
         // as the new one just coming in from the XDR wire.
 
-        this.Auth = OncRpcServerAuthBase.NewOncRpcServerAuto( decoder, this.Auth );
+        this.Auth = OncRpcServerAuthBase.NewOncRpcServerAuth( decoder, this.Auth );
     }
 
     /// <summary>

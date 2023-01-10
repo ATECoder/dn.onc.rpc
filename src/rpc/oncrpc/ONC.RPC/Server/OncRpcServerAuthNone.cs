@@ -45,7 +45,7 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
 
-        if ( decoder.DecodeInt() != ( int ) OncRpcServerAuthNone.AuthType  || decoder.DecodeInt() != OncRpcServerAuthNone.AuthMessageLength )
+        if ( decoder.DecodeInt() != ( int ) OncRpcServerAuthNone.AuthType || decoder.DecodeInt() != OncRpcServerAuthNone.AuthMessageLength )
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
     }
 

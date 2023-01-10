@@ -143,7 +143,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     ///                     willing to handle. </param>
     public void SetTransportRegistrationInfo( OncRpcServerTransportRegistrationInfo[] info )
     {
-        this._transportRegistrationInfo  = info;
+        this._transportRegistrationInfo = info;
     }
 
     /// <summary>

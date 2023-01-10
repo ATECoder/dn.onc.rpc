@@ -13,7 +13,7 @@ namespace cc.isr.ONC.RPC.Client;
 public class OncRpcTcpClient : OncRpcClientBase
 {
 
-    #region " CONSTRUCTION and CLEANP "
+    #region " construction and cleanup "
 
     /// <summary>
     /// Constructs a new server <see cref="OncRpcTcpClient"/> object, which connects to the ONC/RPC server at

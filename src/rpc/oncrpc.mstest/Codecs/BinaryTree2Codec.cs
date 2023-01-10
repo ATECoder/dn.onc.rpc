@@ -60,7 +60,7 @@ public class BinaryTree2Codec : IXdrCodec
             }
             else
                 encoder.EcodeBoolean( false );
-;
+            ;
             currentBinaryTree = currentBinaryTree.Right;
             encoder.EcodeBoolean( currentBinaryTree is not null );
         } while ( currentBinaryTree is not null );

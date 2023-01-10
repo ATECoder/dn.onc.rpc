@@ -55,7 +55,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     {
         this.Dispatcher = dispatcher;
         this.Port = port;
-        this.Protocol= protocol;
+        this.Protocol = protocol;
         this.TransportRegistrationInfo = info;
     }
 

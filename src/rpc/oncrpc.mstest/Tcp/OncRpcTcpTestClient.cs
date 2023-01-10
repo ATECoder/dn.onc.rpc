@@ -81,7 +81,7 @@ public class OncRpcTcpTestClient : IDisposable
 
     /// <summary>   Gets or sets the version. </summary>
     /// <value> The version. </value>
-    public int Version {  get; private set; }
+    public int Version { get; private set; }
 
     /// <summary>   Gets or sets the host. </summary>
     /// <value> The host. </value>
@@ -107,12 +107,12 @@ public class OncRpcTcpTestClient : IDisposable
     ///                     information. </param>
     private void SetAuth( OncRpcClientAuthBase auth )
     {
-        if ( this._coreClient is not null) this._coreClient.Auth = auth;
+        if ( this._coreClient is not null ) this._coreClient.Auth = auth;
     }
 
     /// <summary>   Clears the authentication. </summary>
     /// <remarks>   2022-12-30. </remarks>
-    private void ClearAuth( )
+    private void ClearAuth()
     {
         if ( this._coreClient is not null ) this._coreClient.Auth = null;
     }
@@ -313,9 +313,9 @@ public class OncRpcTcpTestClient : IDisposable
     /// <param name="machineName">      Name of the machine. </param>
     /// <param name="userIdentity">     The user identity. </param>
     /// <param name="groupIdentity">    The group identity. </param>
-    public void CallAuthenticate(  string machineName, int userIdentity, int groupIdentity )
+    public void CallAuthenticate( string machineName, int userIdentity, int groupIdentity )
     {
-        OncRpcClientAuthBase auth = new OncRpcClientAuthUnix( machineName , userIdentity, groupIdentity, Array.Empty<int>() );
+        OncRpcClientAuthBase auth = new OncRpcClientAuthUnix( machineName, userIdentity, groupIdentity, Array.Empty<int>() );
         this.SetAuth( auth );
         try
         {
@@ -323,7 +323,7 @@ public class OncRpcTcpTestClient : IDisposable
             // may have to do an echo test?
             // this.CallRemoteProcedureEcho( "authenticate" );
         }
-        catch 
+        catch
         {
             throw;
         }

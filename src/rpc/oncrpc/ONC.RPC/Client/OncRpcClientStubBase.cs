@@ -17,6 +17,9 @@ namespace cc.isr.ONC.RPC.Client;
 /// </remarks>
 public abstract class OncRpcClientStubBase : IDisposable
 {
+
+    #region " construction and cleanup "
+
     /// <summary>
     /// Constructs a new <see cref="OncRpcClientStubBase"/> for communication with a remote ONC/RPC server.
     /// </summary>
@@ -53,13 +56,6 @@ public abstract class OncRpcClientStubBase : IDisposable
         this.Client?.Close();
         this.Client = null;
     }
-
-    /// <summary>
-    /// Gets or sets or set (private) the ONC/RPC client proxy for communicating with a remote
-    /// ONC/RPC server. using a particular IP protocol.
-    /// </summary>
-    /// <value> ONC/RPC client proxy. </value>
-    public OncRpcClientBase Client { get; private set; }
 
     #region " disposable implementation "
 
@@ -121,4 +117,16 @@ public abstract class OncRpcClientStubBase : IDisposable
 
     #endregion
 
+    #endregion
+
+    #region " members "
+
+    /// <summary>
+    /// Gets or sets or set (private) the ONC/RPC client proxy for communicating with a remote
+    /// ONC/RPC server. using a particular IP protocol.
+    /// </summary>
+    /// <value> ONC/RPC client proxy. </value>
+    public OncRpcClientBase Client { get; private set; }
+
+    #endregion
 }

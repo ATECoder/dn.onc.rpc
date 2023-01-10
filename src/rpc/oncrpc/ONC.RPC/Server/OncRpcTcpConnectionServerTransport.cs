@@ -128,13 +128,6 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
         this._parent = null;
     }
 
-    /// <summary>   Finalizer. </summary>
-    ~OncRpcTcpConnectionServerTransport()
-    {
-        if ( this.IsDisposed ) return;
-        this.Dispose( false );
-    }
-
     /// <summary>
     /// TCP socket used for stream-based communication with ONC/RPC
     /// clients.

@@ -43,7 +43,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     {
         this._iPv4Address = bindAddr is null ? string.Empty : bindAddr.ToString();
         this._readMessage = string.Empty;
-        this._writeMessage= string.Empty;   
+        this._writeMessage = string.Empty;
     }
 
     #endregion
@@ -128,11 +128,11 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         }
         catch ( IOException e )
         {
-            Console.WriteLine( $"ERROR: failed: {e}");
+            Console.WriteLine( $"ERROR: failed: {e}" );
         }
         catch ( OncRpcException e )
         {
-            Console.WriteLine( $"ERROR: failed: {e}");
+            Console.WriteLine( $"ERROR: failed: {e}" );
         }
 
         Console.WriteLine( "Passed." );
@@ -226,10 +226,10 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// <param name="procedure">    Procedure number requested. </param>
     public override void DispatchOncRpcCall( OncRpcCallInformation call, int program, int version, int procedure )
     {
-        base.DispatchOncRpcCall( call, program , version, procedure );
+        base.DispatchOncRpcCall( call, program, version, procedure );
         if ( version == RpcProgramConstants.Version1 )
         {
-            OncRpcTcpServer.ProcessVersion1Calls( call, procedure);
+            OncRpcTcpServer.ProcessVersion1Calls( call, procedure );
         }
         else if ( version == RpcProgramConstants.Version2 )
         {

@@ -62,10 +62,4 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
         return false;
     }
 
-    /// <summary>
-    /// (Immutable)
-    /// Contains a singleton which comes in handy if you just need an <see cref="OncRpcClientAuthNone"/> authentication for an
-    /// ONC/RPC client.
-    /// </summary>
-    public static readonly OncRpcClientAuthNone AuthNoneInstance = new();
 }

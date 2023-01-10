@@ -62,7 +62,7 @@ namespace cc.isr.ONC.RPC.MSTest.Codecs
                 }
                 else
                     encoder.EcodeBoolean( false );
-;
+                ;
             }
         }
 

@@ -55,7 +55,7 @@ public class OncRpcTcpTests
     {
         if ( _server is not null )
         {
-            if ( _server.Listening)
+            if ( _server.Listening )
             {
                 _server.StopRpcProcessing();
             }
@@ -125,7 +125,7 @@ public class OncRpcTcpTests
         OncRpcTcpTestClient client = new();
         try
         {
-            AssertClientShouldConnect(client, IPAddress.Loopback, RpcProgramConstants.Version1 );
+            AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
         }
         catch { throw; }
         finally
@@ -231,7 +231,7 @@ public class OncRpcTcpTests
     /// <summary>   (Unit Test Method) client should fail authentication. </summary>
     /// <remarks>   2022-12-30. </remarks>
     [TestMethod]
-    public void ClientShouldFailAuthentication( )
+    public void ClientShouldFailAuthentication()
     {
         OncRpcTcpTestClient client = new();
         try
@@ -254,7 +254,7 @@ public class OncRpcTcpTests
         int userId = AuthenticationConstants.UserIdentity;
         int groupId = AuthenticationConstants.GroupIdentity;
         string machineName = AuthenticationConstants.MachineName;
-        System.Console.Out.Write( $"checking {nameof( OncRpcAuthType.OncRpcAuthTypeUnix)} on machine: {machineName} with valid credentials user id: {userId} & Group ID = {groupId}: " );
+        System.Console.Out.Write( $"checking {nameof( OncRpcAuthType.OncRpcAuthTypeUnix )} on machine: {machineName} with valid credentials user id: {userId} & Group ID = {groupId}: " );
         try
         {
             client.CallAuthenticate( AuthenticationConstants.MachineName, userId, groupId );
@@ -293,7 +293,7 @@ public class OncRpcTcpTests
     /// <param name="messages"> The messages. </param>
     private static void AssertClientShouldEchoMessages( OncRpcTcpTestClient client, string[] messages )
     {
-        foreach (string message in messages)
+        foreach ( string message in messages )
         {
             System.Console.Out.Write( $"checking echo of {message}: " );
             string echoed = client.CallRemoteProcedureEcho( message );

@@ -132,9 +132,8 @@ public class OncRpcEmbeddedPortmapService : IDisposable
     }
 
     /// <summary>
-    /// This destructor will Runs only if the Dispose method does not get called. It gives the base
-    /// class the opportunity to finalize. Do not provide destructors in types derived from this
-    /// class.
+    /// This finalizer will run only if the Dispose method does not get called. It gives the base
+    /// class the opportunity to finalize. 
     /// </summary>
     /// <remarks> David, 2020-09-22. </remarks>
     ~OncRpcEmbeddedPortmapService()

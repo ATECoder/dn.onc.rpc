@@ -36,7 +36,7 @@ public abstract class OncRpcServerAuthBase
     /// Authentication information encapsulated in an object, whose class is derived from 
     /// <see cref="OncRpcServerAuthBase"/>.
     /// </returns>
-    public static OncRpcServerAuthBase NewOncRpcServerAuto( XdrDecodingStreamBase decoder, OncRpcServerAuthBase recycle )
+    public static OncRpcServerAuthBase NewOncRpcServerAuth( XdrDecodingStreamBase decoder, OncRpcServerAuthBase recycle )
     {
         OncRpcServerAuthBase auth;
 
@@ -44,7 +44,7 @@ public abstract class OncRpcServerAuthBase
         // to receive an authentication with the same type, we reuse the old
         // object.
 
-        OncRpcAuthType authType = (OncRpcAuthType ) decoder.DecodeInt();
+        OncRpcAuthType authType = ( OncRpcAuthType ) decoder.DecodeInt();
         if ( recycle is not null && recycle.AuthenticationType == authType )
         {
 

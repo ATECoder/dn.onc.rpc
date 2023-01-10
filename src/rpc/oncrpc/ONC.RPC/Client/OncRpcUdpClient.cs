@@ -108,7 +108,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
         if ( this._encoder is not null )
         {
-            XdrEncodingStreamBase  xdrStream = this._encoder;
+            XdrEncodingStreamBase xdrStream = this._encoder;
             this._encoder = null;
             xdrStream.Close();
         }

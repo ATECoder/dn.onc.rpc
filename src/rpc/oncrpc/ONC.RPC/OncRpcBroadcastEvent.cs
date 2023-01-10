@@ -33,7 +33,7 @@ public class OncRpcBroadcastEvent
 
     /// <summary>   Gets or sets the source for this event. </summary>
     /// <value> The source. </value>
-    public OncRpcUdpClient Source { get; private set;  }
+    public OncRpcUdpClient Source { get; private set; }
 
     /// <summary>
     /// Gets or sets (private) the address of the sender of the ONC/RPC reply message.

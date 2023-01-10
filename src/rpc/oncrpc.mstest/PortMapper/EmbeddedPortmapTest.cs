@@ -76,8 +76,8 @@ public class EmbeddedPortmapTest
 
         // let the service stop.
         int timeout = 1000;
-        DateTime endtime= DateTime.Now.AddMilliseconds( timeout );
-        while ( DateTime.Now < endtime && OncRpcEmbeddedPortmapService.IsPortmapRunning( timeout / 5 ) ) { Thread.Sleep( timeout / 5 );  }
+        DateTime endtime = DateTime.Now.AddMilliseconds( timeout );
+        while ( DateTime.Now < endtime && OncRpcEmbeddedPortmapService.IsPortmapRunning( timeout / 5 ) ) { Thread.Sleep( timeout / 5 ); }
 
         // Check that an embedded portmap service spins down properly if it
         // was started within this test.

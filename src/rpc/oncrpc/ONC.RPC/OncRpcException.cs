@@ -76,69 +76,69 @@ public class OncRpcException : Exception
     /// <remarks>   2023-01-07. </remarks>
     /// <param name="reason">   The detail reason. </param>
     /// <returns>   Reason as a string. </returns>
-    public static string ToShortDescription( OncRpcExceptionReason reason ) 
+    public static string ToShortDescription( OncRpcExceptionReason reason )
     {
         switch ( reason )
         {
             case OncRpcExceptionReason.OncRpcCannotEncodeArgs:
-                    return "cannot encode RPC arguments";
+                return "cannot encode RPC arguments";
 
             case OncRpcExceptionReason.OncRpcCannotDecodeResult:
-                    return "cannot decode RPC result";
+                return "cannot decode RPC result";
 
             case OncRpcExceptionReason.OncRpcCannotReceive:
-                    return "cannot receive ONC/RPC data";
+                return "cannot receive ONC/RPC data";
 
             case OncRpcExceptionReason.OncRpcCannotSend:
-                    return "cannot send ONC/RPC data";
+                return "cannot send ONC/RPC data";
 
             case OncRpcExceptionReason.OncRpcProcedureCallTimedOut:
-                    return "ONC/RPC call timed out";
+                return "ONC/RPC call timed out";
 
             case OncRpcExceptionReason.OncRpcClientServerVersionMismatch:
-                    return "ONC/RPC version mismatch";
+                return "ONC/RPC version mismatch";
 
             case OncRpcExceptionReason.OncRpcAuthenticationError:
-                    return "ONC/RPC authentication error";
+                return "ONC/RPC authentication error";
 
             case OncRpcExceptionReason.OncRpcProgramNotAvailable:
-                    return "ONC/RPC program not available";
+                return "ONC/RPC program not available";
 
             case OncRpcExceptionReason.OncRpcCannotDecodeArgs:
-                    return "cannot decode ONC/RPC arguments";
+                return "cannot decode ONC/RPC arguments";
 
             case OncRpcExceptionReason.OncRpcProgramVersionNotSupported:
-                    return "ONC/RPC program version mismatch";
+                return "ONC/RPC program version mismatch";
 
             case OncRpcExceptionReason.OncRpcProcedureNotAvailable:
-                    return "ONC/RPC procedure not available";
+                return "ONC/RPC procedure not available";
 
             case OncRpcExceptionReason.OncRpcSystemError:
-                    return "ONC/RPC system error";
+                return "ONC/RPC system error";
 
             case OncRpcExceptionReason.OncRpcUnknownIpProtocol:
-                    return "unknown IP protocol";
+                return "unknown IP protocol";
 
             case OncRpcExceptionReason.OncRpcPortMapServiceFailure:
-                    return "ONC/RPC portmap failure";
+                return "ONC/RPC portmap failure";
 
             case OncRpcExceptionReason.OncRpcProgramNotRegistered:
-                    return "ONC/RPC program not registered";
+                return "ONC/RPC program not registered";
 
             case OncRpcExceptionReason.OncRpcFailed:
-                    return "ONC/RPC generic failure";
+                return "ONC/RPC generic failure";
 
             case OncRpcExceptionReason.OncRpcBufferOverflow:
-                    return "ONC/RPC buffer overflow";
+                return "ONC/RPC buffer overflow";
 
             case OncRpcExceptionReason.OncRpcBufferUnderflow:
-                    return "ONC/RPC buffer underflow";
+                return "ONC/RPC buffer underflow";
 
             case OncRpcExceptionReason.OncRpcWrongMessageType:
-                    return "wrong ONC/RPC message type received";
+                return "wrong ONC/RPC message type received";
 
             case OncRpcExceptionReason.OncRpcCannotRegisterTransport:
-                    return "cannot register ONC/RPC port with local portmap";
+                return "cannot register ONC/RPC port with local portmap";
 
             case OncRpcExceptionReason.OncRpcSuccess:
                 return "success";

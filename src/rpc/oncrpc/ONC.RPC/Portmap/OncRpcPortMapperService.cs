@@ -269,7 +269,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
         // (defensive programming)
         if ( program == OncRpcPortmapConstants.OncRpcPortmapProgramNumber )
             if ( version == OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber )
-                switch ( (OncRpcPortmapServiceProcedure ) procedure )
+                switch ( ( OncRpcPortmapServiceProcedure ) procedure )
                 {
                     case OncRpcPortmapServiceProcedure.OncRpcPortmapPing:
                         {
