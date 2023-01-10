@@ -6,19 +6,19 @@ using cc.isr.ONC.RPC.Portmap;
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
-/// Instances of class <see cref="OncRpcTcpServerTransport"/> encapsulate TCP/IP-based XDR streams
+/// Instances of class <see cref="OncRpcTcpTransport"/> encapsulate TCP/IP-based XDR streams
 /// of ONC/RPC servers.
 /// </summary>
 /// <remarks>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.
 /// </remarks>
-public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
+public class OncRpcTcpConnTransport : OncRpcTransportBase
 {
 
     #region " construction and cleanup "
 
     /// <summary>
-    /// Create a new instance of a <see cref="OncRpcTcpConnectionServerTransport"/>
+    /// Create a new instance of a <see cref="OncRpcTcpConnTransport"/>
     /// which encapsulates TCP/IP-based XDR streams of an ONC/RPC server.
     /// </summary>
     /// <remarks>
@@ -38,15 +38,15 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     ///                                     ONC/RPC call and reply messages. </param>
     /// <param name="parent">               Parent server transport which created us. </param>
     /// <param name="transmissionTimeout">  Inherited transmission timeout. </param>
-    public OncRpcTcpConnectionServerTransport( IOncRpcDispatchable dispatcher, Socket socket, int program, int version, int bufferSize,
-        OncRpcTcpServerTransport parent, int transmissionTimeout ) : this( dispatcher, socket,
-             new OncRpcServerTransportRegistrationInfo[] { new OncRpcServerTransportRegistrationInfo( program, version ) },
+    public OncRpcTcpConnTransport( IOncRpcDispatchable dispatcher, Socket socket, int program, int version, int bufferSize,
+        OncRpcTcpTransport parent, int transmissionTimeout ) : this( dispatcher, socket,
+             new OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) },
              bufferSize, parent, transmissionTimeout )
     {
     }
 
     /// <summary>
-    /// Create a new instance of a <see cref="OncRpcTcpConnectionServerTransport"/>
+    /// Create a new instance of a <see cref="OncRpcTcpConnTransport"/>
     /// which encapsulates TCP/IP-based XDR streams of an ONC/RPC server.
     /// </summary>
     /// <remarks>
@@ -63,8 +63,8 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     ///                                     ONC/RPC call and reply messages. </param>
     /// <param name="parent">               Parent server transport which created us. </param>
     /// <param name="transmissionTimeout">  Inherited transmission timeout. </param>
-    public OncRpcTcpConnectionServerTransport( IOncRpcDispatchable dispatcher, Socket socket,
-        OncRpcServerTransportRegistrationInfo[] info, int bufferSize, OncRpcTcpServerTransport parent,
+    public OncRpcTcpConnTransport( IOncRpcDispatchable dispatcher, Socket socket,
+        OncRpcProgramInfo[] info, int bufferSize, OncRpcTcpTransport parent,
         int transmissionTimeout ) : base( dispatcher, 0, OncRpcProtocols.OncRpcTcp, info )
     {
         this._parent = parent;
@@ -73,7 +73,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
         // Make sure the buffer is large enough and resize system buffers
         // accordingly, if possible.
 
-        if ( bufferSize < OncRpcServerTransportBase.DefaultMinBufferSize ) bufferSize = OncRpcServerTransportBase.DefaultMinBufferSize;
+        if ( bufferSize < OncRpcTransportBase.DefaultMinBufferSize ) bufferSize = OncRpcTransportBase.DefaultMinBufferSize;
         this._socket = socket;
         this.Port = (( IPEndPoint ) socket.RemoteEndPoint).Port;
         if ( socket.SendBufferSize < bufferSize )
@@ -97,7 +97,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// Note that the server transport is <b>not deregistered</b>. You'll have to do it manually if
     /// you need to do so. The reason for this behavior is, that the portmapper removes all entries
     /// regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC program number and version. <para>
-    /// Calling this method on a <see cref="OncRpcTcpServerTransport"/>
+    /// Calling this method on a <see cref="OncRpcTcpTransport"/>
     /// results in the listening TCP network socket immediately being closed. The handler thread will
     /// therefore either terminate directly or when it tries to sent back replies. </para>
     /// </remarks>
@@ -135,14 +135,14 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     private Socket _socket;
 
     /// <summary>
-    /// Indicates that <see cref="OncRpcServerTransportBase.BeginEncoding"/> has been called for the
+    /// Indicates that <see cref="OncRpcTransportBase.BeginEncoding"/> has been called for the
     /// receiving XDR stream, so that it should be closed later using
-    /// <see cref="OncRpcServerTransportBase.EndDecoding"/>.
+    /// <see cref="OncRpcTransportBase.EndDecoding"/>.
     /// </summary>
     private bool _pendingDecoding = false;
 
     /// <summary>
-    /// Indicates that <see cref="OncRpcServerTransportBase.BeginEncoding"/> has been called for the
+    /// Indicates that <see cref="OncRpcTransportBase.BeginEncoding"/> has been called for the
     /// sending XDR stream, so in face of exceptions we cannot send an
     /// error reply to the client but only drop the connection.
     /// </summary>
@@ -152,7 +152,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// Reference to the TCP/IP transport which created us to handle a
     /// new ONC/RPC connection.
     /// </summary>
-    private OncRpcTcpServerTransport _parent;
+    private OncRpcTcpTransport _parent;
 
     /// <summary>
     /// Timeout during the phase where data is received within calls, or data is sent within replies.
@@ -168,7 +168,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     ///                                 TCP/IP-based server transport. </exception>
     public override void Register()
     {
-        throw new InvalidOperationException( $"{nameof( OncRpcTcpServerTransport.Register )} must not be called for an individual TCP/IP-based server transport." );
+        throw new InvalidOperationException( $"{nameof( OncRpcTcpTransport.Register )} must not be called for an individual TCP/IP-based server transport." );
     }
 
     /// <summary>   Retrieves the parameters sent within an ONC/RPC call message. </summary>
@@ -214,7 +214,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// <param name="callInfo"> Information about ONC/RPC call for which we are about to send back
     ///                         the reply. </param>
     /// <param name="state">    ONC/RPC reply header indicating success or failure. </param>
-    internal override void BeginEncoding( OncRpcCallInformation callInfo, OncRpcServerReplyMessage state )
+    internal override void BeginEncoding( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state )
     {
 
         // In case decoding has not been properly finished, do it now to
@@ -249,7 +249,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     /// <summary> Sends back an ONC/RPC reply to the original caller. </summary>
     /// <remarks>
     /// This is rather a low-level method, typically not used by applications. Dispatcher handling
-    /// ONC/RPC calls have to use the <see cref="OncRpcCallInformation.Reply(IXdrCodec)"/>
+    /// ONC/RPC calls have to use the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
     /// method instead on the call object supplied to the handler.
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
@@ -259,7 +259,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     ///                         containing associated state information. </param>
     /// <param name="reply">    If not <see langword="null"/>, then this parameter references the reply to
     ///                         be serialized after the reply message header. </param>
-    internal override void Reply( OncRpcCallInformation callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
+    internal override void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
     {
         this.BeginEncoding( callInfo, state );
         reply?.Encode( this.Encoder );
@@ -295,7 +295,7 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
     {
         /// <summary>   Constructor. </summary>
         /// <param name="enclosing">   The enclosing. </param>
-        public TransportHelper( OncRpcTcpConnectionServerTransport enclosing )
+        public TransportHelper( OncRpcTcpConnTransport enclosing )
         {
             this._enclosing = enclosing;
         }
@@ -306,12 +306,12 @@ public class OncRpcTcpConnectionServerTransport : OncRpcServerTransportBase
             this._enclosing.DoListen();
         }
 
-        private readonly OncRpcTcpConnectionServerTransport _enclosing;
+        private readonly OncRpcTcpConnTransport _enclosing;
     }
 
     private void DoListen()
     {
-        OncRpcCallInformation callInfo = new( this );
+        OncRpcCallHandler callInfo = new( this );
         for (; ; )
         {
 

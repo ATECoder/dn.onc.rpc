@@ -33,6 +33,8 @@ For some clues on using [ISR's ONC RPC] see the [ISR's ONC RPC] MS Test project.
 * The namespace of the ONC/REPC client classes was changed fro isr.cc.ONC.RPC.Clients;
 * Getters and setters, such as Get and Set Character Encoding, where changed to properties where possible.
 * Static constant classes were converted to Enum constructs.
+* Renamed OncRpcCallInformation to OncRpcCallHandler.
+* Renamed OncRpcServerTransportRegistrationInfo to OncRpcProgramInfo.
 
 
 ## Feedback

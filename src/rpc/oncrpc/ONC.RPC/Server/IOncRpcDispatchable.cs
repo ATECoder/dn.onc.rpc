@@ -13,21 +13,21 @@ namespace cc.isr.ONC.RPC.Server;
 /// programs within the same dispatcher, you can ignore the <c>program</c> parameter as
 /// well as <c>version</c>. </item><item>
 /// Retrieve appropriate parameters for this intended procedure using the
-/// <see cref="OncRpcCallInformation.RetrieveCall(IXdrCodec)"/>
-/// method of the <see cref="OncRpcCallInformation"/> object also supplied to the
+/// <see cref="OncRpcCallHandler.RetrieveCall(IXdrCodec)"/>
+/// method of the <see cref="OncRpcCallHandler"/> object also supplied to the
 /// dispatcher through the <c>call</c> parameter. </item><item>
 /// Do whatever you need to do for this ONC/RPC call and make up an appropriate reply to be sent
 /// back to the client in the next step.</item><item>
-/// Sends back the reply by calling the <see cref="OncRpcCallInformation.Reply(IXdrCodec)"/>
-/// method of the <see cref="OncRpcCallInformation"/> object </item> </list> <para>
+/// Sends back the reply by calling the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
+/// method of the <see cref="OncRpcCallHandler"/> object </item> </list> <para>
 /// Here's a simple example only showing how to handle the famous
 /// procedure <c>0</c>: this is the "ping" procedure which can be used to test whether the
 /// server is still living. The example also shows how to handle calls for procedures which are
 /// not implemented (not defined) by calling
-/// <see cref="OncRpcCallInformation.ReplyProcedureNotAvailable()"/>.</para> <para>
+/// <see cref="OncRpcCallHandler.ReplyProcedureNotAvailable()"/>.</para> <para>
 /// In case the dispatcher throws an exception, the affected ONC/RPC server
 /// transport will send a system error indication
-/// <see cref="OncRpcCallInformation.ReplySystemError()"/>
+/// <see cref="OncRpcCallHandler.ReplySystemError()"/>
 /// to the client. No error indication will be sent if the exception resulted from an I/O
 /// problem. Note that if you do not explicitly Sends back a reply, no reply is sent at all,
 /// making batched calls possible. </para>
@@ -83,11 +83,11 @@ public interface IOncRpcDispatchable
     /// See the introduction to this class for examples of how to use
     /// this interface properly.</para>
     /// </remarks>
-    /// <param name="call">         <see cref="OncRpcCallInformation"/>
+    /// <param name="call">         <see cref="OncRpcCallHandler"/>
     ///                             about the call to handle, like the caller's Internet
     ///                             address, the ONC/RPC call header, etc. </param>
     /// <param name="program">      Program number requested by client. </param>
     /// <param name="version">      Version number requested. </param>
     /// <param name="procedure">    Procedure number requested. </param>
-    void DispatchOncRpcCall( OncRpcCallInformation call, int program, int version, int procedure );
+    void DispatchOncRpcCall( OncRpcCallHandler call, int program, int version, int procedure );
 }

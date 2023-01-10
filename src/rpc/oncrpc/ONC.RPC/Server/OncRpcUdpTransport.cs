@@ -5,20 +5,20 @@ using System.IO;
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
-/// Instances of class <see cref="OncRpcUdpServerTransport"/> encapsulate UDP/IP-based XDR streams of
+/// Instances of class <see cref="OncRpcUdpTransport"/> encapsulate UDP/IP-based XDR streams of
 /// ONC/RPC servers.
 /// </summary>
 /// <remarks>
 /// This server transport class is responsible for receiving ONC/RPC calls over UDP/IP. <para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcUdpServerTransport : OncRpcServerTransportBase
+public class OncRpcUdpTransport : OncRpcTransportBase
 {
 
     #region " construction and cleanup "
 
     /// <summary>
-    /// Create a new instance of a <see cref="OncRpcUdpServerTransport"/> which encapsulates UDP/IP-
+    /// Create a new instance of a <see cref="OncRpcUdpTransport"/> which encapsulates UDP/IP-
     /// based XDR streams of an ONC/RPC server.
     /// </summary>
     /// <remarks>
@@ -34,13 +34,13 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// <param name="version">      Version number of ONC/RPC program handled. </param>
     /// <param name="bufferSize">   Size of buffer for receiving and sending UDP/IP datagrams
     ///                             containing ONC/RPC call and reply messages. </param>
-    public OncRpcUdpServerTransport( IOncRpcDispatchable dispatcher, int port, int program, int version, int bufferSize ) : this( dispatcher, port, new
-        OncRpcServerTransportRegistrationInfo[] { new OncRpcServerTransportRegistrationInfo( program, version ) }, bufferSize )
+    public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, int port, int program, int version, int bufferSize ) : this( dispatcher, port, new
+        OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) }, bufferSize )
     {
     }
 
     /// <summary>
-    /// Create a new instance of a <see cref="OncRpcUdpServerTransport"/> which encapsulates UDP/IP-
+    /// Create a new instance of a <see cref="OncRpcUdpTransport"/> which encapsulates UDP/IP-
     /// based XDR streams of an ONC/RPC server.
     /// </summary>
     /// <remarks>
@@ -56,13 +56,13 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     ///                             programs and versions handled by this transport. </param>
     /// <param name="bufferSize">   Size of buffer for receiving and sending UDP/IP datagrams
     ///                             containing ONC/RPC call and reply messages. </param>
-    public OncRpcUdpServerTransport( IOncRpcDispatchable dispatcher, int port,
-        OncRpcServerTransportRegistrationInfo[] info, int bufferSize ) : this( dispatcher, null, port, info, bufferSize )
+    public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, int port,
+        OncRpcProgramInfo[] info, int bufferSize ) : this( dispatcher, null, port, info, bufferSize )
     {
     }
 
     /// <summary>
-    /// Create a new instance of a <see cref="OncRpcUdpServerTransport"/> which encapsulates UDP/IP-
+    /// Create a new instance of a <see cref="OncRpcUdpTransport"/> which encapsulates UDP/IP-
     /// based XDR streams of an ONC/RPC server.
     /// </summary>
     /// <remarks>
@@ -79,14 +79,14 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     ///                             programs and versions handled by this transport. </param>
     /// <param name="bufferSize">   Size of buffer for receiving and sending UDP/IP datagrams
     ///                             containing ONC/RPC call and reply messages. </param>
-    public OncRpcUdpServerTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddr, int port,
-        OncRpcServerTransportRegistrationInfo[] info, int bufferSize ) : base( dispatcher, port, OncRpcProtocols.OncRpcUdp, info )
+    public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddr, int port,
+        OncRpcProgramInfo[] info, int bufferSize ) : base( dispatcher, port, OncRpcProtocols.OncRpcUdp, info )
     {
 
         // Make sure the buffer is large enough and resize system buffers
         // accordingly, if possible.
 
-        if ( bufferSize < OncRpcServerTransportBase.DefaultMinBufferSize ) bufferSize = OncRpcServerTransportBase.DefaultMinBufferSize;
+        if ( bufferSize < OncRpcTransportBase.DefaultMinBufferSize ) bufferSize = OncRpcTransportBase.DefaultMinBufferSize;
         this._socket = new Socket( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp );
         bindAddr ??= IPAddress.Any;
         IPEndPoint localEP = new( bindAddr, port );
@@ -111,7 +111,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// have to do it manually if you need to do so. The reason for this behavior is, that the
     /// portmapper removes all entries regardless of the protocol (TCP/IP or UDP/IP) for a given
     /// ONC/RPC program number and version. <para>
-    /// Calling this method on a <see cref="OncRpcUdpServerTransport"/>
+    /// Calling this method on a <see cref="OncRpcUdpTransport"/>
     /// results in the UDP network socket immediately being closed. The handler thread will therefore
     /// either terminate directly or when it tries to sent back a reply which it was about to handle
     /// at the time the close method was called. </para>
@@ -201,7 +201,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// <param name="callInfo"> Information about ONC/RPC call for which we are about to send back
     ///                         the reply. </param>
     /// <param name="state">    ONC/RPC reply header indicating success or failure. </param>
-    internal override void BeginEncoding( OncRpcCallInformation
+    internal override void BeginEncoding( OncRpcCallHandler
          callInfo, OncRpcServerReplyMessage state )
     {
 
@@ -236,7 +236,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// <summary> Sends back an ONC/RPC reply to the original caller. </summary>
     /// <remarks>
     /// This is rather a low-level method, typically not used by applications. Dispatcher handling
-    /// ONC/RPC calls have to use the <see cref="OncRpcCallInformation.Reply(IXdrCodec)"/>
+    /// ONC/RPC calls have to use the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
     /// method instead on the call object supplied to the handler.
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
@@ -246,7 +246,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     ///                         containing associated state information. </param>
     /// <param name="reply">    If not <see langword="null"/>, then this parameter references the reply to
     ///                         be serialized after the reply message header. </param>
-    internal override void Reply( OncRpcCallInformation callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
+    internal override void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
     {
         this.BeginEncoding( callInfo, state );
         reply?.Encode( this.Encoder );
@@ -281,7 +281,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     {
         /// <summary>   Constructor. </summary>
         /// <param name="enclosingTransport">   The enclosing transport. </param>
-        public TransportHelper( OncRpcUdpServerTransport enclosingTransport )
+        public TransportHelper( OncRpcUdpTransport enclosingTransport )
         {
             this._enclosing = enclosingTransport;
         }
@@ -292,7 +292,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
             this._enclosing.DoListen();
         }
 
-        private readonly OncRpcUdpServerTransport _enclosing;
+        private readonly OncRpcUdpTransport _enclosing;
     }
 
     /// <summary>
@@ -300,7 +300,7 @@ public class OncRpcUdpServerTransport : OncRpcServerTransportBase
     /// </summary>
     public virtual void DoListen()
     {
-        OncRpcCallInformation callInfo = new( this );
+        OncRpcCallHandler callInfo = new( this );
         for (; ; )
         {
 

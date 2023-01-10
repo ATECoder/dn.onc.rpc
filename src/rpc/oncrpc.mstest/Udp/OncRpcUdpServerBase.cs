@@ -21,13 +21,13 @@ public abstract class OncRpcUdpServerBase : OncRpcServerStubBase, IOncRpcDispatc
 
     public OncRpcUdpServerBase( IPAddress bindAddr, int port )
     {
-        OncRpcServerTransportRegistrationInfo[] info = new OncRpcServerTransportRegistrationInfo[] {
-            new OncRpcServerTransportRegistrationInfo(RpcProgramConstants.ProgramNumber, 1),
-            new OncRpcServerTransportRegistrationInfo(RpcProgramConstants.ProgramNumber, 2),
+        OncRpcProgramInfo[] info = new OncRpcProgramInfo[] {
+            new OncRpcProgramInfo(RpcProgramConstants.ProgramNumber, 1),
+            new OncRpcProgramInfo(RpcProgramConstants.ProgramNumber, 2),
         };
         this.SetTransportRegistrationInfo( info );
-        OncRpcServerTransportBase[] transports = new OncRpcServerTransportBase[] {
-            new OncRpcUdpServerTransport(this, bindAddr, port, info, 32768)
+        OncRpcTransportBase[] transports = new OncRpcTransportBase[] {
+            new OncRpcUdpTransport(this, bindAddr, port, info, 32768)
         };
         this.SetTransports( transports );
     }
@@ -41,13 +41,13 @@ public abstract class OncRpcUdpServerBase : OncRpcServerStubBase, IOncRpcDispatc
     /// 10815-X. <para>
     /// See the introduction to this class for examples of how to use this interface properly.</para>
     /// </remarks>
-    /// <param name="call">         <see cref="OncRpcCallInformation"/> about the call to handle, like the
+    /// <param name="call">         <see cref="OncRpcCallHandler"/> about the call to handle, like the
     ///                             caller's Internet address, the ONC/RPC
     ///                             call header, etc. </param>
     /// <param name="program">      Program number requested by client. </param>
     /// <param name="version">      Version number requested. </param>
     /// <param name="procedure">    Procedure number requested. </param>
-    public virtual void DispatchOncRpcCall( OncRpcCallInformation call, int program, int version, int procedure )
+    public virtual void DispatchOncRpcCall( OncRpcCallHandler call, int program, int version, int procedure )
     {
     }
 }

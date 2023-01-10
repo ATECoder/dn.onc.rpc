@@ -1,48 +1,60 @@
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
-/// Objects of class <see cref="OncRpcCallInformation"/> contain information about individual
-/// ONC/RPC calls.
+/// The <see cref="OncRpcCallHandler"/> received and decodes call information and then encodes
+/// and replies to the call.
 /// </summary>
 /// <remarks>
-/// They are given to ONC/RPC <see cref="IOncRpcDispatchable">call dispatchers</see>,
-/// so they can Sends back the reply to the appropriate caller, etc. Use only this call info
-/// objects to retrieve call parameters and Sends back replies as in the future UDP/IP-based
-/// transports may become multi-threaded handling. The call info object is responsible to control
-/// access to the underlaying transport, so never mess with the transport directly. <para>
-/// Note that this class provides two different patterns for accessing
-/// parameters sent by clients within the ONC/RPC call and sending back replies. </para>
+/// The handler is handed to ONC/RPC <see cref="IOncRpcDispatchable">call dispatchers</see>, so
+/// it can Sends back the reply to the appropriate caller, etc. <para>
+/// 
+/// Use only this call info objects to retrieve call parameters and send back replies because, in
+/// the future UDP/IP-based transports may become multi-threaded handling. The call handler is
+/// controls access to the underlaying transport, so never mess with the transport directly. </para>
+/// <para>
+/// 
+/// Note that this class provides two different patterns for accessing parameters sent by clients
+/// within the ONC/RPC call and sending back replies as described below. </para>
+/// 
 /// <list type="bullet">The convenient high-level access: <item>
-/// Use<see cref="RetrieveCall(IXdrCodec)"/>
-/// to retrieve the parameters of the call and deserialize it into a parameter object.</item><item>
-/// Use <see cref="Reply(IXdrCodec)"/>
-/// to Sends back the reply by serializing a reply/result object. Or use the <i>Fail*</i>
-/// methods to Sends back an error indication instead. </item><item>
-/// The lower-level access, giving more control over how and when data is deserialized and
+/// 
+/// <see cref="RetrieveCall(IXdrCodec)"/> retrieves the parameters of the call and deserialize it
+/// into a parameter object.</item><item>
+/// 
+/// <see cref="Reply(IXdrCodec)"/> sends back the reply by serializing a reply/result object. </item><item>
+/// 
+/// <i>Fail*</i> methods to send back an error indication in place of a reply. </item><item>
+/// 
+/// The lower-level access provides more control over how and when data is deserialized and
 /// serialized: </item></list><list type="bullet"><item>
-/// Use <see cref="GetXdrDecodingStream()"/> to get a reference to the XDR stream from which you
-/// can deserialize the call's parameter.</item> <item>
+/// 
+/// <see cref="GetXdrDecodingStream()"/> gets a reference to the XDR stream from which to 
+/// deserialize the call's parameter.</item> <item>
+/// 
 /// When you are finished deserializing, call <see cref="EndDecoding()"/>. </item><item>
-/// To Sends back the reply/result, call <see cref="BeginEncoding(OncRpcServerReplyMessage)"/>.
-/// Using the XDR stream returned by <see cref="GetXdrEncodingStream()"/>
-/// serialize the reply/result. Finally finish the serializing step by calling
-/// <see cref="EndEncoding()"/>. </item></list><para>
+/// 
+/// To Sends back the reply/result, call <see cref="BeginEncoding(OncRpcServerReplyMessage)"/>. </item><item>
+/// 
+/// Using the XDR stream returned by <see cref="GetXdrEncodingStream()"/>, 
+/// serialize the reply/result.  </item><item>
+/// 
+/// Finally finish the serializing step by calling <see cref="EndEncoding()"/>. </item></list><para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcCallInformation
+public class OncRpcCallHandler
 {
     /// <summary>
-    /// Create an <see cref="OncRpcCallInformation"/> object and associate it with a ONC/RPC server
+    /// Create an <see cref="OncRpcCallHandler"/> object and associate it with a ONC/RPC server
     /// transport.
     /// </summary>
     /// <remarks>
-    /// Typically, <see cref="OncRpcCallInformation"/> objects are created by transports
+    /// Typically, <see cref="OncRpcCallHandler"/> objects are created by transports
     /// once before handling incoming calls using the same call info object.
     /// To support multi-threaded handling of calls in the future (for UDP/IP),
     /// the transport is already divided from the call info.
     /// </remarks>
     /// <param name="transport">    ONC/RPC server transport. </param>
-    internal OncRpcCallInformation( OncRpcServerTransportBase transport )
+    internal OncRpcCallHandler( OncRpcTransportBase transport )
     {
         this.Transport = transport;
     }
@@ -72,7 +84,7 @@ public class OncRpcCallInformation
     /// future extensions horribly -- but this warning probably only stimulates you...
     /// </summary>
     /// <value> The transport. </value>
-    internal OncRpcServerTransportBase Transport { get; set; }
+    internal OncRpcTransportBase Transport { get; set; }
 
     /// <summary>   Retrieves the parameters sent within an ONC/RPC call message. </summary>
     /// <remarks>

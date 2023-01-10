@@ -5,21 +5,21 @@ using cc.isr.ONC.RPC.Portmap;
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
-/// Instances of class server <see cref="OncRpcServerTransportBase"/> encapsulate XDR streams of
+/// Instances of class server <see cref="OncRpcTransportBase"/> encapsulate XDR streams of
 /// ONC/RPC servers.
 /// </summary>
 /// <remarks>
 /// Using server transports, ONC/RPC calls are received and the corresponding replies are later
 /// sent back after handling. <para>
 /// Note that the server-specific dispatcher handling requests (done through <see cref="IOncRpcDispatchable"/>
-/// will only directly deal with <see cref="OncRpcCallInformation"/> objects. These call
+/// will only directly deal with <see cref="OncRpcCallHandler"/> objects. These call
 /// information objects reference OncRpcServerTransport object, but the server programmer
 /// typically will never touch them, as the call information object already contains all
 /// necessary information about a call, so replies can be sent back (and this is definitely a
 /// sentence containing too many words). </para> <para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public abstract class OncRpcServerTransportBase : IDisposable
+public abstract class OncRpcTransportBase : IDisposable
 {
 
     /// <summary>   (Immutable) the default buffer size. </summary>
@@ -34,7 +34,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     #region " construction and cleanup "
 
     /// <summary>
-    /// Create a new instance of a server <see cref="OncRpcServerTransportBase"/> which encapsulates
+    /// Create a new instance of a server <see cref="OncRpcTransportBase"/> which encapsulates
     /// XDR streams of an ONC/RPC server.
     /// </summary>
     /// <remarks>
@@ -44,19 +44,21 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// create appropriate XDR stream objects for the respective kind of transport mechanism used
     /// (like TCP/IP and UDP/IP).</para>
     /// </remarks>
-    /// <param name="dispatcher">   Reference to interface of an object capable of dispatching
-    ///                             (handling) ONC/RPC calls. </param>
-    /// <param name="port">         Number of port where the server will wait for incoming calls. </param>
-    /// <param name="protocol">     The protocol, .e.g., <see cref="OncRpcProtocols.OncRpcTcp"/> or <see cref="OncRpcProtocols.OncRpcUdp"/></param>
-    /// <param name="info">         Array of program and version number tuples of the ONC/RPC
-    ///                             programs and versions handled by this transport. </param>
-    protected OncRpcServerTransportBase( IOncRpcDispatchable dispatcher, int port, OncRpcProtocols protocol,
-                                         OncRpcServerTransportRegistrationInfo[] info )
+    /// <param name="dispatcher">           Reference to interface of an object capable of
+    ///                                     dispatching (handling) ONC/RPC calls. </param>
+    /// <param name="port">                 Number of port where the server will wait for incoming
+    ///                                     calls. </param>
+    /// <param name="protocol">             The protocol, .e.g., <see cref="OncRpcProtocols.OncRpcTcp"/>
+    ///                                     or <see cref="OncRpcProtocols.OncRpcUdp"/> </param>
+    /// <param name="registeredPrograms">   Array of program and version number tuples of the ONC/RPC
+    ///                                     programs and versions handled by this transport. </param>
+    protected OncRpcTransportBase( IOncRpcDispatchable dispatcher, int port, OncRpcProtocols protocol,
+                                         OncRpcProgramInfo[] registeredPrograms )
     {
         this.Dispatcher = dispatcher;
         this.Port = port;
         this.Protocol = protocol;
-        this.TransportRegistrationInfo = info;
+        this.RegisteredPrograms = registeredPrograms;
     }
 
     /// <summary>   Close the server transport and free any resources associated with it. </summary>
@@ -141,7 +143,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     }
 
     /// <summary>   Finalizer. </summary>
-    ~OncRpcServerTransportBase()
+    ~OncRpcTransportBase()
     {
         if ( this.IsDisposed ) { return; }
         this.Dispose( false );
@@ -194,7 +196,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// number tuples handled by this server transport.
     /// </summary>
     /// <value> Information describing the transport registration. </value>
-    internal OncRpcServerTransportRegistrationInfo[] TransportRegistrationInfo { get; set; }
+    internal OncRpcProgramInfo[] RegisteredPrograms { get; set; }
 
     #endregion
 
@@ -215,7 +217,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
         try
         {
             OncRpcPortmapClient portmapper = new( IPAddress.Loopback );
-            foreach ( var transportRegistrationInfo in this.TransportRegistrationInfo )
+            foreach ( var transportRegistrationInfo in this.RegisteredPrograms )
             {
                 // Try to register the port for our transport with the local ONC/RPC
                 // portmapper. If this fails, bail out with an exception.
@@ -245,9 +247,9 @@ public abstract class OncRpcServerTransportBase : IDisposable
         try
         {
             OncRpcPortmapClient portmapper = new( IPAddress.Loopback );
-            int size = this.TransportRegistrationInfo.Length;
+            int size = this.RegisteredPrograms.Length;
             for ( int idx = 0; idx < size; ++idx )
-                _ = portmapper.UnsetPort( this.TransportRegistrationInfo[idx].Program, this.TransportRegistrationInfo[idx].Version );
+                _ = portmapper.UnsetPort( this.RegisteredPrograms[idx].Program, this.RegisteredPrograms[idx].Version );
         }
         catch ( System.IO.IOException )
         {
@@ -315,7 +317,7 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// <param name="callInfo"> Information about ONC/RPC call for which we are about to send back
     ///                         the reply. </param>
     /// <param name="state">    ONC/RPC reply header indicating success or failure. </param>
-    internal abstract void BeginEncoding( OncRpcCallInformation callInfo, OncRpcServerReplyMessage state );
+    internal abstract void BeginEncoding( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state );
 
     /// <summary>   Finishes encoding the reply to this ONC/RPC call. </summary>
     /// <remarks>
@@ -327,20 +329,20 @@ public abstract class OncRpcServerTransportBase : IDisposable
     /// <summary> Sends back an ONC/RPC reply to the original caller. </summary>
     /// <remarks>
     /// This is rather a low-level method, typically not used by applications. Dispatcher handling
-    /// ONC/RPC calls have to use the <see cref="OncRpcCallInformation.Reply(IXdrCodec)"/>
+    /// ONC/RPC calls have to use the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
     /// method instead on the call object supplied to the handler. <para>
     /// An appropriate implementation has to be provided in derived classes
     /// as it is dependent on the type of transport (whether UDP/IP or TCP/IP)
     /// used. </para>
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="callInfo"> <see cref="OncRpcCallInformation"/> about the original call, 
+    /// <param name="callInfo"> <see cref="OncRpcCallHandler"/> about the original call, 
     ///                         which are necessary to Sends back the reply to the appropriate caller. </param>
     /// <param name="state">    ONC/RPC reply message header indicating success or failure and
     ///                         containing associated state information. </param>
     /// <param name="reply">    If not <see langword="null"/>, then this parameter references the reply to
     ///                         be serialized after the reply message header. </param>
-    internal abstract void Reply( OncRpcCallInformation callInfo, OncRpcServerReplyMessage state, IXdrCodec reply );
+    internal abstract void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state, IXdrCodec reply );
 
     /// <summary>
     /// Gets or sets the reference to the interface implemented by the object capable of

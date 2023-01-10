@@ -46,6 +46,30 @@ ONC-RPC clients will first use the [Portmap] service to map a well known program
 
 Most ONC RPC services have no fixed port numbers assigned to them. The only exceptions are [Portmap] and NFS (Network File System).
 
+## Identifying Remote Programs and Procedures
+The ONC RPC client must uniquely identify the remote procedure it wants to reach. Therefore, all remote procedure calls must contain these three fields:
+* A remote program number;
+* The version number of the remote program; and
+* A remote procedure number
+
+### Remote Program Numbers
+A remote program is a program that implements at least one remote procedure. Remote programs are identified by numbers that you assign during application development. Use the table below to determine which program numbers are available. The numbers are in groups of hexadecimals.
+
+| Range | Purpose |
+|-------|:---------|
+|0 to 1FFFFFFF | Defined and administered by Sun Microsystems. Should be identical for all sites. Use only for applications of general interest to the Internet community.
+|20000000 to 3FFFFFFF|Defined by the client application program. Site-specific. Use primarily for new programs.
+|40000000 to 5FFFFFFF|Use for applications that generate program numbers dynamically.
+|60000000 to FFFFFFFF|Reserved for the future. Do not use. 
+
+### Remote Version Numbers
+Multiple versions of the same program may exist on a host or network. Version numbers distinguish one version of a program from another. Each time you alter a program, remember to increment its version number.
+
+### Remote Procedure Numbers
+A remote program may contain many remote procedures. Remote procedures are identified by numbers that you assign during application development. Follow these guidelines when assigning procedure numbers:
+* Use 1 for the first procedure in a program. (Procedure 0 should do nothing and require no authentication to the server.)
+* For each additional procedure in a program, increment the procedure number by one.
+
 ## Definitions
 
 ### Stub

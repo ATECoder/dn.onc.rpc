@@ -35,16 +35,16 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     public OncRpcPortMapService()
     {
         // We only need to register one {program, version}.
-        OncRpcServerTransportRegistrationInfo[] info = new OncRpcServerTransportRegistrationInfo[] {
-            new OncRpcServerTransportRegistrationInfo(OncRpcPortmapConstants.OncRpcPortmapProgramNumber, OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber )
+        OncRpcProgramInfo[] info = new OncRpcProgramInfo[] {
+            new OncRpcProgramInfo(OncRpcPortmapConstants.OncRpcPortmapProgramNumber, OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber )
         };
         this.SetTransportRegistrationInfo( info );
 
         // We support both UDP and TCP-based transports for ONC/RPC portmap
         // calls, and these transports are bound to the well-known port 111.
-        OncRpcServerTransportBase[] transports = new OncRpcServerTransportBase[] {
-            new OncRpcUdpServerTransport(this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, info, OncRpcPortMapService.DefaultBufferSize),
-            new OncRpcTcpServerTransport( this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, info, OncRpcPortMapService.DefaultBufferSize)
+        OncRpcTransportBase[] transports = new OncRpcTransportBase[] {
+            new OncRpcUdpTransport(this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, info, OncRpcPortMapService.DefaultBufferSize),
+            new OncRpcTcpTransport( this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, info, OncRpcPortMapService.DefaultBufferSize)
         };
         this.SetTransports( transports );
 
@@ -263,7 +263,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     /// <param name="program">      the portmap's program number, 100000. </param>
     /// <param name="version">      the portmap's protocol version, 2. </param>
     /// <param name="procedure">    the procedure to call. </param>
-    public virtual void DispatchOncRpcCall( OncRpcCallInformation call, int program, int version, int procedure )
+    public virtual void DispatchOncRpcCall( OncRpcCallHandler call, int program, int version, int procedure )
     {
         // Make sure it's the right program and version that we can handle.
         // (defensive programming)

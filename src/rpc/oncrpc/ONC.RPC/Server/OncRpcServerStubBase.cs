@@ -127,14 +127,14 @@ public abstract class OncRpcServerStubBase : IDisposable
 
     #region " transports "
 
-    private OncRpcServerTransportBase[] _transports;
+    private OncRpcTransportBase[] _transports;
     /// <summary>
     /// Sets the array containing ONC/RPC server transport objects which describe what transports an
     /// ONC/RPC server offers for handling ONC/RPC calls.
     /// </summary>
     /// <param name="transports">   Array of server transport objects to register, which will later
     ///                             handle incoming remote procedure call requests. </param>
-    public virtual void SetTransports( OncRpcServerTransportBase[] transports )
+    public virtual void SetTransports( OncRpcTransportBase[] transports )
     {
         this._transports = transports;
     }
@@ -142,7 +142,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// gets the array containing ONC/RPC server transport objects which describe what transports an ONC/RPC
     /// server offers for handling ONC/RPC calls.
     /// </summary>
-    public virtual OncRpcServerTransportBase[] GetTransports()
+    public virtual OncRpcTransportBase[] GetTransports()
     {
         return this._transports;
     }
@@ -150,14 +150,14 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// <summary>
     /// Array containing program and version numbers tuples this server is willing to handle.
     /// </summary>
-    private OncRpcServerTransportRegistrationInfo[] _transportRegistrationInfo;
+    private OncRpcProgramInfo[] _transportRegistrationInfo;
 
     /// <summary>
     /// Sets the array containing program and version numbers tuples this server is willing to handle.
     /// </summary>
     /// <param name="info"> Array containing program and version numbers tuples this server is
     ///                     willing to handle. </param>
-    public void SetTransportRegistrationInfo( OncRpcServerTransportRegistrationInfo[] info )
+    public void SetTransportRegistrationInfo( OncRpcProgramInfo[] info )
     {
         this._transportRegistrationInfo = info;
     }
@@ -168,7 +168,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// </summary>
     /// <returns>   The array containing program and version numbers tuples this server is willing to
     /// handle. </returns>
-    public OncRpcServerTransportRegistrationInfo[] GetTransportRegistrationInfo()
+    public OncRpcProgramInfo[] GetTransportRegistrationInfo()
     {
         return this._transportRegistrationInfo;
     }
@@ -177,7 +177,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="transports">   Array of server transport objects to register, which will later
     ///                             handle incoming remote procedure call requests. </param>
-    public virtual void Register( OncRpcServerTransportBase[] transports )
+    public virtual void Register( OncRpcTransportBase[] transports )
     {
         int size = transports.Length;
         for ( int idx = 0; idx < size; ++idx )
@@ -187,7 +187,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// <summary>   Unregister a set of server transports from the local portmapper. </summary>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="transports">   Array of server transport objects to unregister. </param>
-    public virtual void Unregister( OncRpcServerTransportBase[] transports )
+    public virtual void Unregister( OncRpcTransportBase[] transports )
     {
         foreach ( var transport in this._transports )
             transport.Unregister();
@@ -252,7 +252,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// </remarks>
     /// <param name="transports">   Array of server transport objects for which processing of remote
     ///                             procedure call requests should be done. </param>
-    public virtual void Run( OncRpcServerTransportBase[] transports )
+    public virtual void Run( OncRpcTransportBase[] transports )
     {
         int size = transports.Length;
         for ( int idx = 0; idx < size; ++idx )

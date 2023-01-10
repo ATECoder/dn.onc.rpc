@@ -178,7 +178,7 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     /// </remarks>
     /// <param name="transports">   Array of server transport objects for which processing of remote
     ///                             procedure call requests should be done. </param>
-    public override void Run( OncRpcServerTransportBase[] transports )
+    public override void Run( OncRpcTransportBase[] transports )
     {
         this.Listening = true;
         base.Run( transports );
@@ -191,7 +191,7 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     /// <remarks>
     /// Notify the RPC server to stop processing of remote procedure call requests as soon as
     /// possible. Note that each transport has its own thread, so processing will not stop before the
-    /// transports have been closed by calling the <see cref="Close(OncRpcServerTransportBase[])"/>
+    /// transports have been closed by calling the <see cref="Close(OncRpcTransportBase[])"/>
     /// method of the server.
     /// </remarks>
     public override void StopRpcProcessing()
@@ -218,12 +218,12 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     /// 10815-X. <para>
     /// See the introduction to this class for examples of how to use this interface properly.</para>
     /// </remarks>
-    /// <param name="call">         <see cref="OncRpcCallInformation"/> about the call to handle, like the 
+    /// <param name="call">         <see cref="OncRpcCallHandler"/> about the call to handle, like the 
     ///                             caller's Internet address, the ONC/RPC call header, etc. </param>
     /// <param name="program">      Program number requested by client. </param>
     /// <param name="version">      Version number requested. </param>
     /// <param name="procedure">    Procedure number requested. </param>
-    public override void DispatchOncRpcCall( OncRpcCallInformation call, int program, int version, int procedure )
+    public override void DispatchOncRpcCall( OncRpcCallHandler call, int program, int version, int procedure )
     {
         base.DispatchOncRpcCall( call, program, version, procedure );
         if ( version == 1 )
@@ -250,7 +250,7 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     /// <remarks>   2022-12-26. </remarks>
     /// <param name="call">         The call. </param>
     /// <param name="procedure">    The procedure. </param>
-    private static void ProcessVersion1Calls( OncRpcCallInformation call, int procedure )
+    private static void ProcessVersion1Calls( OncRpcCallHandler call, int procedure )
     {
         switch ( procedure )
         {
@@ -278,11 +278,11 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
 
     /// <summary>   Process the version 2 calls. </summary>
     /// <remarks>   2022-12-26. </remarks>
-    /// <param name="call">         <see cref="OncRpcCallInformation"/> about the call to handle, like the
+    /// <param name="call">         <see cref="OncRpcCallHandler"/> about the call to handle, like the
     ///                             caller's Internet address, the ONC/RPC
     ///                             call header, etc. </param>
     /// <param name="procedure">    Procedure number requested. </param>
-    private static void ProcessVersion2Calls( OncRpcCallInformation call, int procedure )
+    private static void ProcessVersion2Calls( OncRpcCallHandler call, int procedure )
     {
         switch ( procedure )
         {
