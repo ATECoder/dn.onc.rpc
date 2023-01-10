@@ -134,7 +134,7 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
         client.Timeout = 5 * 1000;
         try
         {
-            client.BroadcastCall( OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance, this );
+            client.BroadcastCall( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance, this );
         }
         catch ( OncRpcException e )
         {

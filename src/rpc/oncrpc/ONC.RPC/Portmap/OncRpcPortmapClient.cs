@@ -210,7 +210,7 @@ public class OncRpcPortmapClient
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber, requestCodec, replyCodec );
+        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber, requestCodec, replyCodec );
 
         // In case the program is not registered, throw an exception too.
         // @atecode: the specific 'Program Not Registered' exception was removed in favor of
@@ -248,7 +248,7 @@ public class OncRpcPortmapClient
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapRegisterServer, requestCodec, resultCodec );
+        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapRegisterServer, requestCodec, resultCodec );
 
         return resultCodec.Value;
     }
@@ -278,7 +278,7 @@ public class OncRpcPortmapClient
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer, requestCodec, replyCodec );
+        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer, requestCodec, replyCodec );
 
         return replyCodec.Value;
     }
@@ -303,7 +303,7 @@ public class OncRpcPortmapClient
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo, VoidXdrCodec.VoidXdrCodecInstance, result );
+        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo, VoidXdrCodec.VoidXdrCodecInstance, result );
 
         // Copy the server identities from the Vector into the vector (array).
         OncRpcServerIdentifierCodec[] info = new OncRpcServerIdentifierCodec[result.ServerIdentifiers.Count];
@@ -318,7 +318,7 @@ public class OncRpcPortmapClient
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.PortmapClient.Call( OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance );
+        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance );
     }
 
 }
