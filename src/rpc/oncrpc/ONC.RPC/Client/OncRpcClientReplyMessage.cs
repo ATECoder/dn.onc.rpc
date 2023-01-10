@@ -55,7 +55,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
             throw new OncRpcException(
                 $"; expected {nameof( OncRpcMessageType.OncRpcCallMessageType )}({OncRpcMessageType.OncRpcCallMessageType}); actual: {this.MessageType}",
                 OncRpcExceptionReason.OncRpcWrongMessageType );
-        this.ReplyStatus = decoder.DecodeInt();
+        this.ReplyStatus = (OncRpcReplyStatus ) decoder.DecodeInt();
         switch ( this.ReplyStatus )
         {
             case OncRpcReplyStatus.OncRpcMessageAccepted:

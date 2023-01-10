@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace cc.isr.ONC.RPC;
 
 /// <summary>
@@ -6,17 +8,17 @@ namespace cc.isr.ONC.RPC;
 /// <remarks> <para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcReplyStatus
+public enum OncRpcReplyStatus
 {
     /// <summary>
-    /// (Immutable)
-    /// Reply status identifying that the corresponding message call was accepted.
+    /// Reply status indicating that the corresponding message call was accepted.
     /// </summary>
-    public const int OncRpcMessageAccepted = 0;
+    [Description( "Reply status indicating that the corresponding message call was accepted." )]
+    OncRpcMessageAccepted = 0,
 
     /// <summary>
-    /// (Immutable)
-    /// Reply status identifying that the corresponding message call was denied.
+    /// Reply status indicating that the corresponding message call was denied.
     /// </summary>
-    public const int OncRpcMessageDenied = 1;
+    [Description( "Reply status indicating that the corresponding message call was denied." )]
+    OncRpcMessageDenied = 1,
 }

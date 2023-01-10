@@ -146,7 +146,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <see cref="OncRpcUdpRetransmissionMode.OncRpcFixedTimeout">fixed timeout mode</see>.
     /// </summary>
     /// <value> The retransmission mode. </value>
-    public int RetransmissionMode { get; set; } = OncRpcUdpRetransmissionMode.OncRpcFixedTimeout;
+    public OncRpcUdpRetransmissionMode RetransmissionMode { get; set; } = OncRpcUdpRetransmissionMode.OncRpcFixedTimeout;
 
     /// <summary>
     /// Gets or sets the retransmission timeout used for resending ONC/RPC calls when an ONC/RPC

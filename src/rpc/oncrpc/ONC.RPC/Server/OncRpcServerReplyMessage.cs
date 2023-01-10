@@ -32,8 +32,10 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
     /// <param name="lowVersion">   lowest supported version. </param>
     /// <param name="highVersion">  highest supported version. </param>
     /// <param name="authStatus">   The authentication status (<see cref="OncRpcAuthStatus"/>). </param>
-    public OncRpcServerReplyMessage( OncRpcServerCallMessage call, int replyStatus, OncRpcAcceptStatus acceptStatus, OncRpcRejectStatus rejectStatus,
-        int lowVersion, int highVersion, OncRpcAuthStatus authStatus ) : base( call, replyStatus, acceptStatus, rejectStatus, lowVersion, highVersion, authStatus )
+    public OncRpcServerReplyMessage( OncRpcServerCallMessage call, OncRpcReplyStatus replyStatus,
+                                     OncRpcAcceptStatus acceptStatus, OncRpcRejectStatus rejectStatus,
+                                     int lowVersion, int highVersion, OncRpcAuthStatus authStatus ) : base( call, replyStatus, acceptStatus,
+                                                                                                            rejectStatus, lowVersion, highVersion, authStatus )
     {
         this.Auth = call.Auth;
     }
@@ -47,7 +49,7 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
     {
         encoder.EncodeInt( this.MessageId );
         encoder.EncodeInt( ( int ) this.MessageType );
-        encoder.EncodeInt( this.ReplyStatus );
+        encoder.EncodeInt( ( int ) this.ReplyStatus );
         switch ( this.ReplyStatus )
         {
             case OncRpcReplyStatus.OncRpcMessageAccepted:

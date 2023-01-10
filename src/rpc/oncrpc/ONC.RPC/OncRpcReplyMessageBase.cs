@@ -61,7 +61,7 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     /// <param name="lowVersion">   lowest supported version. </param>
     /// <param name="highVersion">  highest supported version. </param>
     /// <param name="authStatus">   The authentication state <see cref="OncRpcAuthStatus"/>. </param>
-    public OncRpcReplyMessageBase( OncRpcCallMessageBase call, int replyStatus, OncRpcAcceptStatus acceptStatus,
+    public OncRpcReplyMessageBase( OncRpcCallMessageBase call, OncRpcReplyStatus replyStatus, OncRpcAcceptStatus acceptStatus,
                                    OncRpcRejectStatus rejectStatus, int lowVersion, int highVersion,
                                    OncRpcAuthStatus authStatus ) : base( call.MessageId )
     {
@@ -89,7 +89,7 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     /// rejected replies was driven by the motivation not to use polymorphism
     /// and thus have to upcast and downcast references all the time.</para>
     /// </summary>
-    public int ReplyStatus { get; set; }
+    public OncRpcReplyStatus ReplyStatus { get; set; }
 
     /// <summary>
     /// Acceptance status in case this reply was sent in response to an accepted call
