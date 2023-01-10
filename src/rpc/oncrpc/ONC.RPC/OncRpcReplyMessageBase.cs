@@ -61,8 +61,9 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     /// <param name="lowVersion">   lowest supported version. </param>
     /// <param name="highVersion">  highest supported version. </param>
     /// <param name="authStatus">   The authentication state <see cref="OncRpcAuthStatus"/>. </param>
-    public OncRpcReplyMessageBase( OncRpcCallMessageBase call, int replyStatus, OncRpcAcceptStatus acceptStatus, int rejectStatus,
-        int lowVersion, int highVersion, OncRpcAuthStatus authStatus ) : base( call.MessageId )
+    public OncRpcReplyMessageBase( OncRpcCallMessageBase call, int replyStatus, OncRpcAcceptStatus acceptStatus,
+                                   OncRpcRejectStatus rejectStatus, int lowVersion, int highVersion,
+                                   OncRpcAuthStatus authStatus ) : base( call.MessageId )
     {
         this.MessageType = OncRpcMessageType.OncRpcReplyMessageType;
         this.ReplyStatus = replyStatus;
@@ -101,11 +102,11 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     public OncRpcAcceptStatus AcceptStatus { get; set; }
 
     /// <summary>
-    /// Reject status in case this reply sent in response to a rejected call (<see cref="OncRpcReplyStatus.OncRpcMessageDenied"/>
-    /// ). This field can take any of the values defined in the <see cref="OncRpcRejectStatus"/>
-    /// interface.
+    /// Reject status in case this reply sent in response to a rejected call (<see cref="OncRpcReplyStatus.OncRpcMessageDenied"/>).
+    /// This field can take any of the values defined in the <see cref="OncRpcRejectStatus"/> interface.
     /// </summary>
-    public int RejectStatus { get; set; }
+    /// <value> The reject status. </value>
+    public OncRpcRejectStatus RejectStatus { get; set; }
 
     /// <summary>
     /// Lowest supported version in case of

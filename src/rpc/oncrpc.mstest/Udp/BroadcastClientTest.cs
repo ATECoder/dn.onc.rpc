@@ -5,8 +5,6 @@ using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.MSTest.Tcp;
 using cc.isr.ONC.RPC.Portmap;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
-
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 /// <summary>   (Unit Test Class) a broadcast client test. </summary>

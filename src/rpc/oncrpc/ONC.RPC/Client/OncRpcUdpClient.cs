@@ -324,8 +324,9 @@ public class OncRpcUdpClient : OncRpcClientBase
                                         // problem. In this case first try to refresh the
                                         // credentials.
 
-                                        if ( refreshesLeft > 0 && replyHeader.ReplyStatus == OncRpcReplyStatus.OncRpcMessageDenied &&
-                                            replyHeader.RejectStatus == OncRpcRejectStatus.OncRpcAuthError && this.Auth is not null && this.Auth.CanRefreshCredential() )
+                                        if ( refreshesLeft > 0 && replyHeader.ReplyStatus == OncRpcReplyStatus.OncRpcMessageDenied
+                                                               && replyHeader.RejectStatus == OncRpcRejectStatus.OncRpcAuthError
+                                                               && this.Auth is not null && this.Auth.CanRefreshCredential() )
                                         {
 
                                             // Think about using a TAB size of four ;)

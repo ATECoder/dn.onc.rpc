@@ -32,7 +32,7 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
     /// <param name="lowVersion">   lowest supported version. </param>
     /// <param name="highVersion">  highest supported version. </param>
     /// <param name="authStatus">   The authentication status (<see cref="OncRpcAuthStatus"/>). </param>
-    public OncRpcServerReplyMessage( OncRpcServerCallMessage call, int replyStatus, OncRpcAcceptStatus acceptStatus, int rejectStatus,
+    public OncRpcServerReplyMessage( OncRpcServerCallMessage call, int replyStatus, OncRpcAcceptStatus acceptStatus, OncRpcRejectStatus rejectStatus,
         int lowVersion, int highVersion, OncRpcAuthStatus authStatus ) : base( call, replyStatus, acceptStatus, rejectStatus, lowVersion, highVersion, authStatus )
     {
         this.Auth = call.Auth;
@@ -101,7 +101,7 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
 
                     // Encode the information returned for denied message calls.
 
-                    encoder.EncodeInt( this.RejectStatus );
+                    encoder.EncodeInt( ( int ) this.RejectStatus );
                     switch ( this.RejectStatus )
                     {
                         case OncRpcRejectStatus.OncRpcWrongProtocolVersion:

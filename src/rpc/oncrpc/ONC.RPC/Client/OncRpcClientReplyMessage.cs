@@ -120,7 +120,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
 
                     // Encode the information returned for denied message calls.
 
-                    this.RejectStatus = decoder.DecodeInt();
+                    this.RejectStatus = ( OncRpcRejectStatus ) decoder.DecodeInt();
                     switch ( this.RejectStatus )
                     {
                         case OncRpcRejectStatus.OncRpcWrongProtocolVersion:

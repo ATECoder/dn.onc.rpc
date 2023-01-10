@@ -246,8 +246,8 @@ public class OncRpcCallInformation
     public virtual void ReplySystemError()
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcSystemError,
-            OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter,
-            OncRpcReplyMessageBase.UnusedMessageParameter ), null );
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter ), null );
     }
 
     /// <summary>

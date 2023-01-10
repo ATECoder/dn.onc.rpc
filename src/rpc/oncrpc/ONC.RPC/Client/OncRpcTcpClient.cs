@@ -327,8 +327,9 @@ public class OncRpcTcpClient : OncRpcClientBase
                         // Check whether there was an authentication
                         // problem. In this case first try to refresh the
                         // credentials.
-                        if ( refreshesLeft > 0 && replyHeader.ReplyStatus == OncRpcReplyStatus.OncRpcMessageDenied &&
-                            replyHeader.RejectStatus == OncRpcRejectStatus.OncRpcAuthError && this.Auth is not null && this.Auth.CanRefreshCredential() )
+                        if ( refreshesLeft > 0 && replyHeader.ReplyStatus == OncRpcReplyStatus.OncRpcMessageDenied
+                                               && replyHeader.RejectStatus == OncRpcRejectStatus.OncRpcAuthError
+                                               && this.Auth is not null && this.Auth.CanRefreshCredential() )
                             // continue Refresh;
                             continue;
                         // Nope. No chance. This gets tough.
