@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using cc.isr.ONC.RPC.Portmap;
 
 namespace cc.isr.ONC.RPC.MSTest.PortMapper;
@@ -12,12 +14,7 @@ public class EmbeddedPortmapTest
     /// <remarks>   2022-12-30. </remarks>
     internal static void AssertPortmapServiceShouldStart()
     {
-
-        // Ignore all problems during unregistration.
-
-        OncRpcEmbeddedPortmapService epm;
-
-        Console.WriteLine( "Checking for portmap service: " );
+        Console.WriteLine( $"{DateTime.Now.ToShortTimeString()} Checking for portmap service: " );
         bool externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
         if ( externalPortmap )
             Console.WriteLine( "A portmap service is already running." );
@@ -28,7 +25,7 @@ public class EmbeddedPortmapTest
         // into action.
 
         Console.WriteLine( "Creating embedded portmap instance: " );
-        epm = new OncRpcEmbeddedPortmapService();
+        OncRpcEmbeddedPortmapService epm = new ();
 
         if ( !epm.EmbeddedPortmapInUse() )
             Console.WriteLine( "embedded service not used: " );
@@ -39,7 +36,10 @@ public class EmbeddedPortmapTest
         {
             Assert.Fail( "ERROR: no service available or both." );
         }
-        Console.WriteLine( "Passed." );
+        Stopwatch sw = Stopwatch.StartNew();
+        externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
+        Assert.IsTrue( externalPortmap, "portmap service is not running" );
+        Console.WriteLine( $"portmap service is {(externalPortmap ? "running" : "idle")}; elapsed: {sw.ElapsedMilliseconds:0}ms" );
     }
 
 

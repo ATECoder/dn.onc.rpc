@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -47,6 +49,7 @@ public abstract class OncRpcServerStubBase : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
+        catch (Exception ex ) { Console.WriteLine( ex.ToString() );  }
         finally
         {
             this.IsDisposed = true;
@@ -71,9 +74,18 @@ public abstract class OncRpcServerStubBase : IDisposable
         }
 
         // free unmanaged resources and override finalizer
-        // I am assuming that the socket used in the derived classes include unmanaged resources.
         this.StopRpcProcessing();
-        this.Close();
+
+        // await for the port map service to stop running
+        DateTime endTime = DateTime.Now.AddMilliseconds( 1000 );
+        while ( this.Running && endTime < DateTime.Now )
+        {
+            Thread.Sleep( 100 );
+        }
+        if ( !this.Running )
+            this.Close();
+        else
+            throw new InvalidOperationException( "Server still running after stopping RPC Processing." );
 
         // set large fields to null
     }
@@ -107,9 +119,13 @@ public abstract class OncRpcServerStubBase : IDisposable
         }
     }
 
+    /// <summary>   Gets or sets a value indicating whether the port mapper server is running. </summary>
+    /// <value> True if running, false if not. </value>
+    public bool Running { get; private set; }
+
     #endregion
 
-    #region " Transports "
+    #region " transports "
 
     private OncRpcServerTransportBase[] _transports;
     /// <summary>
@@ -209,6 +225,7 @@ public abstract class OncRpcServerStubBase : IDisposable
             {
             }
             this.Register( this._transports );
+            this.Running = true;
             this.Run( this._transports );
             try
             {
@@ -221,6 +238,7 @@ public abstract class OncRpcServerStubBase : IDisposable
         finally
         {
             this.Close();
+            this.Running = false;
         }
     }
 

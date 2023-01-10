@@ -324,6 +324,7 @@ public abstract class OncRpcClientBase : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
+        catch ( Exception ex ) { Console.WriteLine( ex.ToString() ); }
         finally
         {
             this.IsDisposed = true;

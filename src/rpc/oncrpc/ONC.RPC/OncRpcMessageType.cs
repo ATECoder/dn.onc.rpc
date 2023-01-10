@@ -15,7 +15,7 @@ public enum OncRpcMessageType
 {
 
     /// <summary>   An enum constant representing the not specified option. </summary>
-    [Description( "Unspecified ONC/RPC call." )] NotSpecified = -1,
+    [Description( "Unspecified ONC/RPC message type." )] NotSpecified = -1,
 
     /// <summary>
     /// Identifies an ONC/RPC call. By a "call" a client request that a server carries

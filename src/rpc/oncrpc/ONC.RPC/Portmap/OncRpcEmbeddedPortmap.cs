@@ -13,9 +13,11 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// <remarks>
 /// If an embedded portmap service is started it will stop only after the last ONC/RPC program
 /// has been deregistered. <para>
+/// This class need not be disposable as the service will automatically terminate after the last 
+/// program deregisters. </para><para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcEmbeddedPortmapService : IDisposable
+public class OncRpcEmbeddedPortmapService
 {
 
     /// <summary>   (Immutable) the default timeout. </summary>
@@ -52,100 +54,32 @@ public class OncRpcEmbeddedPortmapService : IDisposable
     {
         if ( !IsPortmapRunning( checkTimeout ) )
         {
-            this._embeddedPortmapService = new EmbeddedPortmapService( this );
-            this._embeddedPortmapThread = new EmbeddedPortmapServiceThread( this, this._embeddedPortmapService );
-            this._embeddedPortmapService.ServiceThread = new Thread( new ThreadStart( this._embeddedPortmapThread.Run ) ) {
+            this._portmapService = new EmbeddedPortmapService( this );
+            this._embeddedPortmapThread = new EmbeddedPortmapServiceThread( this, this._portmapService );
+            this._portmapService.ServiceThread = new Thread( new ThreadStart( this._embeddedPortmapThread.Run ) ) {
                 Name = "Embedded Portmap Service Thread"
             };
-            this._embeddedPortmapService.ServiceThread.Start();
+            this._portmapService.ServiceThread.Start();
         }
     }
 
-    /// <summary> Gets or sets the sentinel to detect redundant calls. </summary>
-    /// <value> The sentinel to detect redundant calls. </value>
-    protected bool IsDisposed { get; private set; }
-
-    /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
-    /// resources.
-    /// </summary>
-    /// <remarks> 
-    /// Takes account of and updates <see cref="IsDisposed"/>.
-    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// <summary>   Stop the embedded portmap service if it is running. </summary>
+    /// <remarks>
+    /// Normally you should not use this method except you need to force the embedded portmap service
+    /// to terminate. Under normal conditions the thread responsible for the embedded portmap service
+    /// will terminate automatically after the last ONC/RPC program has been deregistered.
+    /// This method just signals the portmap thread to stop processing ONC/RPC portmap calls and to
+    /// terminate itself after it has cleaned up after itself.
     /// </remarks>
-    public void Dispose()
+    public virtual void Shutdown()
     {
-        if ( this.IsDisposed ) { return; }
-        try
-        {
-            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
-            this.Dispose( true );
-
-            // uncomment the following line if Finalize() is overridden above.
-            GC.SuppressFinalize( this );
-        }
-        finally
-        {
-            this.IsDisposed = true;
-        }
-
+        OncRpcServerStubBase? portmap = this._portmapService;
+        portmap?.StopRpcProcessing();
     }
-
-    /// <summary>
-    /// Releases the unmanaged resources used by the isr.Std.Models.ThreadSafeToken{T} and
-    /// optionally releases the managed resources.
-    /// </summary>
-    /// <remarks> David, 2020-09-22. </remarks>
-    /// <param name="disposing"> True to release both managed and unmanaged resources; false to
-    /// release only unmanaged resources. </param>
-    protected virtual void Dispose( bool disposing )
-    {
-        if ( disposing )
-        {
-            // dispose managed state (managed objects)
-        }
-
-        // free unmanaged resources and override finalizer
-        // i am assuming the slim lock depends on unmanaged resources.
-        try
-        {
-            this.Shutdown();
-        }
-        catch ( Exception ex )
-        {
-            Console.WriteLine( $"Failed shutting down the port mapper: \n{ex} " );
-        }
-
-        OncRpcServerStubBase? portmap = this._embeddedPortmapService;
-        this._embeddedPortmapService = null;
-        try
-        {
-            portmap?.Close();
-            portmap?.Dispose();
-        }
-        catch ( Exception ex )
-        {
-            Console.WriteLine( $"Failed closing the port mapper: \n{ex} " );
-        }
-
-        // set large fields to null
-    }
-
-    /// <summary>
-    /// This finalizer will run only if the Dispose method does not get called. It gives the base
-    /// class the opportunity to finalize. 
-    /// </summary>
-    /// <remarks> David, 2020-09-22. </remarks>
-    ~OncRpcEmbeddedPortmapService()
-    {
-        if ( this.IsDisposed ) { return; }
-        // Do not re-create Dispose clean-up code here.
-        // Calling Dispose(false) is optimal for readability and maintainability.
-        this.Dispose( false );
-    }
-
 
     #endregion
+
+    #region " actions "
 
     /// <summary>
     /// Indicates whether a portmap service (regardless whether it's supplied by the operating system
@@ -168,6 +102,7 @@ public class OncRpcEmbeddedPortmapService : IDisposable
     /// Indicates whether a portmap service (regardless whether it's supplied by the operating system
     /// or an embedded portmap service) is currently running.
     /// </summary>
+    /// <remarks> Unit tests shows this to take 3 ms. </remarks>
     /// <param name="checkTimeout"> timeout in milliseconds to wait before assuming that no portmap
     ///                             service is currently available. </param>
     /// <returns>
@@ -204,7 +139,7 @@ public class OncRpcEmbeddedPortmapService : IDisposable
     /// </returns>
     public virtual bool EmbeddedPortmapInUse()
     {
-        return this._embeddedPortmapService?.ServiceThread is not null;
+        return this._portmapService?.ServiceThread is not null;
     }
 
     /// <summary>   Returns the thread object running the embedded portmap service. </summary>
@@ -213,42 +148,33 @@ public class OncRpcEmbeddedPortmapService : IDisposable
     /// </returns>
     public virtual Thread? GetEmbeddedPortmapServiceThread()
     {
-        return this._embeddedPortmapService?.ServiceThread;
+        return this._portmapService?.ServiceThread;
     }
 
+    #endregion
+
+    #region " members "
 
     /// <summary>
     /// Portmap object acting as embedded portmap service or <see langword="null"/>
     /// if no embedded portmap service is necessary because the operating system already supplies one
     /// or another port mapper is already running.
     /// </summary>
-    private EmbeddedPortmapService? _embeddedPortmapService;
+    private readonly EmbeddedPortmapService? _portmapService;
 
-    /// <summary>   Returns object implementing the embedded portmap service. </summary>
+    /// <summary>   Returns the embedded portmap service. </summary>
     /// <returns>
     /// Embedded portmap object or <see langword="null"/> if no embedded portmap service has been started.
     /// </returns>
-    public virtual OncRpcPortMapService? GetEmbeddedPortmapService()
-    {
-        return this._embeddedPortmapService;
-    }
+    public virtual OncRpcPortMapService? PortmapService => this._portmapService;
 
-    /// <summary>   Stop the embedded portmap service if it is running. </summary>
-    /// <remarks>
-    /// Normally you should not use this method except you need to force the embedded portmap service
-    /// to terminate. Under normal conditions the thread responsible for the embedded portmap service
-    /// will terminate automatically after the last ONC/RPC program has been deregistered. &lt;p&gt;
-    /// This method just signals the portmap thread to stop processing ONC/RPC portmap calls and to
-    /// terminate itself after it has cleaned up after itself.
-    /// </remarks>
-    public virtual void Shutdown()
-    {
-        OncRpcServerStubBase? portmap = this._embeddedPortmapService;
-        portmap?.StopRpcProcessing();
-    }
 
     /// <summary>   References thread object running the embedded portmap service. </summary>
     private readonly EmbeddedPortmapServiceThread? _embeddedPortmapThread;
+
+    #endregion
+
+    #region " embedded portmap service and thread classes "
 
     private class EmbeddedPortmapService : OncRpcPortMapService
     {
@@ -366,4 +292,7 @@ public class OncRpcEmbeddedPortmapService : IDisposable
         [System.Diagnostics.CodeAnalysis.SuppressMessage( "CodeQuality", "IDE0052:Remove unread private members", Justification = "<Pending>" )]
         private readonly OncRpcEmbeddedPortmapService _enclosing;
     }
+
+    #endregion
+
 }

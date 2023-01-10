@@ -12,6 +12,7 @@ public enum OncRpcProtocols
 {
 
     /// <summary>   An enum constant representing the not specified option. </summary>
+    [Description( "Unspecified network communication protocol. " )]
     NotSpecified = 0,
 
     /// <summary>
