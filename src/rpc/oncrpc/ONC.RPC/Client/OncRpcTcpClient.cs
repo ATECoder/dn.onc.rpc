@@ -263,7 +263,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                 try
                 {
                     this._socket!.ReceiveTimeout = this.TransmissionTimeout;
-                    this.Encoder!.BeginEncoding( IPAddress.None, 0 );
+                    this.Encoder!.BeginEncoding( null, 0 );
                     callHeader.Encode( this.Encoder! );
                     requestCodec.Encode( this.Encoder! );
                     if ( this.Timeout != 0 )
@@ -409,7 +409,7 @@ public class OncRpcTcpClient : OncRpcClientBase
             try
             {
                 this._socket.SendTimeout = this.TransmissionTimeout;
-                this.Encoder.BeginEncoding( IPAddress.None, 0 );
+                this.Encoder.BeginEncoding( null, 0 );
                 callHeader.Encode( this.Encoder );
                 requestCodec.Encode( this.Encoder );
                 this.Encoder.EndEncoding( flush );
