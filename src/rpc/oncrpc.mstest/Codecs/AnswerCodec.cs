@@ -19,13 +19,11 @@ public class AnswerCodec : IXdrCodec
     private const long serialVersionUID = 5165359675382683141L;
 
     /// <summary>   Default constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     public AnswerCodec()
     {
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public AnswerCodec( XdrDecodingStreamBase decoder )
     {

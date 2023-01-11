@@ -184,7 +184,7 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
                                 return new OncRpcException( OncRpcExceptionReason.OncRpcProgramNotAvailable );
                             }
 
-                        case OncRpcAcceptStatus.OncRpcUnableToDecodingArguments:
+                        case OncRpcAcceptStatus.OncRpcUnableToDecodeArguments:
                             {
                                 return new OncRpcException( OncRpcExceptionReason.OncRpcCannotDecodeArgs );
                             }

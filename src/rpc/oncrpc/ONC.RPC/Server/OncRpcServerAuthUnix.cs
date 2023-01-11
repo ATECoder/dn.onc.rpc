@@ -45,6 +45,9 @@ public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
     public OncRpcServerAuthUnix( XdrDecodingStreamBase decoder ) : base( OncRpcAuthType.OncRpcAuthTypeUnix )
     {
         this.DecodeCredentialAndVerfier( decoder );
+        this.MachineName = string.Empty;
+        this._groupIds = Array.Empty<int>();
+        this._shorthandVerfier = Array.Empty<byte>();
     }
 
     /// <summary>
@@ -84,7 +87,7 @@ public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
 
         // Reset some part of the object's state...
 
-        this._shorthandVerfier = null;
+        this._shorthandVerfier = Array.Empty<byte>();
 
         // Now pull off the object state of the XDR stream...
 

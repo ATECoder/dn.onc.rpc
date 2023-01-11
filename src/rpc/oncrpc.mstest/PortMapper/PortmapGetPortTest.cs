@@ -12,7 +12,6 @@ public class PortmapGetPortTest
 {
 
     /// <summary>   (Unit Test Method) portmap should get port. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     [TestMethod]
     public void PortmapShouldGetPort()
     {
@@ -30,7 +29,7 @@ public class PortmapGetPortTest
         // a local or remote ONC/RPC portmap process. In this test we contact
         // the local port mapper.
 
-        OncRpcPortmapClient portmap = new( ipAddress );
+        OncRpcPortmapClient portmap = new( ipAddress! );
 
         //portmap.setRetransmissionMode(OncRpcUdpRetransmissionMode.FIXED);
         //portmap.setRetransmissionTimeout(3*1000);

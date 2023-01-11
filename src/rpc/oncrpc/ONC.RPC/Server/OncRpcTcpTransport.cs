@@ -35,10 +35,12 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// <param name="bufferSize">   Size of buffer used when receiving and sending chunks of XDR
     ///                             fragments over TCP/IP. The fragments built up to form ONC/RPC
     ///                             call and reply messages. </param>
-    public OncRpcTcpTransport( IOncRpcDispatchable dispatcher, int port, int program, int version, int bufferSize ) : this( dispatcher, port,
-        new OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) }, bufferSize )
+    public OncRpcTcpTransport( IOncRpcDispatchable dispatcher, int port, int program, int version, int bufferSize )
+                                                                : this( dispatcher, port,
+                                                                         new OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) },
+                                                                         bufferSize )
     {
-        this._openTransports = new TransportList( this );
+        this._openTransports = new TransportList();
     }
 
     /// <summary>
@@ -59,10 +61,10 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// <param name="bufferSize">   Size of buffer used when receiving and sending chunks of XDR
     ///                             fragments over TCP/IP. The fragments built up to form ONC/RPC
     ///                             call and reply messages. </param>
-    public OncRpcTcpTransport( IOncRpcDispatchable dispatcher, int port,
-        OncRpcProgramInfo[] info, int bufferSize ) : this( dispatcher, null, port, info, bufferSize )
+    public OncRpcTcpTransport( IOncRpcDispatchable dispatcher, int port, OncRpcProgramInfo[] info, int bufferSize )
+                                                                : this( dispatcher, IPAddress.Any, port, info, bufferSize )
     {
-        this._openTransports = new TransportList( this );
+        this._openTransports = new TransportList();
     }
 
     /// <summary>
@@ -77,23 +79,23 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// <exception cref="InvalidOperationException">  because this method must not be called for a listening server transport. </exception>
     /// <param name="dispatcher">   Reference to interface of an object capable of dispatching
     ///                             (handling) ONC/RPC calls. </param>
-    /// <param name="bindAddr">     The local Internet Address the server will bind to. </param>
+    /// <param name="bindAddr">     The local Internet Address the server will bind to or <see cref="IPAddress.Any"/>. </param>
     /// <param name="port">         Number of port where the server will wait for incoming calls. </param>
     /// <param name="info">         Array of program and version number tuples of the ONC/RPC
     ///                             programs and versions handled by this transport. </param>
     /// <param name="bufferSize">   Size of buffer used when receiving and sending chunks of XDR
     ///                             fragments over TCP/IP. The fragments built up to form ONC/RPC
     ///                             call and reply messages. </param>
-    public OncRpcTcpTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddr, int port,
-        OncRpcProgramInfo[] info, int bufferSize ) : base( dispatcher, port, OncRpcProtocols.OncRpcTcp, info )
+    public OncRpcTcpTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddr, int port, OncRpcProgramInfo[] info, int bufferSize )
+                                                                : base( dispatcher, port, OncRpcProtocols.OncRpcTcp, info )
     {
-        this._openTransports = new TransportList( this );
+        this._openTransports = new TransportList();
 
         // Make sure the buffer is large enough and resize system buffers
         // accordingly, if possible.
 
         if ( bufferSize < OncRpcTransportBase.DefaultMinBufferSize ) bufferSize = OncRpcTransportBase.DefaultMinBufferSize;
-        this._bufferSize = bufferSize;
+        this.BufferSize = bufferSize;
         this._socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
         bindAddr ??= IPAddress.Any;
         IPEndPoint localEP = new( bindAddr, port );
@@ -144,8 +146,8 @@ public class OncRpcTcpTransport : OncRpcTransportBase
         lock ( this._openTransports )
             while ( this._openTransports.Size() > 0 )
             {
-                OncRpcTcpConnTransport transport = ( OncRpcTcpConnTransport ) this._openTransports.RemoveFirst();
-                transport.Close();
+                OncRpcTcpConnTransport? transport = this._openTransports.RemoveFirst();
+                transport?.Close();
             }
     }
 
@@ -153,10 +155,13 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// TCP socket used for stream-based communication with ONC/RPC
     /// clients.
     /// </summary>
-    private Socket _socket;
+    private Socket? _socket;
 
-    /// <summary>Size of send/receive buffers to use when encoding/decoding XDR data.</summary>
-    private readonly int _bufferSize;
+    /// <summary>
+    /// Gets or sets the size of send/receive buffers to use when encoding/decoding XDR data.
+    /// </summary>
+    /// <value> The size of the buffer. </value>
+    internal int BufferSize { get; private set; }
 
     /// <summary>Collection containing currently open transports.</summary>
     private readonly TransportList _openTransports;
@@ -233,7 +238,18 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     ///                         be serialized after the reply message header. </param>
     internal override void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
     {
-        throw new Exception( $"{nameof( OncRpcTcpTransport.Reply )} is abstract and cannot be called." );
+        throw new InvalidOperationException( $"{nameof( OncRpcTcpTransport.Reply )} is abstract and cannot be called." );
+    }
+
+    /// <summary>   Do not call. </summary>
+    /// <exception cref="InvalidOperationException">  because this method must not be called for a listening server transport. </exception>
+    /// <param name="callInfo"> <see cref="OncRpcCallHandler"/> about the original call, which are
+    ///                         necessary to Sends back the reply to the appropriate caller. </param>
+    /// <param name="state">    ONC/RPC reply message header indicating success or failure and
+    ///                         containing associated state information. </param>
+    internal override void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state )
+    {
+        throw new InvalidOperationException( $"{nameof( OncRpcTcpTransport.Reply )} is abstract and cannot be called." );
     }
 
     /// <summary>
@@ -283,26 +299,29 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     private sealed class TransportHelper
     {
         /// <summary>   Constructor. </summary>
-        /// <param name="enclosingTransport">   The enclosing transport. </param>
-        public TransportHelper( OncRpcTcpTransport enclosingTransport )
+        /// <param name="parentTransport">   Parent server transport which created us. </param>
+        public TransportHelper( OncRpcTcpTransport parentTransport )
         {
-            this._enclosing = enclosingTransport;
+            this._parent = parentTransport;
         }
 
-        /// <summary>   Runs this object. </summary>
+        /// <summary>   Get the server to start listening on the transports. </summary>
         public void Run()
         {
             for (; ; )
                 try
                 {
-                    Socket myServerSocket = this._enclosing._socket;
+                    Socket myServerSocket = this._parent!._socket!;
                     if ( myServerSocket == null )
                         break;
+
                     Socket newSocket = myServerSocket.Accept();
-                    OncRpcTcpConnTransport transport = new( this._enclosing.Dispatcher, newSocket,
-                        this._enclosing.RegisteredPrograms, this._enclosing._bufferSize, this._enclosing, this._enclosing.TransmissionTimeout );
-                    lock ( this._enclosing._openTransports )
-                        this._enclosing._openTransports.Add( transport );
+                    // OncRpcTcpConnTransport transport = new( this._enclosing.Dispatcher, newSocket, this._enclosing.RegisteredPrograms, this._enclosing.BufferSize, this._enclosing, this._enclosing.TransmissionTimeout );
+                    OncRpcTcpConnTransport transport = new( this._parent, newSocket );
+
+
+                    lock ( this._parent._openTransports )
+                        this._parent._openTransports.Add( transport );
                     transport.Listen();
                 }
                 catch ( OncRpcException )
@@ -312,12 +331,12 @@ public class OncRpcTcpTransport : OncRpcTransportBase
                 {
                     // If the socket has been closed and set to null, don't bother
                     // notifying anybody because we're shutting down
-                    if ( this._enclosing._socket == null )
+                    if ( this._parent._socket == null )
                         break;
                 }
         }
 
-        private readonly OncRpcTcpTransport _enclosing;
+        private readonly OncRpcTcpTransport _parent;
     }
 
     #endregion
@@ -327,15 +346,10 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     private class TransportList
     {
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage( "CodeQuality", "IDE0052:Remove unread private members", Justification = "<Pending>" )]
-        private readonly OncRpcTcpTransport _enclosing;
-
         /// <summary>   Create a new instance of a list of open transports. </summary>
-        /// <param name="enclosing">   The enclosing transport. </param>
-        public TransportList( OncRpcTcpTransport enclosing )
+        public TransportList()
         {
-            this._enclosing = enclosing;
-            this._head = new Node( this, null );
+            this._head = new Node( null );
 
             // Link header node with itself, so it is its own successor
             // and predecessor. Using a header node excuses us from checking
@@ -350,34 +364,34 @@ public class OncRpcTcpTransport : OncRpcTransportBase
         /// <remarks>
         /// The new transport is always added immediately after the head of the linked list.
         /// </remarks>
-        /// <param name="o">    The o to remove. </param>
-        public virtual void Add( object o )
+        /// <param name="item"> The item to add. </param>
+        public virtual void Add( OncRpcTcpConnTransport item )
         {
-            Node node = new( this, o ) {
+            Node node = new( item ) {
                 Next = this._head.Next
             };
             this._head.Next = node;
             node.Prev = this._head;
-            node.Next.Prev = node;
+            node.Next!.Prev = node;
             ++this._size;
         }
 
         /// <summary>   Remove given transport from list of open transports. </summary>
-        /// <param name="o">    The o to remove. </param>
+        /// <param name="item">    The item to remove. </param>
         /// <returns>   True if it succeeds, false if it fails. </returns>
-        public virtual bool Remove( object o )
+        public virtual bool Remove( OncRpcTcpConnTransport item )
         {
-            Node node = this._head.Next;
+            Node node = this._head.Next!;
             while ( node != this._head )
             {
-                if ( node.Item == o )
+                if ( node!.Item == item )
                 {
-                    node.Prev.Next = node.Next;
-                    node.Next.Prev = node.Prev;
+                    node.Prev!.Next = node.Next;
+                    node.Next!.Prev = node.Prev;
                     --this._size;
                     return true;
                 }
-                node = node.Next;
+                node = node.Next!;
             }
             return false;
         }
@@ -386,16 +400,16 @@ public class OncRpcTcpTransport : OncRpcTransportBase
         /// <exception cref="ArgumentOutOfRangeException">  Thrown when one or more arguments are outside
         ///                                                 the required range. </exception>
         /// <returns>   An object. </returns>
-        public virtual object RemoveFirst()
+        public virtual OncRpcTcpConnTransport? RemoveFirst()
         {
 
             // Do not remove the header node.
 
             if ( this._size == 0 )
                 throw new ArgumentOutOfRangeException();
-            Node node = this._head.Next;
+            Node node = this._head.Next!;
             this._head.Next = node.Next;
-            node.Next.Prev = this._head;
+            node.Next!.Prev = this._head;
             --this._size;
             return node.Item;
         }
@@ -428,11 +442,9 @@ public class OncRpcTcpTransport : OncRpcTransportBase
             /// <remarks>
             /// The creator of this object is then responsible for adding this node to the circular list itself.
             /// </remarks>
-            /// <param name="enclosing">   The enclosing transport linked list. </param>
             /// <param name="item">        The item/object placed at this position in the list. </param>
-            public Node( TransportList enclosing, object item )
+            public Node( OncRpcTcpConnTransport? item )
             {
-                this._enclosing = enclosing;
                 this.Item = item;
             }
 
@@ -441,24 +453,21 @@ public class OncRpcTcpTransport : OncRpcTransportBase
             /// in the list. This will never be <see langword="null"/> for the first item, but instead reference
             /// the last item. Thus, the list is circular.
             /// </summary>
-            internal Node Next { get; set; }
+            internal Node? Next { get; set; }
 
             /// <summary>
             /// Previous item node (in other words: previous open transport)
             /// in the list. This will never be <see langword="null"/> for the last item, but instead reference
             /// the first item. Thus, the list is circular.
             /// </summary>
-            internal Node Prev { get; set; }
+            internal Node? Prev { get; set; }
 
             /// <summary>
             /// The item/object placed at this position in the list. This currently always references an open
             /// transport.
             /// </summary>
-            internal object Item { get; set; }
+            internal OncRpcTcpConnTransport? Item { get; set; }
 
-            /// <summary>   (Immutable) the enclosing <see cref="TransportList"/>. </summary>
-            [System.Diagnostics.CodeAnalysis.SuppressMessage( "CodeQuality", "IDE0052:Remove unread private members", Justification = "<Pending>" )]
-            private readonly TransportList _enclosing;
         }
 
     }

@@ -38,13 +38,11 @@ public class BinaryTreeCodec : IXdrCodec
     public virtual BinaryTreeCodec Right { get; set; }
 
     /// <summary>   Default constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     public BinaryTreeCodec()
     {
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public BinaryTreeCodec( XdrDecodingStreamBase decoder )
     {

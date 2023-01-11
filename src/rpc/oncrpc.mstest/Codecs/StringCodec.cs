@@ -28,13 +28,11 @@ public class StringCodec : IXdrCodec
     public string Value { get; set; }
 
     /// <summary>   Default constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     public StringCodec()
     {
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="value">    The value. </param>
     public StringCodec( string value )
     {
@@ -42,7 +40,6 @@ public class StringCodec : IXdrCodec
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public StringCodec( XdrDecodingStreamBase decoder )
     {

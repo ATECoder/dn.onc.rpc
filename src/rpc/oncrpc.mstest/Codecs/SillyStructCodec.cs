@@ -29,14 +29,12 @@ public class SillyStructCodec : IXdrCodec
     private string _nonsense;
 
     /// <summary>   Sets fixed buffer. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="x">    The x coordinate. </param>
     public virtual void SetFixedBuffer( byte[] x )
     {
         this._fixedBuffer = x;
     }
     /// <summary>   Sets fixed buffer. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="index">    Zero-based index of the. </param>
     /// <param name="x">        The x coordinate. </param>
     public virtual void SetFixedBuffer( int index, byte x )
@@ -49,7 +47,6 @@ public class SillyStructCodec : IXdrCodec
     public virtual byte[] FixedBuffer => this._fixedBuffer;
 
     /// <summary>   Gets a fixed buffer value. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="index">    Zero-based index of the. </param>
     /// <returns>   The fixed buffer value. </returns>
     public virtual byte GetFixedbuffer( int index )
@@ -58,14 +55,12 @@ public class SillyStructCodec : IXdrCodec
     }
 
     /// <summary>   Sets a buffer. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="x">    The x coordinate. </param>
     public virtual void SetBuffer( byte[] x )
     {
         this._buffer = x;
     }
     /// <summary>   Sets a buffer. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="index">    Zero-based index of the. </param>
     /// <param name="x">        The x coordinate. </param>
     public virtual void SetBuffer( int index, byte x )
@@ -76,7 +71,6 @@ public class SillyStructCodec : IXdrCodec
     /// <value> The buffer. </value>
     public virtual byte[] Buffer => this._buffer;
     /// <summary>   Gets a buffer. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="index">    Zero-based index of the. </param>
     /// <returns>   The buffer. </returns>
     public virtual byte GetBuffer( int index )
@@ -85,14 +79,12 @@ public class SillyStructCodec : IXdrCodec
     }
 
     /// <summary>   Sets fixed bytes. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="x">    The x coordinate. </param>
     public virtual void SetFixedBytes( byte[] x )
     {
         this._fixedBytes = x;
     }
     /// <summary>   Sets fixed bytes. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="index">    Zero-based index of the. </param>
     /// <param name="x">        The x coordinate. </param>
     public virtual void SetFixedBytes( int index, byte x )
@@ -103,7 +95,6 @@ public class SillyStructCodec : IXdrCodec
     /// <value> The fixed bytes. </value>
     public virtual byte[] FixedBytes => this._fixedBytes;
     /// <summary>   Gets fixed bytes. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="index">    Zero-based index of the. </param>
     /// <returns>   The fixed bytes. </returns>
     public virtual byte GetFixedBytes( int index )
@@ -112,14 +103,12 @@ public class SillyStructCodec : IXdrCodec
     }
 
     /// <summary>   Sets the bytes. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="x">    The x coordinate. </param>
     public virtual void SetBytes( byte[] x )
     {
         this._bytes = x;
     }
     /// <summary>   Sets the bytes. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="index">    Zero-based index of the. </param>
     /// <param name="x">        The x coordinate. </param>
     public virtual void SetBytes( int index, byte x )
@@ -130,7 +119,6 @@ public class SillyStructCodec : IXdrCodec
     /// <value> The bytes. </value>
     public virtual byte[] Bytes => this._bytes;
     /// <summary>   Gets the bytes. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="index">    Zero-based index of the. </param>
     /// <returns>   The bytes. </returns>
     public virtual byte GetBytes( int index )
@@ -163,13 +151,11 @@ public class SillyStructCodec : IXdrCodec
     }
 
     /// <summary>   Default constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     public SillyStructCodec()
     {
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public SillyStructCodec( XdrDecodingStreamBase decoder )
     {

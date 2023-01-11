@@ -180,7 +180,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// TCP socket used for stream-oriented communication with an ONC/RPC
     /// server.
     /// </summary>
-    private Socket _socket;
+    private Socket? _socket;
 
     #endregion
 
@@ -191,14 +191,14 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// ONC/RPC server.
     /// </summary>
     /// <value> The sending XDR encoding stream. </value>
-    internal XdrTcpEncodingStream Encoder { get; private set; }
+    internal XdrTcpEncodingStream? Encoder { get; private set; }
 
     /// <summary>
     /// Gets or sets or set the XDR decoding stream used when receiving replies via TCP/IP from an
     /// ONC/RPC server.
     /// </summary>
     /// <value> The receiving XDR decoding stream. </value>
-    internal XdrTcpDecodingStream Decoder { get; private set; }
+    internal XdrTcpDecodingStream? Decoder { get; private set; }
 
     /// <summary>
     /// Gets or sets the timeout during the phase where data is sent within calls, or data is received within replies.
@@ -219,8 +219,8 @@ public class OncRpcTcpClient : OncRpcClientBase
         get => base.CharacterEncoding;
         set {
             base.CharacterEncoding = value;
-            this.Decoder.CharacterEncoding = value;
-            this.Encoder.CharacterEncoding = value;
+            if ( this.Decoder is not null) this.Decoder.CharacterEncoding = value;
+            if ( this.Encoder is not null ) this.Encoder.CharacterEncoding = value;
         }
     }
 
@@ -242,6 +242,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
     public override void Call( int procedureNumber, int versionNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
+        if ( this._socket is null || this.Encoder is null || this.Decoder is null ) return;
         lock ( this )
             // Refresh:
             for ( int refreshesLeft = 1; refreshesLeft >= 0; --refreshesLeft )
@@ -261,14 +262,14 @@ public class OncRpcTcpClient : OncRpcClientBase
                 // specify a destination when beginning serialization.
                 try
                 {
-                    this._socket.ReceiveTimeout = this.TransmissionTimeout;
-                    this.Encoder.BeginEncoding( null, 0 );
-                    callHeader.Encode( this.Encoder );
-                    requestCodec.Encode( this.Encoder );
+                    this._socket!.ReceiveTimeout = this.TransmissionTimeout;
+                    this.Encoder!.BeginEncoding( IPAddress.None, 0 );
+                    callHeader.Encode( this.Encoder! );
+                    requestCodec.Encode( this.Encoder! );
                     if ( this.Timeout != 0 )
-                        this.Encoder.EndEncoding();
+                        this.Encoder?.EndEncoding();
                     else
-                        this.Encoder.EndEncoding( false );
+                        this.Encoder?.EndEncoding( false );
                 }
                 catch ( System.IO.IOException e )
                 {
@@ -285,7 +286,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                     while ( true )
                     {
                         this._socket.ReceiveTimeout = this.Timeout;
-                        this.Decoder.BeginDecoding();
+                        this.Decoder!.BeginDecoding();
                         this._socket.ReceiveTimeout = this.TransmissionTimeout;
 
                         // First, pull off the reply message header of the
@@ -298,7 +299,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                         // be handled as any other rejected ONC/RPC call.
                         try
                         {
-                            replyHeader.Decode( this.Decoder );
+                            replyHeader.Decode( this.Decoder! );
                         }
                         catch ( OncRpcException e )
                         {
@@ -308,7 +309,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                             // been a buffer underflow. Whatever, end the decoding process
                             // and ensure this way that the next call has a chance to start
                             // from a clean state.
-                            this.Decoder.EndDecoding();
+                            this.Decoder!.EndDecoding();
                             throw e;
                         }
                         // Only deserialize the result, if the reply matches the
@@ -390,6 +391,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     ///                                 server. </param>
     public virtual void BatchCall( int procedureNumber, IXdrCodec requestCodec, bool flush )
     {
+        if ( this._socket is null || this.Encoder is null ) { return ; }
         lock ( this )
         {
             // First, build the ONC/RPC call header. Then put the sending
@@ -407,7 +409,7 @@ public class OncRpcTcpClient : OncRpcClientBase
             try
             {
                 this._socket.SendTimeout = this.TransmissionTimeout;
-                this.Encoder.BeginEncoding( null, 0 );
+                this.Encoder.BeginEncoding( IPAddress.None, 0 );
                 callHeader.Encode( this.Encoder );
                 requestCodec.Encode( this.Encoder );
                 this.Encoder.EndEncoding( flush );

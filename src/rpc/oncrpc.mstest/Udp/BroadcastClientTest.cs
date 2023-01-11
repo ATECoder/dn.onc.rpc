@@ -14,7 +14,6 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
 {
 
     /// <summary>   Initializes the fixture. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="context">  The context. </param>
     [ClassInitialize]
     public static void InitializeFixture( TestContext context )
@@ -57,7 +56,6 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
     private static TestContext? _classTestContext;
 
     /// <summary>   Cleanup fixture. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     [ClassCleanup]
     public static void CleanupFixture()
     {

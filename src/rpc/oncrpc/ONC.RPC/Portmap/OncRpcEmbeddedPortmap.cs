@@ -1,7 +1,6 @@
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.ONC.RPC.Server;
 
-#nullable enable
 
 namespace cc.isr.ONC.RPC.Portmap;
 

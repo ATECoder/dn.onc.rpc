@@ -5,7 +5,6 @@ namespace cc.isr.ONC.RPC.MSTest.Codecs
 {
 
     /// <summary>   (Serializable) an union XBR encoder/decoder. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     [Serializable]
     public class UnionCodec : IXdrCodec
     {
@@ -24,14 +23,12 @@ namespace cc.isr.ONC.RPC.MSTest.Codecs
         private const long serialVersionUID = -5038378683068054714L;
 
         /// <summary>   Default constructor. </summary>
-        /// <remarks>   2022-12-22. </remarks>
-        public UnionCodec()
+            public UnionCodec()
         {
         }
 
         /// <summary>   Constructor. </summary>
-        /// <remarks>   2022-12-22. </remarks>
-        /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+            /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
         public UnionCodec( XdrDecodingStreamBase decoder )
         {
             this.Decode( decoder );

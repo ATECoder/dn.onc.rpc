@@ -313,14 +313,12 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     #region " Remote Procedures "
 
     /// <summary>   No operation. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     public static void Nop()
     {
         // definitely nothing to do here...
     }
 
     /// <summary>   Echo the specified parameters. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="input">   value to echo. </param>
     /// <returns>   A string. </returns>
     public static string EchoInput( string input )

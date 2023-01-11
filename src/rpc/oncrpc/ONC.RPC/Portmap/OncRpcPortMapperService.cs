@@ -1,11 +1,8 @@
-
 using System.Collections.Generic;
 using System.Net.Sockets;
 
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.ONC.RPC.Server;
-
-#nullable enable
 
 namespace cc.isr.ONC.RPC.Portmap;
 
@@ -35,16 +32,16 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     public OncRpcPortMapService()
     {
         // We only need to register one {program, version}.
-        OncRpcProgramInfo[] info = new OncRpcProgramInfo[] {
+        OncRpcProgramInfo[] registeredPrograms = new OncRpcProgramInfo[] {
             new OncRpcProgramInfo(OncRpcPortmapConstants.OncRpcPortmapProgramNumber, OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber )
         };
-        this.SetTransportRegistrationInfo( info );
+        this.SetRegisteredPrograms( registeredPrograms );
 
         // We support both UDP and TCP-based transports for ONC/RPC portmap
         // calls, and these transports are bound to the well-known port 111.
         OncRpcTransportBase[] transports = new OncRpcTransportBase[] {
-            new OncRpcUdpTransport(this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, info, OncRpcPortMapService.DefaultBufferSize),
-            new OncRpcTcpTransport( this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, info, OncRpcPortMapService.DefaultBufferSize)
+            new OncRpcUdpTransport(this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, registeredPrograms, OncRpcPortMapService.DefaultBufferSize),
+            new OncRpcTcpTransport( this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, registeredPrograms, OncRpcPortMapService.DefaultBufferSize)
         };
         this.SetTransports( transports );
 
@@ -296,7 +293,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                             // ensure that no remote client tries to register
                             OncRpcServerIdentifierCodec requestCodec = new();
                             call.RetrieveCall( requestCodec );
-                            BooleanXdrCodec replyCodec = this.IsLocalAddress( call.PeerIPAddress )
+                            BooleanXdrCodec replyCodec = this.IsLocalAddress( call.PeerIPAddress! )
                                 ? this.SetPort( requestCodec )
                                 : new BooleanXdrCodec( false );
                             call.Reply( replyCodec );
@@ -308,7 +305,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                             // handle port deregistration
                             OncRpcServerIdentifierCodec requestCodec = new();
                             call.RetrieveCall( requestCodec );
-                            BooleanXdrCodec replyCodec = this.IsLocalAddress( call.PeerIPAddress )
+                            BooleanXdrCodec replyCodec = this.IsLocalAddress( call.PeerIPAddress! )
                                 ? this.UnsetPort( requestCodec )
                                 : new BooleanXdrCodec( false );
                             call.Reply( replyCodec );

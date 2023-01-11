@@ -125,17 +125,17 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// UDP socket used for datagram-based communication with an ONC/RPC
     /// server.
     /// </summary>
-    private Socket _socket;
+    private Socket? _socket;
 
     /// <summary>
     /// XDR encoding stream used for sending requests via UDP/IP to an ONC/RPC server.
     /// </summary>
-    private XdrUdpEncodingStream _encoder;
+    private XdrUdpEncodingStream? _encoder;
 
     /// <summary>
     /// XDR decoding stream used when receiving replies via UDP/IP from an ONC/RPC server.
     /// </summary>
-    private XdrUdpDecodingStream _decoder;
+    private XdrUdpDecodingStream? _decoder;
 
     #endregion
 
@@ -172,8 +172,8 @@ public class OncRpcUdpClient : OncRpcClientBase
         get => base.CharacterEncoding;
         set {
             base.CharacterEncoding = value;
-            this._decoder.CharacterEncoding = value;
-            this._encoder.CharacterEncoding = value;
+            if ( this._decoder is not null ) this._decoder.CharacterEncoding = value;
+            if ( this._encoder is not null ) this._encoder.CharacterEncoding = value;
         }
     }
 
@@ -196,6 +196,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
     public override void Call( int procedureNumber, int versionNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
+        if ( this._socket is null || this._encoder is null || this._encoder is null ) return;
         lock ( this )
             //Refresh:
             for ( int refreshesLeft = 1; refreshesLeft >= 0; --refreshesLeft )
@@ -272,14 +273,14 @@ public class OncRpcUdpClient : OncRpcClientBase
                                 // finite one.
                                 currentTimeout = 1;
                             this._socket.ReceiveTimeout = ( int ) currentTimeout;
-                            this._decoder.BeginDecoding();
+                            this._decoder!.BeginDecoding();
 
                             // Only accept incoming reply if it comes from the same
                             // address we've sent the ONC/RPC call to. Otherwise throw
                             // away the datagram packet containing the reply and start
                             // over again, waiting for the next reply to arrive.
 
-                            if ( this.Host.Equals( this._decoder.GetSenderAddress() ) )
+                            if ( this.Host.Equals( this._decoder.SenderAddress ) )
                             {
 
                                 // First, pull off the reply message header of the
@@ -413,7 +414,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                             try
                             {
-                                this._decoder.EndDecoding();
+                                this._decoder!.EndDecoding();
                             }
                             catch ( IOException )
                             {
@@ -429,7 +430,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                             try
                             {
-                                this._decoder.EndDecoding();
+                                this._decoder!.EndDecoding();
                             }
                             catch ( IOException )
                             {
@@ -452,7 +453,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                         try
                         {
-                            this._decoder.EndDecoding();
+                            this._decoder!.EndDecoding();
                         }
                         catch ( IOException e )
                         {
@@ -514,6 +515,8 @@ public class OncRpcUdpClient : OncRpcClientBase
     ///                                 for every reply received. </param>
     public virtual void BroadcastCall( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec, IOncRpcBroadcastListener listener )
     {
+
+        if ( this._socket is null || this._encoder is null || this._decoder is null ) return;
         lock ( this )
         {
 
@@ -591,7 +594,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                         if ( listener is not null )
                         {
-                            OncRpcBroadcastEvent evt = new( this, this._decoder.GetSenderAddress(), procedureNumber, requestCodec, replyCodec );
+                            OncRpcBroadcastEvent evt = new( this, this._decoder!.SenderAddress!, procedureNumber, requestCodec, replyCodec );
                             listener.ReplyReceived( evt );
                         }
 

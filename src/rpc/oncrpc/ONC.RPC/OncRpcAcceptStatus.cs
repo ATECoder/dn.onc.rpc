@@ -43,7 +43,7 @@ public enum OncRpcAcceptStatus
     /// Renamed from <c>ONCRPC_GARBAGE_ARGS = 4</c>. </para>
     /// </summary>
     [Description( "The server could not decode the arguments sent within the ONC/RPC call message." )]
-    OncRpcUnableToDecodingArguments = 4,
+    OncRpcUnableToDecodeArguments = 4,
 
     /// <summary>
     /// The server encountered a system error and thus was not able to process the procedure call.

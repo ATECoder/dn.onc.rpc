@@ -42,7 +42,6 @@ public class EmbeddedPortmapTest
         Console.WriteLine( $"portmap service is {(externalPortmap ? "running" : "idle")}; elapsed: {sw.ElapsedMilliseconds:0}ms" );
     }
 
-
     /// <summary>   (Unit Test Method) embedded portmap service should pass. </summary>
     /// <remarks>   2022-12-20. </remarks>
     [TestMethod]

@@ -1,5 +1,6 @@
 
 using System.Net.Sockets;
+using System.Net.WebSockets;
 
 using cc.isr.ONC.RPC.Portmap;
 
@@ -16,6 +17,21 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
 {
 
     #region " construction and cleanup "
+
+    /// <summary>
+    /// Create a new instance of a <see cref="OncRpcTcpConnTransport"/>
+    /// which encapsulates TCP/IP-based XDR streams of an ONC/RPC server.
+    /// </summary>
+    /// <remarks>
+    /// This particular server transport handles individual ONC/RPC connections over TCP/IP.
+    /// </remarks>
+    /// <param name="parent">   Parent server transport which created us. </param>
+    /// <param name="socket">   TCP/IP-based socket of new connection. </param>
+    public OncRpcTcpConnTransport( OncRpcTcpTransport parent, Socket socket) : this( parent.Dispatcher, socket,
+                                                            parent.RegisteredPrograms, parent.BufferSize,
+                                                            parent, parent.TransmissionTimeout )
+    {
+    }
 
     /// <summary>
     /// Create a new instance of a <see cref="OncRpcTcpConnTransport"/>
@@ -39,9 +55,9 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// <param name="parent">               Parent server transport which created us. </param>
     /// <param name="transmissionTimeout">  Inherited transmission timeout. </param>
     public OncRpcTcpConnTransport( IOncRpcDispatchable dispatcher, Socket socket, int program, int version, int bufferSize,
-        OncRpcTcpTransport parent, int transmissionTimeout ) : this( dispatcher, socket,
-             new OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) },
-             bufferSize, parent, transmissionTimeout )
+                                   OncRpcTcpTransport parent, int transmissionTimeout ) : this( dispatcher, socket,
+                                                                new OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) },
+                                                                bufferSize, parent, transmissionTimeout )
     {
     }
 
@@ -63,9 +79,8 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     ///                                     ONC/RPC call and reply messages. </param>
     /// <param name="parent">               Parent server transport which created us. </param>
     /// <param name="transmissionTimeout">  Inherited transmission timeout. </param>
-    public OncRpcTcpConnTransport( IOncRpcDispatchable dispatcher, Socket socket,
-        OncRpcProgramInfo[] info, int bufferSize, OncRpcTcpTransport parent,
-        int transmissionTimeout ) : base( dispatcher, 0, OncRpcProtocols.OncRpcTcp, info )
+    public OncRpcTcpConnTransport( IOncRpcDispatchable dispatcher, Socket socket, OncRpcProgramInfo[] info, int bufferSize, OncRpcTcpTransport parent,
+                                                                    int transmissionTimeout ) : base( dispatcher, 0, OncRpcProtocols.OncRpcTcp, info )
     {
         this._parent = parent;
         this._transmissionTimeout = transmissionTimeout;
@@ -132,7 +147,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// TCP socket used for stream-based communication with ONC/RPC
     /// clients.
     /// </summary>
-    private Socket _socket;
+    private Socket? _socket;
 
     /// <summary>
     /// Indicates that <see cref="OncRpcTransportBase.BeginEncoding"/> has been called for the
@@ -152,7 +167,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// Reference to the TCP/IP transport which created us to handle a
     /// new ONC/RPC connection.
     /// </summary>
-    private OncRpcTcpTransport _parent;
+    private OncRpcTcpTransport? _parent;
 
     /// <summary>
     /// Timeout during the phase where data is received within calls, or data is sent within replies.
@@ -182,11 +197,11 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// <param name="call"> The call. </param>
     internal override void RetrieveCall( IXdrCodec call )
     {
-        call.Decode( this.Decoder );
+        call.Decode( this.Decoder! );
         if ( this._pendingDecoding )
         {
             this._pendingDecoding = false;
-            this.Decoder.EndDecoding();
+            this.Decoder!.EndDecoding();
         }
     }
 
@@ -202,7 +217,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
         if ( this._pendingDecoding )
         {
             this._pendingDecoding = false;
-            this.Decoder.EndDecoding();
+            this.Decoder!.EndDecoding();
         }
     }
 
@@ -223,14 +238,14 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
         if ( this._pendingDecoding )
         {
             this._pendingDecoding = false;
-            this.Decoder.EndDecoding();
+            this.Decoder!.EndDecoding();
         }
 
         // Now start encoding using the reply message header first...
 
         this._pendingEncoding = true;
-        this.Encoder.BeginEncoding( callInfo.PeerIPAddress, callInfo.PeerPort );
-        state.Encode( this.Encoder );
+        this.Encoder!.BeginEncoding( callInfo.PeerIPAddress!, callInfo.PeerPort );
+        state.Encode( this.Encoder! );
     }
 
     /// <summary>   Finishes encoding the reply to this ONC/RPC call. </summary>
@@ -242,7 +257,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     internal override void EndEncoding()
     {
         // Close the case
-        this.Encoder.EndEncoding();
+        this.Encoder!.EndEncoding();
         this._pendingEncoding = false;
     }
 
@@ -262,7 +277,13 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     internal override void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
     {
         this.BeginEncoding( callInfo, state );
-        reply?.Encode( this.Encoder );
+        reply?.Encode( this.Encoder! );
+        this.EndEncoding();
+    }
+
+    internal override void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state )
+    {
+        this.BeginEncoding( callInfo, state );
         this.EndEncoding();
     }
 
@@ -311,6 +332,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
 
     private void DoListen()
     {
+        if ( this._socket is null || this.Decoder is null ) { return ; } 
         OncRpcCallHandler callInfo = new( this );
         for (; ; )
         {
@@ -324,8 +346,8 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
                 this._socket.ReceiveTimeout = 0;
                 this._pendingDecoding = true;
                 this.Decoder.BeginDecoding();
-                callInfo.PeerIPAddress = this.Decoder.GetSenderAddress();
-                callInfo.PeerPort = this.Decoder.GetSenderPort();
+                callInfo.PeerIPAddress = this.Decoder.SenderAddress;
+                callInfo.PeerPort = this.Decoder.SenderPort;
                 this._socket.ReceiveTimeout = this._transmissionTimeout;
             }
             catch ( System.IO.IOException )

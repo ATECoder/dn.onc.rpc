@@ -17,6 +17,8 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     public OncRpcServerAuthShort( XdrDecodingStreamBase decoder ) : base( OncRpcAuthType.OncRpcAuthTypeShortHandUnix )
     {
         this.DecodeCredentialAndVerfier( decoder );
+        this._shorthandVerfier = Array.Empty<byte>();
+        this._shorthandCredential = Array.Empty<byte>();
     }
 
     /// <summary> Contains the shorthand credential sent by the caller.</summary>
@@ -76,8 +78,8 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
 
         // Reset the authentication object's state properly...
 
-        this._shorthandCredential = null;
-        this._shorthandVerfier = null;
+        this._shorthandCredential = Array.Empty<byte>();
+        this._shorthandVerfier = Array.Empty<byte>();
 
         // Pull off the shorthand credential information (opaque date) of
         // the XDR stream...

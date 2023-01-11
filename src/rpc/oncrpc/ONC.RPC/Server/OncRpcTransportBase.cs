@@ -53,12 +53,13 @@ public abstract class OncRpcTransportBase : IDisposable
     /// <param name="registeredPrograms">   Array of program and version number tuples of the ONC/RPC
     ///                                     programs and versions handled by this transport. </param>
     protected OncRpcTransportBase( IOncRpcDispatchable dispatcher, int port, OncRpcProtocols protocol,
-                                         OncRpcProgramInfo[] registeredPrograms )
+                                   OncRpcProgramInfo[] registeredPrograms )
     {
         this.Dispatcher = dispatcher;
         this.Port = port;
         this.Protocol = protocol;
         this.RegisteredPrograms = registeredPrograms;
+        this._characterEncoding = OncRpcTransportBase.DefaultEncoding;
     }
 
     /// <summary>   Close the server transport and free any resources associated with it. </summary>
@@ -289,7 +290,7 @@ public abstract class OncRpcTransportBase : IDisposable
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </remarks>
     /// <returns>   Reference to decoding XDR stream. </returns>
-    public XdrDecodingStreamBase Decoder { get; set; }
+    public XdrDecodingStreamBase? Decoder { get; set; }
 
     /// <summary>   Finishes call parameter deserialization. </summary>
     /// <remarks>
@@ -307,7 +308,7 @@ public abstract class OncRpcTransportBase : IDisposable
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </remarks>
     /// <value>   Reference to encoding XDR stream. </value>
-    public XdrEncodingStreamBase Encoder { get; set; }
+    public XdrEncodingStreamBase? Encoder { get; set; }
 
     /// <summary>   Begins the sending phase for ONC/RPC replies. </summary>
     /// <remarks>
@@ -326,23 +327,37 @@ public abstract class OncRpcTransportBase : IDisposable
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     internal abstract void EndEncoding();
 
-    /// <summary> Sends back an ONC/RPC reply to the original caller. </summary>
+    /// <summary>   Sends back an ONC/RPC reply to the original caller. </summary>
     /// <remarks>
     /// This is rather a low-level method, typically not used by applications. Dispatcher handling
     /// ONC/RPC calls have to use the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
     /// method instead on the call object supplied to the handler. <para>
-    /// An appropriate implementation has to be provided in derived classes
-    /// as it is dependent on the type of transport (whether UDP/IP or TCP/IP)
+    /// An appropriate implementation has to be provided in derived classes as it is dependent on the
+    /// type of transport (whether UDP/IP or TCP/IP)
     /// used. </para>
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="callInfo"> <see cref="OncRpcCallHandler"/> about the original call, 
-    ///                         which are necessary to Sends back the reply to the appropriate caller. </param>
+    /// <param name="callHandler">  A <see cref="OncRpcCallHandler"/> to handle the call. </param>
+    /// <param name="state">        ONC/RPC reply message header indicating success or failure and
+    ///                             containing associated state information. </param>
+    /// <param name="reply">        If not <see langword="null"/>, then this parameter references the
+    ///                             reply to be serialized after the reply message header. </param>
+    internal abstract void Reply( OncRpcCallHandler callHandler, OncRpcServerReplyMessage state, IXdrCodec reply );
+
+    /// <summary>   Consumes the ONC/RPC call and responds to the original caller. </summary>
+    /// <remarks>
+    /// This is rather a low-level method, typically not used by applications. Dispatcher handling
+    /// ONC/RPC calls have to use the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
+    /// method instead on the call object supplied to the handler. <para>
+    /// An appropriate implementation has to be provided in derived classes as it is dependent on the
+    /// type of transport (whether UDP/IP or TCP/IP)
+    /// used. </para>
+    /// </remarks>
+    /// <param name="callInfo"> <see cref="OncRpcCallHandler"/> about the original call, which are
+    ///                         necessary to Sends back the reply to the appropriate caller. </param>
     /// <param name="state">    ONC/RPC reply message header indicating success or failure and
     ///                         containing associated state information. </param>
-    /// <param name="reply">    If not <see langword="null"/>, then this parameter references the reply to
-    ///                         be serialized after the reply message header. </param>
-    internal abstract void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state, IXdrCodec reply );
+    internal abstract void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state );
 
     /// <summary>
     /// Gets or sets the reference to the interface implemented by the object capable of

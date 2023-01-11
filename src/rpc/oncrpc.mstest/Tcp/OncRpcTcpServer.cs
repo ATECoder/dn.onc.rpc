@@ -378,14 +378,12 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     #region " Remote Procedures "
 
     /// <summary>   No operation. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     public static void Nop()
     {
         // definitely nothing to do here...
     }
 
     /// <summary>   Echo the specified parameters. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="input">   value to echo. </param>
     /// <returns>   A string. </returns>
     public static string EchoInput( string input )
@@ -394,7 +392,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Compare parameters to <see cref="EnumFoo.FOO"/>; return true if <paramref name="expected"/> equals <see cref="EnumFoo.FOO"/>. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="expected">   expected value. </param>
     /// <returns>   True if it succeeds, false if it fails. </returns>
     public static bool CompareInputToFoo( int expected )
@@ -403,7 +400,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Return <see cref="EnumFoo.FOO"/>. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <returns>   An int. </returns>
     public static int ReturnEnumFooValue()
     {
@@ -411,7 +407,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Concatenate input string vector. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="inputCodec">   the input codec. </param>
     /// <returns>   A string. </returns>
     public static string ConcatenateInputStringVector( StringVectorCodec inputCodec )
@@ -426,7 +421,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Build a new linked list. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="linkedListCodec">   the linked list codec input. </param>
     /// <returns>   A <see cref="LinkedListCodec"/>. </returns>
     public static LinkedListCodec BuildLinkedList( LinkedListCodec linkedListCodec )
@@ -439,7 +433,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Reads some result. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <returns>   some result 1. </returns>
     public static SomeResultCodec ReadSomeResult()
     {
@@ -448,7 +441,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Concatenate two values. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="arg1"> The first argument. </param>
     /// <param name="arg2"> The second argument. </param>
     /// <returns>   A string. </returns>
@@ -458,7 +450,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Concatenate three items. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="one">      The one. </param>
     /// <param name="two">      The two. </param>
     /// <param name="three">    The three. </param>
@@ -469,7 +460,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Return 'you are Foo' value. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="foo">  The foo. </param>
     /// <returns>   A string. </returns>
     public static string ReturnYouAreFooValue( int foo )
@@ -478,7 +468,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Link linked list <paramref name="l1"/> as next item of linked list <paramref name="l2"/>. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="l1">   The first <see cref="LinkedListCodec"/>. </param>
     /// <param name="l2">   The second <see cref="LinkedListCodec"/>. </param>
     /// <returns>   An <see cref="LinkedListCodec"/>. </returns>
@@ -489,7 +478,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Process four arguments. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="a">    A string to process. </param>
     /// <param name="b">    An int to process. </param>
     /// <param name="c">    An int to process. </param>

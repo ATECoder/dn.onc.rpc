@@ -237,6 +237,8 @@ public abstract class OncRpcClientBase : IDisposable
             }
         }
         this.Port = port;
+
+        this.Auth = new OncRpcClientAuthNone();
     }
 
     /// <summary>

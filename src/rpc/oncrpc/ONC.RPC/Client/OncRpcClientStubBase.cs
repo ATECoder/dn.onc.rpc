@@ -127,7 +127,7 @@ public abstract class OncRpcClientStubBase : IDisposable
     /// ONC/RPC server. using a particular IP protocol.
     /// </summary>
     /// <value> ONC/RPC client proxy. </value>
-    public OncRpcClientBase Client { get; private set; }
+    public OncRpcClientBase? Client { get; private set; }
 
     #endregion
 }

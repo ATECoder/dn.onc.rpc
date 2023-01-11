@@ -56,8 +56,8 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     ///                             programs and versions handled by this transport. </param>
     /// <param name="bufferSize">   Size of buffer for receiving and sending UDP/IP datagrams
     ///                             containing ONC/RPC call and reply messages. </param>
-    public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, int port,
-        OncRpcProgramInfo[] info, int bufferSize ) : this( dispatcher, null, port, info, bufferSize )
+    public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, int port, OncRpcProgramInfo[] info, int bufferSize )
+                                                            : this( dispatcher, IPAddress.Any, port, info, bufferSize )
     {
     }
 
@@ -73,7 +73,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="dispatcher">   Reference to interface of an object capable of dispatching
     ///                             (handling) ONC/RPC calls. </param>
-    /// <param name="bindAddr">     The local Internet Address the server will bind to. </param>
+    /// <param name="bindAddr">     The local Internet Address the server will bind to or <see cref="IPAddress.Any"/>. </param>
     /// <param name="port">         Number of port where the server will wait for incoming calls. </param>
     /// <param name="info">         Array of program and version number tuples of the ONC/RPC
     ///                             programs and versions handled by this transport. </param>
@@ -140,12 +140,12 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     }
 
     /// <summary>   UDP socket used for datagram-based communication with ONC/RPC clients. </summary>
-    private Socket _socket;
+    private Socket? _socket;
 
     /// <summary>
     ///  Thread which manages listening on the socket
     /// </summary>
-    private Thread _listener;
+    private Thread? _listener;
 
     #endregion
 
@@ -169,11 +169,11 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// <param name="call"> The call. </param>
     internal override void RetrieveCall( IXdrCodec call )
     {
-        call.Decode( this.Decoder );
+        call.Decode( this.Decoder! );
         if ( this._pendingDecoding )
         {
             this._pendingDecoding = false;
-            this.Decoder.EndDecoding();
+            this.Decoder!.EndDecoding();
         }
     }
 
@@ -189,7 +189,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
         if ( this._pendingDecoding )
         {
             this._pendingDecoding = false;
-            this.Decoder.EndDecoding();
+            this.Decoder!.EndDecoding();
         }
     }
 
@@ -201,8 +201,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// <param name="callInfo"> Information about ONC/RPC call for which we are about to send back
     ///                         the reply. </param>
     /// <param name="state">    ONC/RPC reply header indicating success or failure. </param>
-    internal override void BeginEncoding( OncRpcCallHandler
-         callInfo, OncRpcServerReplyMessage state )
+    internal override void BeginEncoding( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state )
     {
 
         // In case decoding has not been properly finished, do it now to
@@ -211,12 +210,12 @@ public class OncRpcUdpTransport : OncRpcTransportBase
         if ( this._pendingDecoding )
         {
             this._pendingDecoding = false;
-            this.Decoder.EndDecoding();
+            this.Decoder!.EndDecoding();
         }
 
         // Now start encoding using the reply message header first...
 
-        this.Encoder.BeginEncoding( callInfo.PeerIPAddress, callInfo.PeerPort );
+        this.Encoder!.BeginEncoding( callInfo.PeerIPAddress!, callInfo.PeerPort );
         state.Encode( this.Encoder );
     }
 
@@ -230,7 +229,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     {
 
         // Close the case. 
-        this.Encoder.EndEncoding();
+        this.Encoder!.EndEncoding();
     }
 
     /// <summary> Sends back an ONC/RPC reply to the original caller. </summary>
@@ -249,7 +248,26 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     internal override void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
     {
         this.BeginEncoding( callInfo, state );
-        reply?.Encode( this.Encoder );
+        reply?.Encode( this.Encoder! );
+        this.EndEncoding();
+    }
+
+    /// <summary>   Consumes the ONC/RPC call and responds to the original caller. </summary>
+    /// <remarks>
+    /// This is rather a low-level method, typically not used by applications. Dispatcher handling
+    /// ONC/RPC calls have to use the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
+    /// method instead on the call object supplied to the handler. <para>
+    /// An appropriate implementation has to be provided in derived classes as it is dependent on the
+    /// type of transport (whether UDP/IP or TCP/IP)
+    /// used. </para>
+    /// </remarks>
+    /// <param name="callInfo"> <see cref="OncRpcCallHandler"/> about the original call, which are
+    ///                         necessary to Sends back the reply to the appropriate caller. </param>
+    /// <param name="state">    ONC/RPC reply message header indicating success or failure and
+    ///                         containing associated state information. </param>
+    internal override void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state )
+    {
+        this.BeginEncoding( callInfo, state );
         this.EndEncoding();
     }
 
@@ -313,9 +331,9 @@ public class OncRpcUdpTransport : OncRpcTransportBase
             try
             {
                 this._pendingDecoding = true;
-                this.Decoder.BeginDecoding();
-                callInfo.PeerIPAddress = this.Decoder.GetSenderAddress();
-                callInfo.PeerPort = this.Decoder.GetSenderPort();
+                this.Decoder!.BeginDecoding();
+                callInfo.PeerIPAddress = this.Decoder.SenderAddress;
+                callInfo.PeerPort = this.Decoder.SenderPort;
             }
             catch ( SocketException )
             {

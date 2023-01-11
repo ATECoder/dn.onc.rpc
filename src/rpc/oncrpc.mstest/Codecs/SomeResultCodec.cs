@@ -48,14 +48,12 @@ public class SomeResultCodec : IXdrCodec
     }
 
     /// <summary>   Sets a data. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="x">    The x coordinate. </param>
     public virtual void SetData( byte[] x )
     {
         this._data = x;
     }
     /// <summary>   Sets a data. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="index">    Zero-based index of the. </param>
     /// <param name="x">        The x coordinate. </param>
     public virtual void SetData( int index, byte x )
@@ -67,7 +65,6 @@ public class SomeResultCodec : IXdrCodec
     public virtual byte[] Data => this._data;
 
     /// <summary>   Gets a data. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="index">    Zero-based index of the. </param>
     /// <returns>   The data. </returns>
     public virtual byte GetData( int index )
@@ -76,13 +73,11 @@ public class SomeResultCodec : IXdrCodec
     }
 
     /// <summary>   Default constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     public SomeResultCodec()
     {
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public SomeResultCodec( XdrDecodingStreamBase decoder )
     {

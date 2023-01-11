@@ -31,13 +31,11 @@ public class LinkedListCodec : IXdrCodec
     public virtual LinkedListCodec Next { get; set; }
 
     /// <summary>   Default constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     public LinkedListCodec()
     {
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public LinkedListCodec( XdrDecodingStreamBase decoder )
     {

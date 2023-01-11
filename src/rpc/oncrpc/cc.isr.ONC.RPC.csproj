@@ -3,6 +3,9 @@
     <TargetFrameworks>netstandard20</TargetFrameworks>
     <LangVersion>latest</LangVersion>
 
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
     <AssemblyName>cc.isr.ONC.RPC</AssemblyName>
     <RootNamespace>cc.isr</RootNamespace>
 	
@@ -11,10 +14,10 @@
     <NoWarn>1591</NoWarn>
 
     <!-- Display name -->
-    <ApplicationTitle>cc.isr.ONC.XDR</ApplicationTitle>
+    <ApplicationTitle>cc.isr.ONC.RPC</ApplicationTitle>
 
     <!-- App Identifier -->
-    <ApplicationId>cc.isr.onc.xdr</ApplicationId>
+    <ApplicationId>cc.isr.onc.rpc</ApplicationId>
 
     <!-- NuGet -->
     <IsPackable>true</IsPackable>

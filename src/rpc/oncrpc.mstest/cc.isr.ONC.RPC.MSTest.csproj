@@ -3,10 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-<IsTestProject>true</IsTestProject>    
+    <IsTestProject>true</IsTestProject>    
     
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    
     <AssemblyName>cc.isr.ONC.RPC.MSTest</AssemblyName>
     <RootNamespace>cc.isr.ONC.RPC.MSTest</RootNamespace>
     <IsPackable>false</IsPackable>

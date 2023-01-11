@@ -32,6 +32,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
         this.UserId = userId;
         this.GroupId = groupId;
         this._groupIds = groupIds;
+        this._shorthandCredentials = Array.Empty<byte>();
     }
 
     /// <summary>
@@ -161,14 +162,14 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
         // If we don't use a shorthand credential at this time, then there's
         // no hope to refresh the credentials.
 
-        if ( this._shorthandCredentials == null )
+        if ( this._shorthandCredentials is null || this._shorthandCredentials.Length == 0 )
             return false;
 
         // Otherwise just dump the shorthand credentials and let the caller
         // retry. This will probably result in the ONC/RPC server replying
         // with a new shorthand credential.
 
-        this._shorthandCredentials = null;
+        this._shorthandCredentials = Array.Empty<byte>();
 
         // Ah, yes. We need to update the "stamp" (more a timestamp, but
         // Sun coding style is sometimes interesting). As is my style too.

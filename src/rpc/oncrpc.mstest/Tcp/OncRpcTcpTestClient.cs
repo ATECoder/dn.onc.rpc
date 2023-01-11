@@ -92,7 +92,6 @@ public class OncRpcTcpTestClient : IDisposable
     #region " Procedure Calls "
 
     /// <summary>   Calls the specified procedure </summary>
-    /// <remarks>   2022-12-26. </remarks>
     /// <param name="procedureNumber">  The procedure number. </param>
     /// <param name="versionNumber">    The version number. </param>
     /// <param name="parameters">       Options for controlling the operation. </param>
@@ -111,16 +110,14 @@ public class OncRpcTcpTestClient : IDisposable
     }
 
     /// <summary>   Clears the authentication. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     private void ClearAuth()
     {
-        if ( this._coreClient is not null ) this._coreClient.Auth = null;
+        if ( this._coreClient is not null ) this._coreClient.Auth = new OncRpcClientAuthNone();
     }
 
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion1.Nop"/>.
     /// </summary>
-    /// <remarks>   2022-12-22. </remarks>
     public virtual void CallRemoteProcedureNull()
     {
         VoidXdrCodec args = VoidXdrCodec.VoidXdrCodecInstance;
@@ -131,7 +128,6 @@ public class OncRpcTcpTestClient : IDisposable
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion1.Echo"/>.
     /// </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="arg1"> parameter (of type <see cref="string"/>) to the remote procedure call. </param>
     /// <returns>   Result from remote procedure call (of type String). </returns>
     public virtual string CallRemoteProcedureEcho( string arg1 )
@@ -145,7 +141,6 @@ public class OncRpcTcpTestClient : IDisposable
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion1.ConcatenateInputParameters"/>.
     /// </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="arg1"> parameter (of type <see cref="StringVectorCodec"/>) to the remote
     ///                     procedure call. </param>
     /// <returns>   Result from remote procedure call (of type String). </returns>
@@ -159,7 +154,6 @@ public class OncRpcTcpTestClient : IDisposable
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion1.CompareInputToFoo"/>.
     /// </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="arg1"> parameter (of type <see cref="EnumFoo"/> ) to the remote procedure call. </param>
     /// <returns>   Result from remote procedure call (of type boolean). </returns>
     public virtual bool CallRemoteProcedureCompareInputToFoo( int arg1 )
@@ -173,7 +167,6 @@ public class OncRpcTcpTestClient : IDisposable
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion1.ReturnEnumFooValue"/>.
     /// </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <returns>   Result from remote procedure call (of type <see cref="EnumFoo"/>). </returns>
     public virtual int CallRemoteProcedureReturnEnumFooValue()
     {
@@ -186,7 +179,6 @@ public class OncRpcTcpTestClient : IDisposable
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion1.BuildLinkedList"/>.
     /// </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="arg1"> parameter (of type <see cref="LinkedListCodec"/>) to the remote
     ///                     procedure call. </param>
     /// <returns>
@@ -202,7 +194,6 @@ public class OncRpcTcpTestClient : IDisposable
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion1.RemoteProcedureReadSomeResult"/>.
     /// </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <returns>
     /// Result from remote procedure call (of type <see cref="SomeResultCodec"/>).
     /// </returns>
@@ -215,7 +206,6 @@ public class OncRpcTcpTestClient : IDisposable
     }
 
     /// <summary>   Call remote procedure <see cref="RemoteProceduresVersion2.ConcatenateTwoValues"/>. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="arg1"> parameter (of type <see cref="string"/>) to the remote procedure call. </param>
     /// <param name="arg2"> parameter (of type <see cref="string"/>) to the remote procedure call. </param>
     /// <returns>   Result from remote procedure call (of type <see cref="string"/>). </returns>
@@ -233,7 +223,6 @@ public class OncRpcTcpTestClient : IDisposable
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion2.ConcatenateThreeItems"/>.
     /// </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="one">      parameter (of type <see cref="string"/>) to the remote procedure
     ///                         call. </param>
     /// <param name="two">      parameter (of type <see cref="string"/>) to the remote procedure
@@ -256,7 +245,6 @@ public class OncRpcTcpTestClient : IDisposable
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion2.ReturnYouAreFooValue"/>.
     /// </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="foo">  parameter (of type ENUMFOO) to the remote procedure call. </param>
     /// <returns>   Result from remote procedure call (of type String). </returns>
     public virtual string CallRemoteProcedureReturnYouAreFooValue( int foo )
@@ -270,7 +258,6 @@ public class OncRpcTcpTestClient : IDisposable
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion2.LinkListItems"/>.
     /// </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="list1">    parameter (of type <see cref="LinkedListCodec"/>) to the remote
     ///                         procedure call. </param>
     /// <param name="list2">    parameter (of type <see cref="LinkedListCodec"/>) to the remote
@@ -290,7 +277,6 @@ public class OncRpcTcpTestClient : IDisposable
     }
 
     /// <summary>   Call remote procedure <see cref="RemoteProceduresVersion2.ProcessFourArguments"/>. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="a">    parameter (of type String) to the remote procedure call. </param>
     /// <param name="b">    parameter (of type ENUMFOO) to the remote procedure call. </param>
     /// <param name="c">    parameter (of type ENUMFOO) to the remote procedure call. </param>

@@ -16,6 +16,14 @@ public abstract class OncRpcServerStubBase : IDisposable
 
     #region " construction and cleanup "
 
+    public OncRpcServerStubBase()
+    {
+        this._characterEncoding = Encoding.Default;
+        this._transports = Array.Empty<OncRpcTransportBase>();
+        this._registeredPrograms = Array.Empty<OncRpcProgramInfo>();
+
+    }
+
     /// <summary>   Close all transports listed in a set of server transports. </summary>
     /// <remarks>
     /// Only by calling this method processing of remote procedure calls by individual transports can
@@ -150,16 +158,17 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// <summary>
     /// Array containing program and version numbers tuples this server is willing to handle.
     /// </summary>
-    private OncRpcProgramInfo[] _transportRegistrationInfo;
+    private OncRpcProgramInfo[] _registeredPrograms;
 
     /// <summary>
     /// Sets the array containing program and version numbers tuples this server is willing to handle.
     /// </summary>
-    /// <param name="info"> Array containing program and version numbers tuples this server is
-    ///                     willing to handle. </param>
-    public void SetTransportRegistrationInfo( OncRpcProgramInfo[] info )
+    /// <remarks>   2023-01-10. </remarks>
+    /// <param name="registeredPrograms">   Array containing program and version numbers tuples this
+    ///                                     server is willing to handle. </param>
+    public void SetRegisteredPrograms( OncRpcProgramInfo[] registeredPrograms )
     {
-        this._transportRegistrationInfo = info;
+        this._registeredPrograms = registeredPrograms;
     }
 
     /// <summary>
@@ -168,9 +177,9 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// </summary>
     /// <returns>   The array containing program and version numbers tuples this server is willing to
     /// handle. </returns>
-    public OncRpcProgramInfo[] GetTransportRegistrationInfo()
+    public OncRpcProgramInfo[] GetRegisteredPrograms()
     {
-        return this._transportRegistrationInfo;
+        return this._registeredPrograms;
     }
 
     /// <summary>   Register a set of server transports with the local port mapper. </summary>

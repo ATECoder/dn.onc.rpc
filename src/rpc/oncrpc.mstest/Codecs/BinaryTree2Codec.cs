@@ -10,13 +10,11 @@ namespace cc.isr.ONC.RPC.MSTest.Codecs;
 public class BinaryTree2Codec : IXdrCodec
 {
     /// <summary>   Default constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     public BinaryTree2Codec()
     {
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-22. </remarks>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public BinaryTree2Codec( XdrDecodingStreamBase decoder )
     {

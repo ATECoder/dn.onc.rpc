@@ -21,14 +21,14 @@ public abstract class OncRpcTcpServerBase : OncRpcServerStubBase, IOncRpcDispatc
 
     public OncRpcTcpServerBase( IPAddress bindAddr, int port )
     {
-        OncRpcProgramInfo[] info = new OncRpcProgramInfo[] {
+        OncRpcProgramInfo[] registeredPrograms = new OncRpcProgramInfo[] {
             new OncRpcProgramInfo(RpcProgramConstants.ProgramNumber, 1),
             new OncRpcProgramInfo(RpcProgramConstants.ProgramNumber, 2),
         };
-        this.SetTransportRegistrationInfo( info );
+        this.SetRegisteredPrograms( registeredPrograms );
 
         OncRpcTransportBase[] transports = new OncRpcTransportBase[] {
-            new OncRpcTcpTransport(this, bindAddr, port, info, 32768)
+            new OncRpcTcpTransport(this, bindAddr, port, registeredPrograms, 32768)
         };
         this.SetTransports( transports );
 

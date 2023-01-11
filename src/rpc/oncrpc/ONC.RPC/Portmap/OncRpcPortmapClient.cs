@@ -306,9 +306,9 @@ public class OncRpcPortmapClient
         this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo, VoidXdrCodec.VoidXdrCodecInstance, result );
 
         // Copy the server identities from the Vector into the vector (array).
-        OncRpcServerIdentifierCodec[] info = new OncRpcServerIdentifierCodec[result.ServerIdentifiers.Count];
-        result.ServerIdentifiers.CopyTo( info );
-        return info;
+        // OncRpcServerIdentifierCodec[] serverIdentifiers = new OncRpcServerIdentifierCodec[result.ServerIdentifiers.Count];
+        // result.ServerIdentifiers.CopyTo( serverIdentifiers );
+        return result.ServerIdentifiers.ToArray();
     }
 
     /// <summary>   Pings the portmapper (try to call procedure 0). </summary>

@@ -8,7 +8,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// The handler is handed to ONC/RPC <see cref="IOncRpcDispatchable">call dispatchers</see>, so
 /// it can Sends back the reply to the appropriate caller, etc. <para>
 /// 
-/// Use only this call info objects to retrieve call parameters and send back replies because, in
+/// Use this call handler objects only to retrieve call parameters and send back replies because, in
 /// the future UDP/IP-based transports may become multi-threaded handling. The call handler is
 /// controls access to the underlaying transport, so never mess with the transport directly. </para>
 /// <para>
@@ -49,7 +49,7 @@ public class OncRpcCallHandler
     /// </summary>
     /// <remarks>
     /// Typically, <see cref="OncRpcCallHandler"/> objects are created by transports
-    /// once before handling incoming calls using the same call info object.
+    /// once before handling incoming calls using the same call handler object.
     /// To support multi-threaded handling of calls in the future (for UDP/IP),
     /// the transport is already divided from the call info.
     /// </remarks>
@@ -70,7 +70,7 @@ public class OncRpcCallHandler
     /// we intend to call.
     /// </summary>
     /// <value> The peer IP address. </value>
-    public IPAddress PeerIPAddress { get; set; } = null;
+    public IPAddress? PeerIPAddress { get; set; }
 
     /// <summary>
     /// Gets or sets the port number of the peer from which we received an ONC/RPC call or whom we intend to call.
@@ -103,7 +103,7 @@ public class OncRpcCallHandler
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </summary>
     /// <returns>   Reference to decoding XDR stream. </returns>
-    public virtual XdrDecodingStreamBase GetXdrDecodingStream()
+    public virtual XdrDecodingStreamBase? GetXdrDecodingStream()
     {
         return this.Transport.Decoder;
     }
@@ -156,7 +156,7 @@ public class OncRpcCallHandler
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </remarks>
     /// <returns>   Reference to encoding XDR stream. </returns>
-    public virtual XdrEncodingStreamBase GetXdrEncodingStream()
+    public virtual XdrEncodingStreamBase? GetXdrEncodingStream()
     {
         return this.Transport.Encoder;
     }
@@ -187,6 +187,18 @@ public class OncRpcCallHandler
         this.Transport.Reply( this, state, reply );
     }
 
+    /// <summary>   Sends back an ONC/RPC reply to the caller who sent in this call. </summary>
+    /// <remarks>
+    /// This automatically sends an ONC/RPC reply header before the reply part, indicating success
+    /// within the header.
+    /// </remarks>
+    /// <param name="state">    ONC/RPC reply message header indicating success or failure and
+    ///                         containing associated state information. </param>
+    public virtual void Reply( OncRpcServerReplyMessage state)
+    {
+        this.Transport.Reply( this, state);
+    }
+
     /// <summary> Sends back an ONC/RPC reply to the caller who sent in this call. </summary>
     /// <remarks>
     /// This automatically sends an ONC/RPC reply header before the reply part, indicating success
@@ -197,20 +209,20 @@ public class OncRpcCallHandler
     public virtual void Reply( IXdrCodec rply )
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcSuccess,
-            OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter,
-            OncRpcReplyMessageBase.UnusedMessageParameter ), rply );
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter ), rply );
     }
 
     /// <summary>
     /// Sends back an ONC/RPC failure indication about invalid arguments to the caller who sent in
-    /// this call reporting <see cref="OncRpcAcceptStatus.OncRpcUnableToDecodingArguments"/>
+    /// this call reporting <see cref="OncRpcAcceptStatus.OncRpcUnableToDecodeArguments"/>
     /// </summary>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    public virtual void ReplyUnableToDecodingArguments()
+    public virtual void ReplyUnableToDecodeArguments()
     {
-        this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcUnableToDecodingArguments,
-            OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter,
-            OncRpcReplyMessageBase.UnusedMessageParameter ), null );
+        this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcUnableToDecodeArguments,
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter ) );
     }
 
     /// <summary>
@@ -222,7 +234,7 @@ public class OncRpcCallHandler
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcProcedureNotAvailable,
             OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter,
-            OncRpcReplyMessageBase.UnusedMessageParameter ), null );
+            OncRpcReplyMessageBase.UnusedMessageParameter ) );
     }
 
     /// <summary>
@@ -233,8 +245,8 @@ public class OncRpcCallHandler
     public virtual void ReplyProgramNotAvailable()
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcProgramNotAvailable,
-            OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter,
-            OncRpcReplyMessageBase.UnusedMessageParameter ), null );
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter ) );
     }
 
     /// <summary>
@@ -247,7 +259,8 @@ public class OncRpcCallHandler
     public virtual void ReplyProgramVersionMismatch( int lowVersion, int highVersion )
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcProgramVersionMismatch,
-            OncRpcReplyMessageBase.UnusedMessageParameter, lowVersion, highVersion, OncRpcReplyMessageBase.UnusedMessageParameter ), null );
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter, lowVersion, highVersion,
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter ) );
     }
 
     /// <summary>
@@ -259,7 +272,7 @@ public class OncRpcCallHandler
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageAccepted, OncRpcAcceptStatus.OncRpcSystemError,
                                                         OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter,
-                                                        OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter ), null );
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter, OncRpcReplyMessageBase.UnusedMessageParameter ) );
     }
 
     /// <summary>
@@ -270,8 +283,8 @@ public class OncRpcCallHandler
     public virtual void RerplyWrongProtocolVersion()
     {
         this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageDenied, OncRpcReplyMessageBase.UnusedMessageParameter,
-            OncRpcRejectStatus.OncRpcWrongProtocolVersion, OncRpcCallMessageBase.OncRpcProtocolVersion, OncRpcCallMessageBase.OncRpcProtocolVersion,
-            OncRpcReplyMessageBase.UnusedMessageParameter ), null );
+                                                        OncRpcRejectStatus.OncRpcWrongProtocolVersion, OncRpcCallMessageBase.OncRpcProtocolVersion,
+                                                        OncRpcCallMessageBase.OncRpcProtocolVersion, OncRpcReplyMessageBase.UnusedMessageParameter ) );
     }
 
     /// <summary>
@@ -282,11 +295,8 @@ public class OncRpcCallHandler
     /// <param name="authStatus">   <see cref="OncRpcAuthStatus">Reason</see> why authentication failed. </param>
     public virtual void ReplyAuthError( OncRpcAuthStatus authStatus )
     {
-        this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageDenied,
-                                                        OncRpcReplyMessageBase.UnusedMessageParameter,
-                                                        OncRpcRejectStatus.OncRpcAuthError,
-                                                        OncRpcReplyMessageBase.UnusedMessageParameter,
-                                                        OncRpcReplyMessageBase.UnusedMessageParameter,
-                                                        authStatus ), null );
+        this.Reply( new OncRpcServerReplyMessage( this.CallMessage, OncRpcReplyStatus.OncRpcMessageDenied, OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                        OncRpcRejectStatus.OncRpcAuthError, OncRpcReplyMessageBase.UnusedMessageParameter,
+                                                        OncRpcReplyMessageBase.UnusedMessageParameter, authStatus ) );
     }
 }
