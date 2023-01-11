@@ -47,7 +47,7 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     ///                            to return to the caller to be used with the next ONC/RPC calls. </param>
     public void SetShorthandVerifier( byte[] verifier )
     {
-        this._shorthandVerfier = verifier;
+        this._shorthandVerfier = verifier ?? Array.Empty<byte>();
     }
 
     /// <summary>   Returns the shorthand verifier to be sent back to the caller. </summary>

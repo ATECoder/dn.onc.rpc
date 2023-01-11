@@ -1,22 +1,20 @@
-#nullable disable
 namespace cc.isr.ONC.RPC.MSTest.Codecs;
 
 /// <summary>   (Serializable) a triple strings XBR encoder/decoder. </summary>
-/// <remarks>   2022-12-30. </remarks>
 [Serializable]
 internal class TripleStringsCodec : IXdrCodec
 {
     /// <summary>   Gets or sets the one. </summary>
     /// <value> The one. </value>
-    public string One { get; set; }
+    public string One { get; set; } = string.Empty;
 
     /// <summary>   Gets or sets the two. </summary>
     /// <value> The two. </value>
-    public string Two { get; set; }
+    public string Two { get; set; } = string.Empty;
 
     /// <summary>   Gets or sets the three. </summary>
     /// <value> The three. </value>
-    public string Three { get; set; }
+    public string Three { get; set; } = string.Empty;
 
     /// <summary>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.

@@ -144,7 +144,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     ///                             handle incoming remote procedure call requests. </param>
     public virtual void SetTransports( OncRpcTransportBase[] transports )
     {
-        this._transports = transports;
+        this._transports = transports ?? Array.Empty<OncRpcTransportBase>();
     }
     /// <summary>
     /// gets the array containing ONC/RPC server transport objects which describe what transports an ONC/RPC
@@ -168,7 +168,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     ///                                     server is willing to handle. </param>
     public void SetRegisteredPrograms( OncRpcProgramInfo[] registeredPrograms )
     {
-        this._registeredPrograms = registeredPrograms;
+        this._registeredPrograms = registeredPrograms ?? Array.Empty<OncRpcProgramInfo>();
     }
 
     /// <summary>

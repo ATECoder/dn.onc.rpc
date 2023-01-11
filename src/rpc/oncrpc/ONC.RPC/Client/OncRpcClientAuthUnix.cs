@@ -202,7 +202,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// <param name="gids"> Array of group IDs. </param>
     public virtual void SetGroupIds( int[] gids )
     {
-        this._groupIds = gids;
+        this._groupIds = gids ?? Array.Empty<int>();
     }
 
     /// <summary>   Returns the group IDs from the credential. </summary>

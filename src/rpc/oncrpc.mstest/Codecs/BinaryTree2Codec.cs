@@ -1,22 +1,19 @@
-#nullable disable
-
-
 namespace cc.isr.ONC.RPC.MSTest.Codecs;
 
-
-/// <summary>   (Serializable) a binary tree 2 XBR encoder/decoder. </summary>
-/// <remarks>   2022-12-30. </remarks>
+/// <summary>   (Serializable) a binary tree 2 codec. </summary>
 [Serializable]
 public class BinaryTree2Codec : IXdrCodec
 {
     /// <summary>   Default constructor. </summary>
     public BinaryTree2Codec()
     {
+        this.Key = String.Empty;
+        this.Value = String.Empty;
     }
 
     /// <summary>   Constructor. </summary>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
-    public BinaryTree2Codec( XdrDecodingStreamBase decoder )
+    public BinaryTree2Codec( XdrDecodingStreamBase decoder ): this()
     {
         this.Decode( decoder );
     }
@@ -31,11 +28,11 @@ public class BinaryTree2Codec : IXdrCodec
 
     /// <summary>   Gets or sets the left. </summary>
     /// <value> The left. </value>
-    public BinaryTree2Codec Left { get; set; }
+    public BinaryTree2Codec? Left { get; set; }
 
     /// <summary>   Gets or sets the right. </summary>
     /// <value> The right. </value>
-    public BinaryTree2Codec Right { get; set; }
+    public BinaryTree2Codec? Right { get; set; }
 
     /// <summary>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
@@ -46,7 +43,7 @@ public class BinaryTree2Codec : IXdrCodec
     /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
-        BinaryTree2Codec currentBinaryTree = this;
+        BinaryTree2Codec? currentBinaryTree = this;
         do
         {
             encoder.EncodeString( currentBinaryTree.Key );
@@ -73,8 +70,8 @@ public class BinaryTree2Codec : IXdrCodec
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public virtual void Decode( XdrDecodingStreamBase decoder )
     {
-        BinaryTree2Codec currentBinaryTree = this;
-        BinaryTree2Codec nextBinaryTree;
+        BinaryTree2Codec? currentBinaryTree = this;
+        BinaryTree2Codec? nextBinaryTree;
         do
         {
             currentBinaryTree.Key = decoder.DecodeString();

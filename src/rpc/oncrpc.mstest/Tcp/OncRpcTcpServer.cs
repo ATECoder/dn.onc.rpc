@@ -3,8 +3,6 @@ using cc.isr.ONC.RPC.Portmap;
 using cc.isr.ONC.RPC.Server;
 using cc.isr.ONC.RPC.MSTest.Codecs;
 
-#nullable disable
-
 namespace cc.isr.ONC.RPC.MSTest.Tcp;
 
 /// <summary>   An ONC/RPC TCP server. </summary>
@@ -22,20 +20,17 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     #region " construction and cleanup "
 
     /// <summary>   Default constructor. </summary>
-    /// <remarks>   2022-12-15. </remarks>
-    public OncRpcTcpServer() : this( null, 0 )
+    public OncRpcTcpServer() : this( 0 )
     {
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-15. </remarks>
     /// <param name="port"> The port number where the server will wait for incoming calls. </param>
-    public OncRpcTcpServer( int port ) : this( null, port )
+    public OncRpcTcpServer( int port ) : this( IPAddress.Any, port )
     {
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-15. </remarks>
     /// <param name="device">   current device. </param>
     /// <param name="bindAddr"> The local Internet Address the server will bind to. </param>
     /// <param name="port">     The port number where the server will wait for incoming calls. </param>
@@ -242,7 +237,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Process the version 1 calls. </summary>
-    /// <remarks>   2022-12-26. </remarks>
     /// <param name="call">         The call. </param>
     /// <param name="procedure">    The procedure. </param>
     private static void ProcessVersion1Calls( OncRpcCallHandler call, int procedure )
@@ -310,7 +304,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Process the version 2 calls. </summary>
-    /// <remarks>   2022-12-26. </remarks>
     /// <param name="call">         <see cref="OncRpcCallHandler"/> about the call to handle, 
     ///                             like the caller's Internet address, the ONC/RPC
     ///                             call header, etc. </param>
@@ -412,10 +405,10 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     public static string ConcatenateInputStringVector( StringVectorCodec inputCodec )
     {
         StringBuilder result = new();
-        int size = inputCodec.Value.Length;
+        int size = inputCodec.GetValues().Length;
         for ( int idx = 0; idx < size; ++idx )
         {
-            _ = result.Append( inputCodec.Value[idx].Value );
+            _ = result.Append( inputCodec.GetValues()[idx].Value );
         }
         return result.ToString();
     }

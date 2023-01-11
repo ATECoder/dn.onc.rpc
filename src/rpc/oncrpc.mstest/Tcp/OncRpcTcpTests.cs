@@ -9,7 +9,6 @@ public class OncRpcTcpTests
 {
 
     /// <summary>   Initializes the fixture. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="context">  The context. </param>
     [ClassInitialize]
     public static void InitializeFixture( TestContext context )
@@ -49,7 +48,6 @@ public class OncRpcTcpTests
     private static TestContext? _classTestContext;
 
     /// <summary>   Cleanup fixture. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     [ClassCleanup]
     public static void CleanupFixture()
     {
@@ -88,7 +86,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) server should be listening. </summary>
-    /// <remarks>   2022-12-24. </remarks>
     [TestMethod]
     public void ServerShouldBeListening()
     {
@@ -96,7 +93,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should connect. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     /// <param name="host">     The host. </param>
     /// <param name="version">  The version. </param>
@@ -108,7 +104,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should close. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldClose( OncRpcTcpTestClient client )
     {
@@ -118,7 +113,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) client should connect. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     [TestMethod]
     public void ClientShouldConnect()
     {
@@ -135,7 +129,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) client should connect version 2. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     [TestMethod]
     public void ClientShouldConnectVersion2()
     {
@@ -152,7 +145,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should ping. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldPing( OncRpcTcpTestClient client )
     {
@@ -162,7 +154,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should ping. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     [TestMethod]
     public void ClientShouldPing()
     {
@@ -180,7 +171,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) client should ping version 2. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     [TestMethod]
     public void ClientShouldPingVersion2()
     {
@@ -198,7 +188,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should fail authentication. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldFailAuthentication( OncRpcTcpTestClient client )
     {
@@ -229,7 +218,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) client should fail authentication. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     [TestMethod]
     public void ClientShouldFailAuthentication()
     {
@@ -247,7 +235,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should authenticate. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldAuthenticate( OncRpcTcpTestClient client )
     {
@@ -267,7 +254,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) client should authenticate. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     [TestMethod]
     public void ClientShouldAuthenticate()
     {
@@ -288,7 +274,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should echo messages. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     /// <param name="messages"> The messages. </param>
     private static void AssertClientShouldEchoMessages( OncRpcTcpTestClient client, string[] messages )
@@ -303,7 +288,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) client should echo messages. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     [TestMethod]
     public void ClientShouldEchoMessages()
     {
@@ -323,7 +307,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should echo. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldEcho( OncRpcTcpTestClient client )
     {
@@ -335,17 +318,12 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should concatenate. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldConcatenate( OncRpcTcpTestClient client )
     {
         Console.Write( "About to concatenate: " );
-        StringVectorCodec strings = new() {
-            Value = new StringCodec[3]
-        };
-        strings.Value[0] = new StringCodec( "Hello, " );
-        strings.Value[1] = new StringCodec( "Remote " );
-        strings.Value[2] = new StringCodec( "Tea!" );
+        StringVectorCodec strings = new();
+        strings.SetValues( new StringCodec[] { new StringCodec( "Hello, " ), new StringCodec( "Remote " ), new StringCodec( "Tea!" ) } );
         string expected = "Hello, Remote Tea!";
         string actual = client.CallRemoteProcedureConcatenateInputParameters( strings );
         Assert.AreEqual( expected, actual );
@@ -353,7 +331,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should concatenate exactly. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldConcatenateExactly( OncRpcTcpTestClient client )
     {
@@ -365,7 +342,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should check for foo. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldCheckForFoo( OncRpcTcpTestClient client )
     {
@@ -385,7 +361,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should get foo. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldGetFoo( OncRpcTcpTestClient client )
     {
@@ -399,7 +374,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should get numbered foo. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldGetNumberedFoo( OncRpcTcpTestClient client )
     {
@@ -409,7 +383,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should echo linked list. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldEchoLinkedList( OncRpcTcpTestClient client )
     {
@@ -425,7 +398,7 @@ public class OncRpcTcpTests
             Foo = 15
         };
         node2.Next = node3;
-        LinkedListCodec list = client.CallRemoteProcedureBuildLinkedList( node1 );
+        LinkedListCodec? list = client.CallRemoteProcedureBuildLinkedList( node1 );
         Console.Write( "Okay. Echo: " );
         while ( list is not null )
         {
@@ -436,7 +409,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   Assert client should link linked list. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldLinkLinkedList( OncRpcTcpTestClient client )
     {
@@ -451,7 +423,7 @@ public class OncRpcTcpTests
             Foo = 15
         };
         node2.Next = node3;
-        LinkedListCodec list = client.CallRemoteProcedureLinkListItems( node2, node1 );
+        LinkedListCodec? list = client.CallRemoteProcedureLinkListItems( node2, node1 );
         Console.Write( "Okay. Echo: " );
         while ( list is not null )
         {
@@ -462,7 +434,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) client should talk to server. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     [TestMethod]
     public void ClientShouldTalkToServer()
     {

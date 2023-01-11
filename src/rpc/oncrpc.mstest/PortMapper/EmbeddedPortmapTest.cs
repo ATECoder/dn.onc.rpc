@@ -5,13 +5,11 @@ using cc.isr.ONC.RPC.Portmap;
 namespace cc.isr.ONC.RPC.MSTest.PortMapper;
 
 /// <summary>   (Unit Test Class) an embedded portmap test. </summary>
-/// <remarks>   2022-12-22. </remarks>
 [TestClass]
 public class EmbeddedPortmapTest
 {
 
     /// <summary>   Assert portmap service should start. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     internal static void AssertPortmapServiceShouldStart()
     {
         Console.WriteLine( $"{DateTime.Now.ToShortTimeString()} Checking for portmap service: " );
@@ -43,7 +41,6 @@ public class EmbeddedPortmapTest
     }
 
     /// <summary>   (Unit Test Method) embedded portmap service should pass. </summary>
-    /// <remarks>   2022-12-20. </remarks>
     [TestMethod]
     public void EmbeddedPortmapServiceShouldPass()
     {

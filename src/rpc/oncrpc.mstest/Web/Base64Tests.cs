@@ -4,13 +4,10 @@ using cc.isr.ONC.RPC.Web;
 
 namespace cc.isr.ONC.RPC.MSTest.Web;
 
-/// <summary>   (Unit Test Class) a base 64 tests. </summary>
-/// <remarks>   2022-12-20. </remarks>
 [TestClass]
 public class Base64Tests
 {
     /// <summary>   (Unit Test Method) base 64 should encode and decode. </summary>
-    /// <remarks>   2022-12-20. </remarks>
     [TestMethod]
     public void Base64ShouldEncodeAndDecode()
     {
@@ -23,7 +20,6 @@ public class Base64Tests
     }
 
     /// <summary>   Assert base 64 should encode and decode. </summary>
-    /// <remarks>   2022-12-20. </remarks>
     /// <param name="test">         The test. </param>
     /// <param name="source">       Source for the. </param>
     /// <param name="lenSource">    The length source. </param>

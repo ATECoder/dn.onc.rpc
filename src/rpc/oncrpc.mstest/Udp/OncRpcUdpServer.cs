@@ -1,12 +1,12 @@
 using cc.isr.ONC.RPC.Portmap;
 using cc.isr.ONC.RPC.Server;
 
-#nullable disable
+
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 /// <summary>   An ONC/RPC UDP server. </summary>
-/// <remarks>   2022-12-15. 
+/// <remarks>
 /// <list type="bullet">Mapped error codes:<item>
 /// OncRpcException.RPC_SUCCESS -- Visa32.VISA.VI_SUCCESS</item><item>
 /// OncRpcException.RPC_SYSTEMERROR -- Visa32.VISA.VI_ERROR_SYSTEM_ERROR</item><item>
@@ -21,20 +21,17 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     #region " construction and cleanup "
 
     /// <summary>   Default constructor. </summary>
-    /// <remarks>   2022-12-15. </remarks>
-    public OncRpcUdpServer() : this( null, 0 )
+    public OncRpcUdpServer() : this( 0 )
     {
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-15. </remarks>
     /// <param name="port"> The port number where the server will wait for incoming calls. </param>
-    public OncRpcUdpServer( int port ) : this( null, port )
+    public OncRpcUdpServer( int port ) : this( IPAddress.Any, port )
     {
     }
 
     /// <summary>   Constructor. </summary>
-    /// <remarks>   2022-12-15. </remarks>
     /// <param name="device">   current device. </param>
     /// <param name="bindAddr"> The local Internet Address the server will bind to. </param>
     /// <param name="port">     The port number where the server will wait for incoming calls. </param>
@@ -247,7 +244,6 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     }
 
     /// <summary>   Process the version 1 calls. </summary>
-    /// <remarks>   2022-12-26. </remarks>
     /// <param name="call">         The call. </param>
     /// <param name="procedure">    The procedure. </param>
     private static void ProcessVersion1Calls( OncRpcCallHandler call, int procedure )
@@ -277,7 +273,6 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     }
 
     /// <summary>   Process the version 2 calls. </summary>
-    /// <remarks>   2022-12-26. </remarks>
     /// <param name="call">         <see cref="OncRpcCallHandler"/> about the call to handle, like the
     ///                             caller's Internet address, the ONC/RPC
     ///                             call header, etc. </param>

@@ -1,7 +1,6 @@
 namespace cc.isr.ONC.RPC.MSTest.Codecs;
 
-/// <summary>   (Serializable) an answer XBR encoder/decoder. </summary>
-/// <remarks>   2022-12-22. </remarks>
+/// <summary>   (Serializable) an answer codec. </summary>
 [Serializable]
 public class AnswerCodec : IXdrCodec
 {

@@ -1,6 +1,6 @@
 using cc.isr.ONC.RPC.Server;
 
-#nullable disable
+
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
@@ -15,7 +15,7 @@ public abstract class OncRpcUdpServerBase : OncRpcServerStubBase, IOncRpcDispatc
     {
     }
 
-    public OncRpcUdpServerBase( int port ) : this( null, port )
+    public OncRpcUdpServerBase( int port ) : this( IPAddress.Any, port )
     {
     }
 

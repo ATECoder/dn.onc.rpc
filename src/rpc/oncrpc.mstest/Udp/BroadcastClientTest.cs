@@ -7,8 +7,6 @@ using cc.isr.ONC.RPC.Portmap;
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
-/// <summary>   (Unit Test Class) a broadcast client test. </summary>
-/// <remarks>   2022-12-22. </remarks>
 [TestClass]
 public class BroadcastClientTest : IOncRpcBroadcastListener
 {
@@ -90,7 +88,6 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
     private readonly System.Collections.ArrayList _portmappers = new();
 
     /// <summary>   (Unit Test Method) server should listen. </summary>
-    /// <remarks>   2022-12-24. </remarks>
     [TestMethod]
     public void ServerShouldListen()
     {
@@ -105,7 +102,6 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
     /// in this event handler, as you will otherwise miss some incoming replies because the OS will
     /// drop them.
     /// </summary>
-    /// <remarks>   2022-12-20. </remarks>
     /// <param name="evt">  The event. </param>
 	public virtual void ReplyReceived( OncRpcBroadcastEvent evt )
     {

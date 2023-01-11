@@ -1,38 +1,44 @@
-#nullable disable
-
-
 namespace cc.isr.ONC.RPC.MSTest.Codecs;
+
 /// <summary>   (Serializable) a silly structure XBR encoder/decoder. </summary>
-/// <remarks>   2022-12-22. </remarks>
 [Serializable]
 public class SillyStructCodec : IXdrCodec
 {
 
     /* Remote Tea leftover:
-     * The serialization runtime associates with each serializable class a version number, called a serialVersionUID, 
-     * which is used during deserialization to verify that the sender and receiver of a serialized object have loaded 
-     * classes for that object that are compatible with respect to serialization. If the receiver has loaded a class 
-     * for the object that has a different serialVersionUID than that of the corresponding sender's class, then deserialization 
-     * will result in an InvalidClassException. A serializable class can declare its own serialVersionUID explicitly by declaring 
-     * a field named serialVersionUID that must be static, final, and of type 
-     */
-    [System.Diagnostics.CodeAnalysis.SuppressMessage( "CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>" )]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Style", "IDE1006:Naming Styles", Justification = "<Pending>" )]
-    private const long serialVersionUID = 4109809708757592008L;
+     The serialization runtime associates with each serializable class a version number, called a serialVersionUID, 
+     which is used during deserialization to verify that the sender and receiver of a serialized object have loaded 
+     classes for that object that are compatible with respect to serialization. If the receiver has loaded a class 
+     for the object that has a different serialVersionUID than that of the corresponding sender's class, then deserialization 
+     will result in an InvalidClassException. A serializable class can declare its own serialVersionUID explicitly by declaring 
+     a field named serialVersionUID that must be static, final, and of type 
+     private long serialVersionUID = 4109809708757592008L;
+    */
+
+    /// <summary>   Default constructor. </summary>
+    public SillyStructCodec()
+    {
+        this._fixedBuffer  = Array.Empty<byte>();
+        this._buffer= Array.Empty<byte>();
+        this._bytes= Array.Empty<byte>();
+        this._fixedBytes= Array.Empty<byte>();
+        this.Nonsense = string.Empty;
+    }
+
+    /// <summary>   Constructor. </summary>
+    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
+    public SillyStructCodec( XdrDecodingStreamBase decoder ) : this()
+    {
+        this.Decode( decoder );
+    }
 
     private byte[] _fixedBuffer;
-    private byte[] _buffer;
-    private byte[] _fixedBytes;
-    private byte[] _bytes;
-    private int _ui1;
-    private int _ui2;
-    private string _nonsense;
 
     /// <summary>   Sets fixed buffer. </summary>
     /// <param name="x">    The x coordinate. </param>
     public virtual void SetFixedBuffer( byte[] x )
     {
-        this._fixedBuffer = x;
+        this._fixedBuffer = x ?? Array.Empty<byte>();
     }
     /// <summary>   Sets fixed buffer. </summary>
     /// <param name="index">    Zero-based index of the. </param>
@@ -54,11 +60,13 @@ public class SillyStructCodec : IXdrCodec
         return this._fixedBuffer[index];
     }
 
+    private byte[] _buffer;
+
     /// <summary>   Sets a buffer. </summary>
     /// <param name="x">    The x coordinate. </param>
     public virtual void SetBuffer( byte[] x )
     {
-        this._buffer = x;
+        this._buffer = x ?? Array.Empty<byte>();
     }
     /// <summary>   Sets a buffer. </summary>
     /// <param name="index">    Zero-based index of the. </param>
@@ -78,11 +86,13 @@ public class SillyStructCodec : IXdrCodec
         return this._buffer[index];
     }
 
+    private byte[] _fixedBytes;
+
     /// <summary>   Sets fixed bytes. </summary>
     /// <param name="x">    The x coordinate. </param>
     public virtual void SetFixedBytes( byte[] x )
     {
-        this._fixedBytes = x;
+        this._fixedBytes = x ?? Array.Empty<byte>();
     }
     /// <summary>   Sets fixed bytes. </summary>
     /// <param name="index">    Zero-based index of the. </param>
@@ -102,11 +112,13 @@ public class SillyStructCodec : IXdrCodec
         return this._fixedBytes[index];
     }
 
+    private byte[] _bytes;
+
     /// <summary>   Sets the bytes. </summary>
     /// <param name="x">    The x coordinate. </param>
     public virtual void SetBytes( byte[] x )
     {
-        this._bytes = x;
+        this._bytes = x ?? Array.Empty<byte>();
     }
     /// <summary>   Sets the bytes. </summary>
     /// <param name="index">    Zero-based index of the. </param>
@@ -128,39 +140,15 @@ public class SillyStructCodec : IXdrCodec
 
     /// <summary>   Gets or sets the 1. </summary>
     /// <value> The user interface 1. </value>
-    public virtual int Ui1
-    {
-        set => this._ui1 = value;
-        get => this._ui1;
-    }
+    public virtual int Ui1 { get; set; }
 
     /// <summary>   Gets or sets the 2. </summary>
     /// <value> The user interface 2. </value>
-    public virtual int Ui2
-    {
-        set => this._ui2 = value;
-        get => this._ui2;
-    }
+    public virtual int Ui2 { get; set; }
 
     /// <summary>   Gets or sets the nonsense. </summary>
     /// <value> The nonsense. </value>
-    public virtual string Nonsense
-    {
-        set => this._nonsense = value;
-        get => this._nonsense;
-    }
-
-    /// <summary>   Default constructor. </summary>
-    public SillyStructCodec()
-    {
-    }
-
-    /// <summary>   Constructor. </summary>
-    /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
-    public SillyStructCodec( XdrDecodingStreamBase decoder )
-    {
-        this.Decode( decoder );
-    }
+    public virtual string Nonsense { get; set; }
 
     /// <summary>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
@@ -175,9 +163,9 @@ public class SillyStructCodec : IXdrCodec
         encoder.EncodeByteVector( this._buffer );
         encoder.EncodeOpaque( this._fixedBytes, MiscConstants.FixedBufferLength );
         encoder.EncodeDynamicOpaque( this._bytes );
-        encoder.EncodeInt( this._ui1 );
-        encoder.EncodeInt( this._ui2 );
-        encoder.EncodeString( this._nonsense );
+        encoder.EncodeInt( this.Ui1 );
+        encoder.EncodeInt( this.Ui2 );
+        encoder.EncodeString( this.Nonsense );
     }
 
     /// <summary>
@@ -193,9 +181,9 @@ public class SillyStructCodec : IXdrCodec
         this._buffer = decoder.DecodeByteVector();
         this._fixedBytes = decoder.DecodeOpaque( MiscConstants.FixedBufferLength );
         this._bytes = decoder.DecodeDynamicOpaque();
-        this._ui1 = decoder.DecodeInt();
-        this._ui2 = decoder.DecodeInt();
-        this._nonsense = decoder.DecodeString();
+        this.Ui1 = decoder.DecodeInt();
+        this.Ui2 = decoder.DecodeInt();
+        this.Nonsense = decoder.DecodeString();
     }
 
 }

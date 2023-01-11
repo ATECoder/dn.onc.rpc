@@ -287,7 +287,6 @@ public class OncRpcPortmapClient
     /// Retrieves a list of all registered ONC/RPC servers at the same host as the contacted
     /// portmapper.
     /// </summary>
-    /// <remarks>   2022-12-24. </remarks>
     /// <returns>
     /// vector of server descriptions <see cref="OncRpcServerIdentifierCodec"/>.
     /// </returns>

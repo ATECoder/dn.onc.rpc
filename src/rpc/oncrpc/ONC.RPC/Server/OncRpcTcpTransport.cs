@@ -1,4 +1,3 @@
-
 using System.Net.Sockets;
 
 namespace cc.isr.ONC.RPC.Server;
@@ -37,8 +36,8 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     ///                             call and reply messages. </param>
     public OncRpcTcpTransport( IOncRpcDispatchable dispatcher, int port, int program, int version, int bufferSize )
                                                                 : this( dispatcher, port,
-                                                                         new OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) },
-                                                                         bufferSize )
+                                                                        new OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) },
+                                                                        bufferSize )
     {
         this._openTransports = new TransportList();
     }

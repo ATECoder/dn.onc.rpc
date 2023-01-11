@@ -6,7 +6,6 @@ using cc.isr.ONC.RPC.Portmap;
 namespace cc.isr.ONC.RPC.MSTest.PortMapper;
 
 /// <summary>   (Unit Test Class) a portmap get port test. </summary>
-/// <remarks>   2022-12-22. </remarks>
 [TestClass]
 public class PortmapGetPortTest
 {

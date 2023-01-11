@@ -1,11 +1,6 @@
 namespace cc.isr.ONC.RPC.MSTest.Codecs;
 
-using System;
-
-#nullable disable
-
 /// <summary>   (Serializable) linked list  XBR encoder/decoder. </summary>
-/// <remarks>   2022-12-22. </remarks>
 [Serializable]
 public class LinkedListCodec : IXdrCodec
 {
@@ -22,14 +17,6 @@ public class LinkedListCodec : IXdrCodec
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Style", "IDE1006:Naming Styles", Justification = "<Pending>" )]
     private const long serialVersionUID = -9187504517170663946L;
 
-    /// <summary>   Gets or sets the foo. </summary>
-    /// <value> The foo. </value>
-    public virtual int Foo { get; set; }
-
-    /// <summary>   Gets or sets the next. </summary>
-    /// <value> The next. </value>
-    public virtual LinkedListCodec Next { get; set; }
-
     /// <summary>   Default constructor. </summary>
     public LinkedListCodec()
     {
@@ -37,10 +24,19 @@ public class LinkedListCodec : IXdrCodec
 
     /// <summary>   Constructor. </summary>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
-    public LinkedListCodec( XdrDecodingStreamBase decoder )
+    public LinkedListCodec( XdrDecodingStreamBase decoder ) : this()
     {
         this.Decode( decoder );
     }
+
+    /// <summary>   Gets or sets the foo. </summary>
+    /// <value> The foo. </value>
+    public virtual int Foo { get; set; }
+
+    /// <summary>   Gets or sets the next. </summary>
+    /// <value> The next. </value>
+    public virtual LinkedListCodec? Next { get; set; }
+
 
     /// <summary>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.
@@ -51,7 +47,7 @@ public class LinkedListCodec : IXdrCodec
     /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
-        LinkedListCodec current = this;
+        LinkedListCodec? current = this;
         do
         {
             encoder.EncodeInt( current.Foo );
@@ -69,8 +65,8 @@ public class LinkedListCodec : IXdrCodec
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public virtual void Decode( XdrDecodingStreamBase decoder )
     {
-        LinkedListCodec current = this;
-        LinkedListCodec nextItem;
+        LinkedListCodec? current = this;
+        LinkedListCodec? nextItem;
         do
         {
             current.Foo = decoder.DecodeInt();

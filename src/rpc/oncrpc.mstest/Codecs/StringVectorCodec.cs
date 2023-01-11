@@ -1,47 +1,54 @@
-#nullable disable
-
-
 namespace cc.isr.ONC.RPC.MSTest.Codecs;
 
 /// <summary>   (Serializable) a string vector XBR encoder/decoder. </summary>
-/// <remarks>   2022-12-22. </remarks>
 [Serializable]
 public class StringVectorCodec : IXdrCodec
 {
 
     /* Remote Tea leftover:
-     * The serialization runtime associates with each serializable class a version number, called a serialVersionUID, 
-     * which is used during deserialization to verify that the sender and receiver of a serialized object have loaded 
-     * classes for that object that are compatible with respect to serialization. If the receiver has loaded a class 
-     * for the object that has a different serialVersionUID than that of the corresponding sender's class, then deserialization 
-     * will result in an InvalidClassException. A serializable class can declare its own serialVersionUID explicitly by declaring 
-     * a field named serialVersionUID that must be static, final, and of type 
-     */
-    [System.Diagnostics.CodeAnalysis.SuppressMessage( "CodeQuality", "IDE0051:Remove unused private members", Justification = "<Pending>" )]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Style", "IDE1006:Naming Styles", Justification = "<Pending>" )]
-    private const long serialVersionUID = -6645878168698853047L;
-
-    /// <summary>   Gets or sets the value. </summary>
-    /// <value> The value. </value>
-    public StringCodec[] Value { get; set; }
+     The serialization runtime associates with each serializable class a version number, called a serialVersionUID, 
+     which is used during deserialization to verify that the sender and receiver of a serialized object have loaded 
+     classes for that object that are compatible with respect to serialization. If the receiver has loaded a class 
+     for the object that has a different serialVersionUID than that of the corresponding sender's class, then deserialization 
+     will result in an InvalidClassException. A serializable class can declare its own serialVersionUID explicitly by declaring 
+     a field named serialVersionUID that must be static, final, and of type 
+     private long serialVersionUID = -6645878168698853047L;
+    */
 
     /// <summary>   Default constructor. </summary>
     public StringVectorCodec()
     {
+        this._values = Array.Empty<StringCodec>();
     }
 
     /// <summary>   Constructor. </summary>
     /// <param name="value">    The value. </param>
-    public StringVectorCodec( StringCodec[] value )
+    public StringVectorCodec( StringCodec[] value ) : this() 
     {
-        this.Value = value;
+        this._values = value;
     }
 
     /// <summary>   Constructor. </summary>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
-    public StringVectorCodec( XdrDecodingStreamBase decoder )
+    public StringVectorCodec( XdrDecodingStreamBase decoder ) : this() 
     {
         this.Decode( decoder );
+    }
+
+    private StringCodec[] _values;
+
+    /// <summary>   Gets the values. </summary>
+    /// <returns>   An array of string codec. </returns>
+    public StringCodec[] GetValues()
+    {
+        return this._values;
+    }
+
+    /// <summary>   Sets the values. </summary>
+    /// <param name="values">   The values. </param>
+    public void SetValues( StringCodec[] values )
+    {
+        this._values = values;
     }
 
     /// <summary>
@@ -54,10 +61,10 @@ public class StringVectorCodec : IXdrCodec
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
         {
-            int size = this.Value.Length;
+            int size = this._values.Length;
             encoder.EncodeInt( size );
             for ( int idx = 0; idx < size; ++idx )
-                this.Value[idx].Encode( encoder );
+                this._values[idx].Encode( encoder );
         }
     }
 
@@ -72,9 +79,9 @@ public class StringVectorCodec : IXdrCodec
     {
         {
             int size = decoder.DecodeInt();
-            this.Value = new StringCodec[size];
+            this._values = new StringCodec[size];
             for ( int idx = 0; idx < size; ++idx )
-                this.Value[idx] = new StringCodec( decoder );
+                this._values[idx] = new StringCodec( decoder );
         }
     }
 

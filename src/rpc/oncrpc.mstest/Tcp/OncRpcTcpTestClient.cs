@@ -1,13 +1,9 @@
 using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.MSTest.Codecs;
 
-#nullable enable
-
 namespace cc.isr.ONC.RPC.MSTest.Tcp;
 
-
 /// <summary>   An ONC/RPC TCP Test client. </summary>
-/// <remarks>   2022-12-02. </remarks>
 public class OncRpcTcpTestClient : IDisposable
 {
 
@@ -16,7 +12,6 @@ public class OncRpcTcpTestClient : IDisposable
     private OncRpcClientBase? _coreClient;
 
     /// <summary>   Connect. </summary>
-    /// <remarks>   2022-12-26. </remarks>
     /// <param name="host">     The host. </param>
     /// <param name="version">  The version. </param>
     public void Connect( IPAddress host, int version )
@@ -34,7 +29,6 @@ public class OncRpcTcpTestClient : IDisposable
     public bool Connected { get; private set; }
 
     /// <summary>   Query if this object is disposed. </summary>
-    /// <remarks>   2022-12-02. </remarks>
     /// <returns>   True if disposed, false if not. </returns>
     public bool IsDisposed()
     {
@@ -45,7 +39,6 @@ public class OncRpcTcpTestClient : IDisposable
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
     /// resources.
     /// </summary>
-    /// <remarks>   2022-12-02. </remarks>
     void IDisposable.Dispose()
     {
         this.Dispose( true );
@@ -58,7 +51,6 @@ public class OncRpcTcpTestClient : IDisposable
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
     /// resources.
     /// </summary>
-    /// <remarks>   2022-12-02. </remarks>
     /// <param name="disposing">    True to release both managed and unmanaged resources; false to
     ///                             release only unmanaged resources. </param>
     private void Dispose( bool disposing )
@@ -68,7 +60,6 @@ public class OncRpcTcpTestClient : IDisposable
     }
 
     /// <summary>   Closes this object. </summary>
-    /// <remarks>   2022-12-02. </remarks>
     public void Close()
     {
         this._coreClient?.Close();
@@ -106,7 +97,7 @@ public class OncRpcTcpTestClient : IDisposable
     ///                     information. </param>
     private void SetAuth( OncRpcClientAuthBase auth )
     {
-        if ( this._coreClient is not null ) this._coreClient.Auth = auth;
+        if ( this._coreClient is not null ) this._coreClient.Auth = auth ?? new OncRpcClientAuthNone();
     }
 
     /// <summary>   Clears the authentication. </summary>
@@ -295,7 +286,6 @@ public class OncRpcTcpTestClient : IDisposable
 
 
     /// <summary>   Call authenticate. </summary>
-    /// <remarks>   2022-12-30. </remarks>
     /// <param name="machineName">      Name of the machine. </param>
     /// <param name="userIdentity">     The user identity. </param>
     /// <param name="groupIdentity">    The group identity. </param>

@@ -1,7 +1,5 @@
 using cc.isr.ONC.RPC.Server;
 
-#nullable disable
-
 namespace cc.isr.ONC.RPC.MSTest.Tcp;
 
 /// <summary>
@@ -11,14 +9,20 @@ namespace cc.isr.ONC.RPC.MSTest.Tcp;
 public abstract class OncRpcTcpServerBase : OncRpcServerStubBase, IOncRpcDispatchable
 {
 
+    /// <summary>   Default constructor. </summary>
     public OncRpcTcpServerBase() : this( 0 )
     {
     }
 
-    public OncRpcTcpServerBase( int port ) : this( null, port )
+    /// <summary>   Constructor. </summary>
+    /// <param name="port"> The port. </param>
+    public OncRpcTcpServerBase( int port ) : this( IPAddress.Any, port )
     {
     }
 
+    /// <summary>   Constructor. </summary>
+    /// <param name="bindAddr"> The bind address. </param>
+    /// <param name="port">     The port. </param>
     public OncRpcTcpServerBase( IPAddress bindAddr, int port )
     {
         OncRpcProgramInfo[] registeredPrograms = new OncRpcProgramInfo[] {
@@ -34,7 +38,6 @@ public abstract class OncRpcTcpServerBase : OncRpcServerStubBase, IOncRpcDispatc
 
         this.CharacterEncoding = XdrTcpEncodingStream.DefaultEncoding;
     }
-
 
     /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>
     /// <remarks>
