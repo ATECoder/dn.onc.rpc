@@ -10,6 +10,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// </summary>
 /// <remarks>
 /// This server transport class is responsible for receiving ONC/RPC calls over UDP/IP. <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcUdpTransport : OncRpcTransportBase
@@ -111,6 +112,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// have to do it manually if you need to do so. The reason for this behavior is, that the
     /// portmapper removes all entries regardless of the protocol (TCP/IP or UDP/IP) for a given
     /// ONC/RPC program number and version. <para>
+    /// 
     /// Calling this method on a <see cref="OncRpcUdpTransport"/>
     /// results in the UDP network socket immediately being closed. The handler thread will therefore
     /// either terminate directly or when it tries to sent back a reply which it was about to handle
@@ -257,6 +259,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// This is rather a low-level method, typically not used by applications. Dispatcher handling
     /// ONC/RPC calls have to use the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
     /// method instead on the call object supplied to the handler. <para>
+    /// 
     /// An appropriate implementation has to be provided in derived classes as it is dependent on the
     /// type of transport (whether UDP/IP or TCP/IP)
     /// used. </para>
@@ -277,6 +280,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// </summary>
     /// <remarks>
     /// Control in the calling thread immediately returns after the handler thread has been created. <para>
+    /// 
     /// Currently only one call after the other is dispatched, so no multi threading is done when
     /// receiving multiple calls. Instead, later calls have to wait for
     /// the current call to finish before they are handled. </para>

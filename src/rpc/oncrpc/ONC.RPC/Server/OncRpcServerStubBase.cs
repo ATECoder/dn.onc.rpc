@@ -9,6 +9,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// <remarks>
 /// This class is typically only used by <c>rpcgen</c> generated servers, which
 /// provide a particular set of remote procedures as defined in an x-file.  <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public abstract class OncRpcServerStubBase : IDisposable
@@ -57,7 +58,7 @@ public abstract class OncRpcServerStubBase : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
-        catch (Exception ex ) { Console.WriteLine( ex.ToString() );  }
+        catch ( Exception ex ) { Console.WriteLine( ex.ToString() ); }
         finally
         {
             this.IsDisposed = true;

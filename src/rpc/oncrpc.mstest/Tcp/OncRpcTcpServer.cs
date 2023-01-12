@@ -211,6 +211,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// to use it properly. For background information about fairly deep semantics, please also refer
     /// to <i>Gigzales</i>, <i>J</i>.: Semantics considered harmful. Addison-Reilly, 1992, ISBN 0-542-
     /// 10815-X. <para>
+    ///  
     /// See the introduction to this class for examples of how to use this interface properly.</para>
     /// </remarks>
     /// <param name="call">         <see cref="OncRpcCallHandler"/> about the call to handle, 
@@ -224,11 +225,11 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         base.DispatchOncRpcCall( call, program, version, procedure );
         if ( version == RpcProgramConstants.Version1 )
         {
-            OncRpcTcpServer.DispatchOncRpcCall( call, (RemoteProceduresVersion1) procedure );
+            OncRpcTcpServer.DispatchOncRpcCall( call, ( RemoteProceduresVersion1 ) procedure );
         }
         else if ( version == RpcProgramConstants.Version2 )
         {
-            OncRpcTcpServer.DispatchOncRpcCall( call, (RemoteProceduresVersion2) procedure );
+            OncRpcTcpServer.DispatchOncRpcCall( call, ( RemoteProceduresVersion2 ) procedure );
         }
         else
         {

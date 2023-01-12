@@ -5,8 +5,8 @@ namespace cc.isr.ONC.RPC.MSTest.Support;
 /// <summary> A Thread safe token. </summary>
 /// <remarks>
 /// (c) 2017 Integrated Scientific Resources, Inc. All rights reserved.<para>
-/// Licensed under The MIT License.</para><para>
-/// David, 2017-03-29 </para>
+/// 
+/// Licensed under The MIT License.</para>
 /// </remarks>
 [DebuggerDisplay( "Value = {Value}" )]
 public class ConcurrentToken<T> : IDisposable

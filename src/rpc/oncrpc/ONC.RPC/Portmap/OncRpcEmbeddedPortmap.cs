@@ -12,8 +12,10 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// <remarks>
 /// If an embedded portmap service is started it will stop only after the last ONC/RPC program
 /// has been deregistered. <para>
+/// 
 /// This class need not be disposable as the service will automatically terminate after the last 
 /// program deregisters. </para><para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcEmbeddedPortmapService

@@ -7,8 +7,10 @@ namespace cc.isr.ONC.RPC.Codecs;
 /// </summary>
 /// <remarks>
 /// This information is used, for instance, as the ONC/RPC portmap PMAP_GETPORT call parameters. <para>
+/// 
 /// An server <see cref="OncRpcServerIdentifierCodec"/> can be directly serialized into an
 /// encoding XDR stream (that is more political correct than "flushed down the toilet").</para> <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcServerIdentifierCodec : IXdrCodec

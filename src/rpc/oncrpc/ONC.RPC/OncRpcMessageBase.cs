@@ -7,6 +7,7 @@ namespace cc.isr.ONC.RPC;
 /// <remarks>
 /// The only things common to all ONC/RPC messages are a message identifier and the message type.
 /// All other things do not come in until derived classes are introduced. <para>
+///  
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public abstract class OncRpcMessageBase

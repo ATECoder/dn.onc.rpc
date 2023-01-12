@@ -14,11 +14,13 @@ public enum OncRpcRejectStatus
 {
     /// <summary>
     /// Wrong ONC/RPC protocol version used in call (it needs to be version 2). <para>
+    /// 
     /// Renamed from <c>ONCRPC_RPC_MISMATCH = 0</c>. </para> </summary>
     [Description( "Wrong ONC/RPC protocol version used in call (it needs to be version 2)." )] OncRpcWrongProtocolVersion = 0,
 
     /// <summary>
     /// The remote ONC/RPC server could not authenticate the caller.  <para>
+    /// 
     /// Renamed from <c>ONCRPC_AUTH_ERROR = 1</c>. </para> </summary>
     [Description( "The remote ONC/RPC server could not authenticate the caller." )] OncRpcAuthError = 1,
 }

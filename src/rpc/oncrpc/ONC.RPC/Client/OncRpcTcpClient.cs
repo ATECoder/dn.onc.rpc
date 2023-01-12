@@ -8,6 +8,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// oriented protocol TCP/IP.
 /// </summary>
 /// <remarks> <para>
+///  
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcTcpClient : OncRpcClientBase
@@ -219,7 +220,7 @@ public class OncRpcTcpClient : OncRpcClientBase
         get => base.CharacterEncoding;
         set {
             base.CharacterEncoding = value;
-            if ( this.Decoder is not null) this.Decoder.CharacterEncoding = value;
+            if ( this.Decoder is not null ) this.Decoder.CharacterEncoding = value;
             if ( this.Encoder is not null ) this.Encoder.CharacterEncoding = value;
         }
     }
@@ -391,7 +392,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     ///                                 server. </param>
     public virtual void BatchCall( int procedureNumber, IXdrCodec requestCodec, bool flush )
     {
-        if ( this._socket is null || this.Encoder is null ) { return ; }
+        if ( this._socket is null || this.Encoder is null ) { return; }
         lock ( this )
         {
             // First, build the ONC/RPC call header. Then put the sending

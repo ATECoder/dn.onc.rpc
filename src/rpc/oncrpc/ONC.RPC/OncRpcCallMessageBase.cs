@@ -7,13 +7,16 @@ namespace cc.isr.ONC.RPC;
 /// <remarks>
 /// Such messages are sent by ONC/RPC clients to servers in order to request a remote procedure
 /// call. <para>
+/// 
 /// Note that this is an abstract class. Because call message objects also need to deal with
 /// authentication protocol issues, they need help of so-called authentication protocol handling
 /// objects. These objects are of different classes, depending on where they are used (either
 /// within the server or the client).</para> <para>
+/// 
 /// Please also note that this class implements no encoding or decoding functionality: it doesn't
 /// need them. Only derived classes will be able to be encoded on the side of the client and
 /// decoded at the end of the server.</para> <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public abstract class OncRpcCallMessageBase : OncRpcMessageBase
@@ -21,6 +24,7 @@ public abstract class OncRpcCallMessageBase : OncRpcMessageBase
     /// <summary>
     /// (Immutable) Protocol version used by this ONC/RPC implementation. The protocol version 2
     /// is defined in RFC 1831. <para>
+    /// 
     /// Renamed from <c>ONCRPC_VERSION (=2)</c> </para> </summary>
     public const int OncRpcProtocolVersion = 2;
 

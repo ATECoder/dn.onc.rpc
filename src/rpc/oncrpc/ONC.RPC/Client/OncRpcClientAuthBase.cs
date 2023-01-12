@@ -7,6 +7,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// <remarks>
 /// As it stands, it does not do very much with the exception of defining the contract for the
 /// behavior of derived classes with respect to protocol handling issues. <para>
+/// 
 /// Authentication on the client side can be done as follows: just
 /// create an authentication object and hand it over to the ONC/RPC client object.
 /// <code>
@@ -17,6 +18,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// will handle shorthand credentials (of type <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/> transparently). If you do
 /// not set any authentication object after creating an ONC/RPC client object, <see cref="OncRpcAuthType.OncRpcAuthTypeNone"/>
 /// is used automatically.  </para> <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public abstract class OncRpcClientAuthBase

@@ -7,6 +7,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// <remarks>
 /// This class is typically only used by <c>rpcgen</c>-generated clients, which provide a particular
 /// set of remote procedures as defined in a x-file. <para>
+///  
 /// When you do not need the client proxy object any longer, you should return the resources
 /// it occupies to the system. Use the <see cref="Close()"/> method for this. </para>
 /// <code>

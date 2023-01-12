@@ -7,12 +7,15 @@ namespace cc.isr.ONC.RPC.Server;
 /// <remarks>
 /// Such messages are sent back by ONC/RPC to servers to clients and contain
 /// (in case of real success) the result of a remote procedure call. <para>
+/// 
 /// This class and all its derived classes can be encoded only. They are
 /// not able to encode themselves, because they are used solely on the server side of an ONC/RPC
 /// connection. </para> <para>
+/// 
 /// The decision to define only one single class for the accepted and
 /// rejected replies was driven by the motivation not to use polymorphism and thus have to upcast
 /// and downcast references all the time.  </para> <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcServerReplyMessage : OncRpcReplyMessageBase

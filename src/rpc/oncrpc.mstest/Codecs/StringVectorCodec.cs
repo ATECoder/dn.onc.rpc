@@ -23,14 +23,14 @@ public class StringVectorCodec : IXdrCodec
 
     /// <summary>   Constructor. </summary>
     /// <param name="value">    The value. </param>
-    public StringVectorCodec( StringCodec[] value ) : this() 
+    public StringVectorCodec( StringCodec[] value ) : this()
     {
         this._values = value;
     }
 
     /// <summary>   Constructor. </summary>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
-    public StringVectorCodec( XdrDecodingStreamBase decoder ) : this() 
+    public StringVectorCodec( XdrDecodingStreamBase decoder ) : this()
     {
         this.Decode( decoder );
     }

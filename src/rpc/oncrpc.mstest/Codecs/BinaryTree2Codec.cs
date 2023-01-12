@@ -13,7 +13,7 @@ public class BinaryTree2Codec : IXdrCodec
 
     /// <summary>   Constructor. </summary>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
-    public BinaryTree2Codec( XdrDecodingStreamBase decoder ): this()
+    public BinaryTree2Codec( XdrDecodingStreamBase decoder ) : this()
     {
         this.Decode( decoder );
     }

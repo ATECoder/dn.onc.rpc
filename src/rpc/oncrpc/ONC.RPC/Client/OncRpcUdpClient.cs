@@ -9,6 +9,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// oriented protocol UDP/IP.
 /// </summary>
 /// <remarks> <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcUdpClient : OncRpcClientBase
@@ -495,11 +496,13 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// when creating a <see cref="OncRpcUdpClient"/>. For every reply received, an event containing the reply is sent to
     /// the <see cref="IOncRpcBroadcastListener">listener</see>, which is the last parameter to the this
     /// method. <para>
+    /// 
     /// In contrast to the
     /// <see cref="OncRpcClientBase.Call(int, IXdrCodec, IXdrCodec)"/>
     /// method, <see cref="BroadcastCall"/> will only send the ONC/RPC call once. It will then wait
     /// for answers until the timeout as set by <see cref="OncRpcClientBase.Timeout"/>
     /// expires without resending the reply. </para> <para>
+    /// 
     /// Note that you might experience unwanted results when using
     /// authentication types other than <see cref="OncRpcClientAuthNone"/>, causing
     /// messed up authentication protocol handling objects. This depends on the type of

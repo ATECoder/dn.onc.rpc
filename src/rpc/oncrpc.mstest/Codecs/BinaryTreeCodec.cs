@@ -20,7 +20,7 @@ public class BinaryTreeCodec : IXdrCodec
     {
         this.Key = string.Empty;
         this.Value = string.Empty;
-        this.Left  = new BinaryTreeCodec();
+        this.Left = new BinaryTreeCodec();
         this.Right = null;
     }
 

@@ -9,11 +9,14 @@ namespace cc.isr.ONC.RPC;
 /// <remarks>
 /// Such messages are sent back by ONC/RPC to servers to clients and contain (in case of real
 /// success) the result of a remote procedure call. <para>
+///  
 /// The decision to define only one single class for the accepted and
 /// rejected replies was driven by the motivation not to use polymorphism and thus have to upcast
 /// and downcast references all the time. </para> <para>
+/// 
 /// The derived classes are only provided for convenience on the server
 /// side. </para> <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
@@ -85,6 +88,7 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     /// <see cref="OncRpcReplyStatus.OncRpcMessageDenied"/>.
     /// Depending on the value of this field, other fields of an instance of
     /// <see cref="OncRpcReplyMessageBase"/> become important. <para>
+    /// 
     /// The decision to define only one single class for the accepted and
     /// rejected replies was driven by the motivation not to use polymorphism
     /// and thus have to upcast and downcast references all the time.</para>
@@ -95,6 +99,7 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     /// Acceptance status in case this reply was sent in response to an accepted call
     /// (<see cref="OncRpcReplyStatus.OncRpcMessageAccepted"/>).
     /// This field can take any of the values defined in the <see cref="OncRpcAcceptStatus"/> interface. <para>
+    /// 
     /// Note that even for accepted calls that only in the case of
     /// <see cref="OncRpcAcceptStatus.OncRpcSuccess"/>
     /// result data will follow the reply message header. </para>

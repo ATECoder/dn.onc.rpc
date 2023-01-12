@@ -151,7 +151,7 @@ public class OncRpcTcpTestClient : IDisposable
     {
         IntXdrCodec args = new( arg1 );
         BooleanXdrCodec result = new();
-        this.Call( (int) RemoteProceduresVersion1.CompareInputToFoo, this.Version, args, result );
+        this.Call( ( int ) RemoteProceduresVersion1.CompareInputToFoo, this.Version, args, result );
         return result.Value;
     }
 
@@ -163,7 +163,7 @@ public class OncRpcTcpTestClient : IDisposable
     {
         VoidXdrCodec args = VoidXdrCodec.VoidXdrCodecInstance;
         IntXdrCodec result = new();
-        this.Call( (int) RemoteProceduresVersion1.ReturnEnumFooValue, this.Version, args, result );
+        this.Call( ( int ) RemoteProceduresVersion1.ReturnEnumFooValue, this.Version, args, result );
         return result.Value;
     }
 
@@ -178,7 +178,7 @@ public class OncRpcTcpTestClient : IDisposable
     public virtual LinkedListCodec CallRemoteProcedureBuildLinkedList( LinkedListCodec arg1 )
     {
         LinkedListCodec result = new();
-        this.Call( (int) RemoteProceduresVersion1.BuildLinkedList, this.Version, arg1, result );
+        this.Call( ( int ) RemoteProceduresVersion1.BuildLinkedList, this.Version, arg1, result );
         return result;
     }
 
@@ -192,7 +192,7 @@ public class OncRpcTcpTestClient : IDisposable
     {
         VoidXdrCodec args = VoidXdrCodec.VoidXdrCodecInstance;
         SomeResultCodec result = new();
-        this.Call( (int) RemoteProceduresVersion1.RemoteProcedureReadSomeResult, this.Version, args, result );
+        this.Call( ( int ) RemoteProceduresVersion1.RemoteProcedureReadSomeResult, this.Version, args, result );
         return result;
     }
 
@@ -207,7 +207,7 @@ public class OncRpcTcpTestClient : IDisposable
             Arg2 = arg2
         };
         StringXdrCodec result = new();
-        this.Call( (int) RemoteProceduresVersion2.ConcatenateTwoValues, RpcProgramConstants.Version2, args, result );
+        this.Call( ( int ) RemoteProceduresVersion2.ConcatenateTwoValues, RpcProgramConstants.Version2, args, result );
         return result.Value;
     }
 
@@ -263,7 +263,7 @@ public class OncRpcTcpTestClient : IDisposable
             List2 = list2
         };
         LinkedListCodec result = new();
-        this.Call( (int) RemoteProceduresVersion2.LinkListItems, RpcProgramConstants.Version2, args, result );
+        this.Call( ( int ) RemoteProceduresVersion2.LinkListItems, RpcProgramConstants.Version2, args, result );
         return result;
     }
 
@@ -281,7 +281,7 @@ public class OncRpcTcpTestClient : IDisposable
             D = d
         };
         VoidXdrCodec result = VoidXdrCodec.VoidXdrCodecInstance;
-        this.Call( (int) RemoteProceduresVersion2.ProcessFourArguments, RpcProgramConstants.Version2, args, result );
+        this.Call( ( int ) RemoteProceduresVersion2.ProcessFourArguments, RpcProgramConstants.Version2, args, result );
     }
 
 

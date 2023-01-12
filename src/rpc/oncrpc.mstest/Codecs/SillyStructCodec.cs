@@ -18,10 +18,10 @@ public class SillyStructCodec : IXdrCodec
     /// <summary>   Default constructor. </summary>
     public SillyStructCodec()
     {
-        this._fixedBuffer  = Array.Empty<byte>();
-        this._buffer= Array.Empty<byte>();
-        this._bytes= Array.Empty<byte>();
-        this._fixedBytes= Array.Empty<byte>();
+        this._fixedBuffer = Array.Empty<byte>();
+        this._buffer = Array.Empty<byte>();
+        this._bytes = Array.Empty<byte>();
+        this._fixedBytes = Array.Empty<byte>();
         this.Nonsense = string.Empty;
     }
 

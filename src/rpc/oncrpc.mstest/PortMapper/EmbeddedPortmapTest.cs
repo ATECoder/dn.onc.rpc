@@ -23,7 +23,7 @@ public class EmbeddedPortmapTest
         // into action.
 
         Console.WriteLine( "Creating embedded portmap instance: " );
-        OncRpcEmbeddedPortmapService epm = new ();
+        OncRpcEmbeddedPortmapService epm = new();
 
         if ( !epm.EmbeddedPortmapInUse() )
             Console.WriteLine( "embedded service not used: " );

@@ -10,6 +10,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// It encapsulates protocol-independent functionality, like port resolving, if no port
 /// was specified for the ONC/RPC server to contact. This class also provides the method skeleton,
 /// for instance for executing procedure calls. <para>
+///  
 /// In order to communicate with an ONC/RPC server, you need to create an
 /// ONC/RPC client, represented by classes derived from <see cref="OncRpcClientBase"/>. The most
 /// generic way to generate an ONC/RPC client is as follows: use
@@ -20,7 +21,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// the program's version number,</item><item>
 /// and finally the IP protocol to use when talking to the server. This can be either
 /// <see cref="OncRpcProtocols.OncRpcUdp"/> or <see cref="OncRpcProtocols.OncRpcTcp"/>.</item></list> <para>
-/// 
+///  
 /// The next code snippet shows how to create an ONC/RPC client, which can
 /// communicate over UDP/IP with the ONC/RPC server for program number
 /// <c>0x49678</c> on the same host (by coincidence, this is the program
@@ -47,6 +48,7 @@ namespace cc.isr.ONC.RPC.Client;
 ///    System.exit(0);
 /// }
 /// </code> <para>
+/// 
 /// This code snippet also shows exception handling. The most common error you'll see is
 /// probably an <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/> exception,
 /// in case no such program number is currently registered at the specified host.
@@ -54,10 +56,12 @@ namespace cc.isr.ONC.RPC.Client;
 /// <see cref="OncRpcExceptionReason.OncRpcProcedureCallTimedOut"/> instead.
 /// You might also get an IOException when using TCP/IP and the server
 /// cannot be contacted because it does not accept new connections.  </para> <para>
+/// 
 /// Instead of calling <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocols)"/>
 /// you can also directly create objects of classes <see cref="OncRpcTcpClient"/>
 /// and <see cref="OncRpcUdpClient"/>
 /// if you know at compile time which kind of IP protocol you will use. </para> <para>
+/// 
 /// With a client proxy in your hands, you can now issue ONC/RPC calls. As
 /// a really, really simple example -- did I say "simple example"? -- we start
 /// with the famous ONC/RPC ping call. This call sends no parameters and expects
@@ -75,14 +79,17 @@ namespace cc.isr.ONC.RPC.Client;
 /// }
 /// Console.WriteLine("server is alive.");
 /// </code> <para>
+/// 
 /// By definition, the ONC/RPC ping call has program number 0 and expects no parameters and
 /// replies with no result. Thus we just specify an empty parameter and result in the form of the
 /// static <see cref="VoidXdrCodec.VoidXdrCodecInstance"/> object, when calling the ping procedure in 
 /// the server using the <see cref="Call(int, IXdrCodec, IXdrCodec)"/> method. </para> <para>
+/// 
 /// For more complex and sometimes more useful ONC/RPC calls, you will need
 /// to write appropriate ONC/RPC parameter and reply classes. Unfortunately, at this time there's
 /// no compiler available to compile <c>.x</c> files, which define the XDR data structures, into 
 /// appropriate classes. </para> <para>
+/// 
 /// For the next example, let's pretend our server provides the answer to all questions when
 /// called with procedure number 42. Let's also pretend that this ONC/RPC call expects a question
 /// in form of a string and returns the answer as an integer. So we need to define two classes,
@@ -100,6 +107,7 @@ namespace cc.isr.ONC.RPC.Client;
 ///   question = decoder.DecodeString();
 /// }
 /// </code> <para>
+/// 
 /// The <c>StringCodec</c> class implements <see cref="IXdrCodec"/>, so instances
 /// of it can be sent and received over the network using Sun's XDR protocol. What exactly is
 /// sent over the wire is up to the two methods <see cref="IXdrCodec.Encode(XdrEncodingStreamBase)"/>
@@ -107,6 +115,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// method encodes the data to be sent over the network, whereas <see cref="IXdrCodec.Decode"/>
 /// restores the object's state from the data received over the network. In our example, 
 /// these methods either send or receive a string. </para> <para>
+/// 
 /// The class defining the reply of our the-answer-to-all-questions ONC/RPC
 /// call is now straightforward:</para>
 /// <code>
@@ -121,6 +130,7 @@ namespace cc.isr.ONC.RPC.Client;
 ///   }
 /// }
 /// </code> <para>
+/// 
 /// Finally, to ask a question, you need to create the parameter object and fill it with the
 /// parameters to be sent. Then create the object later receiving the reply. Finally issue the
 /// ONC/RPC call: </para>
@@ -138,6 +148,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// Console.WriteLine(parameters.question);
 /// Console.WriteLine($"And the answer is: {answer.DefinitiveAnswer}");
 /// </code> <para>
+/// 
 /// When you do not need the client proxy object any longer, you should return the resources
 /// it occupies to the system. Use the <see cref="Close()"/> method for this.</para>
 /// <code>
@@ -145,15 +156,18 @@ namespace cc.isr.ONC.RPC.Client;
 /// client = null; 
 /// </code>
 /// <see cref="OncRpcClientAuthBase">Authentication</see> can be done as follows:  <para>
+/// 
 /// just create an authentication object and hand it over to the ONC/RPC client object. </para>
 /// <code>
 /// OncRpcClientAuthBase auth = new OncRpcClientAuthUnix("marvin@ford.prefect", 42, 1001, new int[0]);
 /// client.Auth = auth;
 /// </code> <para>
+/// 
 /// The <see cref="OncRpcClientAuthUnix"/> <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/>
 /// will handle shorthand credentials (of type <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>) transparently. If you do
 /// not set any authentication object after creating an ONC/RPC client object, <see cref="OncRpcAuthType.OncRpcAuthTypeNone"/>
 /// is used automatically. </para> <para>
+/// 
 /// TCP-based ONC/RPC clients also support call batching (exception handling
 /// omitted for clarity): </para>
 /// <code>
@@ -408,7 +422,9 @@ public abstract class OncRpcClientBase : IDisposable
     /// <remarks>
     /// The <see cref="Call(int, IXdrCodec, IXdrCodec)"/> method will throw a <see cref="ThreadInterruptedException"/>
     /// exception if no answer from the ONC/RPC server is received within the timeout time span. <para>
+    /// 
     /// The default timeout value is 30 seconds (30,000 milliseconds). </para><para>
+    /// 
     /// The timeout must be non-negative. A timeout of zero indicated batched calls, for which no
     /// reply message is expected. </para>
     /// </remarks>

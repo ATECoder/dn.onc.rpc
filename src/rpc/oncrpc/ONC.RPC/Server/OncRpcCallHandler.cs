@@ -8,10 +8,10 @@ namespace cc.isr.ONC.RPC.Server;
 /// The handler is handed to ONC/RPC <see cref="IOncRpcDispatchable">call dispatchers</see>, so
 /// it can Sends back the reply to the appropriate caller, etc. <para>
 /// 
+/// 
 /// Use this call handler objects only to retrieve call parameters and send back replies because, in
 /// the future UDP/IP-based transports may become multi-threaded handling. The call handler is
-/// controls access to the underlaying transport, so never mess with the transport directly. </para>
-/// <para>
+/// controls access to the underlaying transport, so never mess with the transport directly. </para> <para> 
 /// 
 /// Note that this class provides two different patterns for accessing parameters sent by clients
 /// within the ONC/RPC call and sending back replies as described below. </para>
@@ -39,6 +39,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// serialize the reply/result.  </item><item>
 /// 
 /// Finally finish the serializing step by calling <see cref="EndEncoding()"/>. </item></list><para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcCallHandler
@@ -194,9 +195,9 @@ public class OncRpcCallHandler
     /// </remarks>
     /// <param name="state">    ONC/RPC reply message header indicating success or failure and
     ///                         containing associated state information. </param>
-    public virtual void Reply( OncRpcServerReplyMessage state)
+    public virtual void Reply( OncRpcServerReplyMessage state )
     {
-        this.Transport.Reply( this, state);
+        this.Transport.Reply( this, state );
     }
 
     /// <summary> Sends back an ONC/RPC reply to the caller who sent in this call. </summary>

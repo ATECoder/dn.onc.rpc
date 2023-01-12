@@ -5,6 +5,7 @@ namespace cc.isr.ONC.RPC.Web;
 /// between binary and base64-encoded data.
 /// </summary>
 /// <remarks> <para>
+///  
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public static class Base64

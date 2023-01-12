@@ -20,11 +20,13 @@ namespace cc.isr.ONC.RPC.Server;
 /// back to the client in the next step.</item><item>
 /// Sends back the reply by calling the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
 /// method of the <see cref="OncRpcCallHandler"/> object </item> </list> <para>
+/// 
 /// Here's a simple example only showing how to handle the famous
 /// procedure <c>0</c>: this is the "ping" procedure which can be used to test whether the
 /// server is still living. The example also shows how to handle calls for procedures which are
 /// not implemented (not defined) by calling
 /// <see cref="OncRpcCallHandler.ReplyProcedureNotAvailable()"/>.</para> <para>
+/// 
 /// In case the dispatcher throws an exception, the affected ONC/RPC server
 /// transport will send a system error indication
 /// <see cref="OncRpcCallHandler.ReplySystemError()"/>
@@ -70,6 +72,7 @@ namespace cc.isr.ONC.RPC.Server;
 ///     }
 /// }
 /// </code> <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public interface IOncRpcDispatchable
@@ -80,6 +83,7 @@ public interface IOncRpcDispatchable
     /// to use it properly. For background information about fairly deep semantics, please also refer
     /// to <i>Gigzales</i>, <i>J</i>.: Semantics considered harmful. Addison-Reilly, 1992, ISBN 0-542-
     /// 10815-X. <para>
+    /// 
     /// See the introduction to this class for examples of how to use
     /// this interface properly.</para>
     /// </remarks>

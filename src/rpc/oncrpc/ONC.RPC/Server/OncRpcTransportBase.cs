@@ -11,12 +11,14 @@ namespace cc.isr.ONC.RPC.Server;
 /// <remarks>
 /// Using server transports, ONC/RPC calls are received and the corresponding replies are later
 /// sent back after handling. <para>
+/// 
 /// Note that the server-specific dispatcher handling requests (done through <see cref="IOncRpcDispatchable"/>
 /// will only directly deal with <see cref="OncRpcCallHandler"/> objects. These call
 /// information objects reference OncRpcServerTransport object, but the server programmer
 /// typically will never touch them, as the call information object already contains all
 /// necessary information about a call, so replies can be sent back (and this is definitely a
 /// sentence containing too many words). </para> <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public abstract class OncRpcTransportBase : IDisposable
@@ -40,6 +42,7 @@ public abstract class OncRpcTransportBase : IDisposable
     /// <remarks>
     /// Using a server transport, ONC/RPC calls are received and the corresponding replies are sent
     /// back. <para>
+    /// 
     /// We do not create any XDR streams here, as it is the responsibility of derived classes to
     /// create appropriate XDR stream objects for the respective kind of transport mechanism used
     /// (like TCP/IP and UDP/IP).</para>
@@ -68,6 +71,7 @@ public abstract class OncRpcTransportBase : IDisposable
     /// have to do it manually if you need to do so. The reason for this behavior is, that the port
     /// mapper removes all entries regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC
     /// program number and version. <para>
+    /// 
     /// Derived classes can choose between different behavior for shutting down the associated
     /// transport handler threads: </para> <list type="bullet"> <item>
     /// Close the transport immediately and let the threads stumble on the closed network connection.</item>
@@ -332,6 +336,7 @@ public abstract class OncRpcTransportBase : IDisposable
     /// This is rather a low-level method, typically not used by applications. Dispatcher handling
     /// ONC/RPC calls have to use the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
     /// method instead on the call object supplied to the handler. <para>
+    /// 
     /// An appropriate implementation has to be provided in derived classes as it is dependent on the
     /// type of transport (whether UDP/IP or TCP/IP)
     /// used. </para>
@@ -349,6 +354,7 @@ public abstract class OncRpcTransportBase : IDisposable
     /// This is rather a low-level method, typically not used by applications. Dispatcher handling
     /// ONC/RPC calls have to use the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
     /// method instead on the call object supplied to the handler. <para>
+    /// 
     /// An appropriate implementation has to be provided in derived classes as it is dependent on the
     /// type of transport (whether UDP/IP or TCP/IP)
     /// used. </para>

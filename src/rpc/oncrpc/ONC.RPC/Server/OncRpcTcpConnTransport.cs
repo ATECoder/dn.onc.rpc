@@ -27,7 +27,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// </remarks>
     /// <param name="parent">   Parent server transport which created us. </param>
     /// <param name="socket">   TCP/IP-based socket of new connection. </param>
-    public OncRpcTcpConnTransport( OncRpcTcpTransport parent, Socket socket) : this( parent.Dispatcher, socket,
+    public OncRpcTcpConnTransport( OncRpcTcpTransport parent, Socket socket ) : this( parent.Dispatcher, socket,
                                                             parent.RegisteredPrograms, parent.BufferSize,
                                                             parent, parent.TransmissionTimeout )
     {
@@ -112,6 +112,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// Note that the server transport is <b>not deregistered</b>. You'll have to do it manually if
     /// you need to do so. The reason for this behavior is, that the portmapper removes all entries
     /// regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC program number and version. <para>
+    /// 
     /// Calling this method on a <see cref="OncRpcTcpTransport"/>
     /// results in the listening TCP network socket immediately being closed. The handler thread will
     /// therefore either terminate directly or when it tries to sent back replies. </para>
@@ -293,6 +294,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// </summary>
     /// <remarks>
     /// Control in the calling thread immediately returns after the handler thread has been created. <para>
+    /// 
     /// Currently only one call after the other is dispatched, so no
     /// multi threading is done when receiving multiple calls. Instead, later calls have to wait for
     /// the current call to finish before they are handled.</para>
@@ -332,7 +334,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
 
     private void DoListen()
     {
-        if ( this._socket is null || this.Decoder is null ) { return ; } 
+        if ( this._socket is null || this.Decoder is null ) { return; }
         OncRpcCallHandler callInfo = new( this );
         for (; ; )
         {

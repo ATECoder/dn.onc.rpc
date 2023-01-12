@@ -22,10 +22,12 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// the best thing since the Win32 API, please implement the 
 /// <see href="https://www.freesoft.org/CIE/RFC/1833/2.htm">RPCBIND</see> program protocol
 /// versions 3 and 4 and give it to the community -- thank you. <para>
+/// 
 /// Here are some simple examples of how to use the portmapper proxy object.
 /// We first start with one of the most interesting operations, which can be
 /// performed on port mappers, querying the port of a local or remote ONC/RPC
 /// server. </para> <para>
+/// 
 /// To query the port number of an ONC/RPC server, we need to contact the
 /// portmapper at the host machine where the server is running. The following
 /// code snippet just contacts the local portmapper. <see langword="try"/> blocks
@@ -34,6 +36,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// <code>
 /// OncRpcPortmapClient portmap = new OncRpcPortmapClient( IPAddress.Loopback );
 /// </code> <para>
+/// 
 /// With the portmapper proxy object in our hands we can now ask for the port number of a
 /// particular ONC/RPC server. In this (fictitious) example we ask for the ONC/RPC program
 /// (server) number <c>0x49678</c> (by coincidence this happens to be the program number of
@@ -56,17 +59,20 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// }
 /// Console.WriteLine( $"Program available at port {port}" );
 /// </code> <para>
+/// 
 /// In the call to <see cref="GetPort(int, int, OncRpcProtocols)"/>, the first parameter
 /// specifies the ONC/RPC program number, the second parameter specifies the program's version
 /// number, and the third parameter specifies the IP protocol to use when issuing ONC/RPC calls.
 /// Currently, only <see cref="OncRpcProtocols.OncRpcUdp"/> and <see cref="OncRpcProtocols.OncRpcTcp"/>
 /// are supported. But who needs other protocols anyway?! </para> <para>
+/// 
 /// In case <see cref="GetPort(int, int, OncRpcProtocols)"/>
 /// succeeds, it returns the number of the port where the appropriate ONC/RPC server waits for
 /// incoming ONC/RPC calls. If the ONC/RPC program is not registered with the particular ONC/RPC
 /// portmapper, an <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/>
 /// is thrown (which is a subclass of <see cref="OncRpcException"/>
 /// with a <see cref="OncRpcException.Reason"/> of <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/>. </para> <para>
+/// 
 /// A second typical example of how to use the portmapper is retrieving a list of the
 /// currently registered servers. We use the <see cref="ListServers()"/>
 /// method for this purpose in the following example, and print the list we got. </para>
@@ -83,14 +89,17 @@ namespace cc.isr.ONC.RPC.Portmap;
 ///   Console.WriteLine( $"{item.program} {item.version} {item.protocol} {item.port}" );
 /// }
 /// </code> <para>
+/// 
 /// When you do not need the client proxy object any longer, you should return the resources
 /// it occupies to the system. Use the <see cref="Close()"/> method for this. </para>
 /// <code>
 /// portmap.Close();
 /// portmap = null; // Hint to the garbage collector
 /// </code> <para>
+/// 
 /// For another code example, please consult 
 /// <see href="../oncrpc.mstest/PortMapper/PortmapGetPortTest.cs"/> </para> <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcPortmapClient

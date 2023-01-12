@@ -8,6 +8,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// </summary>
 /// <remarks>
 /// This server transport class is responsible for accepting new ONC/RPC connections over TCP/IP. <para>
+/// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcTcpTransport : OncRpcTransportBase
@@ -257,6 +258,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// </summary>
     /// <remarks>
     /// Control in the calling thread immediately returns after the handler thread has been created. <para>
+    /// 
     /// For every incoming TCP/IP connection a handler thread is created
     /// to handle ONC/RPC calls on this particular connection.</para>
     /// </remarks>
