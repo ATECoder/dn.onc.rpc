@@ -224,11 +224,11 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         base.DispatchOncRpcCall( call, program, version, procedure );
         if ( version == RpcProgramConstants.Version1 )
         {
-            OncRpcTcpServer.ProcessVersion1Calls( call, procedure );
+            OncRpcTcpServer.DispatchOncRpcCall( call, (RemoteProceduresVersion1) procedure );
         }
         else if ( version == RpcProgramConstants.Version2 )
         {
-            OncRpcTcpServer.ProcessVersion2Calls( call, procedure );
+            OncRpcTcpServer.DispatchOncRpcCall( call, (RemoteProceduresVersion2) procedure );
         }
         else
         {
@@ -236,10 +236,10 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         }
     }
 
-    /// <summary>   Process the version 1 calls. </summary>
+    /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>
     /// <param name="call">         The call. </param>
     /// <param name="procedure">    The procedure. </param>
-    private static void ProcessVersion1Calls( OncRpcCallHandler call, int procedure )
+    private static void DispatchOncRpcCall( OncRpcCallHandler call, RemoteProceduresVersion1 procedure )
     {
         switch ( procedure )
         {
@@ -303,12 +303,12 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         }
     }
 
-    /// <summary>   Process the version 2 calls. </summary>
+    /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>
     /// <param name="call">         <see cref="OncRpcCallHandler"/> about the call to handle, 
     ///                             like the caller's Internet address, the ONC/RPC
     ///                             call header, etc. </param>
     /// <param name="procedure">    Procedure number requested. </param>
-    private static void ProcessVersion2Calls( OncRpcCallHandler call, int procedure )
+    private static void DispatchOncRpcCall( OncRpcCallHandler call, RemoteProceduresVersion2 procedure )
     {
         switch ( procedure )
         {
@@ -389,14 +389,14 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// <returns>   True if it succeeds, false if it fails. </returns>
     public static bool CompareInputToFoo( int expected )
     {
-        return expected == EnumFoo.FOO;
+        return expected == ( int ) EnumFoo.FOO;
     }
 
     /// <summary>   Return <see cref="EnumFoo.FOO"/>. </summary>
     /// <returns>   An int. </returns>
     public static int ReturnEnumFooValue()
     {
-        return EnumFoo.FOO;
+        return ( int ) EnumFoo.FOO;
     }
 
     /// <summary>   Concatenate input string vector. </summary>

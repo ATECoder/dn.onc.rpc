@@ -346,13 +346,13 @@ public class OncRpcTcpTests
     private static void AssertClientShouldCheckForFoo( OncRpcTcpTestClient client )
     {
         Console.Write( "About to check for foo: " );
-        if ( client.CallRemoteProcedureCompareInputToFoo( EnumFoo.BAR ) )
+        if ( client.CallRemoteProcedureCompareInputToFoo( ( int ) EnumFoo.BAR ) )
         {
             Console.WriteLine( "oops: but a bar is not a foo!" );
             return;
         }
         Console.Write( "not bar: " );
-        if ( !client.CallRemoteProcedureCompareInputToFoo( EnumFoo.FOO ) )
+        if ( !client.CallRemoteProcedureCompareInputToFoo( ( int ) EnumFoo.FOO ) )
         {
             Console.WriteLine( "oops: a foo should be a foo!" );
             return;
@@ -365,7 +365,7 @@ public class OncRpcTcpTests
     private static void AssertClientShouldGetFoo( OncRpcTcpTestClient client )
     {
         Console.Write( "About to get a foo: " );
-        if ( client.CallRemoteProcedureReturnEnumFooValue() != EnumFoo.FOO )
+        if ( client.CallRemoteProcedureReturnEnumFooValue() != ( int ) EnumFoo.FOO )
         {
             Console.WriteLine( "oops: got a bar instead of a foo!" );
             return;
@@ -433,9 +433,10 @@ public class OncRpcTcpTests
         Console.WriteLine();
     }
 
-    /// <summary>   (Unit Test Method) client should talk to server. </summary>
+    /// <summary>   (Unit Test Method) client should call remote procedures. </summary>
+    /// <remarks>   2023-01-12. </remarks>
     [TestMethod]
-    public void ClientShouldTalkToServer()
+    public void ClientShouldCallRemoteProcedures()
     {
         OncRpcTcpTestClient client = new();
         try

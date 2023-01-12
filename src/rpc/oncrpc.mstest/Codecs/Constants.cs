@@ -1,4 +1,3 @@
-
 namespace cc.isr.ONC.RPC.MSTest.Codecs;
 
 public static class MiscConstants
