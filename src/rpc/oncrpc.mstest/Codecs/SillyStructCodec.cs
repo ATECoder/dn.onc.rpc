@@ -159,7 +159,7 @@ public class SillyStructCodec : IXdrCodec
     /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
-        encoder.EncodeByteVector( this._fixedBuffer, 512 );
+        encoder.EncodeByteVector( this._fixedBuffer, 0, 512 );
         encoder.EncodeByteVector( this._buffer );
         encoder.EncodeOpaque( this._fixedBytes, MiscConstants.FixedBufferLength );
         encoder.EncodeDynamicOpaque( this._bytes );

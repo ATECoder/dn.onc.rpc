@@ -36,7 +36,7 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
         if ( this.ServerIdentifiers == null )
-            encoder.EcodeBoolean( false );
+            encoder.EncodeBoolean( false );
         else
         {
 
@@ -48,12 +48,12 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
             int index = 0;
             while ( count > 0 )
             {
-                encoder.EcodeBoolean( true );
+                encoder.EncodeBoolean( true );
                 this.ServerIdentifiers[index].Encode( encoder );
                 index++;
                 count--;
             }
-            encoder.EcodeBoolean( false );
+            encoder.EncodeBoolean( false );
         }
     }
 

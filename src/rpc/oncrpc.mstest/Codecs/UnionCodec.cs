@@ -43,16 +43,16 @@ public class UnionCodec : IXdrCodec
     /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
-        encoder.EcodeBoolean( this.Okay );
+        encoder.EncodeBoolean( this.Okay );
         if ( this.Okay == true )
         {
             if ( this.List is not null )
             {
-                encoder.EcodeBoolean( true );
+                encoder.EncodeBoolean( true );
                 this.List.Encode( encoder );
             }
             else
-                encoder.EcodeBoolean( false );
+                encoder.EncodeBoolean( false );
             ;
         }
     }

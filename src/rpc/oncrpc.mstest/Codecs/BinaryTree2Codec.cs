@@ -50,14 +50,14 @@ public class BinaryTree2Codec : IXdrCodec
             encoder.EncodeString( currentBinaryTree.Value );
             if ( currentBinaryTree.Left is not null )
             {
-                encoder.EcodeBoolean( true );
+                encoder.EncodeBoolean( true );
                 currentBinaryTree.Left.Encode( encoder );
             }
             else
-                encoder.EcodeBoolean( false );
+                encoder.EncodeBoolean( false );
             ;
             currentBinaryTree = currentBinaryTree.Right;
-            encoder.EcodeBoolean( currentBinaryTree is not null );
+            encoder.EncodeBoolean( currentBinaryTree is not null );
         } while ( currentBinaryTree is not null );
     }
 

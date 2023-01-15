@@ -50,7 +50,7 @@ public class LinkedListCodec : IXdrCodec
         {
             encoder.EncodeInt( current.Foo );
             current = current.Next;
-            encoder.EcodeBoolean( current is not null );
+            encoder.EncodeBoolean( current is not null );
         } while ( current is not null );
     }
 
