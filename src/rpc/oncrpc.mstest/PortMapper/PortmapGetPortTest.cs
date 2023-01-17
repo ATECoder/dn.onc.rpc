@@ -77,7 +77,7 @@ public class PortmapGetPortTest
         Console.Out.Write( "listServers(): " );
         try
         {
-            list = portmap.ListServers();
+            list = portmap.ListRegisteredServers();
         }
         catch ( OncRpcException e )
         {
@@ -113,7 +113,7 @@ public class PortmapGetPortTest
         Console.Out.Write( "listServers(): " );
         try
         {
-            list = portmap.ListServers();
+            list = portmap.ListRegisteredServers();
         }
         catch ( OncRpcException e )
         {

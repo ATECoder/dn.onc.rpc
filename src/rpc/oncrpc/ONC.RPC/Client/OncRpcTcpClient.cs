@@ -108,7 +108,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     ///                             setting will apply. <i>Note that this timeout only applies to the
     ///                             connection phase, but <b>not</b> to later communication.</i> </param>
     public OncRpcTcpClient( IPAddress host, int program, int version, int port, int bufferSize, int timeout ) : base( host, program,
-        version, port, OncRpcProtocols.OncRpcTcp )
+                                                                                                                      version, port, OncRpcProtocols.OncRpcTcp )
     {
         // Constructs the inherited part of our object. This will also try to
         // lookup the port of the desired ONC/RPC server, if no port number

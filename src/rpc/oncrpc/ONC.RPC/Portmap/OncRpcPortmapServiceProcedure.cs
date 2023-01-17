@@ -69,7 +69,7 @@ public enum OncRpcPortmapServiceProcedure
     /// 
     /// Renamed from <c>PMAP_DUMP (=4)</c></para> </summary>
     [Description( "Return information about all currently registered ONC/RPC servers." )]
-    OncRpcPortmapListServersInfo = 4,
+    OncRpcPortmapListRegisteredServers = 4,
 
     /// <summary>
     /// (Immutable)

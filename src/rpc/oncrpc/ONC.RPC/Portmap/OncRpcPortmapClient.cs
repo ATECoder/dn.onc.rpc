@@ -74,7 +74,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// with a <see cref="OncRpcException.Reason"/> of <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/>. </para> <para>
 /// 
 /// A second typical example of how to use the portmapper is retrieving a list of the
-/// currently registered servers. We use the <see cref="ListServers()"/>
+/// currently registered servers. We use the <see cref="ListRegisteredServers()"/>
 /// method for this purpose in the following example, and print the list we got. </para>
 /// <code>
 /// OncRpcServerIdent [] list = null;
@@ -102,8 +102,10 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcPortmapClient
+public class OncRpcPortmapClient : IDisposable
 {
+
+    #region " construction and cleanup "
     /// <summary>
     /// Constructs and initializes an ONC/RPC client object, which can communicate with the
     /// portmapper at the specified host using the UDP/IP datagram-oriented Internet protocol.
@@ -153,7 +155,7 @@ public class OncRpcPortmapClient
                 {
                     this.PortmapClient = new OncRpcUdpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
-                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber );
+                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber, timeout );
                     break;
                 }
 
@@ -181,12 +183,85 @@ public class OncRpcPortmapClient
         this.PortmapClient?.Close();
     }
 
+    #region " disposable implementation "
+
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
+    /// resources.
+    /// </summary>
+    /// <remarks> 
+    /// Takes account of and updates <see cref="IsDisposed"/>.
+    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// </remarks>
+    public void Dispose()
+    {
+        if ( this.IsDisposed ) { return; }
+        try
+        {
+            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            this.Dispose( true );
+
+            // uncomment the following line if Finalize() is overridden above.
+            GC.SuppressFinalize( this );
+        }
+        catch ( Exception ex ) { Console.WriteLine( ex.ToString() ); }
+        finally
+        {
+            this.IsDisposed = true;
+        }
+    }
+
+    /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
+    /// <value> True if this object is disposed, false if not. </value>
+    protected bool IsDisposed { get; private set; }
+
+    /// <summary>
+    /// Releases the unmanaged resources used by the XdrDecodingStreamBase and optionally releases
+    /// the managed resources.
+    /// </summary>
+    /// <param name="disposing">    True to release both managed and unmanaged resources; false to
+    ///                             release only unmanaged resources. </param>
+    protected virtual void Dispose( bool disposing )
+    {
+        if ( disposing )
+        {
+            // dispose managed state (managed objects)
+        }
+
+        // free unmanaged resources and override finalizer
+        // I am assuming that the socket used in the derived classes include unmanaged resources.
+        this.Close();
+
+        // dispose of the portmap client.
+        this.PortmapClient?.Dispose();
+
+        // set large fields to null
+    }
+
+    /// <summary>   Finalizer. </summary>
+    ~OncRpcPortmapClient()
+    {
+        if ( this.IsDisposed ) { return; }
+        this.Dispose( false );
+    }
+
+    #endregion
+
+    #endregion
+
+    #region " members "
+
     /// <summary>
     /// Gets or sets the particular transport-specific ONC/RPC client used for communicating with the
     /// portmapper.
     /// </summary>
     /// <value> The portmap client proxy object (subclass of <see cref="OncRpcClientBase"/>). </value>
     public OncRpcClientBase PortmapClient { get; set; }
+
+    #endregion
+
+    #region " actions "
+
 
     /// <summary>
     /// Asks the portmapper this <see cref="OncRpcPortmapClient"/> object is a proxy for, for the port
@@ -299,7 +374,7 @@ public class OncRpcPortmapClient
     /// <returns>
     /// vector of server descriptions <see cref="OncRpcServerIdentifierCodec"/>.
     /// </returns>
-    public virtual OncRpcServerIdentifierCodec[] ListServers()
+    public virtual OncRpcServerIdentifierCodec[] ListRegisteredServers()
     {
         // Fill in the request parameters.
         OncRpcPortmapServersListCodec result = new();
@@ -311,7 +386,7 @@ public class OncRpcPortmapClient
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo, VoidXdrCodec.VoidXdrCodecInstance, result );
+        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers, VoidXdrCodec.VoidXdrCodecInstance, result );
 
         // Copy the server identities from the Vector into the vector (array).
         // OncRpcServerIdentifierCodec[] serverIdentifiers = new OncRpcServerIdentifierCodec[result.ServerIdentifiers.Count];
@@ -328,5 +403,22 @@ public class OncRpcPortmapClient
 
         this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance );
     }
+
+    /// <summary>   Attempts to ping. </summary>
+    /// <returns>   True if it succeeds, false if it fails. </returns>
+    public virtual bool TryPing()
+    {
+        try
+        {
+            this.Ping();
+        }
+        catch ( Exception )
+        {
+            return false;
+        }
+        return true;
+    }
+
+    #endregion
 
 }

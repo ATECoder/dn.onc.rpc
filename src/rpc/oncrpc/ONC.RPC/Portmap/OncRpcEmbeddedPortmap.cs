@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.ONC.RPC.Server;
 
@@ -55,12 +57,12 @@ public class OncRpcEmbeddedPortmapService
     {
         if ( !IsPortmapRunning( checkTimeout ) )
         {
-            this._portmapService = new EmbeddedPortmapService( this );
-            this._embeddedPortmapThread = new EmbeddedPortmapServiceThread( this, this._portmapService );
-            this._portmapService.ServiceThread = new Thread( new ThreadStart( this._embeddedPortmapThread.Run ) ) {
+            this._embeddedPortmapService = new EmbeddedPortmapService( this );
+            this._embeddedPortmapThread = new EmbeddedPortmapServiceThread( this, this._embeddedPortmapService );
+            this._embeddedPortmapService.ServiceThread = new Thread( new ThreadStart( this._embeddedPortmapThread.Run ) ) {
                 Name = "Embedded Portmap Service Thread"
             };
-            this._portmapService.ServiceThread.Start();
+            this._embeddedPortmapService.ServiceThread.Start();
         }
     }
 
@@ -74,8 +76,44 @@ public class OncRpcEmbeddedPortmapService
     /// </remarks>
     public virtual void Shutdown()
     {
-        OncRpcServerStubBase? portmap = this._portmapService;
-        portmap?.StopRpcProcessing();
+        OncRpcServerStubBase? oncRpcServerStub = this._embeddedPortmapService;
+        oncRpcServerStub?.StopRpcProcessing();
+    }
+
+    /// <summary>   Start the embedded port map service. </summary>
+    /// <exception cref="InvalidOperationException">    Thrown when the service failed to run
+    ///                                                 or is not available. </exception>
+    /// <returns>   An OncRpcEmbeddedPortmapService. </returns>
+    public static OncRpcEmbeddedPortmapService StartEmbeddedPortmapService()
+    {
+        Console.WriteLine( $"{DateTime.Now.ToShortTimeString()} Checking for portmap service: " );
+        bool externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
+        if ( externalPortmap )
+            Console.WriteLine( "A portmap service is already running." );
+        else
+            Console.WriteLine( "No portmap service available." );
+
+        // Create embedded portmap service and check whether is has sprung
+        // into action.
+
+        Console.WriteLine( "Creating embedded portmap instance: " );
+        OncRpcEmbeddedPortmapService epm = new();
+
+        if ( !epm.EmbeddedPortmapInUse() )
+            Console.WriteLine( "embedded service not used: " );
+        else
+            Console.WriteLine( "embedded service started: " );
+
+        if ( epm.EmbeddedPortmapInUse() == externalPortmap )
+        {
+            throw new InvalidOperationException( "Portmap service is not available or not in use." );
+        }
+        Stopwatch sw = Stopwatch.StartNew();
+        externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
+        if ( !externalPortmap )
+            throw new InvalidOperationException( "Portmap service is not running." );
+        Console.WriteLine( $"portmap service is {(externalPortmap ? "running" : "idle")}; elapsed: {sw.ElapsedMilliseconds:0}ms" );
+        return epm;
     }
 
     #endregion
@@ -140,7 +178,7 @@ public class OncRpcEmbeddedPortmapService
     /// </returns>
     public virtual bool EmbeddedPortmapInUse()
     {
-        return this._portmapService?.ServiceThread is not null;
+        return this._embeddedPortmapService?.ServiceThread is not null;
     }
 
     /// <summary>   Returns the thread object running the embedded portmap service. </summary>
@@ -149,7 +187,7 @@ public class OncRpcEmbeddedPortmapService
     /// </returns>
     public virtual Thread? GetEmbeddedPortmapServiceThread()
     {
-        return this._portmapService?.ServiceThread;
+        return this._embeddedPortmapService?.ServiceThread;
     }
 
     #endregion
@@ -161,13 +199,13 @@ public class OncRpcEmbeddedPortmapService
     /// if no embedded portmap service is necessary because the operating system already supplies one
     /// or another port mapper is already running.
     /// </summary>
-    private readonly EmbeddedPortmapService? _portmapService;
+    private readonly EmbeddedPortmapService? _embeddedPortmapService;
 
     /// <summary>   Returns the embedded portmap service. </summary>
     /// <returns>
     /// Embedded portmap object or <see langword="null"/> if no embedded portmap service has been started.
     /// </returns>
-    public virtual OncRpcPortMapService? PortmapService => this._portmapService;
+    public virtual OncRpcPortMapService? PortmapService => this._embeddedPortmapService;
 
 
     /// <summary>   References thread object running the embedded portmap service. </summary>

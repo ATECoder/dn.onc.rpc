@@ -2,7 +2,7 @@ namespace cc.isr.ONC.RPC.Codecs;
 
 /// <summary>
 /// Objects of class <see cref="OncRpcPortmapServersListCodec"/> represent the outcome of the 
-/// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo"/>
+/// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers"/>
 /// operation on a portmapper.
 /// </summary>
 /// <remarks> <para>
@@ -11,12 +11,6 @@ namespace cc.isr.ONC.RPC.Codecs;
 /// </remarks>
 public class OncRpcPortmapServersListCodec : IXdrCodec
 {
-    /// <summary>
-    /// Gets or sets or set the list of server <see cref="OncRpcServerIdentifierCodec"/> objects
-    /// describing the currently registered ONC/RPC servers.
-    /// </summary>
-    /// <value> A list of identifiers of the servers. </value>
-    public List<OncRpcServerIdentifierCodec> ServerIdentifiers { get; set; }
 
     /// <summary>   Initialize an <see cref="OncRpcPortmapServersListCodec"/> object. </summary>
     /// <remarks>
@@ -28,8 +22,15 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
     }
 
     /// <summary>
+    /// Gets or sets or set the list of server <see cref="OncRpcServerIdentifierCodec"/> objects
+    /// describing the currently registered ONC/RPC servers.
+    /// </summary>
+    /// <value> A list of identifiers of the servers. </value>
+    public List<OncRpcServerIdentifierCodec> ServerIdentifiers { get; set; }
+
+    /// <summary>
     /// Encodes -- that is: serializes -- the result of a 
-    /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo"/> operating into a XDR stream.
+    /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers"/> operating into a XDR stream.
     /// </summary>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
@@ -59,7 +60,7 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
 
     /// <summary>
     /// Decodes -- that is: deserializes -- the result from a 
-    /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo"/> remote procedure call from a
+    /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers"/> remote procedure call from a
     /// XDR stream.
     /// </summary>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>

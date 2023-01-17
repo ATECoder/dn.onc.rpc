@@ -8,6 +8,8 @@ namespace cc.isr.ONC.RPC.MSTest.Tcp;
 public class OncRpcTcpTests
 {
 
+    #region " fixture construction and cleanup "
+
     /// <summary>   Initializes the fixture. </summary>
     /// <param name="context">  The context. </param>
     [ClassInitialize]
@@ -62,6 +64,10 @@ public class OncRpcTcpTests
     }
 
     private static OncRpcTcpServer? _server;
+
+
+    #endregion
+
 
     private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs args )
     {

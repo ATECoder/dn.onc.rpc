@@ -115,9 +115,19 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
         return this._locals;
     }
 
-    /// <summary>   The list of registered servers. </summary>
-    /// <value> The list of server identifiers. </value>
+    /// <summary>
+    /// Gets or sets the <see cref="List{T}"/> of registered servers codecs <see cref="OncRpcServerIdentifierCodec"/>.
+    /// </summary>
+    /// <value> the <see cref="List{T}"/> of <see cref="OncRpcServerIdentifierCodec"/>. </value>
     public List<OncRpcServerIdentifierCodec> ServerIdentifierCodecs { get; set; } = new();
+
+    /// <summary>   Returns the <see cref="IXdrCodec"/> listing the registered ONC/RPC servers. </summary>
+    /// <returns>   list of ONC/RPC server descriptions (program, version, protocol, port). </returns>
+    internal virtual OncRpcPortmapServersListCodec RegisteredServersCodec()
+    {
+        OncRpcPortmapServersListCodec result = new() { ServerIdentifiers = this.ServerIdentifierCodecs };
+        return result;
+    }
 
     #endregion
 
@@ -181,8 +191,9 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
             for ( int idx = 0; idx < size; ++idx )
             {
                 OncRpcServerIdentifierCodec svr = ( OncRpcServerIdentifierCodec ) this.ServerIdentifierCodecs[idx]!;
-                if ( svr.Program == serverIdentification.Program && svr.Version == serverIdentification.Version && svr.
-                    Protocol == serverIdentification.Protocol )
+                if ( svr.Program == serverIdentification.Program &&
+                    svr.Version == serverIdentification.Version &&
+                     svr.Protocol == serverIdentification.Protocol )
                     // In case (program, version, protocol) is already
                     // registered only accept, if the port stays the same.
                     // This will silently accept double registrations (i.e.,
@@ -225,14 +236,6 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
             }
         }
         return new BooleanXdrCodec( ok );
-    }
-
-    /// <summary>   Return list of registered ONC/RPC servers. </summary>
-    /// <returns>   list of ONC/RPC server descriptions (program, version, protocol, port). </returns>
-    internal virtual OncRpcPortmapServersListCodec ListServers()
-    {
-        OncRpcPortmapServersListCodec result = new() { ServerIdentifiers = this.ServerIdentifierCodecs };
-        return result;
     }
 
     /// <summary>
@@ -312,11 +315,11 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                             break;
                         }
 
-                    case OncRpcPortmapServiceProcedure.OncRpcPortmapListServersInfo:
+                    case OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers:
                         {
                             // list all registrations
                             call.RetrieveCall( VoidXdrCodec.VoidXdrCodecInstance );
-                            OncRpcPortmapServersListCodec replyCodec = this.ListServers();
+                            OncRpcPortmapServersListCodec replyCodec = this.RegisteredServersCodec();
                             call.Reply( replyCodec );
                             break;
                         }

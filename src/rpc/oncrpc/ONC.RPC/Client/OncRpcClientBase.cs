@@ -226,8 +226,7 @@ public abstract class OncRpcClientBase : IDisposable
         this.Program = program;
         this.Version = version;
 
-        // Initialize the message identifier with some more-or-less random
-        // value.
+        // Initialize the message identifier with some more-or-less random value.
         long seed = DateTime.Now.Ticks;
         this.MessageId = ( int ) seed ^ ( int ) (seed >> (32 & 0x1f));
 
