@@ -1,5 +1,6 @@
 
 using System.Net.Sockets;
+using System.Runtime.CompilerServices;
 
 namespace cc.isr.ONC.RPC.Client;
 
@@ -29,7 +30,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <param name="host">     The host where the ONC/RPC server resides. </param>
     /// <param name="program">  Program number of the ONC/RPC server to call. </param>
     /// <param name="version">  Program version number. </param>
-    public OncRpcTcpClient( IPAddress host, int program, int version ) : this( host, program, version, 0, 0 )
+    public OncRpcTcpClient( IPAddress host, int program, int version ) : this( host, program, version, 0 )
     {
     }
 
@@ -49,7 +50,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <param name="port">     The port number where the ONC/RPC server can be contacted. If <c>0</c>,
     ///                         then the <see cref="OncRpcUdpClient"/> object will ask the
     ///                         portmapper at <paramref name="host"/> for the port number. </param>
-    public OncRpcTcpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, 0 )
+    public OncRpcTcpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, OncRpcClientBase.DefaultBufferSize )
     {
     }
 
@@ -76,7 +77,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     ///                             long messages automatically into suitable pieces. Specifying zero
     ///                             will select the <see cref="OncRpcClientBase.DefaultBufferSize"/> (currently
     ///                             8192 bytes). </param>
-    public OncRpcTcpClient( IPAddress host, int program, int version, int port, int bufferSize ) : this( host, program, version, port, bufferSize, -1 )
+    public OncRpcTcpClient( IPAddress host, int program, int version, int port, int bufferSize ) : this( host, program, version, port, bufferSize, OncRpcClientBase.DefaultTimeout )
     {
     }
 
@@ -110,6 +111,10 @@ public class OncRpcTcpClient : OncRpcClientBase
     public OncRpcTcpClient( IPAddress host, int program, int version, int port, int bufferSize, int timeout ) : base( host, program,
                                                                                                                       version, port, OncRpcProtocols.OncRpcTcp )
     {
+        this.Timeout = timeout;
+        this.ReceiveTimeout = timeout;
+        this.SendTimeout = timeout;
+
         // Constructs the inherited part of our object. This will also try to
         // lookup the port of the desired ONC/RPC server, if no port number
         // was specified (port = 0).
@@ -126,25 +131,22 @@ public class OncRpcTcpClient : OncRpcClientBase
         // simply 0 as the port number.
 
         // Constructs the socket and connect
-        this._socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
+        this._socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp ) {
+            SendTimeout = timeout,
+            ReceiveTimeout = timeout,
+            NoDelay = true
+        };
+        this._socket.SendBufferSize = Math.Min( this._socket.SendBufferSize, bufferSize );
+        this._socket.ReceiveBufferSize = Math.Min( this._socket.ReceiveBufferSize, bufferSize );
+
         IPEndPoint endPoint = new( host, this.Port );
         this._socket.Connect( endPoint );
-        if ( timeout >= 0 )
-        {
-            this._socket.SendTimeout = timeout;
-            this._socket.ReceiveTimeout = timeout;
-        }
-        this._socket.NoDelay = true;
-        if ( this._socket.SendBufferSize < bufferSize )
-            this._socket.SendBufferSize = bufferSize;
-        if ( this._socket.ReceiveBufferSize < bufferSize )
-            this._socket.ReceiveBufferSize = bufferSize;
 
         // Create the necessary encoding and decoding streams, so we can
         // communicate at all.
         this.Encoder = new XdrTcpEncodingStream( this._socket, bufferSize );
         this.Decoder = new XdrTcpDecodingStream( this._socket, bufferSize );
-        this.CharacterEncoding = OncRpcClientBase.DefaultEncoding;
+        this.CharacterEncoding = DefaultEncoding;
     }
 
     /// <summary>
@@ -182,6 +184,32 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// server.
     /// </summary>
     private Socket? _socket;
+
+    private int _receiveTimeout;
+    /// <summary>   Gets or sets the receive timeout in milliseconds. </summary>
+    /// <value> The receive timeout. </value>
+    public override int ReceiveTimeout
+    {
+        get => this._receiveTimeout;
+        set {
+            this._receiveTimeout = value;
+            if ( this._socket is not null )
+                this._socket.ReceiveTimeout = value;
+        }
+    }
+
+    private int _sendTimeout;
+    /// <summary>   Gets or sets the send timeout in milliseconds. </summary>
+    /// <value> The send timeout. </value>
+    public override int SendTimeout
+    {
+        get => this._sendTimeout;
+        set {
+            this._sendTimeout = value;
+            if ( this._socket is not null )
+                this._socket.SendTimeout = value;
+        }
+    }
 
     #endregion
 

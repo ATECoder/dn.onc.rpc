@@ -34,13 +34,37 @@ public class OncRpcUdpClient : OncRpcClientBase
     ///                         , then the <see cref="OncRpcUdpClient"/> object will ask the portmapper at <paramref name="host"/>
     ///                         for the port number. </param>
     ///
-    public OncRpcUdpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, DefaultBufferSize )
+    public OncRpcUdpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, OncRpcClientBase.DefaultBufferSize )
     {
     }
 
     /// <summary>
     /// Constructs a new <see cref="OncRpcUdpClient"/> object, which connects to the ONC/RPC server at
-    /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>, 
+    /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>,
+    /// <paramref name="version"/> }.
+    /// </summary>
+    /// <remarks>
+    /// Note that the construction of an <see cref="OncRpcUdpClient"/>
+    /// object will result in communication with the portmap process at.
+    /// </remarks>
+    /// <param name="host">         . </param>
+    /// <param name="program">      Program number of the ONC/RPC server to call. </param>
+    /// <param name="version">      . </param>
+    /// <param name="port">         The port number where the ONC/RPC server can be contacted. If <c>
+    ///                             0</c>
+    ///                             , then the <see cref="OncRpcUdpClient"/> object will ask the
+    ///                             portmapper at <paramref name="host"/>
+    ///                             for the port number. </param>
+    /// <param name="bufferSize">   The buffer size used for sending and receiving UDP datagrams. </param>
+    public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize ) : this( host, program, version, port, bufferSize, OncRpcClientBase.DefaultTimeout )
+    {
+
+    }
+
+    /// <summary>
+    /// Constructs a new <see cref="OncRpcUdpClient"/> object, which connects to the ONC/RPC server at
+    /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>
+    /// ,
     /// <paramref name="version"/> }.
     /// </summary>
     /// <remarks>
@@ -51,14 +75,17 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <param name="host">         The host where the ONC/RPC server resides. </param>
     /// <param name="program">      Program number of the ONC/RPC server to call. </param>
     /// <param name="version">      Program version number. </param>
-    /// <param name="port">         The port number where the ONC/RPC server can be contacted. If 
+    /// <param name="port">         The port number where the ONC/RPC server can be contacted. If
     ///                             <c>0</c>, then the <see cref="OncRpcUdpClient"/> object will ask
     ///                             the portmapper at <paramref name="host"/> for the port number. </param>
     /// <param name="bufferSize">   The buffer size used for sending and receiving UDP datagrams. </param>
-    ///
-    public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize ) : base( host, program, version, port, OncRpcProtocols.OncRpcUdp )
+    /// <param name="timeout">      The timeout. </param>
+    public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize, int timeout ) : base( host, program, version, port, OncRpcProtocols.OncRpcUdp )
     {
-        this.RetransmissionTimeout = this.Timeout;
+        this.Timeout = timeout;
+        this.ReceiveTimeout = timeout;
+        this.SendTimeout = timeout;
+        this.RetransmissionTimeout = timeout;
 
         // Constructs the inherited part of our object. This will also try to
         // lookup the port of the desired ONC/RPC server, if no port number
@@ -70,11 +97,12 @@ public class OncRpcUdpClient : OncRpcClientBase
         // receiving UDP datagrams. Finally set the destination of packets.
 
         if ( bufferSize < DefaultMinBufferSize ) bufferSize = DefaultMinBufferSize;
-        this._socket = new Socket( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp );
-        if ( this._socket.SendBufferSize < bufferSize )
-            this._socket.SendBufferSize = bufferSize;
-        if ( this._socket.ReceiveBufferSize < bufferSize )
-            this._socket.ReceiveBufferSize = bufferSize;
+        this._socket = new( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp ) {
+            SendTimeout = timeout,
+            ReceiveTimeout = timeout,
+        };
+        this._socket.SendBufferSize =  Math.Min( this._socket.SendBufferSize , bufferSize );
+        this._socket.ReceiveBufferSize = Math.Min( this._socket.ReceiveBufferSize, bufferSize );
 
         // Note: we don't do a socket.connect(host, this.port);
         // here anymore. XdrUdpEncodingStream long since then supported
@@ -89,6 +117,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
         this._encoder = new XdrUdpEncodingStream( this._socket, bufferSize );
         this._decoder = new XdrUdpDecodingStream( this._socket, bufferSize );
+        this.CharacterEncoding = DefaultEncoding;
     }
 
     /// <summary>
@@ -127,7 +156,33 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// </summary>
     private Socket? _socket;
 
-    /// <summary>
+    private int _receiveTimeout;
+    /// <summary>   Gets or sets the receive timeout in milliseconds. </summary>
+    /// <value> The receive timeout. </value>
+    public override int ReceiveTimeout
+    {
+        get => this._receiveTimeout;
+        set {
+            this._receiveTimeout = value;
+            if ( this._socket is not null )
+                this._socket.ReceiveTimeout = value;
+        }
+    }
+
+    private int _sendTimeout;
+    /// <summary>   Gets or sets the send timeout in milliseconds. </summary>
+    /// <value> The send timeout. </value>
+    public override int SendTimeout
+    {
+        get => this._sendTimeout;
+        set {
+            this._sendTimeout = value;
+            if ( this._socket is not null )
+                this._socket.SendTimeout = value;
+        }
+    }
+
+    /// <summary> 
     /// XDR encoding stream used for sending requests via UDP/IP to an ONC/RPC server.
     /// </summary>
     private XdrUdpEncodingStream? _encoder;

@@ -107,6 +107,9 @@ public abstract class OncRpcClientStubBase : IDisposable
         // I am assuming that the socket used in the derived classes include unmanaged resources.
         this.Close();
 
+        // dispose of the client.
+        this.Client?.Dispose();
+
         // set large fields to null
     }
 

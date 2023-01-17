@@ -430,6 +430,14 @@ public abstract class OncRpcClientBase : IDisposable
     /// <value> The timeout in milliseconds. </value>
     public int Timeout { get; set; } = DefaultTimeout;
 
+    /// <summary>   Gets or sets the receive timeout in milliseconds. </summary>
+    /// <value> The receive timeout. </value>
+    public abstract int ReceiveTimeout { get; set; }
+
+    /// <summary>   Gets or sets the send timeout in milliseconds. </summary>
+    /// <value> The send timeout. </value>
+    public abstract int SendTimeout { get; set; }
+
     /// <summary>
     /// Gets or sets (private) the program number of the ONC/RPC server to communicate with.
     /// </summary>
