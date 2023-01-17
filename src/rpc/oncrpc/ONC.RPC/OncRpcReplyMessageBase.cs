@@ -36,7 +36,7 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     /// This default constructor should only be used if in the next step the real state of the reply
     /// message is immediately decoded from a XDR stream.
     /// </remarks>
-    public OncRpcReplyMessageBase() : base( OncRpcMessageBase.DefaultMessageId )
+    public OncRpcReplyMessageBase() : base( OncRpcMessageBase.MessageIdDefault )
     {
         this.MessageType = OncRpcMessageType.OncRpcReplyMessageType;
         this.ReplyStatus = OncRpcReplyStatus.OncRpcMessageAccepted;

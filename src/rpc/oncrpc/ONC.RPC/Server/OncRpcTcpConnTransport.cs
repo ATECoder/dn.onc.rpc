@@ -26,7 +26,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// <param name="socket">   TCP/IP-based socket of new connection. </param>
     public OncRpcTcpConnTransport( OncRpcTcpTransport parent, Socket socket ) : this( parent.Dispatcher, socket,
                                                             parent.RegisteredPrograms, parent.BufferSize,
-                                                            parent, parent.TransmissionTimeout )
+                                                            parent, parent.TransmitTimeout )
     {
     }
 
@@ -39,22 +39,20 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// constructor is a convenience constructor for those transports handling only a single ONC/RPC
     /// program and version number.
     /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="dispatcher">           Reference to interface of an object capable of
-    ///                                     dispatching (handling) ONC/RPC calls. </param>
-    /// <param name="socket">               TCP/IP-based socket of new connection. </param>
-    /// <param name="program">              Number of ONC/RPC program handled by this server
-    ///                                     transport. </param>
-    /// <param name="version">              Version number of ONC/RPC program handled. </param>
-    /// <param name="bufferSize">           Size of buffer used when receiving and sending chunks of
-    ///                                     XDR fragments over TCP/IP. The fragments built up to form
-    ///                                     ONC/RPC call and reply messages. </param>
-    /// <param name="parent">               Parent server transport which created us. </param>
-    /// <param name="transmissionTimeout">  Inherited transmission timeout. </param>
+    /// <param name="dispatcher">       Reference to interface of an object capable of dispatching
+    ///                                 (handling) ONC/RPC calls. </param>
+    /// <param name="socket">           TCP/IP-based socket of new connection. </param>
+    /// <param name="program">          Number of ONC/RPC program handled by this server transport. </param>
+    /// <param name="version">          Version number of ONC/RPC program handled. </param>
+    /// <param name="bufferSize">       Size of buffer used when receiving and sending chunks of XDR
+    ///                                 fragments over TCP/IP. The fragments built up to form ONC/RPC
+    ///                                 call and reply messages. </param>
+    /// <param name="parent">           Parent server transport which created us. </param>
+    /// <param name="transmitTimeout">  The transmit timeout when sending calls or receiving replies. </param>
     public OncRpcTcpConnTransport( IOncRpcDispatchable dispatcher, Socket socket, int program, int version, int bufferSize,
-                                   OncRpcTcpTransport parent, int transmissionTimeout ) : this( dispatcher, socket,
+                                   OncRpcTcpTransport parent, int transmitTimeout ) : this( dispatcher, socket,
                                                                 new OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) },
-                                                                bufferSize, parent, transmissionTimeout )
+                                                                bufferSize, parent, transmitTimeout )
     {
     }
 
@@ -65,27 +63,26 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// <remarks>
     /// This particular server transport handles individual ONC/RPC connections over TCP/IP.
     /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="dispatcher">           Reference to interface of an object capable of
-    ///                                     dispatching (handling) ONC/RPC calls. </param>
-    /// <param name="socket">               TCP/IP-based socket of new connection. </param>
-    /// <param name="info">                 Array of program and version number tuples of the ONC/RPC
-    ///                                     programs and versions handled by this transport. </param>
-    /// <param name="bufferSize">           Size of buffer used when receiving and sending chunks of
-    ///                                     XDR fragments over TCP/IP. The fragments built up to form
-    ///                                     ONC/RPC call and reply messages. </param>
-    /// <param name="parent">               Parent server transport which created us. </param>
-    /// <param name="transmissionTimeout">  Inherited transmission timeout. </param>
+    /// <param name="dispatcher">       Reference to interface of an object capable of dispatching
+    ///                                 (handling) ONC/RPC calls. </param>
+    /// <param name="socket">           TCP/IP-based socket of new connection. </param>
+    /// <param name="info">             Array of program and version number tuples of the ONC/RPC
+    ///                                 programs and versions handled by this transport. </param>
+    /// <param name="bufferSize">       Size of buffer used when receiving and sending chunks of XDR
+    ///                                 fragments over TCP/IP. The fragments built up to form ONC/RPC
+    ///                                 call and reply messages. </param>
+    /// <param name="parent">           Parent server transport which created us. </param>
+    /// <param name="transmitTimeout">  The transmit timeout when sending calls or receiving replies. </param>
     public OncRpcTcpConnTransport( IOncRpcDispatchable dispatcher, Socket socket, OncRpcProgramInfo[] info, int bufferSize, OncRpcTcpTransport parent,
-                                                                    int transmissionTimeout ) : base( dispatcher, 0, OncRpcProtocols.OncRpcTcp, info )
+                                                                    int transmitTimeout ) : base( dispatcher, 0, OncRpcProtocols.OncRpcTcp, info )
     {
         this._parent = parent;
-        this._transmissionTimeout = transmissionTimeout;
+        this._transmitTimeout = transmitTimeout;
 
         // Make sure the buffer is large enough and resize system buffers
         // accordingly, if possible.
 
-        if ( bufferSize < OncRpcTransportBase.DefaultMinBufferSize ) bufferSize = OncRpcTransportBase.DefaultMinBufferSize;
+        if ( bufferSize < OncRpcTransportBase.MinBufferSizeDefault ) bufferSize = OncRpcTransportBase.MinBufferSizeDefault;
         this._socket = socket;
         this.Port = (( IPEndPoint ) socket.RemoteEndPoint).Port;
         if ( socket.SendBufferSize < bufferSize )
@@ -170,7 +167,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// <summary>
     /// Timeout during the phase where data is received within calls, or data is sent within replies.
     /// </summary>
-    private readonly int _transmissionTimeout;
+    private readonly int _transmitTimeout;
 
     #endregion
 
@@ -347,7 +344,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
                 this.Decoder.BeginDecoding();
                 callInfo.PeerIPAddress = this.Decoder.SenderAddress;
                 callInfo.PeerPort = this.Decoder.SenderPort;
-                this._socket.ReceiveTimeout = this._transmissionTimeout;
+                this._socket.ReceiveTimeout = this._transmitTimeout;
             }
             catch ( System.IO.IOException )
             {

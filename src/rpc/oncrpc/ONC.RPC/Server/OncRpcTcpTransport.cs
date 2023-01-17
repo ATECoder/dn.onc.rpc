@@ -94,7 +94,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
         // Make sure the buffer is large enough and resize system buffers
         // accordingly, if possible.
 
-        if ( bufferSize < OncRpcTransportBase.DefaultMinBufferSize ) bufferSize = OncRpcTransportBase.DefaultMinBufferSize;
+        if ( bufferSize < OncRpcTransportBase.MinBufferSizeDefault ) bufferSize = OncRpcTransportBase.MinBufferSizeDefault;
         this.BufferSize = bufferSize;
         this._socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp );
         bindAddr ??= IPAddress.Any;
@@ -103,7 +103,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
         if ( port == 0 )
             this.Port = (( IPEndPoint ) this._socket.LocalEndPoint).Port;
         this._socket.Listen( 0 );
-        this.CharacterEncoding = XdrTcpEncodingStream.DefaultEncoding;
+        this.CharacterEncoding = XdrTcpEncodingStream.EncodingDefault;
     }
 
     /// <summary>   Close the server transport and free any resources associated with it. </summary>
@@ -168,7 +168,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
 
     #endregion
 
-    #region " Configuration Methods "
+    #region " members "
 
     /// <summary>
     /// Gets or sets or set the timeout during the phase where data is received within calls, or data
@@ -178,12 +178,12 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// If the flow of data when sending calls or receiving replies blocks longer than the given
     /// timeout, an exception is thrown. The timeout must be greater than 0.
     /// </remarks>
-    /// <value> The transmission timeout in milliseconds. </value>
-    public int TransmissionTimeout { get; set; } = OncRpcTransportBase.DefaultTransmissionTimeout;
+    /// <value> The timeout when sending calls or receiving replies in milliseconds. </value>
+    public int TransmitTimeout { get; set; } = OncRpcTransportBase.TransmitTimeoutDefault;
 
     #endregion
 
-    #region " Operation Methods "
+    #region " actions "
 
     /// <summary>
     /// Removes a TCP/IP server transport from the list of currently open transports.
@@ -317,7 +317,8 @@ public class OncRpcTcpTransport : OncRpcTransportBase
                         break;
 
                     Socket newSocket = myServerSocket.Accept();
-                    // OncRpcTcpConnTransport transport = new( this._enclosing.Dispatcher, newSocket, this._enclosing.RegisteredPrograms, this._enclosing.BufferSize, this._enclosing, this._enclosing.TransmissionTimeout );
+                    // OncRpcTcpConnTransport transport = new( this._enclosing.Dispatcher, newSocket, this._enclosing.RegisteredPrograms,
+                    //                                         this._enclosing.BufferSize, this._enclosing, this._enclosing.TransmitTimeout );
                     OncRpcTcpConnTransport transport = new( this._parent, newSocket );
 
 
@@ -342,7 +343,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
 
     #endregion
 
-    #region " Transport List "
+    #region " transport linked list "
 
     private class TransportList
     {

@@ -30,8 +30,8 @@ public class PortmapGetPortTest
 
         OncRpcPortmapClient portmap = new( ipAddress! );
 
-        //portmap.setRetransmissionMode(OncRpcUdpRetransmissionMode.FIXED);
-        //portmap.setRetransmissionTimeout(3*1000);
+        // portmap.RetransmitMode = OncRpcUdpRetransmitMode.OncRpcFixedTimeout;
+        // portmap.RetransmitTimeout = 3*1000;
 
         // Ping the port mapper...
 

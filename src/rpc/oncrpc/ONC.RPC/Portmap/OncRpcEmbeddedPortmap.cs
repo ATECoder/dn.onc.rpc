@@ -23,24 +23,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 public class OncRpcEmbeddedPortmapService
 {
 
-    /// <summary>   (Immutable) the default timeout. </summary>
-    public const int DefaultTimeout = 3000;
-
     #region " construction and cleanup "
-
-    /// <summary>
-    /// Constructs an embeddable portmap service of class
-    /// server <see cref="OncRpcEmbeddedPortmapService"/> and starts the service if no
-    /// other (external) portmap service is available.
-    /// </summary>
-    /// <remarks>
-    /// This constructor is the same as server <see cref="OncRpcEmbeddedPortmapService"/> calling with a timeout of
-    /// 3 seconds. The constructor starts the portmap service in its own thread and then returns.
-    /// </remarks>
-    /// <see cref="EmbeddedPortmapInUse()"/>
-    public OncRpcEmbeddedPortmapService() : this( OncRpcEmbeddedPortmapService.DefaultTimeout )
-    {
-    }
 
     /// <summary>
     /// Constructs an embeddable portmap service of class
@@ -52,8 +35,8 @@ public class OncRpcEmbeddedPortmapService
     /// <see cref="EmbeddedPortmapInUse()"/>
     /// </remarks>
     /// <param name="checkTimeout"> timeout in milliseconds to wait before assuming that no
-    ///                             portmap service is currently available. </param>
-    public OncRpcEmbeddedPortmapService( int checkTimeout )
+    ///                             portmap service is currently available [3000]. </param>
+    public OncRpcEmbeddedPortmapService( int checkTimeout = 3000 )
     {
         if ( !IsPortmapRunning( checkTimeout ) )
         {
@@ -124,31 +107,14 @@ public class OncRpcEmbeddedPortmapService
     /// Indicates whether a portmap service (regardless whether it's supplied by the operating system
     /// or an embedded portmap service) is currently running.
     /// </summary>
-    /// <remarks>
-    /// This method will check for 3 seconds for an answer from a portmap before assuming that no one
-    /// exists.
-    /// </remarks>
-    /// <returns>
-    /// <see cref="T:true"/>, if a portmap service (either external or
-    /// embedded) is running and can be contacted.
-    /// </returns>
-    public static bool IsPortmapRunning()
-    {
-        return IsPortmapRunning( OncRpcEmbeddedPortmapService.DefaultTimeout );
-    }
-
-    /// <summary>
-    /// Indicates whether a portmap service (regardless whether it's supplied by the operating system
-    /// or an embedded portmap service) is currently running.
-    /// </summary>
     /// <remarks> Unit tests shows this to take 3 ms. </remarks>
     /// <param name="checkTimeout"> timeout in milliseconds to wait before assuming that no portmap
-    ///                             service is currently available. </param>
+    ///                             service is currently available [3000]. </param>
     /// <returns>
     /// <see cref="T:true"/>, if a portmap service (either external or
     /// embedded) is running and can be contacted.
     /// </returns>
-    public static bool IsPortmapRunning( int checkTimeout )
+    public static bool IsPortmapRunning( int checkTimeout = 3000 )
     {
         bool available = false;
         try

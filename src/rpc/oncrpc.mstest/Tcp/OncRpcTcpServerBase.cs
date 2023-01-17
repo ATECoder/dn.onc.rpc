@@ -36,7 +36,7 @@ public abstract class OncRpcTcpServerBase : OncRpcServerStubBase, IOncRpcDispatc
         };
         this.SetTransports( transports );
 
-        this.CharacterEncoding = XdrTcpEncodingStream.DefaultEncoding;
+        this.CharacterEncoding = XdrTcpEncodingStream.EncodingDefault;
     }
 
     /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>

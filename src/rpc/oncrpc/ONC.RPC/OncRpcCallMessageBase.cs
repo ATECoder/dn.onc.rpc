@@ -48,7 +48,7 @@ public abstract class OncRpcCallMessageBase : OncRpcMessageBase
     /// The <see cref="OncRpcMessageBase.MessageType"/> is set to <see cref="OncRpcMessageType.OncRpcCallMessageType"/>
     /// and the <see cref="ProtocolVersion"/> is set to <see cref="OncRpcProtocolVersion"/>.
     /// </remarks>
-    public OncRpcCallMessageBase() : base( OncRpcMessageBase.DefaultMessageId )
+    public OncRpcCallMessageBase() : base( OncRpcMessageBase.MessageIdDefault )
     {
         this.MessageType = OncRpcMessageType.OncRpcCallMessageType;
         this.ProtocolVersion = OncRpcProtocolVersion;

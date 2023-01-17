@@ -86,7 +86,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
         // Make sure the buffer is large enough and resize system buffers
         // accordingly, if possible.
 
-        if ( bufferSize < OncRpcTransportBase.DefaultMinBufferSize ) bufferSize = OncRpcTransportBase.DefaultMinBufferSize;
+        if ( bufferSize < OncRpcTransportBase.MinBufferSizeDefault ) bufferSize = OncRpcTransportBase.MinBufferSizeDefault;
         this._socket = new Socket( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp );
         bindAddr ??= IPAddress.Any;
         IPEndPoint localEP = new( bindAddr, port );

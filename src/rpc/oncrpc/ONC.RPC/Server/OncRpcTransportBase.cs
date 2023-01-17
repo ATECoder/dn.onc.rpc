@@ -22,15 +22,6 @@ namespace cc.isr.ONC.RPC.Server;
 public abstract class OncRpcTransportBase : IDisposable
 {
 
-    /// <summary>   (Immutable) the default buffer size. </summary>
-    public const int DefaultBufferSize = 32768;
-
-    /// <summary>   (Immutable) the default minimum buffer size. </summary>
-    public const int DefaultMinBufferSize = 1024;
-
-    /// <summary>   (Immutable) the default transmission timeout. </summary>
-    public const int DefaultTransmissionTimeout = 30000;
-
     #region " construction and cleanup "
 
     /// <summary>
@@ -60,7 +51,7 @@ public abstract class OncRpcTransportBase : IDisposable
         this.Port = port;
         this.Protocol = protocol;
         this.RegisteredPrograms = registeredPrograms;
-        this._characterEncoding = OncRpcTransportBase.DefaultEncoding;
+        this._characterEncoding = OncRpcTransportBase.EncodingDefault;
     }
 
     /// <summary>   Close the server transport and free any resources associated with it. </summary>
@@ -156,6 +147,31 @@ public abstract class OncRpcTransportBase : IDisposable
 
     #endregion
 
+    #region " defaults "
+
+    /// <summary>   Gets or sets the default buffer size. </summary>
+    /// <value> The buffer size default. </value>
+    public static int BufferSizeDefault { get; set; } = 32768;
+
+    /// <summary>   Gets or sets the default minimum buffer size. </summary>
+    public static int MinBufferSizeDefault { get; set; } = 1024;
+
+    /// <summary>
+    /// Gets or sets the default timeout for sending RPC calls or receiving RPC replies.
+    /// </summary>
+    /// <value> The transmit timeout default. </value>
+    public static int TransmitTimeoutDefault { get; set; } = 3000;
+
+    /// <summary>   Gets or sets the default encoding. </summary>
+    /// <remarks>
+    /// The default encoding for VXI-11 is <see cref="Encoding.ASCII"/>, which is a subset of <see cref="Encoding.UTF8"/>
+    /// </remarks>
+    /// <value> The default encoding. </value>
+    public static Encoding EncodingDefault { get; set; } = Encoding.UTF8;
+
+    #endregion
+
+
     #region " members "
 
     /// <summary>
@@ -168,13 +184,6 @@ public abstract class OncRpcTransportBase : IDisposable
     /// <summary>   Gets or sets the protocol, e.g., <see cref="OncRpcProtocols.OncRpcTcp"/> or <see cref="OncRpcProtocols.OncRpcTcp"/>. </summary>
     /// <value> The protocol. </value>
     internal OncRpcProtocols Protocol { get; private set; }
-
-    /// <summary>   Gets or sets the default encoding. </summary>
-    /// <remarks>
-    /// The default encoding for VXI-11 is <see cref="Encoding.ASCII"/>, which is a subset of <see cref="Encoding.UTF8"/>
-    /// </remarks>
-    /// <value> The default encoding. </value>
-    public static Encoding DefaultEncoding { get; set; } = Encoding.UTF8;
 
     private Encoding _characterEncoding;
     /// <summary>

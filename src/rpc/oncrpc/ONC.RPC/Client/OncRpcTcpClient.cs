@@ -50,7 +50,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <param name="port">     The port number where the ONC/RPC server can be contacted. If <c>0</c>,
     ///                         then the <see cref="OncRpcUdpClient"/> object will ask the
     ///                         portmapper at <paramref name="host"/> for the port number. </param>
-    public OncRpcTcpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, OncRpcClientBase.DefaultBufferSize )
+    public OncRpcTcpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, OncRpcClientBase.BufferSizeDefault )
     {
     }
 
@@ -75,9 +75,9 @@ public class OncRpcTcpClient : OncRpcClientBase
     ///                             can still be sent and received. The buffer is only necessary to
     ///                             handle the messages and the underlaying streams will break up
     ///                             long messages automatically into suitable pieces. Specifying zero
-    ///                             will select the <see cref="OncRpcClientBase.DefaultBufferSize"/> (currently
+    ///                             will select the <see cref="OncRpcClientBase.BufferSizeDefault"/> (currently
     ///                             8192 bytes). </param>
-    public OncRpcTcpClient( IPAddress host, int program, int version, int port, int bufferSize ) : this( host, program, version, port, bufferSize, OncRpcClientBase.DefaultTimeout )
+    public OncRpcTcpClient( IPAddress host, int program, int version, int port, int bufferSize ) : this( host, program, version, port, bufferSize, OncRpcClientBase.ConnectTimeoutDefault )
     {
     }
 
@@ -102,7 +102,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     ///                             can still be sent and received. The buffer is only necessary to
     ///                             handle the messages and the underlaying streams will break up
     ///                             long messages automatically into suitable pieces. Specifying zero
-    ///                             will select the <see cref="OncRpcClientBase.DefaultBufferSize"/> (currently
+    ///                             will select the <see cref="OncRpcClientBase.BufferSizeDefault"/> (currently
     ///                             8192 bytes). </param>
     /// <param name="timeout">      Maximum timeout in milliseconds when connecting to the ONC/RPC
     ///                             server. If negative, a default implementation-specific timeout
@@ -122,9 +122,9 @@ public class OncRpcTcpClient : OncRpcClientBase
         // Let the host operating system choose which port (and network
         // interface) to use. Then set the buffer sizes for sending and
         // receiving UDP datagrams. Finally set the destination of packets.
-        if ( bufferSize == 0 ) bufferSize = DefaultBufferSize;
+        if ( bufferSize == 0 ) bufferSize = BufferSizeDefault;
         // default setting
-        if ( bufferSize < DefaultMinBufferSize ) bufferSize = DefaultMinBufferSize;
+        if ( bufferSize < MinBufferSizeDefault ) bufferSize = MinBufferSizeDefault;
 
         // Note that we use this.port at this time, because the superclass
         // might have resolved the port number in case the caller specified
@@ -146,7 +146,7 @@ public class OncRpcTcpClient : OncRpcClientBase
         // communicate at all.
         this.Encoder = new XdrTcpEncodingStream( this._socket, bufferSize );
         this.Decoder = new XdrTcpDecodingStream( this._socket, bufferSize );
-        this.CharacterEncoding = DefaultEncoding;
+        this.CharacterEncoding = EncodingDefault;
     }
 
     /// <summary>
@@ -230,14 +230,15 @@ public class OncRpcTcpClient : OncRpcClientBase
     internal XdrTcpDecodingStream? Decoder { get; private set; }
 
     /// <summary>
-    /// Gets or sets the timeout during the phase where data is sent within calls, or data is received within replies.
+    /// Gets or sets the timeout during the phase where data is sent within calls, or data is
+    /// received within replies.
     /// </summary>
     /// <remarks>
     /// If the flow of data when sending calls or receiving replies blocks longer than the given
     /// timeout, an exception is thrown. The timeout must be positive.
     /// </remarks>
-    /// <value> The timeout used during transmission of data. </value>
-    public int TransmissionTimeout { get; set; } = DefaultTransmissionTimeout;
+    /// <value> The timeout used when sending calls or receiving replies. </value>
+    public int TransmitTimeout { get; set; } = OncRpcClientBase.TransmitTimeoutDefault;
 
     /// <summary>
     /// Gets or sets the encoding to use when serializing strings.
@@ -291,7 +292,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                 // specify a destination when beginning serialization.
                 try
                 {
-                    this._socket!.ReceiveTimeout = this.TransmissionTimeout;
+                    this._socket!.ReceiveTimeout = this.TransmitTimeout;
                     this.Encoder!.BeginEncoding( null, 0 );
                     callHeader.Encode( this.Encoder! );
                     requestCodec.Encode( this.Encoder! );
@@ -316,7 +317,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                     {
                         this._socket.ReceiveTimeout = this.Timeout;
                         this.Decoder!.BeginDecoding();
-                        this._socket.ReceiveTimeout = this.TransmissionTimeout;
+                        this._socket.ReceiveTimeout = this.TransmitTimeout;
 
                         // First, pull off the reply message header of the
                         // XDR stream. In case we also received a verifier
@@ -437,7 +438,7 @@ public class OncRpcTcpClient : OncRpcClientBase
             // specify a destination when beginning serialization.
             try
             {
-                this._socket.SendTimeout = this.TransmissionTimeout;
+                this._socket.SendTimeout = this.TransmitTimeout;
                 this.Encoder.BeginEncoding( null, 0 );
                 callHeader.Encode( this.Encoder );
                 requestCodec.Encode( this.Encoder );

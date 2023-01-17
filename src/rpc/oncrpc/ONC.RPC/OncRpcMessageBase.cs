@@ -13,8 +13,9 @@ namespace cc.isr.ONC.RPC;
 public abstract class OncRpcMessageBase
 {
 
-    /// <summary>   (Immutable) the default message identifier. </summary>
-    public const int DefaultMessageId = 0;
+    /// <summary>   The default message identifier. </summary>
+    /// <value> The message identifier default. </value>
+    public static int MessageIdDefault { get; set; } = 0;
 
     /// <summary>
     /// Constructs a new <see cref="OncRpcMessageBase"/> object with default values: a given message id.
@@ -42,4 +43,18 @@ public abstract class OncRpcMessageBase
     /// </summary>
     /// <value> The type of the message. </value>
     public OncRpcMessageType MessageType { get; set; }
+
+    /// <summary>   Generates a message identifier with a more-or-less random value. </summary>
+    /// <remarks>   Presently, the 'random' value is based on a seed of <see cref="DateTime.Now"/>.Ticks
+    /// that is XOR'ed with its 31 right shifted value
+    /// </remarks>
+    /// <returns>   The client identifier. </returns>
+    public static int GenerateMessageIdentifier()
+    {
+        // Initialize the client identifier with some more-or-less random value.
+        long seed = DateTime.Now.Ticks;
+        return ( int ) seed ^ ( int ) (seed >> (32 & 0x1f));
+    }
+
+
 }

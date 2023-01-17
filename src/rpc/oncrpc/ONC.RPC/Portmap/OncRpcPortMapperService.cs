@@ -19,9 +19,6 @@ namespace cc.isr.ONC.RPC.Portmap;
 public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
 {
 
-    /// <summary>   (Immutable) the default buffer size. </summary>
-    public const int DefaultBufferSize = 32768;
-
     #region " construction and cleanup "
 
     /// <summary> 
@@ -40,12 +37,12 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
         // We support both UDP and TCP-based transports for ONC/RPC portmap
         // calls, and these transports are bound to the well-known port 111.
         OncRpcTransportBase[] transports = new OncRpcTransportBase[] {
-            new OncRpcUdpTransport(this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, registeredPrograms, OncRpcPortMapService.DefaultBufferSize),
-            new OncRpcTcpTransport( this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, registeredPrograms, OncRpcPortMapService.DefaultBufferSize)
+            new OncRpcUdpTransport(this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, registeredPrograms, OncRpcPortMapService.BufferSizeDefault),
+            new OncRpcTcpTransport( this, OncRpcPortmapConstants.OncRpcPortmapPortNumber, registeredPrograms, OncRpcPortMapService.BufferSizeDefault)
         };
         this.SetTransports( transports );
 
-        this.CharacterEncoding = XdrTcpEncodingStream.DefaultEncoding;
+        this.CharacterEncoding = XdrTcpEncodingStream.EncodingDefault;
 
         // Finally, we add ourself to the list of registered ONC/RPC servers.
         // This is just a convenience.
@@ -99,6 +96,14 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
             this._locals[0] = IPAddress.Loopback;
         }
     }
+
+    #endregion
+
+    #region " defaults "
+
+    /// <summary>   Gets or sets the default buffer size. </summary>
+    /// <value> The buffer size default. </value>
+    public static int BufferSizeDefault { get; set; }  = 32768;
 
     #endregion
 

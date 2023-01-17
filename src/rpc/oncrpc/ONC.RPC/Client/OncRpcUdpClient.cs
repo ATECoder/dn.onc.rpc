@@ -34,7 +34,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     ///                         , then the <see cref="OncRpcUdpClient"/> object will ask the portmapper at <paramref name="host"/>
     ///                         for the port number. </param>
     ///
-    public OncRpcUdpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, OncRpcClientBase.DefaultBufferSize )
+    public OncRpcUdpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, OncRpcClientBase.BufferSizeDefault )
     {
     }
 
@@ -56,7 +56,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     ///                             portmapper at <paramref name="host"/>
     ///                             for the port number. </param>
     /// <param name="bufferSize">   The buffer size used for sending and receiving UDP datagrams. </param>
-    public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize ) : this( host, program, version, port, bufferSize, OncRpcClientBase.DefaultTimeout )
+    public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize ) : this( host, program, version, port, bufferSize, OncRpcClientBase.ConnectTimeoutDefault )
     {
 
     }
@@ -85,7 +85,7 @@ public class OncRpcUdpClient : OncRpcClientBase
         this.Timeout = timeout;
         this.ReceiveTimeout = timeout;
         this.SendTimeout = timeout;
-        this.RetransmissionTimeout = timeout;
+        this.RetransmitTimeout = timeout;
 
         // Constructs the inherited part of our object. This will also try to
         // lookup the port of the desired ONC/RPC server, if no port number
@@ -96,7 +96,7 @@ public class OncRpcUdpClient : OncRpcClientBase
         // interface) to use. Then set the buffer sizes for sending and
         // receiving UDP datagrams. Finally set the destination of packets.
 
-        if ( bufferSize < DefaultMinBufferSize ) bufferSize = DefaultMinBufferSize;
+        if ( bufferSize < MinBufferSizeDefault ) bufferSize = MinBufferSizeDefault;
         this._socket = new( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp ) {
             SendTimeout = timeout,
             ReceiveTimeout = timeout,
@@ -117,7 +117,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
         this._encoder = new XdrUdpEncodingStream( this._socket, bufferSize );
         this._decoder = new XdrUdpDecodingStream( this._socket, bufferSize );
-        this.CharacterEncoding = DefaultEncoding;
+        this.CharacterEncoding = EncodingDefault;
     }
 
     /// <summary>
@@ -197,26 +197,26 @@ public class OncRpcUdpClient : OncRpcClientBase
     #region " members "
 
     /// <summary>
-    /// Gets or sets the retransmission mode used when resending ONC/RPC calls. Default mode is
-    /// <see cref="OncRpcUdpRetransmissionMode.OncRpcFixedTimeout">fixed timeout mode</see>.
+    /// Gets or sets the retransmit mode used when resending ONC/RPC calls. Default mode is
+    /// <see cref="OncRpcUdpRetransmitMode.OncRpcFixedTimeout">fixed timeout mode</see>.
     /// </summary>
-    /// <value> The retransmission mode. </value>
-    public OncRpcUdpRetransmissionMode RetransmissionMode { get; set; } = OncRpcUdpRetransmissionMode.OncRpcFixedTimeout;
+    /// <value> The retransmit mode. </value>
+    public OncRpcUdpRetransmitMode RetransmitMode { get; set; } = OncRpcUdpRetransmitMode.OncRpcFixedTimeout;
 
     /// <summary>
-    /// Gets or sets the retransmission timeout used for resending ONC/RPC calls when an ONC/RPC
-    /// server does not answer fast enough. The default retransmission timeout is identical to the
+    /// Gets or sets the timeout used for resending ONC/RPC calls when an ONC/RPC
+    /// server does not answer fast enough. The default retransmit timeout is identical to the
     /// overall <see cref="OncRpcClientBase.Timeout"/> for ONC/RPC calls (thus UDP/IP-based clients
     /// will not retransmit lost calls). A timeout of zero indicates batched calls.
     /// </summary>
     /// <remarks>
-    /// The default retransmission timeout is <see cref="OncRpcClientBase.DefaultTimeout"/> (30
-    /// seconds). The retransmission timeout must be greater than 0. To disable retransmission of
-    /// lost calls, set the retransmission timeout to be the same value as the timeout.
-    /// The timeout gets modified depending on the <see cref="RetransmissionMode"/>
+    /// The default retransmit timeout is <see cref="OncRpcClientBase.TransmitTimeoutDefault"/> (3
+    /// seconds). The retransmit timeout must be greater than 0. To disable retransmit of
+    /// lost calls, set the retransmit timeout to be the same value as the timeout.
+    /// The timeout gets modified depending on the <see cref="RetransmitMode"/>
     /// </remarks>
-    /// <value> The retransmission timeout. </value>
-    public int RetransmissionTimeout { get; set; }
+    /// <value> The retransmit timeout. </value>
+    public int RetransmitTimeout { get; set; }
 
     /// <summary>
     /// Gets or sets the encoding to use when serializing strings. 
@@ -267,14 +267,14 @@ public class OncRpcUdpClient : OncRpcClientBase
                 this.NextTransactionId();
 
                 // We only create our request message once and reuse it in case
-                // retransmission should be necessary -- with the exception being
+                // a retransmit should be necessary -- with the exception being
                 // credential refresh. In this case we need to create a new
                 // request message.
 
                 OncRpcClientCallMessage callHeader = new( this.MessageId, this.Program, versionNumber, procedureNumber, this.Auth );
                 OncRpcClientReplyMessage replyHeader = new( this.Auth );
                 long stopTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + this.Timeout;
-                int resendTimeout = this.RetransmissionTimeout;
+                int resendTimeout = this.RetransmitTimeout;
                 do
                 {
 
@@ -283,7 +283,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                     // resend our call after one second, then two seconds, four seconds,
                     // and so on, until we have reached the timeout for the call in total.
                     // Note that this setting only applies if exponential back-off
-                    // retransmission has been selected. Per default we do not retransmit
+                    // retransmit mode has been selected. Per default we do not retransmit
                     // any more, in order to be in line with the SUNRPC implementations.
 
                     try
@@ -322,7 +322,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                             else
                                 if ( currentTimeout < 1 )
 
-                                // as setSoTimeout interprets a timeout of zero as
+                                // as socket timeout interprets a timeout of zero as
                                 // infinite (?§$@%&!!!) we need to ensure that we
                                 // have a finite timeout, albeit maybe an infinitesimal
                                 // finite one.
@@ -367,7 +367,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                                 // Only deserialize the result, if the reply matches the call
                                 // and if the reply signals a successful call. In case of an
-                                // unsuccessful call (which mathes our call nevertheless) throw
+                                // unsuccessful call (which matches our call nevertheless) throw
                                 // an exception.
 
                                 if ( replyHeader.MessageId == callHeader.MessageId )
@@ -522,13 +522,14 @@ public class OncRpcUdpClient : OncRpcClientBase
                     // We only reach this code part beyond the inner waiting
                     // loop if we Runs in a timeout and might need to retransmit
 
-                    // According to the retransmission strategy chosen, update the
-                    // current retransmission (resending) timeout.
+                    // update the resend timeout per the retransmit strategy, either fixed or
+                    // exponential (double)
 
-                    if ( this.RetransmissionMode == OncRpcUdpRetransmissionMode.OncRpcExponentialTimeout )
+                    if ( this.RetransmitMode == OncRpcUdpRetransmitMode.OncRpcExponentialTimeout )
                         resendTimeout *= 2;
                 }
                 while ( DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond < stopTime );
+
                 // @jmw 12/18/2009 don't want to throw an exception here
                 if ( refreshFlag )
                     continue;

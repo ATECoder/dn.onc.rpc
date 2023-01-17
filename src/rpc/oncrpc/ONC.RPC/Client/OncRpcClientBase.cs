@@ -191,18 +191,6 @@ namespace cc.isr.ONC.RPC.Client;
 public abstract class OncRpcClientBase : IDisposable
 {
 
-    /// <summary>   (Immutable) the default buffer size. </summary>
-    public const int DefaultBufferSize = 8192;
-
-    /// <summary>   (Immutable) the default minimum buffer size. </summary>
-    public const int DefaultMinBufferSize = 1024;
-
-    /// <summary>   (Immutable) the default timeout. </summary>
-    public const int DefaultTimeout = 30000;
-
-    /// <summary>   (Immutable) the default transmission timeout. </summary>
-    public const int DefaultTransmissionTimeout = 30000;
-
     #region " construction and cleanup "
 
     /// <summary>   Constructs an <see cref="OncRpcClientBase"/> object (the generic part). </summary>
@@ -381,6 +369,36 @@ public abstract class OncRpcClientBase : IDisposable
 
     #endregion
 
+    #region " defaults "
+
+    /// <summary>   Gets or sets the default buffer size. </summary>
+    /// <value> The buffer size default. </value>
+    public static int BufferSizeDefault { get; set; } = 8192;
+
+    /// <summary>   Gets or sets the default minimum buffer size. </summary>
+    /// <value> The minimum buffer size default. </value>
+    public static int MinBufferSizeDefault { get; set; } = 1024;
+
+    /// <summary>   Gets or sets the default connection timeout. </summary>
+    /// <remarks> This timeout interval is replaced by the <see cref="TransmitTimeoutDefault"/>
+    /// during RPC calls. </remarks>
+    public static int ConnectTimeoutDefault { get; set; } = 3000;
+
+    /// <summary>   Gets or sets the default timeout for sending calls or receiving replies. </summary>
+    /// <remarks> This timeout interval is used to set the 
+    /// <see cref="System.Net.Sockets.Socket"/> send and receive timeouts
+    /// during RPC calls. </remarks>
+    public static int TransmitTimeoutDefault { get; set; } = 3000;
+
+    /// <summary>   Gets or sets the default encoding. </summary>
+    /// <remarks>
+    /// The default encoding for VXI-11 is <see cref="Encoding.ASCII"/>, which is a subset of <see cref="Encoding.UTF8"/>
+    /// </remarks>
+    /// <value> The default encoding. </value>
+    public static Encoding EncodingDefault { get; set; } = Encoding.UTF8;
+
+    #endregion
+
     #region " actions "
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
@@ -428,7 +446,7 @@ public abstract class OncRpcClientBase : IDisposable
     /// reply message is expected. </para>
     /// </remarks>
     /// <value> The timeout in milliseconds. </value>
-    public int Timeout { get; set; } = DefaultTimeout;
+    public int Timeout { get; set; } = ConnectTimeoutDefault;
 
     /// <summary>   Gets or sets the receive timeout in milliseconds. </summary>
     /// <value> The receive timeout. </value>
@@ -470,18 +488,11 @@ public abstract class OncRpcClientBase : IDisposable
     /// </value>
     public OncRpcClientAuthBase Auth { get; set; }
 
-    /// <summary>   Gets or sets the default encoding. </summary>
-    /// <remarks>
-    /// The default encoding for VXI-11 is <see cref="Encoding.ASCII"/>, which is a subset of <see cref="Encoding.UTF8"/>
-    /// </remarks>
-    /// <value> The default encoding. </value>
-    public static Encoding DefaultEncoding { get; set; } = Encoding.UTF8;
-
     /// <summary>
     /// Gets or sets the encoding to use when serializing strings. 
     /// </summary>
     /// <value> The character encoding. </value>
-    public virtual Encoding CharacterEncoding { get; set; } = XdrDecodingStreamBase.DefaultEncoding;
+    public virtual Encoding CharacterEncoding { get; set; } = XdrDecodingStreamBase.EncodingDefault;
 
     /// <summary>   Create next transaction (message) identifier. </summary>
     internal virtual void NextTransactionId()
