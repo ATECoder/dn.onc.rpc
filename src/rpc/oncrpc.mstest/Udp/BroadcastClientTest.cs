@@ -8,6 +8,7 @@ using cc.isr.ONC.RPC.Portmap;
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 [TestClass]
+[TestCategory("broadcast")]
 public class BroadcastClientTest : IOncRpcBroadcastListener
 {
 

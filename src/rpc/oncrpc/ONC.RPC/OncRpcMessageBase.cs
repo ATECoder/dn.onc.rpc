@@ -44,17 +44,4 @@ public abstract class OncRpcMessageBase
     /// <value> The type of the message. </value>
     public OncRpcMessageType MessageType { get; set; }
 
-    /// <summary>   Generates a message identifier with a more-or-less random value. </summary>
-    /// <remarks>   Presently, the 'random' value is based on a seed of <see cref="DateTime.Now"/>.Ticks
-    /// that is XOR'ed with its 31 right shifted value
-    /// </remarks>
-    /// <returns>   The client identifier. </returns>
-    public static int GenerateMessageIdentifier()
-    {
-        // Initialize the client identifier with some more-or-less random value.
-        long seed = DateTime.Now.Ticks;
-        return ( int ) seed ^ ( int ) (seed >> (32 & 0x1f));
-    }
-
-
 }

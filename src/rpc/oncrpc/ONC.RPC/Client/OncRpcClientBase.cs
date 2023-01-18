@@ -214,9 +214,8 @@ public abstract class OncRpcClientBase : IDisposable
         this.Program = program;
         this.Version = version;
 
-        // Initialize the message identifier with some more-or-less random value.
-        long seed = DateTime.Now.Ticks;
-        this.MessageId = ( int ) seed ^ ( int ) (seed >> (32 & 0x1f));
+        // Initialize the message identifier 
+        this.MessageId = OncRpcClientBase.GetNextMessageId();
 
         // If the port number of the ONC/RPC server to contact is not yet
         // known, try to find it out. For this we need to contact the portmap
@@ -399,6 +398,20 @@ public abstract class OncRpcClientBase : IDisposable
 
     #endregion
 
+    #region " unique message identifier "
+
+    private static int _lastMessageId = 0;
+
+    /// <summary>   Gets the next message identifier. </summary>
+    /// <remarks>   The message id resets to zero upon reaching <see cref="int.MaxValue"/>. </remarks>
+    /// <returns>   The next message identifier. </returns>
+    private static int GetNextMessageId()
+    {
+        return ++_lastMessageId == int.MaxValue ? 0 : _lastMessageId;
+    }
+
+    #endregion
+
     #region " actions "
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
@@ -497,7 +510,7 @@ public abstract class OncRpcClientBase : IDisposable
     /// <summary>   Create next transaction (message) identifier. </summary>
     internal virtual void NextTransactionId()
     {
-        this.MessageId++;
+        this.MessageId = OncRpcClientBase.GetNextMessageId();
     }
 
     /// <summary>
