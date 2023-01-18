@@ -34,7 +34,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// are omitted for brevity -- but remember that you almost always need to catch
 /// <see cref="OncRpcException"/>. </para>
 /// <code>
-/// OncRpcPortmapClient portmap = new OncRpcPortmapClient( IPAddress.Loopback );
+/// using OncRpcPortmapClient portmap = new OncRpcPortmapClient( IPAddress.Loopback );
 /// </code> <para>
 /// 
 /// With the portmapper proxy object in our hands we can now ask for the port number of a

@@ -119,7 +119,7 @@ public class OncRpcEmbeddedPortmapService
         bool available = false;
         try
         {
-            OncRpcPortmapClient portmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, checkTimeout );
+            using OncRpcPortmapClient portmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, checkTimeout );
             portmap.Ping();
             available = true;
         }

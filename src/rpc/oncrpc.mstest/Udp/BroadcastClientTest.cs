@@ -120,17 +120,16 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
         // Create a portmap client object, which can then be used to contact
         // the local ONC/RPC 'OncRpcUdpServer' test server.
         // OncRpcUdpClient client = new( IPAddress.Parse( "255.255.255.255" ), 100000, 2, 111 );
-        OncRpcUdpClient client = new( IPAddress.Loopback,
-                                                   OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
-                                                   OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
-                                                   OncRpcPortmapConstants.OncRpcPortmapPortNumber,
-                                                   0 , OncRpcUdpClient.TransmitTimeoutDefault );
+        using OncRpcUdpClient client = new( IPAddress.Loopback,
+                                                         OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
+                                                         OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
+                                                         OncRpcPortmapConstants.OncRpcPortmapPortNumber,
+                                                         0 , OncRpcUdpClient.TransmitTimeoutDefault );
 
+        client.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
         // Ping all port mappers in this subnet...
 
         Console.Out.Write( "pinging port mappers in subnet: " );
-        // TODO: try shorter timeout.
-        client.TransmitTimeout = 5 * 1000;
         try
         {
             client.BroadcastCall( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance, this );

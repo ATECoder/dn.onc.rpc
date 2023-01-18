@@ -517,8 +517,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// the <see cref="IOncRpcBroadcastListener">listener</see>, which is the last parameter to the this
     /// method. <para>
     /// 
-    /// In contrast to the
-    /// <see cref="OncRpcClientBase.Call(int, IXdrCodec, IXdrCodec)"/>
+    /// In contrast to the <see cref="OncRpcClientBase.Call(int, IXdrCodec, IXdrCodec)"/>
     /// method, <see cref="BroadcastCall"/> will only send the ONC/RPC call once. It will then wait
     /// for answers until the timeout as set by <see cref="OncRpcClientBase.IOTimeout"/>
     /// expires without resending the reply. </para> <para>
@@ -588,6 +587,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                     TimeSpan currentTimeout = stopTime - DateTime.Now;
                     if ( currentTimeout.Ticks < 0 )
                         currentTimeout = new TimeSpan( 0 );
+
                     // @atecoder: fix timeout; was .Seconds, that is, 1000 times larger.
                     this._socket.ReceiveTimeout = currentTimeout.Milliseconds;
 
