@@ -18,7 +18,8 @@ public class OncRpcTcpTestClient : IDisposable
     {
         this.Host = host;
         this.Version = version;
-        this._coreClient = OncRpcClientBase.NewOncRpcClient( host, RpcProgramConstants.ProgramNumber, version, 0, OncRpcProtocols.OncRpcTcp );
+        this._coreClient = OncRpcClientBase.NewOncRpcClient( host, RpcProgramConstants.ProgramNumber, version, 0,
+                                                             OncRpcProtocols.OncRpcTcp, Client.OncRpcTcpClient.IOTimeoutDefault );
 
         // this._coreClient = new GenOncRpcCoreClient( host, RpcProgramConstants.ProgramNumber, version, OncRpcProtocols.ONCRPC_TCP );
         this.Connected = true;

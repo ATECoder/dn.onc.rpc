@@ -22,19 +22,21 @@ public abstract class OncRpcClientStubBase : IDisposable
     #region " construction and cleanup "
 
     /// <summary>
-    /// Constructs a new <see cref="OncRpcClientStubBase"/> for communication with a remote ONC/RPC server.
+    /// Constructs a new <see cref="OncRpcClientStubBase"/> for communication with a remote ONC/RPC
+    /// server.
     /// </summary>
+    /// <remarks>   2023-01-17. </remarks>
     /// <param name="host">     Host address where the desired ONC/RPC server resides. </param>
     /// <param name="program">  Program number of the desired ONC/RPC server. </param>
     /// <param name="version">  Version number of the desired ONC/RPC server. </param>
     /// <param name="port">     The port. </param>
-    /// <param name="protocol"> <see cref="OncRpcProtocols">Protocol</see>
-    ///                         to be used for ONC/RPC calls. This
-    ///                         information is necessary, so port lookups
-    ///                         through the portmapper can be done. </param>
-    public OncRpcClientStubBase( IPAddress host, int program, int version, int port, OncRpcProtocols protocol )
+    /// <param name="protocol"> The protocol to be used for ONC/RPC calls. This information is
+    ///                         necessary, so port lookups through the portmapper can be done. </param>
+    /// <param name="timeout">  The transmit timeout for <see cref="OncRpcProtocols.OncRpcUdp"/>
+    ///                         or the connection timeout for <see cref="OncRpcProtocols.OncRpcTcp"/>. </param>
+    public OncRpcClientStubBase( IPAddress host, int program, int version, int port, OncRpcProtocols protocol, int timeout )
     {
-        this.Client = OncRpcClientBase.NewOncRpcClient( host, program, version, port, protocol );
+        this.Client = OncRpcClientBase.NewOncRpcClient( host, program, version, port, protocol, timeout );
     }
 
     /// <summary>

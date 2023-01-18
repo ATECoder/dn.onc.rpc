@@ -11,7 +11,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// In addition, it is also possible to contact port mappers using TCP/IP. For this, the
 /// constructor of the
 /// <see cref="OncRpcPortmapClient"/> class also accepts a protocol parameter
-/// (<see cref="OncRpcPortmapClient(IPAddress, OncRpcProtocols)"/>).
+/// (<see cref="OncRpcPortmapClient(IPAddress, OncRpcProtocols, int)"/>).
 /// Technically spoken, instances of <see cref="OncRpcPortmapClient"/> are proxy objects.
 /// <see cref="OncRpcPortmapClient"/> objects currently speak protocol version
 /// 2. The newer transport-independent protocol versions 3 and 4 are
@@ -106,6 +106,9 @@ public class OncRpcPortmapClient : IDisposable
 {
 
     #region " construction and cleanup "
+
+#if false
+
     /// <summary>
     /// Constructs and initializes an ONC/RPC client object, which can communicate with the
     /// portmapper at the specified host using the UDP/IP datagram-oriented Internet protocol.
@@ -130,22 +133,20 @@ public class OncRpcPortmapClient : IDisposable
     {
     }
 
+#endif
+
     /// <summary>
     /// Constructs and initializes an ONC/RPC client object, which can communicate with the
     /// portmapper at the given host using the specified protocol.
     /// </summary>
-    /// <remarks>   2023-01-09. </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="host">     Host where to contact the portmapper. </param>
     /// <param name="protocol"> Protocol to use for contacting the portmapper. This can be either
     ///                         <see cref="OncRpcProtocols.OncRpcUdp"/> or
     ///                         <see cref="OncRpcProtocols.OncRpcTcp"/> (HTTP is currently
     ///                         not supported). </param>
-    /// <param name="timeout">  Timeout in milliseconds for connection operation. This parameter
-    ///                         applies only when using TCP/IP for talking to the portmapper. A
-    ///                         negative timeout indicates that the implementation-specific timeout
-    ///                         setting of the <see cref="System.Net.Sockets.Socket"/>, which
-    ///                         defaults to <c>0</c>, should be used instead. </param>
+    /// <param name="timeout">  Timeout in milliseconds for TCP/IP connection operation or
+    ///                         UDP/IP transmission. </param>
     ///
     public OncRpcPortmapClient( IPAddress host, OncRpcProtocols protocol, int timeout )
     {
@@ -155,7 +156,7 @@ public class OncRpcPortmapClient : IDisposable
                 {
                     this.PortmapClient = new OncRpcUdpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
-                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber, timeout );
+                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber, OncRpcUdpClient.BufferSizeDefault, timeout );
                     break;
                 }
 
@@ -183,7 +184,7 @@ public class OncRpcPortmapClient : IDisposable
         this.PortmapClient?.Close();
     }
 
-    #region " disposable implementation "
+#region " disposable implementation "
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
@@ -245,11 +246,11 @@ public class OncRpcPortmapClient : IDisposable
         this.Dispose( false );
     }
 
-    #endregion
+#endregion
 
-    #endregion
+#endregion
 
-    #region " members "
+#region " members "
 
     /// <summary>
     /// Gets or sets the particular transport-specific ONC/RPC client used for communicating with the
@@ -258,9 +259,9 @@ public class OncRpcPortmapClient : IDisposable
     /// <value> The portmap client proxy object (subclass of <see cref="OncRpcClientBase"/>). </value>
     public OncRpcClientBase PortmapClient { get; set; }
 
-    #endregion
+#endregion
 
-    #region " actions "
+#region " actions "
 
 
     /// <summary>
@@ -419,6 +420,6 @@ public class OncRpcPortmapClient : IDisposable
         return true;
     }
 
-    #endregion
+#endregion
 
 }

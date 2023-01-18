@@ -14,7 +14,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// In order to communicate with an ONC/RPC server, you need to create an
 /// ONC/RPC client, represented by classes derived from <see cref="OncRpcClientBase"/>. The most
 /// generic way to generate an ONC/RPC client is as follows: use
-/// <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocols)"/> and specify: </para>
+/// <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocols, int)"/> and specify: </para>
 /// <list type="bullet"> <item>
 /// the host (of class <see cref="IPAddress"/>) where the ONC/RPC server resides, </item><item>
 /// the ONC/RPC program number of the server to contact,</item><item>
@@ -57,7 +57,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// You might also get an IOException when using TCP/IP and the server
 /// cannot be contacted because it does not accept new connections.  </para> <para>
 /// 
-/// Instead of calling <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocols)"/>
+/// Instead of calling <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocols, int)"/>
 /// you can also directly create objects of classes <see cref="OncRpcTcpClient"/>
 /// and <see cref="OncRpcUdpClient"/>
 /// if you know at compile time which kind of IP protocol you will use. </para> <para>
@@ -226,7 +226,7 @@ public abstract class OncRpcClientBase : IDisposable
         // the other end of the HTTP tunnel (at the web server).
         if ( port == 0 && protocol != OncRpcProtocols.OncRpcHttp )
         {
-            OncRpcPortmapClient portmap = new( host );
+            OncRpcPortmapClient portmap = new( host, OncRpcProtocols.OncRpcUdp, OncRpcUdpClient.TransmitTimeoutDefault );
             try
             {
                 port = portmap.GetPort( program, version, protocol );
@@ -251,16 +251,19 @@ public abstract class OncRpcClientBase : IDisposable
     /// <param name="version">  Version number of the desired ONC/RPC server. </param>
     /// <param name="protocol"> <see cref="OncRpcProtocols">Protocol</see>
     ///                         to be used for ONC/RPC calls. </param>
+    /// <param name="timeout">  The transmit timeout for <see cref="OncRpcProtocols.OncRpcUdp"/>
+    ///                         or the connection timeout for <see cref="OncRpcProtocols.OncRpcTcp"/>. </param>
     /// <returns>   An OncRpcClient. </returns>
-    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, OncRpcProtocols protocol )
+    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, OncRpcProtocols protocol, int timeout )
     {
-        return NewOncRpcClient( host, program, version, 0, protocol );
+        return NewOncRpcClient( host, program, version, 0, protocol, timeout );
     }
 
     /// <summary>
     /// Creates a new ONC/RPC client object, which can handle the requested
     /// <paramref name="protocol"/>.
     /// </summary>
+    /// <remarks>   2023-01-17. </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="host">     Host address where the desired ONC/RPC server resides. </param>
     /// <param name="program">  Program number of the desired ONC/RPC server. </param>
@@ -269,9 +272,11 @@ public abstract class OncRpcClientBase : IDisposable
     ///                         if this is not known and the portmap process located at host should
     ///                         be contacted to find out the port. </param>
     /// <param name="protocol"> <see cref="OncRpcProtocols">Protocol</see>
-    ///                         to be used for ONC/RPC calls. </param>
+    ///                                                 to be used for ONC/RPC calls. </param>
+    /// <param name="timeout">  The transmit timeout for <see cref="OncRpcProtocols.OncRpcUdp"/>
+    ///                         or the connection timeout for <see cref="OncRpcProtocols.OncRpcTcp"/>. </param>
     /// <returns>   An OncRpcClient. </returns>
-    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, int port, OncRpcProtocols protocol )
+    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, int port, OncRpcProtocols protocol, int timeout )
     {
         switch ( protocol )
         {
@@ -280,12 +285,12 @@ public abstract class OncRpcClientBase : IDisposable
                     // Now we need to create a protocol client object, which will know
                     // how to create the network connection and how to send and receive
                     // data to and from it.
-                    return new OncRpcUdpClient( host, program, version, port );
+                    return new OncRpcUdpClient( host, program, version, OncRpcUdpClient.BufferSizeDefault, port, timeout );
                 }
 
             case OncRpcProtocols.OncRpcTcp:
                 {
-                    return new OncRpcTcpClient( host, program, version, port );
+                    return new OncRpcTcpClient( host, program, version, port, OncRpcTcpClient.BufferSizeDefault, timeout );
                 }
 
             default:
@@ -378,16 +383,18 @@ public abstract class OncRpcClientBase : IDisposable
     /// <value> The minimum buffer size default. </value>
     public static int MinBufferSizeDefault { get; set; } = 1024;
 
-    /// <summary>   Gets or sets the default connection timeout. </summary>
-    /// <remarks> This timeout interval is replaced by the <see cref="TransmitTimeoutDefault"/>
-    /// during RPC calls. </remarks>
-    public static int ConnectTimeoutDefault { get; set; } = 3000;
-
     /// <summary>   Gets or sets the default timeout for sending calls or receiving replies. </summary>
     /// <remarks> This timeout interval is used to set the 
     /// <see cref="System.Net.Sockets.Socket"/> send and receive timeouts
     /// during RPC calls. </remarks>
-    public static int TransmitTimeoutDefault { get; set; } = 3000;
+    public static int TransmitTimeoutDefault { get; set; } = 1000;
+
+    /// <summary>   Gets or sets the default timeout for connecting or UDP/IP 
+    /// call with retransmissions. </summary>
+    /// <remarks> This timeout interval is used to set the 
+    /// <see cref="System.Net.Sockets.Socket"/> send and receive timeouts
+    /// during RPC calls. </remarks>
+    public static int IOTimeoutDefault { get; set; } = 3000;
 
     /// <summary>   Gets or sets the default encoding. </summary>
     /// <remarks>
@@ -412,39 +419,16 @@ public abstract class OncRpcClientBase : IDisposable
 
     #endregion
 
-    #region " actions "
-
-    /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
-    /// <remarks>
-    /// The <see cref="OncRpcUdpClient"/> uses a similar timeout scheme as
-    /// the genuine Sun C implementation of ONC/RPC: it starts with a timeout of one second when
-    /// waiting for a reply. If no reply is received within this time frame, the client doubles the
-    /// timeout, sends a new request and then waits again for a reply. In every case the client will
-    /// wait no longer than the total timeout set through the <see cref="Timeout"/> property.
-    /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
-    /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
-    /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
-    public virtual void Call( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
-    {
-        lock ( this )
-            // Use the default version number as specified for this client.
-            this.Call( procedureNumber, this.Version, requestCodec, replyCodec );
-    }
-
-    /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
-    /// <remarks>   2023-01-03. </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
-    /// <param name="versionNumber">    Protocol version number. </param>
-    /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
-    /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
-    public abstract void Call( int procedureNumber, int versionNumber, IXdrCodec requestCodec, IXdrCodec replyCodec );
-
-    #endregion
-
     #region " members "
+
+    /// <summary>   Gets or sets a value indicating whether this object uses call batching. </summary>
+    /// <remarks>
+    /// This member is set to replace the code for call batching. This eliminates the use of the <see cref="IOTimeout"/>
+    /// for batching. The following description was moved from the <see cref="IOTimeout"/> remarks: <para>
+    /// A timeout of zero indicated batched calls, for which no reply message is expected. </para>
+    /// </remarks>
+    /// <value> True if use call batching, false if not. </value>
+    public bool UseCallBatching { get; set; }
 
     /// <summary>
     /// Gets or sets the timeout (in milliseconds) for communication with an ONC/RPC server.
@@ -455,19 +439,37 @@ public abstract class OncRpcClientBase : IDisposable
     /// 
     /// The default timeout value is 30 seconds (30,000 milliseconds). </para><para>
     /// 
-    /// The timeout must be non-negative. A timeout of zero indicated batched calls, for which no
-    /// reply message is expected. </para>
+    /// The timeout must be non-negative. </para>  
     /// </remarks>
     /// <value> The timeout in milliseconds. </value>
-    public int Timeout { get; set; } = ConnectTimeoutDefault;
+    public int IOTimeout { get; set; } = IOTimeoutDefault;
 
-    /// <summary>   Gets or sets the receive timeout in milliseconds. </summary>
-    /// <value> The receive timeout. </value>
-    public abstract int ReceiveTimeout { get; set; }
-
-    /// <summary>   Gets or sets the send timeout in milliseconds. </summary>
-    /// <value> The send timeout. </value>
-    public abstract int SendTimeout { get; set; }
+    /// <summary>
+    /// Gets or sets the timeout during the phase where data is sent within calls, or data is
+    /// received within replies. The <see cref="TransmitTimeout"/> timeout must be greater than 0.
+    /// </summary>
+    /// <remarks>
+    /// If the flow of data when sending calls or receiving replies blocks longer than the given
+    /// timeout, an exception is thrown. The timeout must be positive. <para>
+    /// UDP Client Retransmission: </para><para>
+    /// Time timeout also determines the initial timeout used for resending ONC/RPC calls when an
+    /// ONC/RPC server does not answer fast enough. The default retransmit timeout for UDP/IP-based
+    /// clients is identical to the overall timeout for ONC/RPC calls. Therefore, UDP/IP-based
+    /// clients will not retransmit lost calls. </para><para>
+    /// To enable retransmission of lost calls, set the <see cref="TransmitTimeout"/> smaller than
+    /// the <see cref="IOTimeout"/>. </para><para>
+    /// To disable retransmit of lost calls, set the <see cref="TransmitTimeout"/> equal to the
+    /// <see cref="IOTimeout"/>.  </para><para>
+    /// During retransmission, the actual timeout gets modified depending on the
+    /// <see cref="OncRpcRetransmitMode"/>.  </para><para>
+    /// Device Connection:  </para><para>
+    /// For connection, the transmit timeout might be increased as necessary to establish connection 
+    /// with the RPC server, in which case, the connection code should work within a 
+    /// Try..Catch..Finally construct to ensure the restoration of the <see cref="TransmitTimeout"/>.
+    /// </para>
+    /// </remarks>
+    /// <value> The timeout used when sending calls or receiving replies. </value>
+    public int TransmitTimeout { get; set; } = OncRpcClientBase.TransmitTimeoutDefault;
 
     /// <summary>
     /// Gets or sets (private) the program number of the ONC/RPC server to communicate with.
@@ -525,4 +527,35 @@ public abstract class OncRpcClientBase : IDisposable
 
     #endregion
 
+    #region " actions "
+
+    /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
+    /// <remarks>
+    /// The <see cref="OncRpcUdpClient"/> uses a similar timeout scheme as
+    /// the genuine Sun C implementation of ONC/RPC: it starts with a timeout of one second when
+    /// waiting for a reply. If no reply is received within this time frame, the client doubles the
+    /// timeout, sends a new request and then waits again for a reply. In every case the client will
+    /// wait no longer than the total timeout set through the <see cref="Timeout"/> property.
+    /// </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
+    /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
+    /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
+    /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
+    public virtual void Call( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
+    {
+        lock ( this )
+            // Use the default version number as specified for this client.
+            this.Call( procedureNumber, this.Version, requestCodec, replyCodec );
+    }
+
+    /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
+    /// <remarks>   2023-01-03. </remarks>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
+    /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
+    /// <param name="versionNumber">    Protocol version number. </param>
+    /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
+    /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
+    public abstract void Call( int procedureNumber, int versionNumber, IXdrCodec requestCodec, IXdrCodec replyCodec );
+
+    #endregion
 }

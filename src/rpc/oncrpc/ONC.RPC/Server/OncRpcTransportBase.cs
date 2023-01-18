@@ -228,7 +228,7 @@ public abstract class OncRpcTransportBase : IDisposable
     {
         try
         {
-            OncRpcPortmapClient portmapper = new( IPAddress.Loopback );
+            OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
             foreach ( var transportRegistrationInfo in this.RegisteredPrograms )
             {
                 // Try to register the port for our transport with the local ONC/RPC
@@ -258,7 +258,7 @@ public abstract class OncRpcTransportBase : IDisposable
     {
         try
         {
-            OncRpcPortmapClient portmapper = new( IPAddress.Loopback );
+            OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
             int size = this.RegisteredPrograms.Length;
             for ( int idx = 0; idx < size; ++idx )
                 _ = portmapper.UnsetPort( this.RegisteredPrograms[idx].Program, this.RegisteredPrograms[idx].Version );

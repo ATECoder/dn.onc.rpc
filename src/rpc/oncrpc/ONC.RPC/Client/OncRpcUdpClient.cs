@@ -16,6 +16,8 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     #region " construction and cleanup "
 
+#if false
+
     /// <summary>
     /// Constructs a new <see cref="OncRpcUdpClient"/> object, which connects to the ONC/RPC server at
     /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>,
@@ -61,6 +63,8 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     }
 
+#endif
+
     /// <summary>
     /// Constructs a new <see cref="OncRpcUdpClient"/> object, which connects to the ONC/RPC server at
     /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>
@@ -72,20 +76,21 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// object will result in communication with the portmap process at
     /// <paramref name="host"/> if <paramref name="port"/> is <c>0</c>.
     /// </remarks>
-    /// <param name="host">         The host where the ONC/RPC server resides. </param>
-    /// <param name="program">      Program number of the ONC/RPC server to call. </param>
-    /// <param name="version">      Program version number. </param>
-    /// <param name="port">         The port number where the ONC/RPC server can be contacted. If
-    ///                             <c>0</c>, then the <see cref="OncRpcUdpClient"/> object will ask
-    ///                             the portmapper at <paramref name="host"/> for the port number. </param>
-    /// <param name="bufferSize">   The buffer size used for sending and receiving UDP datagrams. </param>
-    /// <param name="timeout">      The timeout. </param>
-    public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize, int timeout ) : base( host, program, version, port, OncRpcProtocols.OncRpcUdp )
+    /// <param name="host">             The host where the ONC/RPC server resides. </param>
+    /// <param name="program">          Program number of the ONC/RPC server to call. </param>
+    /// <param name="version">          Program version number. </param>
+    /// <param name="port">             The port number where the ONC/RPC server can be contacted. If
+    ///                                 <c>0</c>, then the <see cref="OncRpcUdpClient"/> object will
+    ///                                 ask
+    ///                                 the portmapper at <paramref name="host"/> for the port
+    ///                                 number. </param>
+    /// <param name="bufferSize">       The buffer size used for sending and receiving UDP datagrams. </param>
+    /// <param name="transmitTimeout">  The timeout during the phase where data is sent within calls,
+    ///                                 or data is received within replies. This timeout must be
+    ///                                 greater than 0. </param>
+    public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize, int transmitTimeout ) : base( host, program, version, port, OncRpcProtocols.OncRpcUdp )
     {
-        this.Timeout = timeout;
-        this.ReceiveTimeout = timeout;
-        this.SendTimeout = timeout;
-        this.RetransmitTimeout = timeout;
+        this.TransmitTimeout = transmitTimeout;
 
         // Constructs the inherited part of our object. This will also try to
         // lookup the port of the desired ONC/RPC server, if no port number
@@ -98,8 +103,8 @@ public class OncRpcUdpClient : OncRpcClientBase
 
         if ( bufferSize < MinBufferSizeDefault ) bufferSize = MinBufferSizeDefault;
         this._socket = new( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp ) {
-            SendTimeout = timeout,
-            ReceiveTimeout = timeout,
+            SendTimeout = transmitTimeout,
+            ReceiveTimeout = transmitTimeout,
         };
         this._socket.SendBufferSize =  Math.Min( this._socket.SendBufferSize , bufferSize );
         this._socket.ReceiveBufferSize = Math.Min( this._socket.ReceiveBufferSize, bufferSize );
@@ -156,32 +161,6 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// </summary>
     private Socket? _socket;
 
-    private int _receiveTimeout;
-    /// <summary>   Gets or sets the receive timeout in milliseconds. </summary>
-    /// <value> The receive timeout. </value>
-    public override int ReceiveTimeout
-    {
-        get => this._receiveTimeout;
-        set {
-            this._receiveTimeout = value;
-            if ( this._socket is not null )
-                this._socket.ReceiveTimeout = value;
-        }
-    }
-
-    private int _sendTimeout;
-    /// <summary>   Gets or sets the send timeout in milliseconds. </summary>
-    /// <value> The send timeout. </value>
-    public override int SendTimeout
-    {
-        get => this._sendTimeout;
-        set {
-            this._sendTimeout = value;
-            if ( this._socket is not null )
-                this._socket.SendTimeout = value;
-        }
-    }
-
     /// <summary> 
     /// XDR encoding stream used for sending requests via UDP/IP to an ONC/RPC server.
     /// </summary>
@@ -192,31 +171,16 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// </summary>
     private XdrUdpDecodingStream? _decoder;
 
-    #endregion
+#endregion
 
-    #region " members "
+#region " members "
 
     /// <summary>
     /// Gets or sets the retransmit mode used when resending ONC/RPC calls. Default mode is
-    /// <see cref="OncRpcUdpRetransmitMode.OncRpcFixedTimeout">fixed timeout mode</see>.
+    /// <see cref="OncRpcRetransmitMode.OncRpcFixedTimeout">fixed timeout mode</see>.
     /// </summary>
     /// <value> The retransmit mode. </value>
-    public OncRpcUdpRetransmitMode RetransmitMode { get; set; } = OncRpcUdpRetransmitMode.OncRpcFixedTimeout;
-
-    /// <summary>
-    /// Gets or sets the timeout used for resending ONC/RPC calls when an ONC/RPC
-    /// server does not answer fast enough. The default retransmit timeout is identical to the
-    /// overall <see cref="OncRpcClientBase.Timeout"/> for ONC/RPC calls (thus UDP/IP-based clients
-    /// will not retransmit lost calls). A timeout of zero indicates batched calls.
-    /// </summary>
-    /// <remarks>
-    /// The default retransmit timeout is <see cref="OncRpcClientBase.TransmitTimeoutDefault"/> (3
-    /// seconds). The retransmit timeout must be greater than 0. To disable retransmit of
-    /// lost calls, set the retransmit timeout to be the same value as the timeout.
-    /// The timeout gets modified depending on the <see cref="RetransmitMode"/>
-    /// </remarks>
-    /// <value> The retransmit timeout. </value>
-    public int RetransmitTimeout { get; set; }
+    public OncRpcRetransmitMode RetransmitMode { get; set; } = OncRpcRetransmitMode.OncRpcFixedTimeout;
 
     /// <summary>
     /// Gets or sets the encoding to use when serializing strings. 
@@ -232,9 +196,9 @@ public class OncRpcUdpClient : OncRpcClientBase
         }
     }
 
-    #endregion
+#endregion
 
-    #region " actions "
+#region " actions "
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>
@@ -242,7 +206,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// the genuine Sun C implementation of ONC/RPC: it starts with a timeout of one second when
     /// waiting for a reply. If no reply is received within this time frame, the client doubles the
     /// timeout, sends a new request and then waits again for a reply. In every case the client will
-    /// wait no longer than the total timeout set through the <see cref="OncRpcClientBase.Timeout"/> property.
+    /// wait no longer than the total timeout set through the <see cref="OncRpcClientBase.IOTimeout"/> property.
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
@@ -273,8 +237,8 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                 OncRpcClientCallMessage callHeader = new( this.MessageId, this.Program, versionNumber, procedureNumber, this.Auth );
                 OncRpcClientReplyMessage replyHeader = new( this.Auth );
-                long stopTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + this.Timeout;
-                int resendTimeout = this.RetransmitTimeout;
+                long stopTime = DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond + this.IOTimeout;
+                int resendTimeout = this.TransmitTimeout;
                 do
                 {
 
@@ -307,7 +271,8 @@ public class OncRpcUdpClient : OncRpcClientBase
                     // In case of batched calls we don't need no answer, so
                     // we can do other, more interesting things.
 
-                    if ( this.Timeout == 0 )
+                    // @atecoder: this was replaced int he next statement: if ( this.IOTimeout == 0 )
+                    if ( this.UseCallBatching )
                         return;
 
                     // Wait for an answer to arrive...
@@ -525,7 +490,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                     // update the resend timeout per the retransmit strategy, either fixed or
                     // exponential (double)
 
-                    if ( this.RetransmitMode == OncRpcUdpRetransmitMode.OncRpcExponentialTimeout )
+                    if ( this.RetransmitMode == OncRpcRetransmitMode.OncRpcExponentialTimeout )
                         resendTimeout *= 2;
                 }
                 while ( DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond < stopTime );
@@ -555,7 +520,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// In contrast to the
     /// <see cref="OncRpcClientBase.Call(int, IXdrCodec, IXdrCodec)"/>
     /// method, <see cref="BroadcastCall"/> will only send the ONC/RPC call once. It will then wait
-    /// for answers until the timeout as set by <see cref="OncRpcClientBase.Timeout"/>
+    /// for answers until the timeout as set by <see cref="OncRpcClientBase.IOTimeout"/>
     /// expires without resending the reply. </para> <para>
     /// 
     /// Note that you might experience unwanted results when using
@@ -612,7 +577,7 @@ public class OncRpcUdpClient : OncRpcClientBase
             // (total) timeout expires.
 
             // @atecoder: fix timeout; was ill defined.
-            DateTime stopTime = DateTime.Now.Add( TimeSpan.FromMilliseconds( this.Timeout ) );
+            DateTime stopTime = DateTime.Now.Add( TimeSpan.FromMilliseconds( this.IOTimeout ) );
             do
                 try
                 {
@@ -700,6 +665,6 @@ public class OncRpcUdpClient : OncRpcClientBase
         }
     }
 
-    #endregion
+#endregion
 
 }

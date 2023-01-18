@@ -54,7 +54,7 @@ public class EmbeddedPortmapTest
         int dummyVersion = 42;
         int dummyPort = 42;
 
-        OncRpcPortmapClient pmap = new( IPAddress.Loopback );
+        OncRpcPortmapClient pmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, Client.OncRpcUdpClient.TransmitTimeoutDefault );
         Console.Out.Write( "Deregistering non-existing program: " );
         bool actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsFalse( actual );

@@ -17,6 +17,8 @@ public class OncRpcTcpClient : OncRpcClientBase
 
     #region " construction and cleanup "
 
+#if false
+
     /// <summary>
     /// Constructs a new server <see cref="OncRpcTcpClient"/> object, which connects to the ONC/RPC server at
     /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>, <paramref name="version"/> }.
@@ -81,6 +83,8 @@ public class OncRpcTcpClient : OncRpcClientBase
     {
     }
 
+#endif
+
     /// <summary>
     /// Constructs a new server <see cref="OncRpcTcpClient"/> object, which connects to the ONC/RPC server at
     /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>, <paramref name="version"/> }.
@@ -89,6 +93,8 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// Note that the construction of an server <see cref="OncRpcTcpClient"/>
     /// object will result in communication with the portmap process at
     /// <paramref name="host"/> if <paramref name="port"/> is <c>0</c>.
+    /// The <see cref="OncRpcClientBase.TransmitTimeout"/> and <see cref="OncRpcClientBase.IOTimeout"/>
+    /// must be set at the construction of this class.
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="host">         The host where the ONC/RPC server resides. </param>
@@ -104,16 +110,13 @@ public class OncRpcTcpClient : OncRpcClientBase
     ///                             long messages automatically into suitable pieces. Specifying zero
     ///                             will select the <see cref="OncRpcClientBase.BufferSizeDefault"/> (currently
     ///                             8192 bytes). </param>
-    /// <param name="timeout">      Maximum timeout in milliseconds when connecting to the ONC/RPC
+    /// <param name="connectTimeout">      Maximum timeout in milliseconds when connecting to the ONC/RPC
     ///                             server. If negative, a default implementation-specific timeout
     ///                             setting will apply. <i>Note that this timeout only applies to the
     ///                             connection phase, but <b>not</b> to later communication.</i> </param>
-    public OncRpcTcpClient( IPAddress host, int program, int version, int port, int bufferSize, int timeout ) : base( host, program,
-                                                                                                                      version, port, OncRpcProtocols.OncRpcTcp )
+    public OncRpcTcpClient( IPAddress host, int program, int version, int port,
+                                            int bufferSize, int connectTimeout ) : base( host, program, version, port, OncRpcProtocols.OncRpcTcp )
     {
-        this.Timeout = timeout;
-        this.ReceiveTimeout = timeout;
-        this.SendTimeout = timeout;
 
         // Constructs the inherited part of our object. This will also try to
         // lookup the port of the desired ONC/RPC server, if no port number
@@ -132,15 +135,15 @@ public class OncRpcTcpClient : OncRpcClientBase
 
         // Constructs the socket and connect
         this._socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp ) {
-            SendTimeout = timeout,
-            ReceiveTimeout = timeout,
+            SendTimeout = connectTimeout,
+            ReceiveTimeout = connectTimeout,
             NoDelay = true
         };
         this._socket.SendBufferSize = Math.Min( this._socket.SendBufferSize, bufferSize );
         this._socket.ReceiveBufferSize = Math.Min( this._socket.ReceiveBufferSize, bufferSize );
 
         IPEndPoint endPoint = new( host, this.Port );
-        this._socket.Connect( endPoint );
+        this._socket.Connect(  endPoint );
 
         // Create the necessary encoding and decoding streams, so we can
         // communicate at all.
@@ -185,35 +188,9 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// </summary>
     private Socket? _socket;
 
-    private int _receiveTimeout;
-    /// <summary>   Gets or sets the receive timeout in milliseconds. </summary>
-    /// <value> The receive timeout. </value>
-    public override int ReceiveTimeout
-    {
-        get => this._receiveTimeout;
-        set {
-            this._receiveTimeout = value;
-            if ( this._socket is not null )
-                this._socket.ReceiveTimeout = value;
-        }
-    }
+#endregion
 
-    private int _sendTimeout;
-    /// <summary>   Gets or sets the send timeout in milliseconds. </summary>
-    /// <value> The send timeout. </value>
-    public override int SendTimeout
-    {
-        get => this._sendTimeout;
-        set {
-            this._sendTimeout = value;
-            if ( this._socket is not null )
-                this._socket.SendTimeout = value;
-        }
-    }
-
-    #endregion
-
-    #region " members "
+#region " members "
 
     /// <summary>
     /// Gets or sets or set the XDR encoding stream used for sending requests via TCP/IP to an
@@ -230,17 +207,6 @@ public class OncRpcTcpClient : OncRpcClientBase
     internal XdrTcpDecodingStream? Decoder { get; private set; }
 
     /// <summary>
-    /// Gets or sets the timeout during the phase where data is sent within calls, or data is
-    /// received within replies.
-    /// </summary>
-    /// <remarks>
-    /// If the flow of data when sending calls or receiving replies blocks longer than the given
-    /// timeout, an exception is thrown. The timeout must be positive.
-    /// </remarks>
-    /// <value> The timeout used when sending calls or receiving replies. </value>
-    public int TransmitTimeout { get; set; } = OncRpcClientBase.TransmitTimeoutDefault;
-
-    /// <summary>
     /// Gets or sets the encoding to use when serializing strings.
     /// </summary>
     /// <value> The character encoding. </value>
@@ -254,12 +220,19 @@ public class OncRpcTcpClient : OncRpcClientBase
         }
     }
 
-    #endregion
+#endregion
 
-    #region " actions "
+#region " actions "
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>
+    /// Note!: <para>
+    /// While this code was set for using the <see cref="OncRpcClientBase.IOTimeout"/>
+    /// with a value of zero as a flag for batch operation, the same timeout is used for 
+    /// setting the XDR request I/O timeout. In order to maintain the API of the 
+    /// <see cref="Call(int, int, IXdrCodec, IXdrCodec)"/> method intact, a batch member was 
+    ///                                                    
+    /// </para>
     /// Please note that while this method supports call batching by setting the communication
     /// timeout to zero (<see cref="Timeout"/> to <c>0</c>) you should better use
     /// <see cref="BatchCall(int, IXdrCodec, bool)"/>
@@ -296,7 +269,8 @@ public class OncRpcTcpClient : OncRpcClientBase
                     this.Encoder!.BeginEncoding( null, 0 );
                     callHeader.Encode( this.Encoder! );
                     requestCodec.Encode( this.Encoder! );
-                    if ( this.Timeout != 0 )
+                    // @atecoder: thus was replace in the next statement if ( this.IOTimeout != 0 )
+                    if ( !this.UseCallBatching )
                         this.Encoder?.EndEncoding();
                     else
                         this.Encoder?.EndEncoding( false );
@@ -308,14 +282,15 @@ public class OncRpcTcpClient : OncRpcClientBase
                 // Receive reply message from server -- at least try to do so...
                 // In case of batched calls we don't need no answer, so
                 // we can do other, more interesting things.
-                if ( this.Timeout == 0 )
+                // @atecoder: thus was replace in the next statement if ( this.IOTimeout == 0 )
+                if ( this.UseCallBatching )
                     return;
                 try
                 {
                     // Keep receiving until we get the matching reply.
                     while ( true )
                     {
-                        this._socket.ReceiveTimeout = this.Timeout;
+                        this._socket.ReceiveTimeout = this.IOTimeout;
                         this.Decoder!.BeginDecoding();
                         this._socket.ReceiveTimeout = this.TransmitTimeout;
 
@@ -451,6 +426,6 @@ public class OncRpcTcpClient : OncRpcClientBase
         }
     }
 
-    #endregion
+#endregion
 
 }

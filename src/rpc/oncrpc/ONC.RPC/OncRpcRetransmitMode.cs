@@ -12,7 +12,7 @@ namespace cc.isr.ONC.RPC;
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public enum OncRpcUdpRetransmitMode
+public enum OncRpcRetransmitMode
 {
     /// <summary>
     /// In exponential back-off retransmit mode, UDP/IP-based ONC/RPC clients first wait a given
