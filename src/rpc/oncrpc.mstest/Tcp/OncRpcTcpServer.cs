@@ -2,6 +2,7 @@ using System.Text;
 using cc.isr.ONC.RPC.Portmap;
 using cc.isr.ONC.RPC.Server;
 using cc.isr.ONC.RPC.MSTest.Codecs;
+using System.Security.Authentication.ExtendedProtection;
 
 namespace cc.isr.ONC.RPC.MSTest.Tcp;
 
@@ -89,7 +90,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     #region " Port mapper "
 
-    private static void EstablishPortmapService()
+    private static OncRpcEmbeddedPortmapService EstablishPortmapService()
     {
 
         // Ignore all problems during unregistration.
@@ -107,30 +108,20 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         // into action.
 
         Console.WriteLine( "Creating embedded portmap instance: " );
-        try
-        {
-            epm = new OncRpcEmbeddedPortmapService();
+        epm = new OncRpcEmbeddedPortmapService();
 
-            if ( !epm.EmbeddedPortmapInUse() )
-                Console.WriteLine( "embedded service not used: " );
-            else
-                Console.WriteLine( "embedded service started: " );
-            if ( epm.EmbeddedPortmapInUse() == externalPortmap )
-            {
-                Console.WriteLine( "ERROR: no service available or both." );
-                return;
-            }
-        }
-        catch ( IOException e )
+        if ( !epm.EmbeddedPortmapInUse() )
+            Console.WriteLine( "embedded service not used: " );
+        else
+            Console.WriteLine( "embedded service started: " );
+        if ( epm.EmbeddedPortmapInUse() == externalPortmap )
         {
-            Console.WriteLine( $"ERROR: failed: {e}" );
+            Console.WriteLine( "ERROR: no service available or both." );
         }
-        catch ( OncRpcException e )
-        {
-            Console.WriteLine( $"ERROR: failed: {e}" );
-        }
+        else
+            Console.WriteLine( "Passed." );
 
-        Console.WriteLine( "Passed." );
+        return epm;
     }
 
     #endregion
@@ -146,6 +137,12 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         set => _ = this.SetProperty( ref this._listening, value );
     }
 
+    /// <summary>   Gets or sets the embedded portmap service. </summary>
+    /// <remarks> @atecoder: This was added to allow the disposal of the Portmap service
+    /// with unit testing. </remarks>
+    /// <value> The embedded portmap service. </value>
+    public OncRpcEmbeddedPortmapService? EmbeddedPortmapService { get; private set; }
+
     /// <summary>
     /// All inclusive convenience method: register server transports with port mapper, then Runs the
     /// call dispatcher until the server is signaled to shut down, and finally deregister the
@@ -159,7 +156,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// </remarks>
     public override void Run()
     {
-        OncRpcTcpServer.EstablishPortmapService();
+        this.EmbeddedPortmapService = OncRpcTcpServer.EstablishPortmapService();
         base.Run();
     }
 

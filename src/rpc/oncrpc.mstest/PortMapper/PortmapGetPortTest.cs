@@ -15,7 +15,7 @@ public class PortmapGetPortTest
     public void PortmapShouldGetPort()
     {
 
-        EmbeddedPortmapTest.AssertPortmapServiceShouldStart();
+        OncRpcEmbeddedPortmapService epm = EmbeddedPortmapTest.AssertPortmapServiceShouldStart();
 
         IPHostEntry host = Dns.GetHostEntry( Dns.GetHostName() );
 
@@ -133,6 +133,9 @@ public class PortmapGetPortTest
 
         // Release resources bound by portmap client object as soon as possible
         portmap.Close();
-    }
 
+        // dispose of the portmap service
+        // this does not solve the test abortion issue on testing the broadcast.
+        // epm?.PortmapService?.Dispose();
+    }
 }

@@ -10,7 +10,7 @@ public class EmbeddedPortmapTest
 {
 
     /// <summary>   Assert portmap service should start. </summary>
-    internal static void AssertPortmapServiceShouldStart()
+    internal static OncRpcEmbeddedPortmapService AssertPortmapServiceShouldStart()
     {
         Console.WriteLine( $"{DateTime.Now.ToShortTimeString()} Checking for portmap service: " );
         bool externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
@@ -38,13 +38,14 @@ public class EmbeddedPortmapTest
         externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
         Assert.IsTrue( externalPortmap, "portmap service is not running" );
         Console.WriteLine( $"portmap service is {(externalPortmap ? "running" : "idle")}; elapsed: {sw.ElapsedMilliseconds:0}ms" );
+        return epm;
     }
 
     /// <summary>   (Unit Test Method) embedded portmap service should pass. </summary>
     [TestMethod]
     public void EmbeddedPortmapServiceShouldPass()
     {
-        AssertPortmapServiceShouldStart();
+        OncRpcEmbeddedPortmapService epm = AssertPortmapServiceShouldStart();
 
         // Now register dummy ONC/RPC program. Note that the embedded
         // portmap service must not automatically spin down when deregistering
@@ -79,6 +80,10 @@ public class EmbeddedPortmapTest
         // was started within this test.
         if ( OncRpcEmbeddedPortmapService.IsPortmapRunning() ) // && !externalPortmap )
             Assert.Fail( "ERROR: embedded portmap service still running." );
+
+        // dispose of the portmap service
+        // this does not solve the test abortion issue on testing the broadcast.
+        // epm?.PortmapService?.Dispose();
     }
 
 }

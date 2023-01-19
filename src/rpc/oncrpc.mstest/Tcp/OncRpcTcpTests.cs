@@ -1,6 +1,7 @@
 using System.ComponentModel;
 
 using cc.isr.ONC.RPC.MSTest.Codecs;
+using cc.isr.ONC.RPC.Portmap;
 
 namespace cc.isr.ONC.RPC.MSTest.Tcp;
 
@@ -37,6 +38,7 @@ public class OncRpcTcpTests
             }
             while ( !_server.Listening );
             Console.WriteLine( $"{nameof( OncRpcTcpServer )} is {(_server.Listening ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
+            _portMapService = _server!.EmbeddedPortmapService!.PortmapService;
         }
         catch ( Exception ex )
         {
@@ -59,10 +61,14 @@ public class OncRpcTcpTests
             {
                 _server.StopRpcProcessing();
             }
+            _server.Dispose();
             _server = null;
         }
+        // this does not solve the test abortion issue on testing the broadcast.
+        // _portMapService?.Dispose();
     }
 
+    private static OncRpcPortMapService? _portMapService;
     private static OncRpcTcpServer? _server;
 
 
@@ -122,7 +128,7 @@ public class OncRpcTcpTests
     [TestMethod]
     public void ClientShouldConnect()
     {
-        OncRpcTcpTestClient client = new();
+        using OncRpcTcpTestClient client = new();
         try
         {
             AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
@@ -138,7 +144,7 @@ public class OncRpcTcpTests
     [TestMethod]
     public void ClientShouldConnectVersion2()
     {
-        OncRpcTcpTestClient client = new();
+        using OncRpcTcpTestClient client = new();
         try
         {
             AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version2 );
@@ -163,7 +169,7 @@ public class OncRpcTcpTests
     [TestMethod]
     public void ClientShouldPing()
     {
-        OncRpcTcpTestClient client = new();
+        using OncRpcTcpTestClient client = new();
         try
         {
             AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
@@ -180,7 +186,7 @@ public class OncRpcTcpTests
     [TestMethod]
     public void ClientShouldPingVersion2()
     {
-        OncRpcTcpTestClient client = new();
+        using OncRpcTcpTestClient client = new();
         try
         {
             AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version2 );
@@ -227,7 +233,7 @@ public class OncRpcTcpTests
     [TestMethod]
     public void ClientShouldFailAuthentication()
     {
-        OncRpcTcpTestClient client = new();
+        using OncRpcTcpTestClient client = new();
         try
         {
             AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
@@ -266,7 +272,7 @@ public class OncRpcTcpTests
         // this seems to be required to allow the sequence to work.
         this.ClientShouldConnect();
 
-        OncRpcTcpTestClient client = new();
+        using OncRpcTcpTestClient client = new();
         try
         {
             AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
@@ -297,7 +303,7 @@ public class OncRpcTcpTests
     [TestMethod]
     public void ClientShouldEchoMessages()
     {
-        OncRpcTcpTestClient client = new();
+        using OncRpcTcpTestClient client = new();
         try
         {
             AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
@@ -444,7 +450,7 @@ public class OncRpcTcpTests
     [TestMethod]
     public void ClientShouldCallRemoteProcedures()
     {
-        OncRpcTcpTestClient client = new();
+        using OncRpcTcpTestClient client = new();
         try
         {
             AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );

@@ -59,6 +59,7 @@ public class BroadcastClientTest
     public static void CleanupFixture()
     {
         _server?.Shutdown();
+        _server?.Dispose();
         _server = null;
     }
 
