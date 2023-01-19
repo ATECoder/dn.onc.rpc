@@ -44,6 +44,8 @@ For some clues on using [ISR's ONC RPC] see the [ISR's ONC RPC] MS Test project.
 * Renamed TransmissionTimeout to TransmitTimeout.
 * Added timeouts to the ONC/RPC client constructors setting these to a temporary 'connect' timeout for TCP and TransitTimeout for UDP.
 * Added UseBatchingCall boolean value in place of using a zeroed timeout for batching in the standard call. 
+* Broadcast Event: replace sender address with Remote End Point. 
+* Call Handler: replace peer address and port with IPEndPoint.
 
 ## Feedback
 

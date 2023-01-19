@@ -260,6 +260,14 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
         return false;
     }
 
+    /// <summary>   Query if 'endPoint' is local end point. </summary>
+    /// <param name="endPoint"> The end point. </param>
+    /// <returns>   True if local end point, false if not. </returns>
+    internal virtual bool IsLocalEndPoint( IPEndPoint? endPoint )
+    {
+        return endPoint is not null && this.IsLocalAddress( endPoint.Address );
+    }
+
     /// <summary>   Dispatch incoming ONC/RPC calls to the individual handler functions. </summary>
     /// <remarks>   The CALLIT method is currently unimplemented. </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
@@ -301,7 +309,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                             // ensure that no remote client tries to register
                             OncRpcServerIdentifierCodec requestCodec = new();
                             call.RetrieveCall( requestCodec );
-                            BooleanXdrCodec replyCodec = this.IsLocalAddress( call.PeerIPAddress! )
+                            BooleanXdrCodec replyCodec = this.IsLocalEndPoint( call.PeerEndPoint )
                                 ? this.SetPort( requestCodec )
                                 : new BooleanXdrCodec( false );
                             call.Reply( replyCodec );
@@ -313,7 +321,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                             // handle port deregistration
                             OncRpcServerIdentifierCodec requestCodec = new();
                             call.RetrieveCall( requestCodec );
-                            BooleanXdrCodec replyCodec = this.IsLocalAddress( call.PeerIPAddress! )
+                            BooleanXdrCodec replyCodec = this.IsLocalEndPoint( call.PeerEndPoint )
                                 ? this.UnsetPort( requestCodec )
                                 : new BooleanXdrCodec( false );
                             call.Reply( replyCodec );

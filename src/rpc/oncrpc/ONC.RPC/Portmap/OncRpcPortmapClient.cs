@@ -107,34 +107,6 @@ public class OncRpcPortmapClient : IDisposable
 
     #region " construction and cleanup "
 
-#if false
-
-    /// <summary>
-    /// Constructs and initializes an ONC/RPC client object, which can communicate with the
-    /// portmapper at the specified host using the UDP/IP datagram-oriented Internet protocol.
-    /// </summary>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="host"> Host where to contact the portmapper. </param>
-    public OncRpcPortmapClient( IPAddress host ) : this( host, OncRpcProtocols.OncRpcUdp, 0 )
-    {
-    }
-
-    /// <summary>
-    /// Constructs and initializes an ONC/RPC client object, which can communicate with the
-    /// portmapper at the given host using the specified protocol.
-    /// </summary>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="host">     Host where to contact the portmapper. </param>
-    /// <param name="protocol"> Protocol to use for contacting the portmapper. This can be either 
-    ///                         <see cref="OncRpcProtocols.OncRpcUdp"/> or
-    ///                         <see cref="OncRpcProtocols.OncRpcTcp"/> (HTTP is currently
-    ///                         not supported). </param>
-    public OncRpcPortmapClient( IPAddress host, OncRpcProtocols protocol ) : this( host, protocol, -1 )
-    {
-    }
-
-#endif
-
     /// <summary>
     /// Constructs and initializes an ONC/RPC client object, which can communicate with the
     /// portmapper at the given host using the specified protocol.

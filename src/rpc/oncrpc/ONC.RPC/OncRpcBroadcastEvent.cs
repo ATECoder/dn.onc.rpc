@@ -5,7 +5,7 @@ namespace cc.isr.ONC.RPC;
 /// <summary>
 /// The class <see cref="OncRpcBroadcastEvent"/> defines an event fired by
 /// <see cref="OncRpcUdpClient">UDP/IP-based clients</see> whenever replies to a
-/// <see cref="OncRpcUdpClient.BroadcastCall(int, IXdrCodec, IXdrCodec, IOncRpcBroadcastListener)"/>
+/// <see cref="OncRpcUdpClient.BroadcastCall(int, IXdrCodec, IXdrCodec, int, IOncRpcBroadcastListener)"/>
 /// are received.  
 /// </summary>
 /// <remarks>   Remote Tea authors: Harald Albrecht, Jay Walters. </remarks>
@@ -18,14 +18,14 @@ public class OncRpcBroadcastEvent
     /// </summary>
     /// <param name="source">           The <see cref="OncRpcUdpClient">ONC/RPC client object</see>
     ///                                 which has fired this event. </param>
-    /// <param name="replyAddress">     Internet address of reply's origin. </param>
+    /// <param name="remoteEndPoint">   Endpoint of the remote reply origin. </param>
     /// <param name="procedureNumber">  Procedure number of ONC/RPC call. </param>
     /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
-    public OncRpcBroadcastEvent( OncRpcUdpClient source, IPAddress replyAddress, int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
+    public OncRpcBroadcastEvent( OncRpcUdpClient source, IPEndPoint remoteEndPoint, int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
         this.Source = source;
-        this.ReplyAddress = replyAddress;
+        this.RemoteEndPoint = new IPEndPoint( remoteEndPoint.Address, remoteEndPoint.Port ) ;
         this.ProcedureNumber = procedureNumber;
         this.MessageSent = requestCodec;
         this.Reply = replyCodec;
@@ -36,10 +36,11 @@ public class OncRpcBroadcastEvent
     public OncRpcUdpClient Source { get; private set; }
 
     /// <summary>
-    /// Gets or sets (private) the address of the sender of the ONC/RPC reply message.
+    /// Gets or sets (private) the <see cref="IPEndPoint"/> of the remote (sender) origin of the
+    /// ONC/RPC reply message.
     /// </summary>
-    /// <value> The address of the replying server. </value>
-    public IPAddress ReplyAddress { get; private set; }
+    /// <value> The end point of the replying server. </value>
+    public IPEndPoint RemoteEndPoint { get; private set; }
 
     /// <summary>
     /// Gets or sets (private) Contains the reply from a remote ONC/RPC server, which answered the broadcast call.

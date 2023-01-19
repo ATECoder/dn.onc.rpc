@@ -184,7 +184,6 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// must not be used any more. This method belongs to the lower-level access pattern when
     /// handling ONC/RPC calls.
     /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     internal override void EndDecoding()
     {
         if ( this._pendingDecoding )
@@ -198,7 +197,6 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// <remarks>
     /// This method belongs to the lower-level access pattern when handling ONC/RPC calls.
     /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="callInfo"> Information about ONC/RPC call for which we are about to send back
     ///                         the reply. </param>
     /// <param name="state">    ONC/RPC reply header indicating success or failure. </param>
@@ -216,7 +214,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
 
         // Now start encoding using the reply message header first...
 
-        this.Encoder!.BeginEncoding( callInfo.PeerIPAddress!, callInfo.PeerPort );
+        this.Encoder!.BeginEncoding( callInfo!.PeerEndPoint! );
         state.Encode( this.Encoder );
     }
 
@@ -225,7 +223,6 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// Afterwards you must not use the XDR stream returned by <see cref="Encoder"/>
     /// any longer.
     /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     internal override void EndEncoding()
     {
 
@@ -335,8 +332,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
             {
                 this._pendingDecoding = true;
                 this.Decoder!.BeginDecoding();
-                callInfo.PeerIPAddress = this.Decoder.SenderAddress;
-                callInfo.PeerPort = this.Decoder.SenderPort;
+                callInfo.PeerEndPoint = this.Decoder.RemoteEndPoint;
             }
             catch ( SocketException )
             {

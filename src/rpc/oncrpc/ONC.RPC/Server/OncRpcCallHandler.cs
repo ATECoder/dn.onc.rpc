@@ -66,18 +66,10 @@ public class OncRpcCallHandler
     /// <value> A call message header from ONC/RPC identifying this particular call. </value>
     public OncRpcServerCallMessage CallMessage { get; set; } = new();
 
-    /// <summary>
-    /// Gets or sets the Internet address of the peer from which we received an ONC/RPC call or whom
-    /// we intend to call.
-    /// </summary>
-    /// <value> The peer IP address. </value>
-    public IPAddress? PeerIPAddress { get; set; }
-
-    /// <summary>
-    /// Gets or sets the port number of the peer from which we received an ONC/RPC call or whom we intend to call.
-    /// </summary>
-    /// <value> The peer port number. </value>
-    public int PeerPort { get; set; } = 0;
+    /// <summary>   Gets or sets the end point peer from which we received an ONC/RPC call or whom
+    /// we intend to call. </summary>
+    /// <value> The peer end point. </value>
+    public IPEndPoint? PeerEndPoint { get; set; }
 
     /// <summary>
     /// Gets or sets the associated transport from which we receive the ONC/RPC call parameters and

@@ -1,6 +1,4 @@
-
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 
 namespace cc.isr.ONC.RPC.Client;
 
@@ -16,74 +14,6 @@ public class OncRpcTcpClient : OncRpcClientBase
 {
 
     #region " construction and cleanup "
-
-#if false
-
-    /// <summary>
-    /// Constructs a new server <see cref="OncRpcTcpClient"/> object, which connects to the ONC/RPC server at
-    /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>, <paramref name="version"/> }.
-    /// </summary>
-    /// <remarks>
-    /// Note that the construction of an server <see cref="OncRpcTcpClient"/>
-    /// object will result in communication with the portmap process at
-    /// <paramref name="host"/>.
-    /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="host">     The host where the ONC/RPC server resides. </param>
-    /// <param name="program">  Program number of the ONC/RPC server to call. </param>
-    /// <param name="version">  Program version number. </param>
-    public OncRpcTcpClient( IPAddress host, int program, int version ) : this( host, program, version, 0 )
-    {
-    }
-
-    /// <summary>
-    /// Constructs a new server <see cref="OncRpcTcpClient"/> object, which connects to the ONC/RPC server at
-    /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>, <paramref name="version"/> }.
-    /// </summary>
-    /// <remarks>
-    /// Note that the construction of an server <see cref="OncRpcTcpClient"/>
-    /// object will result in communication with the portmap process at
-    /// <paramref name="host"/> if <paramref name="port"/> is <c>0</c>. 
-    /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="host">     The host where the ONC/RPC server resides. </param>
-    /// <param name="program">  Program number of the ONC/RPC server to call. </param>
-    /// <param name="version">  Program version number. </param>
-    /// <param name="port">     The port number where the ONC/RPC server can be contacted. If <c>0</c>,
-    ///                         then the <see cref="OncRpcUdpClient"/> object will ask the
-    ///                         portmapper at <paramref name="host"/> for the port number. </param>
-    public OncRpcTcpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, OncRpcClientBase.BufferSizeDefault )
-    {
-    }
-
-    /// <summary>
-    /// Constructs a new server <see cref="OncRpcTcpClient"/> object, which connects to the ONC/RPC server at
-    /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>, <paramref name="version"/> }.
-    /// </summary>
-    /// <remarks>
-    /// Note that the construction of an server <see cref="OncRpcTcpClient"/>
-    /// object will result in communication with the portmap process at
-    /// <paramref name="host"/> if <paramref name="port"/> is <c>0</c>.
-    /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="host">         The host where the ONC/RPC server resides. </param>
-    /// <param name="program">      Program number of the ONC/RPC server to call. </param>
-    /// <param name="version">      Program version number. </param>
-    /// <param name="port">         The port number where the ONC/RPC server can be contacted. If 
-    ///                             <c>0</c>, then the <see cref="OncRpcUdpClient"/> object will ask
-    ///                             the portmapper at <paramref name="host"/> for the port number. </param>
-    /// <param name="bufferSize">   Size of receive and send buffers. In contrast to UDP-based
-    ///                             ONC/RPC clients, messages larger than the specified buffer size
-    ///                             can still be sent and received. The buffer is only necessary to
-    ///                             handle the messages and the underlaying streams will break up
-    ///                             long messages automatically into suitable pieces. Specifying zero
-    ///                             will select the <see cref="OncRpcClientBase.BufferSizeDefault"/> (currently
-    ///                             8192 bytes). </param>
-    public OncRpcTcpClient( IPAddress host, int program, int version, int port, int bufferSize ) : this( host, program, version, port, bufferSize, OncRpcClientBase.ConnectTimeoutDefault )
-    {
-    }
-
-#endif
 
     /// <summary>
     /// Constructs a new server <see cref="OncRpcTcpClient"/> object, which connects to the ONC/RPC server at
@@ -266,7 +196,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                 try
                 {
                     this._socket!.ReceiveTimeout = this.TransmitTimeout;
-                    this.Encoder!.BeginEncoding( null, 0 );
+                    this.Encoder!.BeginEncoding( new IPEndPoint( IPAddress.None, 0 ) );
                     callHeader.Encode( this.Encoder! );
                     requestCodec.Encode( this.Encoder! );
                     // @atecoder: thus was replace in the next statement if ( this.IOTimeout != 0 )
@@ -414,7 +344,7 @@ public class OncRpcTcpClient : OncRpcClientBase
             try
             {
                 this._socket.SendTimeout = this.TransmitTimeout;
-                this.Encoder.BeginEncoding( null, 0 );
+                this.Encoder.BeginEncoding( new IPEndPoint( IPAddress.None, 0 ) );
                 callHeader.Encode( this.Encoder );
                 requestCodec.Encode( this.Encoder );
                 this.Encoder.EndEncoding( flush );

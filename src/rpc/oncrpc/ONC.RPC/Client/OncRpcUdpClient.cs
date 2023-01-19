@@ -16,55 +16,6 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     #region " construction and cleanup "
 
-#if false
-
-    /// <summary>
-    /// Constructs a new <see cref="OncRpcUdpClient"/> object, which connects to the ONC/RPC server at
-    /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>,
-    /// <paramref name="version"/> }.
-    /// </summary>
-    /// <remarks>
-    /// Note that the construction of an <see cref="OncRpcUdpClient"/>
-    /// object will result in communication with the portmap process at
-    /// <paramref name="host"/> if <paramref name="port"/> is <c>0</c>.
-    /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="host">     The host where the ONC/RPC server resides. </param>
-    /// <param name="program">  Program number of the ONC/RPC server to call. </param>
-    /// <param name="version">  Program version number. </param>
-    /// <param name="port">     The port number where the ONC/RPC server can be contacted. If <c>0</c>
-    ///                         , then the <see cref="OncRpcUdpClient"/> object will ask the portmapper at <paramref name="host"/>
-    ///                         for the port number. </param>
-    ///
-    public OncRpcUdpClient( IPAddress host, int program, int version, int port ) : this( host, program, version, port, OncRpcClientBase.BufferSizeDefault )
-    {
-    }
-
-    /// <summary>
-    /// Constructs a new <see cref="OncRpcUdpClient"/> object, which connects to the ONC/RPC server at
-    /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>,
-    /// <paramref name="version"/> }.
-    /// </summary>
-    /// <remarks>
-    /// Note that the construction of an <see cref="OncRpcUdpClient"/>
-    /// object will result in communication with the portmap process at.
-    /// </remarks>
-    /// <param name="host">         . </param>
-    /// <param name="program">      Program number of the ONC/RPC server to call. </param>
-    /// <param name="version">      . </param>
-    /// <param name="port">         The port number where the ONC/RPC server can be contacted. If <c>
-    ///                             0</c>
-    ///                             , then the <see cref="OncRpcUdpClient"/> object will ask the
-    ///                             portmapper at <paramref name="host"/>
-    ///                             for the port number. </param>
-    /// <param name="bufferSize">   The buffer size used for sending and receiving UDP datagrams. </param>
-    public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize ) : this( host, program, version, port, bufferSize, OncRpcClientBase.ConnectTimeoutDefault )
-    {
-
-    }
-
-#endif
-
     /// <summary>
     /// Constructs a new <see cref="OncRpcUdpClient"/> object, which connects to the ONC/RPC server at
     /// <paramref name="host"/> for calling remote procedures of the given { <paramref name="program"/>
@@ -88,14 +39,14 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <param name="transmitTimeout">  The timeout during the phase where data is sent within calls,
     ///                                 or data is received within replies. This timeout must be
     ///                                 greater than 0. </param>
-    public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize, int transmitTimeout ) : base( host, program, version, port, OncRpcProtocols.OncRpcUdp )
+    public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize, int transmitTimeout )
+                                                                      : base( host, program, version, port, OncRpcProtocols.OncRpcUdp )
     {
         this.TransmitTimeout = transmitTimeout;
 
         // Constructs the inherited part of our object. This will also try to
         // lookup the port of the desired ONC/RPC server, if no port number
         // was specified (port = 0).
-
 
         // Let the host operating system choose which port (and network
         // interface) to use. Then set the buffer sizes for sending and
@@ -257,7 +208,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                         // "connected" the datagram socket, so the destination for the 
                         // datagram packets is already set.
 
-                        this._encoder.BeginEncoding( this.Host, this.Port );
+                        this._encoder.BeginEncoding( new IPEndPoint( this.Host, this.Port ) );
                         callHeader.Encode( this._encoder );
                         requestCodec.Encode( this._encoder );
                         this._encoder.EndEncoding();
@@ -300,7 +251,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                             // away the datagram packet containing the reply and start
                             // over again, waiting for the next reply to arrive.
 
-                            if ( this.Host.Equals( this._decoder.SenderAddress ) )
+                            if ( this.Host.Equals( this._decoder.RemoteEndPoint.Address ) )
                             {
 
                                 // First, pull off the reply message header of the
@@ -513,29 +464,30 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <summary>   Broadcast a remote procedure call to several ONC/RPC servers. </summary>
     /// <remarks>
     /// For this you'll need to specify either a multi-cast address or the subnet's broadcast address
-    /// when creating a <see cref="OncRpcUdpClient"/>. For every reply received, an event containing the reply is sent to
-    /// the <see cref="IOncRpcBroadcastListener">listener</see>, which is the last parameter to the this
-    /// method. <para>
+    /// when creating a <see cref="OncRpcUdpClient"/>. For every reply received, an event containing
+    /// the reply is sent to the <see cref="IOncRpcBroadcastListener">listener</see>, which is the
+    /// last parameter to the this method. <para>
     /// 
     /// In contrast to the <see cref="OncRpcClientBase.Call(int, IXdrCodec, IXdrCodec)"/>
     /// method, <see cref="BroadcastCall"/> will only send the ONC/RPC call once. It will then wait
     /// for answers until the timeout as set by <see cref="OncRpcClientBase.IOTimeout"/>
     /// expires without resending the reply. </para> <para>
     /// 
-    /// Note that you might experience unwanted results when using
-    /// authentication types other than <see cref="OncRpcClientAuthNone"/>, causing
-    /// messed up authentication protocol handling objects. This depends on the type of
-    /// authentication used. For <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> nothing bad happens as long as none of the
-    /// servers replies with a shorthand verifier. If it does, then this shorthand will be used on
-    /// all subsequent ONC/RPC calls, something you probably do not want at all. </para>
+    /// Note that you might experience unwanted results when using authentication types other than <see cref="OncRpcClientAuthNone"/>
+    /// , causing messed up authentication protocol handling objects. This depends on the type of
+    /// authentication used. For <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> nothing bad happens
+    /// as long as none of the servers replies with a shorthand verifier. If it does, then this
+    /// shorthand will be used on all subsequent ONC/RPC calls, something you probably do not want at
+    /// all. </para>
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
     /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
+    /// <param name="timeout">          The timeout. </param>
     /// <param name="listener">         Listener which will get an <see cref="OncRpcBroadcastEvent"/>
     ///                                 for every reply received. </param>
-    public virtual void BroadcastCall( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec, IOncRpcBroadcastListener listener )
+    public virtual void BroadcastCall( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec, int timeout, IOncRpcBroadcastListener listener )
     {
 
         if ( this._socket is null || this._encoder is null || this._decoder is null ) return;
@@ -561,7 +513,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                 // "connected" the datagram socket, so the destination of the 
                 // datagram packets is already set.
 
-                this._encoder.BeginEncoding( this.Host, this.Port );
+                this._encoder.BeginEncoding( new IPEndPoint( this.Host, this.Port ) );
                 callHeader.Encode( this._encoder );
                 requestCodec.Encode( this._encoder );
                 this._encoder.EndEncoding();
@@ -576,8 +528,9 @@ public class OncRpcUdpClient : OncRpcClientBase
             // (total) timeout expires.
 
             // @atecoder: fix timeout; was ill defined.
-            DateTime stopTime = DateTime.Now.Add( TimeSpan.FromMilliseconds( this.IOTimeout ) );
-            do
+            DateTime stopTime = DateTime.Now.Add( TimeSpan.FromMilliseconds( timeout ) );
+            while ( DateTime.Now < stopTime )
+            { 
                 try
                 {
 
@@ -586,7 +539,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                     TimeSpan currentTimeout = stopTime - DateTime.Now;
                     if ( currentTimeout.Ticks < 0 )
-                        currentTimeout = new TimeSpan( 0 );
+                        currentTimeout = TimeSpan.FromMilliseconds( 1 ); 
 
                     // @atecoder: fix timeout; was .Seconds, that is, 1000 times larger.
                     this._socket.ReceiveTimeout = currentTimeout.Milliseconds;
@@ -615,9 +568,9 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                         // Notify a potential listener of the reply.
 
-                        if ( listener is not null )
+                        if ( listener is not null && this._decoder is not null )
                         {
-                            OncRpcBroadcastEvent evt = new( this, this._decoder!.SenderAddress!, procedureNumber, requestCodec, replyCodec );
+                            OncRpcBroadcastEvent evt = new( this, this._decoder.RemoteEndPoint, procedureNumber, requestCodec, replyCodec );
                             listener.ReplyReceived( evt );
                         }
 
@@ -625,7 +578,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                         // returning the reply to the caller through the result
                         // object.
 
-                        this._decoder.EndDecoding();
+                        this._decoder!.EndDecoding();
                     }
                     else
 
@@ -660,7 +613,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                     throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotReceive, e );
                 }
-            while ( DateTime.Now < stopTime );
+            }
             return;
         }
     }

@@ -86,7 +86,7 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
         }
     }
 
-    private readonly System.Collections.ArrayList _portmappers = new();
+    private readonly List<IPEndPoint> _portmappers = new();
 
     /// <summary>   (Unit Test Method) server should listen. </summary>
     [TestMethod]
@@ -106,7 +106,7 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
     /// <param name="evt">  The event. </param>
 	public virtual void ReplyReceived( OncRpcBroadcastEvent evt )
     {
-        _ = this._portmappers.Add( evt.ReplyAddress );
+        this._portmappers.Add( evt.RemoteEndPoint );
         Console.Out.Write( "." );
     }
 
@@ -129,10 +129,12 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
         client.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
         // Ping all port mappers in this subnet...
 
+        int timeout = 5000;
         Console.Out.Write( "pinging port mappers in subnet: " );
         try
         {
-            client.BroadcastCall( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance, this );
+            client.BroadcastCall( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing,
+                                  VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance, timeout, this );
         }
         catch ( OncRpcException e )
         {
@@ -143,7 +145,7 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
         // Print addresses of all port mappers found...
 
         for ( int idx = 0; idx < this._portmappers.Count; ++idx )
-            Console.WriteLine( $"Found: {( IPAddress ) this._portmappers[idx]!}" );
+            Console.WriteLine( $"Found: {this._portmappers[idx]!}" );
 
         // Release resources bound by portmap client object as soon as possible.
 

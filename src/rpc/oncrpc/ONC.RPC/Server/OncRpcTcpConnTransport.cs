@@ -239,7 +239,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
         // Now start encoding using the reply message header first...
 
         this._pendingEncoding = true;
-        this.Encoder!.BeginEncoding( callInfo.PeerIPAddress!, callInfo.PeerPort );
+        this.Encoder!.BeginEncoding( callInfo!.PeerEndPoint! );
         state.Encode( this.Encoder! );
     }
 
@@ -342,8 +342,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
                 this._socket.ReceiveTimeout = 0;
                 this._pendingDecoding = true;
                 this.Decoder.BeginDecoding();
-                callInfo.PeerIPAddress = this.Decoder.SenderAddress;
-                callInfo.PeerPort = this.Decoder.SenderPort;
+                callInfo.PeerEndPoint = this.Decoder.RemoteEndPoint;
                 this._socket.ReceiveTimeout = this._transmitTimeout;
             }
             catch ( System.IO.IOException )

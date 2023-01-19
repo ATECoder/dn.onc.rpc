@@ -201,7 +201,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// <param name="call"> The call. </param>
     internal override void RetrieveCall( IXdrCodec call )
     {
-        throw new Exception( $"{nameof( OncRpcTcpTransport.RetrieveCall )} is abstract and cannot be called." );
+        throw new InvalidOperationException( $"{nameof( OncRpcTcpTransport.RetrieveCall )} is abstract and cannot be called." );
     }
 
     /// <summary>   Do not call. </summary>
