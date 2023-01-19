@@ -1,5 +1,6 @@
 
 using System.Net.Sockets;
+using System.Threading;
 
 namespace cc.isr.ONC.RPC.Client;
 
@@ -133,6 +134,16 @@ public class OncRpcUdpClient : OncRpcClientBase
     private void OnBroadcastReplyReceived(OncRpcBroadcastEventArgs e )
     {
         var handler = this.BroadcastReplyReceived;
+        handler?.Invoke( this, e );
+    }
+
+    public event EventHandler<OncRpcBroadcastEventArgs>? BroadcastReplyFailed;
+
+    /// <summary>   Executes the <see cref="BroadcastReplyFailed"/> event. </summary>
+    /// <param name="e">    An OncRpcBroadcastEvent to process. </param>
+    private void OnBroadcastReplyFailed( OncRpcBroadcastEventArgs e )
+    {
+        var handler = this.BroadcastReplyFailed;
         handler?.Invoke( this, e );
     }
 
@@ -494,8 +505,26 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// does, then this shorthand will be used on all subsequent ONC/RPC calls, something you
     /// probably do not want at all. </para> <para>
     /// 
-    /// @atecoder: added an event handler in place of the broadcast listener.
-    /// </para>
+    /// Special network addresses are used to support UDP broadcast messages on IP-based networks.
+    /// The following discussion uses the IP version 4 address family used on the Internet as an
+    /// example.  </para> <para>
+    /// 
+    /// IP version 4 addresses use 32 bits to specify a network address.For class C addresses using a
+    /// netmask of 255.255.255.0, these bits are separated into four octets.When expressed in decimal,
+    /// the four octets form the familiar dotted-quad notation, such as 192.168.100.2. The first two
+    /// octets(192.168 in this example) form the network number, the third octet(100) defines the
+    /// subnet, and the final octet(2) is the host identifier.  </para> <para>
+    /// 
+    /// Setting all the bits of an IP address to one, or 255.255.255.255, forms the limited broadcast
+    /// address.Sending a UDP datagram to this address delivers the message to any host on the local
+    /// network segment. Because routers never forward messages sent to this address, only hosts on
+    /// the network segment receive the broadcast message.  </para> <para>
+    /// 
+    /// Broadcasts can be directed to specific portions of a network by setting all bits of the host
+    /// identifier. For example, to send a broadcast to all hosts on the network identified by IP
+    /// addresses starting with 192.168.1, use the address 192.168.1.255. </para> <para>
+    /// 
+    /// @atecoder: added an event handler in place of the broadcast listener. </para>
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
@@ -562,7 +591,20 @@ public class OncRpcUdpClient : OncRpcClientBase
                     // Then wait for datagrams to arrive...
 
                     this._decoder.BeginDecoding();
-                    replyHeader.Decode( this._decoder );
+
+                    // log and ignore reply header exceptions as broadcast test
+                    // yielded some bogus message types from the instruments.
+                    try
+                    {
+                        replyHeader.Decode( this._decoder );
+                    }
+                    catch ( Exception ex )
+                    {
+                        OncRpcBroadcastEventArgs e = new( this, this._decoder.RemoteEndPoint, procedureNumber, requestCodec, replyCodec ) {
+                            Exception = ex
+                        };
+                        this.OnBroadcastReplyFailed( e );
+                    }
 
                     // Only deserialize the result, if the reply matches the call
                     // and if the reply signals a successful call. In case of an
@@ -585,8 +627,8 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                         if  ( this.BroadcastReplyReceived is not null && this._decoder is not null )
                         {
-                            OncRpcBroadcastEventArgs evt = new( this, this._decoder.RemoteEndPoint, procedureNumber, requestCodec, replyCodec );
-                            this.OnBroadcastReplyReceived( evt );
+                            OncRpcBroadcastEventArgs e = new( this, this._decoder.RemoteEndPoint, procedureNumber, requestCodec, replyCodec );
+                            this.OnBroadcastReplyReceived( e );
                         }
 
                         // Free pending resources of buffer and exit the call loop,
@@ -621,7 +663,6 @@ public class OncRpcUdpClient : OncRpcClientBase
                     // catches them. If we get the timeout we know that it
                     // could be time to leave the stage and so we fall through
                     // to the total timeout check.
-
 
                     // Argh. Trouble with the transport. Seems like we can't
                     // receive data. Gosh. Go away!

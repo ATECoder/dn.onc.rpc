@@ -18,7 +18,7 @@ public class OncRpcClientCallMessage : OncRpcCallMessageBase
     /// <param name="procedure">    Procedure number (identifier) of the procedure to call. </param>
     /// <param name="auth">         Authentication protocol handling object. </param>
     public OncRpcClientCallMessage( int messageId, int program, int version,
-        int procedure, OncRpcClientAuthBase auth ) : base( messageId, program, version, procedure )
+                                    int procedure, OncRpcClientAuthBase auth ) : base( messageId, program, version, procedure )
     {
         this.Auth = auth;
     }

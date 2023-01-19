@@ -1,15 +1,10 @@
-
 using System.ComponentModel;
-
-using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.MSTest.Tcp;
-using cc.isr.ONC.RPC.Portmap;
-
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 [TestClass]
 [TestCategory("broadcast")]
-public class BroadcastClientTest
+public class LocalHostBroadcastTest
 {
 
     /// <summary>   Initializes the fixture. </summary>
@@ -19,9 +14,9 @@ public class BroadcastClientTest
     {
         try
         {
-            System.Diagnostics.Debug.WriteLine( $"{context.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
+            Console.WriteLine( $"{context.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
             _classTestContext = context;
-            System.Diagnostics.Debug.WriteLine( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
+            Console.WriteLine( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
             _server = new() {
                 Listening = false
             };
@@ -96,22 +91,20 @@ public class BroadcastClientTest
         Assert.IsTrue( _server?.Listening );
     }
 
-    /// <summary>
-    /// List of addresses of port mappers that replied to our call...
-    /// 
-    /// Remember addresses of replies for later processing. Please note that you should not do any
-    /// lengthy things (like DNS name lookups)
-    /// in this event handler, as you will otherwise miss some incoming replies because the OS will
-    /// drop them.
-    /// </summary>
-    /// <param name="evt">  The event. </param>
-	public virtual void ReplyReceived( object? sender, OncRpcBroadcastEventArgs evt )
-    {
-        this._portmappers.Add( evt.RemoteEndPoint );
-        Console.Out.Write( "." );
-    }
-
     /// <summary>   (Unit Test Method) client should broadcast. </summary>
+    /// <remarks>
+    /// NOTE!: This test often fails after running the other tests. Then it takes a bit of time for the
+    /// test to run. <para>
+    ///     
+    /// With a set of two network cards, setting the server to any located the server on 192.168.0.40
+    /// as the local host. </para><para>
+    /// Pinging the local host at 192.168.4.255 yields no result; </para><para>
+    /// pinging port mappers in subnet: 127.0.0.1. done.
+    /// Found: 127.0.0.1:111
+    /// Listening set to False
+    /// System.InvalidOperationException: Server still running after stopping RPC Processing. </para>
+    /// 
+    /// </remarks>
     [TestMethod]
     public void ClientShouldBroadcast()
     {
@@ -120,40 +113,9 @@ public class BroadcastClientTest
 
         // Create a portmap client object, which can then be used to contact
         // the local ONC/RPC 'OncRpcUdpServer' test server.
-        // OncRpcUdpClient client = new( IPAddress.Parse( "255.255.255.255" ), 100000, 2, 111 );
-        using OncRpcUdpClient client = new( IPAddress.Loopback,
-                                                         OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
-                                                         OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
-                                                         OncRpcPortmapConstants.OncRpcPortmapPortNumber,
-                                                         0 , OncRpcUdpClient.TransmitTimeoutDefault );
 
-        // subscribe the reply received method to the broadcast reply received event.
-        client.BroadcastReplyReceived += this.ReplyReceived;
-
-        client.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
-        // Ping all port mappers in this subnet...
-
-        int timeout = 5000;
-        Console.Out.Write( "pinging port mappers in subnet: " );
-        try
-        {
-            client.BroadcastCall( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing,
-                                  VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance, timeout);
-        }
-        catch ( OncRpcException e )
-        {
-            Console.WriteLine( $"method call failed unexpectedly: \n{e}" );
-        }
-        Console.WriteLine( "done." );
-
-        // Print addresses of all port mappers found...
-
-        for ( int idx = 0; idx < this._portmappers.Count; ++idx )
-            Console.WriteLine( $"Found: {this._portmappers[idx]!}" );
-
-        // Release resources bound by portmap client object as soon as possible.
-
-        client.Close();
+        IPAddress address = IPAddress.Loopback;
+        RemoteHostBroadcasttTest.AssertClientShouldBroadcast( address, 1001 );
     }
 
 }

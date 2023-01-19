@@ -58,4 +58,8 @@ public class OncRpcBroadcastEventArgs : EventArgs
     /// <value> The message sent. </value>
     public IXdrCodec MessageSent { get; private set; }
 
+    /// <summary>   Gets or sets the exception. </summary>
+    /// <value> The exception. </value>
+    public Exception? Exception { get; set; }
+
 }
