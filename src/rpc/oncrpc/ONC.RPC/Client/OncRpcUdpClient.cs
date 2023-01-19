@@ -122,9 +122,23 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// </summary>
     private XdrUdpDecodingStream? _decoder;
 
-#endregion
+    #endregion
 
-#region " members "
+    #region " event handlers "
+
+    public event EventHandler<OncRpcBroadcastEventArgs>? BroadcastReplyReceived;
+
+    /// <summary>   Executes the <see cref="BroadcastReplyReceived"/> event. </summary>
+    /// <param name="e">    An OncRpcBroadcastEvent to process. </param>
+    private void OnBroadcastReplyReceived(OncRpcBroadcastEventArgs e )
+    {
+        var handler = this.BroadcastReplyReceived;
+        handler?.Invoke( this, e );
+    }
+
+    #endregion
+
+    #region " members "
 
     /// <summary>
     /// Gets or sets the retransmit mode used when resending ONC/RPC calls. Default mode is
@@ -464,30 +478,31 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <summary>   Broadcast a remote procedure call to several ONC/RPC servers. </summary>
     /// <remarks>
     /// For this you'll need to specify either a multi-cast address or the subnet's broadcast address
-    /// when creating a <see cref="OncRpcUdpClient"/>. For every reply received, an event containing
-    /// the reply is sent to the <see cref="IOncRpcBroadcastListener">listener</see>, which is the
-    /// last parameter to the this method. <para>
+    /// when creating a <see cref="OncRpcUdpClient"/>. <para>
+    /// 
+    /// For every reply received, a <see cref="BroadcastReplyReceived"/> event is invoked with data
+    /// <see cref="OncRpcBroadcastEventArgs"/> information about the reply. </para><para>
     /// 
     /// In contrast to the <see cref="OncRpcClientBase.Call(int, IXdrCodec, IXdrCodec)"/>
-    /// method, <see cref="BroadcastCall"/> will only send the ONC/RPC call once. It will then wait
-    /// for answers until the timeout as set by <see cref="OncRpcClientBase.IOTimeout"/>
-    /// expires without resending the reply. </para> <para>
+    /// method, <see cref="BroadcastCall"/> sends the ONC/RPC call once. It then waits for answers
+    /// until the <paramref name="timeout"/> timeout expires. </para> <para>
     /// 
-    /// Note that you might experience unwanted results when using authentication types other than <see cref="OncRpcClientAuthNone"/>
-    /// , causing messed up authentication protocol handling objects. This depends on the type of
-    /// authentication used. For <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> nothing bad happens
-    /// as long as none of the servers replies with a shorthand verifier. If it does, then this
-    /// shorthand will be used on all subsequent ONC/RPC calls, something you probably do not want at
-    /// all. </para>
+    /// Note that using authentication types other than <see cref="OncRpcClientAuthNone"/>
+    /// might yield unwanted results, causing messed up authentication protocol handling objects.
+    /// This depends on the type of authentication used. For <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/>
+    /// nothing bad happens as long as none of the servers replies with a shorthand verifier. If it
+    /// does, then this shorthand will be used on all subsequent ONC/RPC calls, something you
+    /// probably do not want at all. </para> <para>
+    /// 
+    /// @atecoder: added an event handler in place of the broadcast listener.
+    /// </para>
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
     /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
     /// <param name="timeout">          The timeout. </param>
-    /// <param name="listener">         Listener which will get an <see cref="OncRpcBroadcastEvent"/>
-    ///                                 for every reply received. </param>
-    public virtual void BroadcastCall( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec, int timeout, IOncRpcBroadcastListener listener )
+    public virtual void BroadcastCall( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec, int timeout )
     {
 
         if ( this._socket is null || this._encoder is null || this._decoder is null ) return;
@@ -568,10 +583,10 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                         // Notify a potential listener of the reply.
 
-                        if ( listener is not null && this._decoder is not null )
+                        if  ( this.BroadcastReplyReceived is not null && this._decoder is not null )
                         {
-                            OncRpcBroadcastEvent evt = new( this, this._decoder.RemoteEndPoint, procedureNumber, requestCodec, replyCodec );
-                            listener.ReplyReceived( evt );
+                            OncRpcBroadcastEventArgs evt = new( this, this._decoder.RemoteEndPoint, procedureNumber, requestCodec, replyCodec );
+                            this.OnBroadcastReplyReceived( evt );
                         }
 
                         // Free pending resources of buffer and exit the call loop,

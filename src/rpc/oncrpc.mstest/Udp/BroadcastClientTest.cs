@@ -9,7 +9,7 @@ namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 [TestClass]
 [TestCategory("broadcast")]
-public class BroadcastClientTest : IOncRpcBroadcastListener
+public class BroadcastClientTest
 {
 
     /// <summary>   Initializes the fixture. </summary>
@@ -104,7 +104,7 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
     /// drop them.
     /// </summary>
     /// <param name="evt">  The event. </param>
-	public virtual void ReplyReceived( OncRpcBroadcastEvent evt )
+	public virtual void ReplyReceived( object? sender, OncRpcBroadcastEventArgs evt )
     {
         this._portmappers.Add( evt.RemoteEndPoint );
         Console.Out.Write( "." );
@@ -126,6 +126,9 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
                                                          OncRpcPortmapConstants.OncRpcPortmapPortNumber,
                                                          0 , OncRpcUdpClient.TransmitTimeoutDefault );
 
+        // subscribe the reply received method to the broadcast reply received event.
+        client.BroadcastReplyReceived += this.ReplyReceived;
+
         client.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
         // Ping all port mappers in this subnet...
 
@@ -134,7 +137,7 @@ public class BroadcastClientTest : IOncRpcBroadcastListener
         try
         {
             client.BroadcastCall( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing,
-                                  VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance, timeout, this );
+                                  VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance, timeout);
         }
         catch ( OncRpcException e )
         {

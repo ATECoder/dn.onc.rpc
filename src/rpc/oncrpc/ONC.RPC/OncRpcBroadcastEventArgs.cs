@@ -3,18 +3,21 @@ using cc.isr.ONC.RPC.Client;
 namespace cc.isr.ONC.RPC;
 
 /// <summary>
-/// The class <see cref="OncRpcBroadcastEvent"/> defines an event fired by
-/// <see cref="OncRpcUdpClient">UDP/IP-based clients</see> whenever replies to a
-/// <see cref="OncRpcUdpClient.BroadcastCall(int, IXdrCodec, IXdrCodec, int, IOncRpcBroadcastListener)"/>
+/// The class <see cref="OncRpcBroadcastEventArgs"/> defines the event arguments for the 
+/// an event fired by <see cref="OncRpcUdpClient">UDP/IP-based clients</see> whenever replies to a
+/// <see cref="OncRpcUdpClient.BroadcastCall(int, IXdrCodec, IXdrCodec, int)"/>
 /// are received.  
 /// </summary>
-/// <remarks>   Remote Tea authors: Harald Albrecht, Jay Walters. </remarks>
-[Serializable]
-public class OncRpcBroadcastEvent
+/// <remarks> <para>
+/// 
+/// Remote Tea authors: Harald Albrecht, Jay Walters. 
+/// @atecoder: renamed and changed to inherit from <see cref="System.EventArgs"/>. </para>
+/// </remarks>
+public class OncRpcBroadcastEventArgs : EventArgs
 {
 
     /// <summary>
-    /// Creates a new <see cref="OncRpcBroadcastEvent"/> object and initializes its state.
+    /// Creates a new <see cref="OncRpcBroadcastEventArgs"/> object and initializes its state.
     /// </summary>
     /// <param name="source">           The <see cref="OncRpcUdpClient">ONC/RPC client object</see>
     ///                                 which has fired this event. </param>
@@ -22,7 +25,7 @@ public class OncRpcBroadcastEvent
     /// <param name="procedureNumber">  Procedure number of ONC/RPC call. </param>
     /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
-    public OncRpcBroadcastEvent( OncRpcUdpClient source, IPEndPoint remoteEndPoint, int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
+    public OncRpcBroadcastEventArgs( OncRpcUdpClient source, IPEndPoint remoteEndPoint, int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
         this.Source = source;
         this.RemoteEndPoint = new IPEndPoint( remoteEndPoint.Address, remoteEndPoint.Port ) ;
