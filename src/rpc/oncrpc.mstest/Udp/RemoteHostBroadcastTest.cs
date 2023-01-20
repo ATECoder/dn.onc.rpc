@@ -5,7 +5,7 @@ namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 [TestClass]
 [TestCategory("192.168.0.255")]
-public class RemoteHostBroadcasttTest
+public class RemoteHostBroadcastTest
 {
 
     /// <summary>   Initializes the fixture. </summary>
@@ -134,7 +134,7 @@ public class RemoteHostBroadcasttTest
     public void ClientShouldBroadcast()
     {
         IPAddress address = IPAddress.Parse( "192.168.0.255" );
-        RemoteHostBroadcasttTest.AssertClientShouldBroadcast( address, 2001 );
+        RemoteHostBroadcastTest.AssertClientShouldBroadcast( address, 2001 );
     }
 
 }

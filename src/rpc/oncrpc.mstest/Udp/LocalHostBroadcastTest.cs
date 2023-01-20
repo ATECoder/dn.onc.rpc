@@ -115,7 +115,7 @@ public class LocalHostBroadcastTest
         // the local ONC/RPC 'OncRpcUdpServer' test server.
 
         IPAddress address = IPAddress.Loopback;
-        RemoteHostBroadcasttTest.AssertClientShouldBroadcast( address, 1001 );
+        RemoteHostBroadcastTest.AssertClientShouldBroadcast( address, 1001 );
     }
 
 }

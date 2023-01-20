@@ -1,3 +1,5 @@
+using cc.isr.ONC.RPC.EnumExtensions;
+
 namespace cc.isr.ONC.RPC.Client;
 
 /// <summary>
@@ -53,23 +55,14 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
         // Make sure that we are really decoding an ONC/RPC message call
         // header. Otherwise, throw the appropriate OncRpcException exception.
 
-        int messageType = decoder.DecodeInt();
-        if ( !Enum.IsDefined( typeof( OncRpcMessageType ), messageType ) )
-        {
-            // set the reply status to indicate that the message was denied
-            this.ReplyStatus = OncRpcReplyStatus.OncRpcMessageDenied;
-            throw new OncRpcException(
-                $"; message type value {messageType} cannot be cast to {nameof(OncRpcMessageType)}",
-                OncRpcExceptionReason.OncRpcWrongMessageType );
-        }
+        this.MessageType = decoder.DecodeInt().ToMessageType();
 
-        this.MessageType = ( OncRpcMessageType ) messageType;
         if ( this.MessageType != OncRpcMessageType.OncRpcReplyMessageType )
         {
             // set the reply status to indicate that the message was denied
             this.ReplyStatus = OncRpcReplyStatus.OncRpcMessageDenied;
             throw new OncRpcException(
-                $"; expected {nameof( OncRpcMessageType.OncRpcReplyMessageType )}({( int ) OncRpcMessageType.OncRpcReplyMessageType}); actual: {this.MessageType}({messageType})",
+                $"; expected {nameof( OncRpcMessageType.OncRpcReplyMessageType )}.{OncRpcMessageType.OncRpcReplyMessageType}({( int ) OncRpcMessageType.OncRpcReplyMessageType}); actual: {this.MessageType}({( int ) this.MessageType})",
                 OncRpcExceptionReason.OncRpcWrongMessageType );
         }
 
