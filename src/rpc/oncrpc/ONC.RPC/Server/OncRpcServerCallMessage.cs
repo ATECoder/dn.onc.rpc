@@ -1,3 +1,5 @@
+using cc.isr.ONC.RPC.EnumExtensions;
+
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -28,7 +30,7 @@ public class OncRpcServerCallMessage : OncRpcCallMessageBase
         // Make sure that we are really decoding an ONC/RPC message call
         // header. Otherwise, throw the appropriate OncRpcException exception.
 
-        this.MessageType = ( OncRpcMessageType ) decoder.DecodeInt();
+        this.MessageType = decoder.DecodeInt().ToMessageType();
         if ( this.MessageType != OncRpcMessageType.OncRpcCallMessageType )
             throw new OncRpcException(
                 $"; expected {nameof( OncRpcMessageType.OncRpcCallMessageType )}({OncRpcMessageType.OncRpcCallMessageType}); actual: {this.MessageType}",

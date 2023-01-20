@@ -162,7 +162,6 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// <summary>
     /// Sets the array containing program and version numbers tuples this server is willing to handle.
     /// </summary>
-    /// <remarks>   2023-01-10. </remarks>
     /// <param name="registeredPrograms">   Array containing program and version numbers tuples this
     ///                                     server is willing to handle. </param>
     public void SetRegisteredPrograms( OncRpcProgramInfo[] registeredPrograms )
@@ -206,7 +205,7 @@ public abstract class OncRpcServerStubBase : IDisposable
     #region " run and stop "
 
     /// <summary>
-    /// Gets or sets (private) the notification flag for signaling the server to stop processing
+    /// Gets or sets (<see langword="private"/>) the notification flag for signaling the server to stop processing
     /// incoming remote procedure calls and to shut down.
     /// </summary>
     /// <value> The shutdown signal. </value>

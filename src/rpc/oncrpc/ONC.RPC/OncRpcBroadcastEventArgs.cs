@@ -28,7 +28,7 @@ public class OncRpcBroadcastEventArgs : EventArgs
     public OncRpcBroadcastEventArgs( OncRpcUdpClient source, IPEndPoint remoteEndPoint, int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
         this.Source = source;
-        this.RemoteEndPoint = new IPEndPoint( remoteEndPoint.Address, remoteEndPoint.Port ) ;
+        this.RemoteEndPoint = new IPEndPoint( remoteEndPoint.Address, remoteEndPoint.Port );
         this.ProcedureNumber = procedureNumber;
         this.MessageSent = requestCodec;
         this.Reply = replyCodec;
@@ -39,22 +39,22 @@ public class OncRpcBroadcastEventArgs : EventArgs
     public OncRpcUdpClient Source { get; private set; }
 
     /// <summary>
-    /// Gets or sets (private) the <see cref="IPEndPoint"/> of the remote (sender) origin of the
+    /// Gets or sets (<see langword="private"/>) the <see cref="IPEndPoint"/> of the remote (sender) origin of the
     /// ONC/RPC reply message.
     /// </summary>
     /// <value> The end point of the replying server. </value>
     public IPEndPoint RemoteEndPoint { get; private set; }
 
     /// <summary>
-    /// Gets or sets (private) Contains the reply from a remote ONC/RPC server, which answered the broadcast call.
+    /// Gets or sets (<see langword="private"/>) Contains the reply from a remote ONC/RPC server, which answered the broadcast call.
     /// </summary>
     public IXdrCodec Reply { get; private set; }
 
-    /// <summary>   Gets or sets (private) the number of the remote procedure called. </summary>
+    /// <summary>   Gets or sets (<see langword="private"/>) the number of the remote procedure called. </summary>
     /// <value> The procedure number. </value>
     public int ProcedureNumber { get; private set; }
 
-    /// <summary>   Gets or sets (private) the parameters sent in the ONC/RPC broadcast call. </summary>
+    /// <summary>   Gets or sets (<see langword="private"/>) the parameters sent in the ONC/RPC broadcast call. </summary>
     /// <value> The message sent. </value>
     public IXdrCodec MessageSent { get; private set; }
 

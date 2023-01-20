@@ -4,7 +4,7 @@ using cc.isr.ONC.RPC.Portmap;
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 [TestClass]
-[TestCategory("192.168.0.255")]
+[TestCategory( "192.168.0.255" )]
 public class RemoteHostBroadcastTest
 {
 
@@ -63,12 +63,12 @@ public class RemoteHostBroadcastTest
     /// <param name="e">        ONC/RPC broadcast event information. </param>
     public static void ReplyFailed( object? sender, OncRpcBroadcastEventArgs e )
     {
-        Console.WriteLine($"Exception receiving reply from {e.RemoteEndPoint}: \n {e.Exception}" );
+        Console.WriteLine( $"Exception receiving reply from {e.RemoteEndPoint}: \n {e.Exception}" );
     }
 
     /// <summary>   Assert client should broadcast. </summary>
     /// <param name="address">  The address. </param>
-    public static void AssertClientShouldBroadcast( IPAddress address, int timeout)
+    public static void AssertClientShouldBroadcast( IPAddress address, int timeout )
     {
 
         // Create a portmap client object, which can then be used to contact

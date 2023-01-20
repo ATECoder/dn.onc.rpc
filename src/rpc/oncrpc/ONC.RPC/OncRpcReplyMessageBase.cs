@@ -146,6 +146,14 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
         return this.ReplyStatus == OncRpcReplyStatus.OncRpcMessageAccepted && this.AcceptStatus == OncRpcAcceptStatus.OncRpcSuccess;
     }
 
+    /// <summary>   Gets or sets ( <see langword="protected"/> ) the type of the authentication. </summary>
+    /// <value> The type of the authentication. </value>
+    public OncRpcAuthType? AuthType { get; protected set; }
+
+    /// <summary>   Gets or sets ( <see langword="protected"/> ) the authentication length. </summary>
+    /// <value> The length of the authentication. </value>
+    public int? AuthLength { get; protected set; }
+
     #endregion
 
     #region " actions "

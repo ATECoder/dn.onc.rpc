@@ -25,7 +25,6 @@ public abstract class OncRpcClientStubBase : IDisposable
     /// Constructs a new <see cref="OncRpcClientStubBase"/> for communication with a remote ONC/RPC
     /// server.
     /// </summary>
-    /// <remarks>   2023-01-17. </remarks>
     /// <param name="host">     Host address where the desired ONC/RPC server resides. </param>
     /// <param name="program">  Program number of the desired ONC/RPC server. </param>
     /// <param name="version">  Version number of the desired ONC/RPC server. </param>
@@ -129,7 +128,7 @@ public abstract class OncRpcClientStubBase : IDisposable
     #region " members "
 
     /// <summary>
-    /// Gets or sets or set (private) the ONC/RPC client proxy for communicating with a remote
+    /// Gets or sets or set (<see langword="private"/>) the ONC/RPC client proxy for communicating with a remote
     /// ONC/RPC server. using a particular IP protocol.
     /// </summary>
     /// <value> ONC/RPC client proxy. </value>

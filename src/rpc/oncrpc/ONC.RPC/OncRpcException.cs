@@ -51,7 +51,7 @@ public class OncRpcException : Exception
     /// <remarks>   The detail message is derived automatically from the <paramref name="reason"/>. </remarks>
     /// <param name="reason">   The reason. This can be one of the constants -- oops, that should be
     ///                         "public final static integers" -- defined in this interface. </param>
-    public OncRpcException( OncRpcExceptionReason reason ) : this( reason, Support.GetDescription( reason ) )
+    public OncRpcException( OncRpcExceptionReason reason ) : this( reason, OncRpcEnumExtensions.GetDescription( reason ) )
     {
     }
 
@@ -60,7 +60,7 @@ public class OncRpcException : Exception
     /// </summary>
     /// <param name="reason">           The detail reason. </param>
     /// <param name="innerException">   The inner exception. </param>
-    public OncRpcException( OncRpcExceptionReason reason, Exception innerException ) : base( Support.GetDescription( reason ), innerException )
+    public OncRpcException( OncRpcExceptionReason reason, Exception innerException ) : base( OncRpcEnumExtensions.GetDescription( reason ), innerException )
     {
         this.Reason = reason;
     }
@@ -71,83 +71,39 @@ public class OncRpcException : Exception
     /// </summary>
     /// <param name="suffixMessage">    Message to append to default message. </param>
     /// <param name="reason">           The detail reason. </param>
-    public OncRpcException( string suffixMessage, OncRpcExceptionReason reason ) : this( reason, Support.GetDescription( reason ) + suffixMessage )
+    public OncRpcException( string suffixMessage, OncRpcExceptionReason reason ) : this( reason, OncRpcEnumExtensions.GetDescription( reason ) + suffixMessage )
     {
     }
 
     /// <summary>   Converts a reason to a short description. </summary>
-    /// <remarks>   2023-01-07. </remarks>
     /// <param name="reason">   The detail reason. </param>
     /// <returns>   Reason as a string. </returns>
     public static string ToShortDescription( OncRpcExceptionReason reason )
     {
-        switch ( reason )
-        {
-            case OncRpcExceptionReason.OncRpcCannotEncodeArgs:
-                return "cannot encode RPC arguments";
-
-            case OncRpcExceptionReason.OncRpcCannotDecodeResult:
-                return "cannot decode RPC result";
-
-            case OncRpcExceptionReason.OncRpcCannotReceive:
-                return "cannot receive ONC/RPC data";
-
-            case OncRpcExceptionReason.OncRpcCannotSend:
-                return "cannot send ONC/RPC data";
-
-            case OncRpcExceptionReason.OncRpcProcedureCallTimedOut:
-                return "ONC/RPC call timed out";
-
-            case OncRpcExceptionReason.OncRpcClientServerVersionMismatch:
-                return "ONC/RPC version mismatch";
-
-            case OncRpcExceptionReason.OncRpcAuthenticationError:
-                return "ONC/RPC authentication error";
-
-            case OncRpcExceptionReason.OncRpcProgramNotAvailable:
-                return "ONC/RPC program not available";
-
-            case OncRpcExceptionReason.OncRpcCannotDecodeArgs:
-                return "cannot decode ONC/RPC arguments";
-
-            case OncRpcExceptionReason.OncRpcProgramVersionNotSupported:
-                return "ONC/RPC program version mismatch";
-
-            case OncRpcExceptionReason.OncRpcProcedureNotAvailable:
-                return "ONC/RPC procedure not available";
-
-            case OncRpcExceptionReason.OncRpcSystemError:
-                return "ONC/RPC system error";
-
-            case OncRpcExceptionReason.OncRpcUnknownIpProtocol:
-                return "unknown IP protocol";
-
-            case OncRpcExceptionReason.OncRpcPortMapServiceFailure:
-                return "ONC/RPC portmap failure";
-
-            case OncRpcExceptionReason.OncRpcProgramNotRegistered:
-                return "ONC/RPC program not registered";
-
-            case OncRpcExceptionReason.OncRpcFailed:
-                return "ONC/RPC generic failure";
-
-            case OncRpcExceptionReason.OncRpcBufferOverflow:
-                return "ONC/RPC buffer overflow";
-
-            case OncRpcExceptionReason.OncRpcBufferUnderflow:
-                return "ONC/RPC buffer underflow";
-
-            case OncRpcExceptionReason.OncRpcWrongMessageType:
-                return "wrong ONC/RPC message type received";
-
-            case OncRpcExceptionReason.OncRpcCannotRegisterTransport:
-                return "cannot register ONC/RPC port with local portmap";
-
-            case OncRpcExceptionReason.OncRpcSuccess:
-                return "success";
-            default:
-                return "unknown";
-        }
+        return reason switch {
+            OncRpcExceptionReason.OncRpcCannotEncodeArgs => "cannot encode RPC arguments",
+            OncRpcExceptionReason.OncRpcCannotDecodeResult => "cannot decode RPC result",
+            OncRpcExceptionReason.OncRpcCannotReceive => "cannot receive ONC/RPC data",
+            OncRpcExceptionReason.OncRpcCannotSend => "cannot send ONC/RPC data",
+            OncRpcExceptionReason.OncRpcProcedureCallTimedOut => "ONC/RPC call timed out",
+            OncRpcExceptionReason.OncRpcClientServerVersionMismatch => "ONC/RPC version mismatch",
+            OncRpcExceptionReason.OncRpcAuthenticationError => "ONC/RPC authentication error",
+            OncRpcExceptionReason.OncRpcProgramNotAvailable => "ONC/RPC program not available",
+            OncRpcExceptionReason.OncRpcCannotDecodeArgs => "cannot decode ONC/RPC arguments",
+            OncRpcExceptionReason.OncRpcProgramVersionNotSupported => "ONC/RPC program version mismatch",
+            OncRpcExceptionReason.OncRpcProcedureNotAvailable => "ONC/RPC procedure not available",
+            OncRpcExceptionReason.OncRpcSystemError => "ONC/RPC system error",
+            OncRpcExceptionReason.OncRpcUnknownIpProtocol => "unknown IP protocol",
+            OncRpcExceptionReason.OncRpcPortMapServiceFailure => "ONC/RPC portmap failure",
+            OncRpcExceptionReason.OncRpcProgramNotRegistered => "ONC/RPC program not registered",
+            OncRpcExceptionReason.OncRpcFailed => "ONC/RPC generic failure",
+            OncRpcExceptionReason.OncRpcBufferOverflow => "ONC/RPC buffer overflow",
+            OncRpcExceptionReason.OncRpcBufferUnderflow => "ONC/RPC buffer underflow",
+            OncRpcExceptionReason.OncRpcWrongMessageType => "wrong ONC/RPC message type received",
+            OncRpcExceptionReason.OncRpcCannotRegisterTransport => "cannot register ONC/RPC port with local portmap",
+            OncRpcExceptionReason.OncRpcSuccess => "success",
+            _ => "unknown",
+        };
     }
 
     /// <summary>

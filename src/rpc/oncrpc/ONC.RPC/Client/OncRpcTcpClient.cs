@@ -73,7 +73,7 @@ public class OncRpcTcpClient : OncRpcClientBase
         this._socket.ReceiveBufferSize = Math.Min( this._socket.ReceiveBufferSize, bufferSize );
 
         IPEndPoint endPoint = new( host, this.Port );
-        this._socket.Connect(  endPoint );
+        this._socket.Connect( endPoint );
 
         // Create the necessary encoding and decoding streams, so we can
         // communicate at all.
@@ -118,9 +118,9 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// </summary>
     private Socket? _socket;
 
-#endregion
+    #endregion
 
-#region " members "
+    #region " members "
 
     /// <summary>
     /// Gets or sets or set the XDR encoding stream used for sending requests via TCP/IP to an
@@ -150,9 +150,9 @@ public class OncRpcTcpClient : OncRpcClientBase
         }
     }
 
-#endregion
+    #endregion
 
-#region " actions "
+    #region " actions "
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>
@@ -356,6 +356,6 @@ public class OncRpcTcpClient : OncRpcClientBase
         }
     }
 
-#endregion
+    #endregion
 
 }

@@ -1,6 +1,7 @@
 using System.Net.Sockets;
 
 using cc.isr.ONC.RPC.Codecs;
+using cc.isr.ONC.RPC.EnumExtensions;
 using cc.isr.ONC.RPC.Server;
 
 namespace cc.isr.ONC.RPC.Portmap;
@@ -103,7 +104,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
 
     /// <summary>   Gets or sets the default buffer size. </summary>
     /// <value> The buffer size default. </value>
-    public static int BufferSizeDefault { get; set; }  = 32768;
+    public static int BufferSizeDefault { get; set; } = 32768;
 
     #endregion
 
@@ -282,7 +283,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
         // (defensive programming)
         if ( program == OncRpcPortmapConstants.OncRpcPortmapProgramNumber )
             if ( version == OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber )
-                switch ( ( OncRpcPortmapServiceProcedure ) procedure )
+                switch ( procedure.ToPortmapServiceProcedure() )
                 {
                     case OncRpcPortmapServiceProcedure.OncRpcPortmapPing:
                         {

@@ -1,3 +1,5 @@
+using cc.isr.ONC.RPC.EnumExtensions;
+
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -11,16 +13,22 @@ namespace cc.isr.ONC.RPC.Server;
 public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
 {
 
-    /// <summary>   (Immutable) type of the authentication for this authentication class. </summary>
-    public const OncRpcAuthType AuthType = OncRpcAuthType.OncRpcAuthTypeNone;
+    /// <summary>   (Immutable) the default type of type the 'NONE' authentication. </summary>
+    public const OncRpcAuthType AuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeNone;
 
-    /// <summary>   (Immutable) length of the authentication message for this authentication class. </summary>
-    public const int AuthMessageLength = 0;
+    /// <summary>   (Immutable) the default length of the 'none' authentication message. </summary>
+    public const int AuthMessageLengthDefault = 0;
 
-    #region " construction and cleanup "
+    /// <summary>   (Immutable) the default authentication type of the verifier. </summary>
+    public const OncRpcAuthType VerifierAuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeNone;
+
+    /// <summary>   (Immutable) the default length of the verifier authentication message. </summary>
+    public const int VerifierAuthMessageLengthDefault = 0;
+
+    #region " construction "
 
     /// <summary>   Default constructor. </summary>
-    public OncRpcServerAuthNone() : base( OncRpcAuthType.OncRpcAuthTypeNone )
+    public OncRpcServerAuthNone() : base( OncRpcServerAuthNone.AuthTypeDefault )
     {
     }
 
@@ -37,8 +45,8 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
 
         // As the authentication type has already been pulled off the XDR
         // stream, we only need to make sure that really no opaque data follows.
-
-        if ( decoder.DecodeInt() != 0 )
+        this.AuthMessageLength = decoder.DecodeInt();
+        if ( this.AuthMessageLength != 0 )
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthBadCredential );
 
         // We also need to decode the verifier and length. The verifier must be of type
@@ -46,7 +54,12 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
 
-        if ( decoder.DecodeInt() != ( int ) OncRpcServerAuthNone.AuthType || decoder.DecodeInt() != OncRpcServerAuthNone.AuthMessageLength )
+        this.VerifierAuthType = decoder.DecodeInt().ToAuthType();
+        this.VerifierAuthMessageLength = decoder.DecodeInt();
+        // @atecoder was:
+        // if ( decoder.DecodeInt() != ( int ) OncRpcServerAuthNone.AuthType || decoder.DecodeInt() != OncRpcServerAuthNone.AuthMessageLength )
+
+        if ( this.VerifierAuthType != this.AuthType || this.VerifierAuthMessageLength != this.AuthMessageLength )
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
     }
 

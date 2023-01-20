@@ -141,7 +141,6 @@ public static class Base64
     private static readonly byte[] _decodingBase64Alephbeth;
 
     /// <summary>   Static constructor. </summary>
-    /// <remarks>   2023-01-02. </remarks>
     static Base64()
     {
         _decodingBase64Alephbeth = new byte[256];

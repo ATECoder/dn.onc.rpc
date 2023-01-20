@@ -1,3 +1,5 @@
+using cc.isr.ONC.RPC.EnumExtensions;
+
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -10,12 +12,25 @@ namespace cc.isr.ONC.RPC.Server;
 /// </remarks>
 public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
 {
+
+    /// <summary>   (Immutable) the default type of type the 'SHORT UNIX' authentication. </summary>
+    public const OncRpcAuthType AuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeShortHandUnix;
+
+    /// <summary>   (Immutable) the default authentication type of the verifier. </summary>
+    public const OncRpcAuthType VerifierAuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeShortHandUnix;
+
+    /// <summary>   (Immutable) the default alternate authentication type of the verifier. </summary>
+    public const OncRpcAuthType AlternateVerifierAuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeNone;
+
+    /// <summary>   (Immutable) the default length of the alternate verifier authentication message. </summary>
+    public const int AlternateVerifierAuthMessageLengthDefault = 0;
+
     /// <summary>
     /// Constructs an server <see cref="OncRpcServerAuthShort"/> object and pulls its state off an XDR stream.
     /// </summary>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="decoder">  XDR stream to retrieve the object state from. </param>
-    public OncRpcServerAuthShort( XdrDecodingStreamBase decoder ) : base( OncRpcAuthType.OncRpcAuthTypeShortHandUnix )
+    public OncRpcServerAuthShort( XdrDecodingStreamBase decoder ) : base( OncRpcServerAuthShort.AuthTypeDefault )
     {
         this.DecodeCredentialAndVerfier( decoder );
         this._shorthandVerfier = Array.Empty<byte>();
@@ -94,8 +109,12 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
 
-        if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
-
+        this.VerifierAuthType = decoder.DecodeInt().ToAuthType();
+        this.VerifierAuthMessageLength  = decoder.DecodeInt();
+        // @atecoder was:
+        // if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
+        if ( this.VerifierAuthType != Client.OncRpcClientAuthUnix.VerifierAuthTypeDefault
+            || this.VerifierAuthMessageLength != Client.OncRpcClientAuthUnix.VerifierAuthMessageLengthDefault )
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
     }
 
@@ -112,7 +131,7 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
 
             // Encode 'short' shorthand verifier (credential).
 
-            encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeShortHandUnix );
+            encoder.EncodeInt( ( int ) OncRpcServerAuthShort.VerifierAuthTypeDefault );
             encoder.EncodeDynamicOpaque( this._shorthandVerfier );
         }
         else
@@ -121,8 +140,8 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
             // Encode an 'none' verifier with zero length, if no shorthand
             // verifier (credential) has been supplied by now.
 
-            encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
-            encoder.EncodeInt( 0 );
+            encoder.EncodeInt( ( int ) OncRpcServerAuthShort.AlternateVerifierAuthTypeDefault );
+            encoder.EncodeInt( OncRpcServerAuthShort.AlternateVerifierAuthMessageLengthDefault );
         }
     }
 

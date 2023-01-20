@@ -446,7 +446,6 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) client should call remote procedures. </summary>
-    /// <remarks>   2023-01-12. </remarks>
     [TestMethod]
     public void ClientShouldCallRemoteProcedures()
     {

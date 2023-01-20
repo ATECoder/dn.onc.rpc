@@ -25,7 +25,6 @@ public class OncRpcAuthException : OncRpcException
     /// <summary>
     /// Constructs an <see cref="OncRpcAuthException"/> with the specified detail reason and message.
     /// </summary>
-    /// <remarks>   2023-01-09. </remarks>
     /// <param name="suffixMessage">    Message to append to default message. </param>
     /// <param name="authStatus">       The authentication status, which can be any one of the
     ///                                 <see cref="OncRpcAuthStatus"/>. </param>

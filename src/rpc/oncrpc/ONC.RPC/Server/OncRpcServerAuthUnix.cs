@@ -1,3 +1,5 @@
+using cc.isr.ONC.RPC.EnumExtensions;
+
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -10,17 +12,41 @@ namespace cc.isr.ONC.RPC.Server;
 /// </remarks>
 public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
 {
-    /// <summary>   Gets or sets (private) the timestamp as supplied through credential. </summary>
+
+    /// <summary>   (Immutable) the default type of type the 'UNIX' authentication. </summary>
+    public const OncRpcAuthType AuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeUnix;
+
+    /// <summary>   (Immutable) the default authentication type of the verifier. </summary>
+    public const OncRpcAuthType VerifierAuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeNone;
+
+    /// <summary>   (Immutable) the default length of the verifier authentication message. </summary>
+    public const int VerifierAuthMessageLengthDefault = 0;
+
+    /// <summary>
+    /// Constructs an server <see cref="OncRpcServerAuthUnix"/> object and pulls its state off an XDR stream.
+    /// </summary>
+    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
+    /// <param name="decoder">  XDR stream to retrieve the object state from. </param>
+    public OncRpcServerAuthUnix( XdrDecodingStreamBase decoder ) : base( OncRpcServerAuthUnix.AuthTypeDefault )
+    {
+        this.DecodeCredentialAndVerfier( decoder );
+        this.MachineName = string.Empty;
+        this._groupIds = Array.Empty<int>();
+        this._shorthandVerfier = Array.Empty<byte>();
+    }
+
+
+    /// <summary>   Gets or sets (<see langword="private"/>) the timestamp as supplied through credential. </summary>
     /// <value> The timestamp. </value>
     public int Timestamp { get; private set; }
 
-    /// <summary>   Gets or sets (private) the machine name of caller supplied through credential. </summary>
+    /// <summary>   Gets or sets (<see langword="private"/>) the machine name of caller supplied through credential. </summary>
     public string MachineName { get; private set; }
 
-    /// <summary>   Gets or sets (private) the user ID of caller supplied through credential. </summary>
+    /// <summary>   Gets or sets (<see langword="private"/>) the user ID of caller supplied through credential. </summary>
     public int UserId { get; private set; }
 
-    /// <summary>   Gets or sets (private) the group ID of caller supplied through credential. </summary>
+    /// <summary>   Gets or sets (<see langword="private"/>) the group ID of caller supplied through credential. </summary>
     public int GroupId { get; private set; }
 
     /// <summary>
@@ -31,24 +57,10 @@ public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
     /// <summary>
     /// Gets the group identifiers the caller belongs to, as supplied through credential.
     /// </summary>
-    /// <remarks>   2023-01-03. </remarks>
     /// <returns>   An array of int. </returns>
     public int[] GetGroupIds()
     {
         return this._groupIds;
-    }
-
-    /// <summary>
-    /// Constructs an server <see cref="OncRpcServerAuthUnix"/> object and pulls its state off an XDR stream.
-    /// </summary>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="decoder">  XDR stream to retrieve the object state from. </param>
-    public OncRpcServerAuthUnix( XdrDecodingStreamBase decoder ) : base( OncRpcAuthType.OncRpcAuthTypeUnix )
-    {
-        this.DecodeCredentialAndVerfier( decoder );
-        this.MachineName = string.Empty;
-        this._groupIds = Array.Empty<int>();
-        this._shorthandVerfier = Array.Empty<byte>();
     }
 
     /// <summary>
@@ -92,7 +104,7 @@ public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
 
         // Now pull off the object state of the XDR stream...
 
-        int realLen = decoder.DecodeInt();
+        this.AuthMessageLength = decoder.DecodeInt();
         this.Timestamp = decoder.DecodeInt();
         this.MachineName = decoder.DecodeString();
         this.UserId = decoder.DecodeInt();
@@ -105,9 +117,9 @@ public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
         // length = length of timestamp + length of machine name + length of user id +
         //          length of group id + length of the vector of group identities. 
 
-        int len = 4 + (this.MachineName.Length + 7 & ~3) + 4 + 4 + this._groupIds.Length * 4 + 4;
-        if ( realLen != len )
-            if ( realLen < len )
+        int expectedLength = 4 + (this.MachineName.Length + 7 & ~3) + 4 + 4 + this._groupIds.Length * 4 + 4;
+        if ( this.AuthMessageLength != expectedLength )
+            if ( this.AuthMessageLength < expectedLength )
                 throw new OncRpcException( OncRpcExceptionReason.OncRpcBufferUnderflow );
             else
                 throw new OncRpcException( OncRpcExceptionReason.OncRpcAuthenticationError );
@@ -117,7 +129,12 @@ public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
 
-        if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
+        this.VerifierAuthType = decoder.DecodeInt().ToAuthType();
+        this.VerifierAuthMessageLength = decoder.DecodeInt();
+        // @atecoder was:
+        // if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
+        if ( this.VerifierAuthType != Client.OncRpcClientAuthUnix.VerifierAuthTypeDefault
+            || this.VerifierAuthMessageLength != Client.OncRpcClientAuthUnix.VerifierAuthMessageLengthDefault )
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAutoBadVerifier );
     }
 
@@ -143,8 +160,8 @@ public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
             // Encode an 'none' verifier with zero length, if no shorthand
             // verifier (credential) has been supplied by now.
 
-            encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeNone );
-            encoder.EncodeInt( 0 );
+            encoder.EncodeInt( ( int ) OncRpcServerAuthUnix.VerifierAuthTypeDefault );
+            encoder.EncodeInt( OncRpcServerAuthUnix.VerifierAuthMessageLengthDefault );
         }
     }
 }

@@ -156,7 +156,7 @@ public class OncRpcPortmapClient : IDisposable
         this.PortmapClient?.Close();
     }
 
-#region " disposable implementation "
+    #region " disposable implementation "
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
@@ -218,11 +218,11 @@ public class OncRpcPortmapClient : IDisposable
         this.Dispose( false );
     }
 
-#endregion
+    #endregion
 
-#endregion
+    #endregion
 
-#region " members "
+    #region " members "
 
     /// <summary>
     /// Gets or sets the particular transport-specific ONC/RPC client used for communicating with the
@@ -231,9 +231,9 @@ public class OncRpcPortmapClient : IDisposable
     /// <value> The portmap client proxy object (subclass of <see cref="OncRpcClientBase"/>). </value>
     public OncRpcClientBase PortmapClient { get; set; }
 
-#endregion
+    #endregion
 
-#region " actions "
+    #region " actions "
 
 
     /// <summary>
@@ -392,6 +392,6 @@ public class OncRpcPortmapClient : IDisposable
         return true;
     }
 
-#endregion
+    #endregion
 
 }

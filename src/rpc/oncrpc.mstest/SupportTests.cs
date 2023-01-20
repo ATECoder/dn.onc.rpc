@@ -6,7 +6,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace cc.isr.ONC.RPC.MSTest;
 
 /// <summary>   (Unit Test Class) a support tests. </summary>
-/// <remarks>   2023-01-17. </remarks>
 [TestClass]
 public class SupportTests
 {
@@ -46,7 +45,6 @@ public class SupportTests
     #region " support "
 
     /// <summary>   Assert should get description. </summary>
-    /// <remarks>   2023-01-19. </remarks>
     /// <param name="value">                The value. </param>
     /// <param name="expectedDescription">  Information describing the expected. </param>
     private static void AssertShouldGetDescription( OncRpcMessageType value, string expectedDescription )

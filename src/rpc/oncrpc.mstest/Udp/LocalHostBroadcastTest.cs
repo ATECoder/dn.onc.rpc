@@ -1,9 +1,10 @@
 using System.ComponentModel;
+
 using cc.isr.ONC.RPC.MSTest.Tcp;
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 [TestClass]
-[TestCategory("broadcast")]
+[TestCategory( "broadcast" )]
 public class LocalHostBroadcastTest
 {
 

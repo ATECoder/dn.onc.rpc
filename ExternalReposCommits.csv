@@ -1,4 +1,4 @@
 CommitID,LocalRepoName,TargetDirectory
 76fb1cf60bcc6a898b62b442acfbc7f16de74f29,ide,libraries\vs\core
-ef1d340405fb0d6e558239b4f374dc26c4b516b9,xdr,lib\vs\iot
-239eeaefb8fe5ec390035b3e6b083aa236cffca6,oncrpc,lib\vs\iot
+d786c0187f23acb513893b63180b71f20b27d1b3,xdr,lib\vs\iot
+35aeb8f0c92d2fdd7bd3c970b98e5c3659739c5e,oncrpc,lib\vs\iot

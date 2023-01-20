@@ -1,4 +1,6 @@
 
+using cc.isr.ONC.RPC.EnumExtensions;
+
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -13,18 +15,34 @@ public abstract class OncRpcServerAuthBase
 {
 
     /// <summary>   Specialized constructor for use only by derived class. </summary>
-    /// <param name="authenticationType">   Authentication type used by this authentication object. </param>
-    protected OncRpcServerAuthBase( OncRpcAuthType authenticationType )
+    /// <param name="authType">   Authentication type used by this authentication object. </param>
+    protected OncRpcServerAuthBase( OncRpcAuthType authType )
     {
-        this.AuthenticationType = authenticationType;
+        this.AuthType = authType;
+        this.AuthMessageLength = 0;
     }
 
     /// <summary>
-    /// Gets or sets or set (private) the type (flavor) of <see cref="OncRpcAuthType">authentication type</see>
+    /// Gets or sets or set (<see langword="private"/>) (<see langword="private"/>) the type (flavor) of <see cref="OncRpcAuthType">authentication type</see>
     /// used.
     /// </summary>
     /// <value>   Authentication type used by this authentication object. </value>
-    public OncRpcAuthType AuthenticationType { get; private set; }
+    public OncRpcAuthType AuthType { get; private set; }
+
+    /// <summary>
+    /// Gets or sets ( <see langword="protected"/> ) the length of the authentication message for
+    /// this authentication class.
+    /// </summary>
+    /// <value> The length of the authentication message. </value>
+    public int AuthMessageLength { get; protected set; } = 0;
+
+    /// <summary>   Gets or sets ( <see langword="protected"/> ) the type of the verifier authentication. </summary>
+    /// <value> The type of the verifier authentication. </value>
+    public OncRpcAuthType? VerifierAuthType { get; protected set; }
+
+    /// <summary>   Gets or sets ( <see langword="protected"/> ) the length of the verifier authentication message. </summary>
+    /// <value> The length of the verifier authentication. </value>
+    public int? VerifierAuthMessageLength { get; protected set; }
 
     /// <summary>   Restores (deserializes) an authentication object from an XDR stream. </summary>
     /// <exception cref="OncRpcAuthException">  Thrown when an ONC/RPC Authentication error condition occurs. </exception>
@@ -45,8 +63,8 @@ public abstract class OncRpcServerAuthBase
         // to receive an authentication with the same type, we reuse the old
         // object.
 
-        OncRpcAuthType authType = ( OncRpcAuthType ) decoder.DecodeInt();
-        if ( recycle is not null && recycle.AuthenticationType == authType )
+        OncRpcAuthType authType = decoder.DecodeInt().ToAuthType();
+        if ( recycle is not null && recycle.AuthType == authType )
         {
 
             // Simply recycle authentication object and pull its new state

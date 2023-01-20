@@ -23,6 +23,40 @@ namespace cc.isr.ONC.RPC.Client;
 /// </remarks>
 public abstract class OncRpcClientAuthBase
 {
+
+    /// <summary>   Specialized constructor for use only by derived class. </summary>
+    /// <param name="authType"> The type of the authentication. </param>
+    protected OncRpcClientAuthBase( OncRpcAuthType authType )
+    {
+        this.AuthType = authType;
+        this.AuthMessageLength = 0;
+    }
+
+    /// <summary>
+    /// Gets or sets or set ( <see langword="private"/> ) type of the authentication for this
+    /// authentication class.
+    /// </summary>
+    /// <value> The type of the authentication. </value>
+    public OncRpcAuthType AuthType { get; private set; } = OncRpcAuthType.OncRpcAuthTypeNone;
+
+    /// <summary>
+    /// Gets or sets ( <see langword="protected"/> ) the length of the authentication message for
+    /// this authentication class.
+    /// </summary>
+    /// <value> The length of the authentication message. </value>
+    public int AuthMessageLength { get; protected set; } = 0;
+
+    /// <summary>   Gets or sets ( <see langword="protected"/> ) the type of the verifier authentication. </summary>
+    /// <value> The type of the verifier authentication. </value>
+    public OncRpcAuthType? VerifierAuthType { get; protected set; }
+
+    /// <summary>
+    /// Gets or sets ( <see langword="protected"/> ) the length of the verifier authentication
+    /// message.
+    /// </summary>
+    /// <value> The length of the verifier authentication. </value>
+    public int? VerifierAuthMessageLength { get; protected set; }
+
     /// <summary>
     /// Encodes ONC/RPC authentication information in form of a credential and a verifier when
     /// sending an ONC/RPC call message.

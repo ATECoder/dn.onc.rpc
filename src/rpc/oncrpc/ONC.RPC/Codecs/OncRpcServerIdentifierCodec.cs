@@ -1,3 +1,5 @@
+using cc.isr.ONC.RPC.EnumExtensions;
+
 namespace cc.isr.ONC.RPC.Codecs;
 
 /// <summary>
@@ -99,7 +101,7 @@ public class OncRpcServerIdentifierCodec : IXdrCodec
     {
         this.Program = decoder.DecodeInt();
         this.Version = decoder.DecodeInt();
-        this.Protocol = ( OncRpcProtocols ) decoder.DecodeInt();
+        this.Protocol = decoder.DecodeInt().ToProtocols();
         this.Port = decoder.DecodeInt();
     }
 }

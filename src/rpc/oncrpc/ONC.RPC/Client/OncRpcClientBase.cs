@@ -256,7 +256,6 @@ public abstract class OncRpcClientBase : IDisposable
     /// Creates a new ONC/RPC client object, which can handle the requested
     /// <paramref name="protocol"/>.
     /// </summary>
-    /// <remarks>   2023-01-17. </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="host">     Host address where the desired ONC/RPC server resides. </param>
     /// <param name="program">  Program number of the desired ONC/RPC server. </param>
@@ -465,12 +464,12 @@ public abstract class OncRpcClientBase : IDisposable
     public int TransmitTimeout { get; set; } = OncRpcClientBase.TransmitTimeoutDefault;
 
     /// <summary>
-    /// Gets or sets (private) the program number of the ONC/RPC server to communicate with.
+    /// Gets or sets (<see langword="private"/>) the program number of the ONC/RPC server to communicate with.
     /// </summary>
     /// <value> The ONC/RPC program number. </value>
     public int Program { get; private set; }
 
-    /// <summary>   Gets or sets (private) the version number of the ONC/RPC program. </summary>
+    /// <summary>   Gets or sets (<see langword="private"/>) the version number of the ONC/RPC program. </summary>
     /// <value> The ONC/RPC version number of ONC/RPC program.. </value>
     public int Version { get; private set; }
 
@@ -482,7 +481,7 @@ public abstract class OncRpcClientBase : IDisposable
     public IPAddress Host { get; private set; }
 
     /// <summary>
-    /// Get or set (private) the port number at which the ONC/RPC server can be contacted.
+    /// Get or set (<see langword="private"/>) the port number at which the ONC/RPC server can be contacted.
     /// </summary>
     /// <value> The port number of ONC/RPC server.. </value>
     public int Port { get; private set; }
@@ -509,7 +508,7 @@ public abstract class OncRpcClientBase : IDisposable
     }
 
     /// <summary>
-    /// Gets or sets or set (private) the message id (also sometimes known as "transaction id") used
+    /// Gets or sets or set (<see langword="private"/>) the message id (also sometimes known as "transaction id") used
     /// for the next call message.
     /// </summary>
     /// <remarks>
@@ -542,7 +541,6 @@ public abstract class OncRpcClientBase : IDisposable
     }
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
-    /// <remarks>   2023-01-03. </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
     /// <param name="versionNumber">    Protocol version number. </param>

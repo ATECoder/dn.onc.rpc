@@ -58,7 +58,7 @@ public class OncRpcUdpClient : OncRpcClientBase
             SendTimeout = transmitTimeout,
             ReceiveTimeout = transmitTimeout,
         };
-        this._socket.SendBufferSize =  Math.Min( this._socket.SendBufferSize , bufferSize );
+        this._socket.SendBufferSize = Math.Min( this._socket.SendBufferSize, bufferSize );
         this._socket.ReceiveBufferSize = Math.Min( this._socket.ReceiveBufferSize, bufferSize );
 
         // Note: we don't do a socket.connect(host, this.port);
@@ -131,7 +131,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     /// <summary>   Executes the <see cref="BroadcastReplyReceived"/> event. </summary>
     /// <param name="e">    An OncRpcBroadcastEvent to process. </param>
-    private void OnBroadcastReplyReceived(OncRpcBroadcastEventArgs e )
+    private void OnBroadcastReplyReceived( OncRpcBroadcastEventArgs e )
     {
         var handler = this.BroadcastReplyReceived;
         handler?.Invoke( this, e );
@@ -172,9 +172,9 @@ public class OncRpcUdpClient : OncRpcClientBase
         }
     }
 
-#endregion
+    #endregion
 
-#region " actions "
+    #region " actions "
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>
@@ -574,7 +574,7 @@ public class OncRpcUdpClient : OncRpcClientBase
             // @atecoder: fix timeout; was ill defined.
             DateTime stopTime = DateTime.Now.Add( TimeSpan.FromMilliseconds( timeout ) );
             while ( DateTime.Now < stopTime )
-            { 
+            {
                 try
                 {
 
@@ -583,7 +583,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                     TimeSpan currentTimeout = stopTime - DateTime.Now;
                     if ( currentTimeout.Ticks < 0 )
-                        currentTimeout = TimeSpan.FromMilliseconds( 1 ); 
+                        currentTimeout = TimeSpan.FromMilliseconds( 1 );
 
                     // @atecoder: fix timeout; was .Seconds, that is, 1000 times larger.
                     this._socket.ReceiveTimeout = currentTimeout.Milliseconds;
@@ -625,7 +625,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                         // Notify a potential listener of the reply.
 
-                        if  ( this.BroadcastReplyReceived is not null && this._decoder is not null )
+                        if ( this.BroadcastReplyReceived is not null && this._decoder is not null )
                         {
                             OncRpcBroadcastEventArgs e = new( this, this._decoder.RemoteEndPoint, procedureNumber, requestCodec, replyCodec );
                             this.OnBroadcastReplyReceived( e );
@@ -674,6 +674,6 @@ public class OncRpcUdpClient : OncRpcClientBase
         }
     }
 
-#endregion
+    #endregion
 
 }

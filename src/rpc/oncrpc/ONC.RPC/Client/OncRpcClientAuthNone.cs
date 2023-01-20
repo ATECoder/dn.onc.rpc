@@ -1,3 +1,5 @@
+using cc.isr.ONC.RPC.EnumExtensions;
+
 namespace cc.isr.ONC.RPC.Client;
 
 /// <summary>
@@ -11,11 +13,23 @@ namespace cc.isr.ONC.RPC.Client;
 public class OncRpcClientAuthNone : OncRpcClientAuthBase
 {
 
-    /// <summary>   (Immutable) type of the authentication for this authentication class. </summary>
-    public const OncRpcAuthType AuthType = OncRpcAuthType.OncRpcAuthTypeNone;
+    /// <summary>   (Immutable) the default type of type the 'none' authentication. </summary>
+    public const OncRpcAuthType AuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeNone;
 
-    /// <summary>   (Immutable) length of the authentication message for this authentication class. </summary>
-    public const int AuthMessageLength = 0;
+    /// <summary>   (Immutable) the default length of the 'none' authentication message. </summary>
+    public const int AuthMessageLengthDefault = 0;
+
+    /// <summary>   (Immutable) the default authentication type of the verifier. </summary>
+    public const OncRpcAuthType VerifierAuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeNone;
+
+    /// <summary>   (Immutable) the default length of the verifier authentication message. </summary>
+    public const int VerifierAuthMessageLengthDefault = 0;
+
+    /// <summary>   Default constructor. </summary>
+    public OncRpcClientAuthNone() : base( OncRpcClientAuthNone.AuthTypeDefault )
+    {
+        this.AuthMessageLength = OncRpcClientAuthNone.AuthMessageLengthDefault;
+    }
 
     /// <summary>
     /// Encodes ONC/RPC authentication information in form of a credential and a verifier when
@@ -28,15 +42,15 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
 
         // The credential only consists of the indication of no authentication (none) with
         // no opaque authentication data following.
-        encoder.EncodeInt( ( int ) OncRpcClientAuthNone.AuthType );
-        encoder.EncodeInt( OncRpcClientAuthNone.AuthMessageLength );
+        encoder.EncodeInt( ( int ) this.AuthType );
+        encoder.EncodeInt( this.AuthMessageLength );
 
         // But we also need to encode the verifier. This is always of type
         // none too. For some obscure historical reasons, we have to
         // deal with credentials and verifiers, although they belong together,
         // according to Sun's specification.
-        encoder.EncodeInt( ( int ) OncRpcClientAuthNone.AuthType );
-        encoder.EncodeInt( OncRpcClientAuthNone.AuthMessageLength );
+        encoder.EncodeInt( ( int ) OncRpcClientAuthNone.VerifierAuthTypeDefault );
+        encoder.EncodeInt( OncRpcClientAuthNone.VerifierAuthMessageLengthDefault );
     }
 
     /// <summary>
@@ -51,7 +65,12 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
         // Make sure that we received a 'none' verifier and that it
         // does not contain any opaque data. Anything different from this
         // is not kosher and an authentication exception will be thrown.
-        if ( decoder.DecodeInt() != ( int ) OncRpcClientAuthNone.AuthType || decoder.DecodeInt() != OncRpcClientAuthNone.AuthMessageLength )
+        this.VerifierAuthType = decoder.DecodeInt().ToAuthType();
+        this.VerifierAuthMessageLength = decoder.DecodeInt();
+        // @atecoder was:
+        // if ( decoder.DecodeInt() != ( int ) OncRpcClientAuthNone.AuthType || decoder.DecodeInt() != OncRpcClientAuthNone.AuthMessageLength )
+        if ( this.VerifierAuthType != Server.OncRpcServerAuthNone.VerifierAuthTypeDefault
+            || this.VerifierAuthMessageLength != Server.OncRpcServerAuthNone.VerifierAuthMessageLengthDefault )
             throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthFailed );
     }
 

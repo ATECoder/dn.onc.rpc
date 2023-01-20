@@ -70,8 +70,8 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
                     else
                     {
                         // encode the authentication type as none as set length to zero.
-                        encoder.EncodeInt( ( int ) OncRpcServerAuthNone.AuthType );
-                        encoder.EncodeInt( OncRpcServerAuthNone.AuthMessageLength );
+                        encoder.EncodeInt( ( int ) OncRpcServerAuthNone.VerifierAuthTypeDefault );
+                        encoder.EncodeInt( OncRpcServerAuthNone.VerifierAuthMessageLengthDefault );
                     }
 
                     // Even if the call was accepted by the server, it can still

@@ -66,7 +66,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                 OncRpcExceptionReason.OncRpcWrongMessageType );
         }
 
-        this.ReplyStatus = ( OncRpcReplyStatus ) decoder.DecodeInt();
+        this.ReplyStatus = decoder.DecodeInt().ToReplyStatus();
         switch ( this.ReplyStatus )
         {
             case OncRpcReplyStatus.OncRpcMessageAccepted:
@@ -86,16 +86,19 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                         // reply using another authentication scheme than 'none', we
                         // will throw an exception. Also we check that no-one is
                         // actually sending opaque information within 'none'.
-                        int replyAuthType = decoder.DecodeInt();
-                        if ( replyAuthType != ( int ) OncRpcAuthType.OncRpcAuthTypeNone )
+
+                        this.AuthType = decoder.DecodeInt().ToAuthType();
+                        if ( this.AuthType != OncRpcAuthType.OncRpcAuthTypeNone )
                             throw new OncRpcAuthException(
-                                $"; expected {nameof( OncRpcAuthType.OncRpcAuthTypeNone )}({OncRpcAuthType.OncRpcAuthTypeNone}); actual: {replyAuthType}",
+                                $"; expected {nameof( OncRpcAuthType )}.{nameof( OncRpcAuthType.OncRpcAuthTypeNone )}({( int ) OncRpcAuthType.OncRpcAuthTypeNone}); actual: {this.AuthType}({( int ) this.AuthType})",
                                 OncRpcAuthStatus.OncRpcAuthFailed );
+
                         // then check on the message value.
-                        int replyAuthLength = decoder.DecodeInt();
-                        if ( replyAuthLength != OncRpcClientAuthNone.AuthMessageLength )
+
+                        this.AuthLength = decoder.DecodeInt();
+                        if ( this.AuthLength != OncRpcClientAuthNone.AuthMessageLengthDefault )
                             throw new OncRpcAuthException(
-                                $"; expected {nameof( OncRpcClientAuthNone.AuthMessageLength )}({OncRpcClientAuthNone.AuthMessageLength}); actual: {replyAuthLength}",
+                                $"; expected {nameof( OncRpcClientAuthNone )}.{nameof( OncRpcClientAuthNone.AuthMessageLengthDefault )}({OncRpcClientAuthNone.AuthMessageLengthDefault}); actual: {this.AuthLength}",
                                 OncRpcAuthStatus.OncRpcAuthFailed );
                     }
 
@@ -104,7 +107,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                     // call we will receive an indication about the range of
                     // versions a particular program (server) supports.
 
-                    this.AcceptStatus = ( OncRpcAcceptStatus ) decoder.DecodeInt();
+                    this.AcceptStatus = decoder.DecodeInt().ToAcceptStatus();
                     switch ( this.AcceptStatus )
                     {
                         case OncRpcAcceptStatus.OncRpcProgramVersionMismatch:
@@ -131,7 +134,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
 
                     // Encode the information returned for denied message calls.
 
-                    this.RejectStatus = ( OncRpcRejectStatus ) decoder.DecodeInt();
+                    this.RejectStatus = decoder.DecodeInt().ToRejectStatus();
                     switch ( this.RejectStatus )
                     {
                         case OncRpcRejectStatus.OncRpcWrongProtocolVersion:
@@ -143,7 +146,7 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
 
                         case OncRpcRejectStatus.OncRpcAuthError:
                             {
-                                this.AuthStatus = ( OncRpcAuthStatus ) decoder.DecodeInt();
+                                this.AuthStatus = decoder.DecodeInt().ToAuthStatus();
                                 break;
                             }
 

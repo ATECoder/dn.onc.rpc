@@ -6,11 +6,10 @@ using cc.isr.ONC.RPC.Portmap;
 namespace cc.isr.ONC.RPC.EnumExtensions;
 
 /// <summary>   A support class for enum extensions. </summary>
-public static class Support
+public static class OncRpcEnumExtensions
 {
 
     /// <summary>   Gets a description from an Enum. </summary>
-    /// <remarks>   2023-01-07. </remarks>
     /// <param name="value">    An enum constant representing the value option. </param>
     /// <returns>   The description. </returns>
     public static string GetDescription( this Enum value )
@@ -43,10 +42,9 @@ public static class Support
     /// <returns>   Value as the OncRpcAuthStatus. </returns>
     public static OncRpcAuthStatus ToAuthStatus( this int value )
     {
-        if ( Enum.IsDefined( typeof( OncRpcAuthStatus ), value ) )
-            return ( OncRpcAuthStatus ) value;
-        else
-            throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcAuthStatus )}" );
+        return Enum.IsDefined( typeof( OncRpcAuthStatus ), value )
+            ? ( OncRpcAuthStatus ) value
+            : throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcAuthStatus )}" );
     }
 
     /// <summary>   An int extension method that converts a value to a <see cref="OncRpcAuthType"/>. </summary>
@@ -70,7 +68,7 @@ public static class Support
     {
         return Enum.IsDefined( typeof( OncRpcAcceptStatus ), value )
             ? ( OncRpcAcceptStatus ) value
-            : throw new ArgumentException($"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcAcceptStatus )}" );
+            : throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcAcceptStatus )}" );
     }
 
     /// <summary>   An int extension method that converts a value to a <see cref="OncRpcExceptionReason"/>. </summary>
@@ -82,7 +80,7 @@ public static class Support
     {
         return Enum.IsDefined( typeof( OncRpcExceptionReason ), value )
             ? ( OncRpcExceptionReason ) value
-            : throw new ArgumentException($"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcExceptionReason )}" );
+            : throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcExceptionReason )}" );
     }
 
     /// <summary>   An int extension method that converts a value to a <see cref="OncRpcProtocols"/>. </summary>
@@ -94,7 +92,7 @@ public static class Support
     {
         return Enum.IsDefined( typeof( OncRpcProtocols ), value )
             ? ( OncRpcProtocols ) value
-            : throw new ArgumentException($"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcProtocols )}" );
+            : throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcProtocols )}" );
     }
 
     /// <summary>   An int extension method that converts a value to a <see cref="OncRpcRejectStatus"/>. </summary>
@@ -106,7 +104,7 @@ public static class Support
     {
         return Enum.IsDefined( typeof( OncRpcRejectStatus ), value )
             ? ( OncRpcRejectStatus ) value
-            : throw new ArgumentException($"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcRejectStatus )}" );
+            : throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcRejectStatus )}" );
     }
 
     /// <summary>   An int extension method that converts a value to a <see cref="OncRpcReplyStatus"/>. </summary>
@@ -118,7 +116,7 @@ public static class Support
     {
         return Enum.IsDefined( typeof( OncRpcReplyStatus ), value )
             ? ( OncRpcReplyStatus ) value
-            : throw new ArgumentException($"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcReplyStatus )}" );
+            : throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcReplyStatus )}" );
     }
 
     /// <summary>   An int extension method that converts a value to a <see cref="OncRpcRetransmitMode"/>. </summary>
@@ -130,7 +128,7 @@ public static class Support
     {
         return Enum.IsDefined( typeof( OncRpcRetransmitMode ), value )
             ? ( OncRpcRetransmitMode ) value
-            : throw new ArgumentException($"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcRetransmitMode )}" );
+            : throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcRetransmitMode )}" );
     }
 
     /// <summary>   An int extension method that converts a value to a <see cref="OncRpcPortmapServiceProcedure"/>. </summary>
@@ -142,7 +140,7 @@ public static class Support
     {
         return Enum.IsDefined( typeof( OncRpcPortmapServiceProcedure ), value )
             ? ( OncRpcPortmapServiceProcedure ) value
-            : throw new ArgumentException($"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcPortmapServiceProcedure )}" );
+            : throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcPortmapServiceProcedure )}" );
     }
 
 }
