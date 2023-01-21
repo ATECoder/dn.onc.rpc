@@ -20,14 +20,11 @@ public class OncRpcTcpTestClient : IDisposable
         this.Version = version;
         this._coreClient = OncRpcClientBase.NewOncRpcClient( host, RpcProgramConstants.ProgramNumber, version, 0,
                                                              OncRpcProtocols.OncRpcTcp, Client.OncRpcTcpClient.IOTimeoutDefault );
-
-        // this._coreClient = new GenOncRpcCoreClient( host, RpcProgramConstants.ProgramNumber, version, OncRpcProtocols.ONCRPC_TCP );
-        this.Connected = true;
     }
 
     /// <summary>   Gets or sets a value indicating whether the ONC/RPC client is connected. </summary>
     /// <value> True if connected, false if not. </value>
-    public bool Connected { get; private set; }
+    public bool Connected => this._coreClient is not null;
 
     /// <summary>   Query if this object is disposed. </summary>
     /// <returns>   True if disposed, false if not. </returns>
@@ -63,8 +60,18 @@ public class OncRpcTcpTestClient : IDisposable
     /// <summary>   Closes this object. </summary>
     public void Close()
     {
-        this._coreClient?.Close();
-        this._coreClient = null;
+        try
+        {
+            this._coreClient?.Close();
+        }
+        catch ( Exception )
+        {
+            throw;
+        }
+        finally
+        {
+            this._coreClient = null;
+        }
     }
 
     #endregion

@@ -1,3 +1,4 @@
+using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Codecs;
 
@@ -49,15 +50,14 @@ namespace cc.isr.ONC.RPC.Portmap;
 ///   port = portmap.GetPort( 0x49678, 1, OncRpcProtocols.ONCRPC_UDP );
 /// } 
 /// catch ( OncRpcProgramNotRegisteredException e ) {
-///   Console.WriteLine("ONC/RPC program server not found");
+///   Logger.Writer.LogInformation( "ONC/RPC program server not found" );
 ///   System.exit(0);
 /// } 
 /// catch ( OncRpcException e ) {
-///   Console.WriteLine( "Could not contact portmapper:" );
-///   Console.WriteLine( e.ToString() );
+///   Logger.Writer.LogMemberError( "Could not contact portmapper:", e );
 ///   System.exit( 0 );
 /// }
-/// Console.WriteLine( $"Program available at port {port}" );
+/// Logger.Writer.LogInformation( $"Program available at port {port}" );
 /// </code> <para>
 /// 
 /// In the call to <see cref="GetPort(int, int, OncRpcProtocols)"/>, the first parameter
@@ -79,14 +79,14 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// <code>
 /// OncRpcServerIdent [] list = null;
 /// try {
-///   list = portmap.ListServers();
+///   list = portmap.ListRegisteredServers();
 /// } 
 /// catch ( OncRpcException e ) {
-///   Console.WriteLine( e.ToString() );
+///   Logger.Writer.LogMemberError( "error listing registered servers", e );
 ///   System.exit( 20 );
 /// }
 /// foreach ( var item in list ) {
-///   Console.WriteLine( $"{item.program} {item.version} {item.protocol} {item.port}" );
+///   Logger.Writer.LogInformation( $"{item.program} {item.version} {item.protocol} {item.port}" );
 /// }
 /// </code> <para>
 /// 
@@ -177,7 +177,7 @@ public class OncRpcPortmapClient : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Console.WriteLine( ex.ToString() ); }
+        catch ( Exception ex ) { Logger.Writer.LogMemberError("Exception disposing", ex ); }
         finally
         {
             this.IsDisposed = true;

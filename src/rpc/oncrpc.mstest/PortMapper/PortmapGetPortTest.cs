@@ -1,5 +1,5 @@
 using System.Net.Sockets;
-
+using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.ONC.RPC.Portmap;
 
@@ -22,7 +22,7 @@ public class PortmapGetPortTest
         var ipAddress = host
             .AddressList
             .FirstOrDefault( ip => ip.AddressFamily == AddressFamily.InterNetwork );
-        Console.WriteLine( $"Host: {ipAddress}" );
+        Logger.Writer.LogInformation( $"Host: {ipAddress}" );
 
         // Create a portmap client object, which can then be used to contact
         // a local or remote ONC/RPC portmap process. In this test we contact
@@ -37,7 +37,7 @@ public class PortmapGetPortTest
 
         Console.Out.Write( "pinging port mapper: " );
         portmap.Ping();
-        Console.WriteLine( "port mapper is alive." );
+        Logger.Writer.LogInformation( "    port mapper is alive." );
 
         // Ask for a non-existent ONC/RPC server.
 
@@ -54,7 +54,7 @@ public class PortmapGetPortTest
             {
                 Assert.Fail( $"method call failed unexpectedly: {e}" );
             }
-            Console.WriteLine( "succeeded (RPC_PROGNOTREGISTERED)." );
+            Logger.Writer.LogInformation( "succeeded (RPC_PROGNOTREGISTERED)." );
         }
 
         // Register dummy ONC/RPC server.
@@ -68,7 +68,7 @@ public class PortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Console.WriteLine( "succeeded." );
+        Logger.Writer.LogInformation( "    succeeded." );
 
         // Now dump the current list of registered servers.
         OncRpcServerIdentifierCodec[] list = Array.Empty<OncRpcServerIdentifierCodec>();
@@ -83,15 +83,15 @@ public class PortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Console.WriteLine( "succeeded." );
+        Logger.Writer.LogInformation( "    succeeded." );
 
-        Console.WriteLine( "Servers(): " );
-        Console.WriteLine( $" Program Version Protocol Port" );
+        Logger.Writer.LogInformation( "Servers(): " );
+        Logger.Writer.LogInformation( $" Program Version Protocol Port" );
         for ( i = 0; i < list.Length; ++i )
         {
             if ( list[i].Program == 1 && list[i].Version == 42 && list[i].Protocol == OncRpcProtocols.OncRpcUdp && list[i].Port == 65535 )
                 found = true;
-            Console.WriteLine( $"  {list[i].Program} {list[i].Version} {list[i].Protocol} {list[i].Port}" );
+            Logger.Writer.LogInformation( $"  {list[i].Program} {list[i].Version} {list[i].Protocol} {list[i].Port}" );
         }
         Assert.IsTrue( found, "registered dummy server ident not found." );
 
@@ -105,7 +105,7 @@ public class PortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Console.WriteLine( "succeeded." );
+        Logger.Writer.LogInformation( "    succeeded." );
 
         // Now dump again the current list of registered servers.
         found = false;
@@ -119,7 +119,7 @@ public class PortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Console.WriteLine( "succeeded." );
+        Logger.Writer.LogInformation( "     succeeded." );
         for ( i = 0; i < list.Length; ++i )
             if ( list[i].Program == 1 && list[i].Version == 42 && list[i].Protocol == OncRpcProtocols.OncRpcUdp && list[i].Port == 65535 )
             {

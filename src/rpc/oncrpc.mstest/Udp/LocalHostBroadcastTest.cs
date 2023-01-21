@@ -1,5 +1,6 @@
 using System.ComponentModel;
 
+using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.MSTest.Tcp;
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
@@ -15,31 +16,29 @@ public class LocalHostBroadcastTest
     {
         try
         {
-            Console.WriteLine( $"{context.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
+            Logger.Writer.LogInformation( $"{context.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
             _classTestContext = context;
-            Console.WriteLine( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
             _server = new() {
                 Listening = false
             };
             _server.PropertyChanged += OnServerPropertyChanged;
             _ = Task.Factory.StartNew( () => {
-                Console.WriteLine( "starting the server task; this takes ~6 seconds..." );
+                Logger.Writer.LogInformation( "starting the server task; this takes ~6 seconds..." );
                 _server.Run();
             } );
 
-            Console.WriteLine( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
+            Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
             // wait till the server is running.
             do
             {
                 System.Threading.Thread.Sleep( 500 );
             }
             while ( !_server.Listening );
-            Console.WriteLine( $"{nameof( OncRpcTcpServer )} is {(_server.Listening ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
+            Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Listening ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
         }
         catch ( Exception ex )
         {
-            Console.WriteLine( "Failed initializing fixture: " );
-            Console.WriteLine( ex.ToString() );
+            Logger.Writer.LogMemberError( "Failed initializing fixture:", ex );
             CleanupFixture();
         }
     }
@@ -63,22 +62,23 @@ public class LocalHostBroadcastTest
 
     private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs args )
     {
+        if ( _server is null ) return;
         switch ( args.PropertyName )
         {
             case nameof( OncRpcTcpServer.ReadMessage ):
-                Console.WriteLine( _server?.ReadMessage );
+                Logger.Writer.LogInformation( _server.ReadMessage );
                 break;
             case nameof( OncRpcTcpServer.WriteMessage ):
-                Console.WriteLine( _server?.WriteMessage );
+                Logger.Writer.LogInformation( _server.WriteMessage );
                 break;
             case nameof( OncRpcTcpServer.PortNumber ):
-                Console.WriteLine( $"{args.PropertyName} set to {_server?.PortNumber}" );
+                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.PortNumber}" );
                 break;
             case nameof( OncRpcTcpServer.IPv4Address ):
-                Console.WriteLine( $"{args.PropertyName} set to {_server?.IPv4Address}" );
+                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.IPv4Address}" );
                 break;
             case nameof( OncRpcTcpServer.Listening ):
-                Console.WriteLine( $"{args.PropertyName} set to {_server?.Listening}" );
+                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.Listening}" );
                 break;
         }
     }

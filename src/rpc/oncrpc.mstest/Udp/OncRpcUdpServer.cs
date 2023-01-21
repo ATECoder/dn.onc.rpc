@@ -1,7 +1,6 @@
+using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Portmap;
 using cc.isr.ONC.RPC.Server;
-
-
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
@@ -97,42 +96,42 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
 
         OncRpcEmbeddedPortmapService epm;
 
-        Console.WriteLine( "Checking for portmap service: " );
+        Logger.Writer.LogInformation( "Checking for portmap service: " );
         bool externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
         if ( externalPortmap )
-            Console.WriteLine( "A portmap service is already running." );
+            Logger.Writer.LogInformation( "A portmap service is already running." );
         else
-            Console.WriteLine( "No portmap service available." );
+            Logger.Writer.LogInformation( "No portmap service available." );
 
         // Create embedded portmap service and check whether is has sprung
         // into action.
 
-        Console.WriteLine( "Creating embedded portmap instance: " );
+        Logger.Writer.LogInformation( "Creating embedded portmap instance: " );
         try
         {
             epm = new OncRpcEmbeddedPortmapService();
 
             if ( !epm.EmbeddedPortmapInUse() )
-                Console.WriteLine( "embedded service not used: " );
+                Logger.Writer.LogInformation( "embedded service not used: " );
             else
-                Console.WriteLine( "embedded service started: " );
+                Logger.Writer.LogInformation( "embedded service started: " );
 
             if ( epm.EmbeddedPortmapInUse() == externalPortmap )
             {
-                Console.WriteLine( "ERROR: no service available or both." );
+                Logger.Writer.LogWarning( "ERROR: no service available or both." );
                 return;
             }
         }
         catch ( IOException e )
         {
-            Console.WriteLine( $"ERROR: failed: {e}" );
+            Logger.Writer.LogMemberError( $"ERROR: failed:", e );
         }
         catch ( OncRpcException e )
         {
-            Console.WriteLine( $"ERROR: failed: {e}" );
+            Logger.Writer.LogMemberError( $"ERROR: failed:", e );
         }
 
-        Console.WriteLine( "Passed." );
+        Logger.Writer.LogInformation( "    Passed." );
     }
 
     #endregion

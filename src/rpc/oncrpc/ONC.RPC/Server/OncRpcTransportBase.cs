@@ -1,3 +1,4 @@
+using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Portmap;
 
 namespace cc.isr.ONC.RPC.Server;
@@ -105,7 +106,7 @@ public abstract class OncRpcTransportBase : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Console.WriteLine( ex.ToString() ); }
+        catch ( Exception ex ) { Logger.Writer.LogMemberError("Exception disposing", ex ); }
         finally
         {
             this.IsDisposed = true;

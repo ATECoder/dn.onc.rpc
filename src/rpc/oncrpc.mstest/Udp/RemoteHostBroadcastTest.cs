@@ -1,3 +1,4 @@
+using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Portmap;
 
@@ -15,14 +16,12 @@ public class RemoteHostBroadcastTest
     {
         try
         {
-            Console.WriteLine( $"{context.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
+            Logger.Writer.LogInformation( $"{context.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
             _classTestContext = context;
-            Console.WriteLine( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
         }
         catch ( Exception ex )
         {
-            Console.WriteLine( "Failed initializing fixture: " );
-            Console.WriteLine( ex.ToString() );
+            Logger.Writer.LogMemberError( "Failed initializing fixture:", ex );
             CleanupFixture();
         }
     }
@@ -63,7 +62,8 @@ public class RemoteHostBroadcastTest
     /// <param name="e">        ONC/RPC broadcast event information. </param>
     public static void ReplyFailed( object? sender, OncRpcBroadcastEventArgs e )
     {
-        Console.WriteLine( $"Exception receiving reply from {e.RemoteEndPoint}: \n {e.Exception}" );
+        if ( e?.Exception is not null )
+            Logger.Writer.LogError( $"Exception receiving reply from {e.RemoteEndPoint}:", e.Exception );
     }
 
     /// <summary>   Assert client should broadcast. </summary>
@@ -88,7 +88,7 @@ public class RemoteHostBroadcastTest
         client.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
         // Ping all port mappers in this subnet...
 
-        Console.WriteLine( $"pinging port mappers in subnet {address}: " );
+        Logger.Writer.LogInformation( $"pinging port mappers in subnet {address}: " );
         try
         {
             client.BroadcastCall( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing,
@@ -96,14 +96,14 @@ public class RemoteHostBroadcastTest
         }
         catch ( OncRpcException e )
         {
-            Console.WriteLine( $"method call failed unexpectedly: \n{e}" );
+            Logger.Writer.LogMemberError( $"method call failed unexpectedly:",e );
         }
-        Console.WriteLine( "done." );
+        Logger.Writer.LogInformation( "    done." );
 
         // Print addresses of all port mappers found...
 
         for ( int idx = 0; idx < _portmappers.Count; ++idx )
-            Console.WriteLine( $"Found: {_portmappers[idx]!}" );
+            Logger.Writer.LogInformation( $"Found: {_portmappers[idx]!}" );
 
         // Release resources bound by portmap client object as soon as possible.
 

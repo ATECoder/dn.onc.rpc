@@ -1,5 +1,7 @@
 using System.Diagnostics;
 
+using cc.isr.ONC.RPC.Logging;
+
 namespace cc.isr.ONC.RPC.MSTest.Support;
 
 /// <summary> A Thread safe token. </summary>
@@ -52,7 +54,7 @@ public class ConcurrentToken<T> : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Console.WriteLine( ex.ToString() ); }
+        catch ( Exception ex ) { Logger.Writer.LogMemberError("Exception disposing", ex ); }
         finally
         {
             this.IsDisposed = true;

@@ -1,5 +1,7 @@
 using System.ComponentModel;
+using System.Text;
 
+using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.MSTest.Codecs;
 using cc.isr.ONC.RPC.Portmap;
 
@@ -18,31 +20,30 @@ public class OncRpcTcpTests
     {
         try
         {
-            Console.WriteLine( $"{context.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
+            Logger.Writer.LogInformation( $"{context.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
             _classTestContext = context;
-            Console.WriteLine( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
             _server = new() {
                 Listening = false
             };
             _server.PropertyChanged += OnServerPropertyChanged;
             _ = Task.Factory.StartNew( () => {
-                Console.WriteLine( "starting the server task; this takes ~6 seconds..." );
+                Logger.Writer.LogInformation( "starting the server task; this takes ~6 seconds..." );
                 _server.Run();
             } );
 
-            Console.WriteLine( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
+            Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
             // wait till the server is running.
             do
             {
                 System.Threading.Thread.Sleep( 500 );
             }
             while ( !_server.Listening );
-            Console.WriteLine( $"{nameof( OncRpcTcpServer )} is {(_server.Listening ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
+            Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Listening ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
             _portMapService = _server!.EmbeddedPortmapService!.PortmapService;
         }
         catch ( Exception ex )
         {
-            Console.WriteLine( $"Failed initializing fixture: \n{ex} " );
+            Logger.Writer.LogMemberError( $"Failed initializing fixture:", ex );
             CleanupFixture();
         }
     }
@@ -77,22 +78,23 @@ public class OncRpcTcpTests
 
     private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs args )
     {
+        if ( _server is null ) return;
         switch ( args.PropertyName )
         {
             case nameof( OncRpcTcpServer.ReadMessage ):
-                Console.WriteLine( _server?.ReadMessage );
+                Logger.Writer.LogInformation( _server.ReadMessage );
                 break;
             case nameof( OncRpcTcpServer.WriteMessage ):
-                Console.WriteLine( _server?.WriteMessage );
+                Logger.Writer.LogInformation( _server.WriteMessage );
                 break;
             case nameof( OncRpcTcpServer.PortNumber ):
-                Console.WriteLine( $"{args.PropertyName} set to {_server?.PortNumber}" );
+                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.PortNumber}" );
                 break;
             case nameof( OncRpcTcpServer.IPv4Address ):
-                Console.WriteLine( $"{args.PropertyName} set to {_server?.IPv4Address}" );
+                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.IPv4Address}" );
                 break;
             case nameof( OncRpcTcpServer.Listening ):
-                Console.WriteLine( $"{args.PropertyName} set to {_server?.Listening}" );
+                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.Listening}" );
                 break;
         }
     }
@@ -110,18 +112,20 @@ public class OncRpcTcpTests
     /// <param name="version">  The version. </param>
     private static void AssertClientShouldConnect( OncRpcTcpTestClient client, IPAddress host, int version )
     {
-        Console.Write( "Connecting... " );
+        Logger.Writer.LogInformation( "Connecting... " );
         client.Connect( host, version );
-        Console.WriteLine( "okay" );
+        Assert.IsTrue( client.Connected, "should be connected" );
+        Logger.Writer.LogInformation( "    okay" );
     }
 
     /// <summary>   Assert client should close. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldClose( OncRpcTcpTestClient client )
     {
-        Console.Write( "Closing... " );
+        Logger.Writer.LogInformation( "Closing... " );
         client.Close();
-        Console.WriteLine( "okay" );
+        Assert.IsFalse( client.Connected, "should be disconnected" );
+        Logger.Writer.LogInformation( "    okay" );
     }
 
     /// <summary>   (Unit Test Method) client should connect. </summary>
@@ -160,9 +164,9 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldPing( OncRpcTcpTestClient client )
     {
-        Console.Write( "About to ping: " );
+        Logger.Writer.LogInformation( "About to ping: " );
         client.CallRemoteProcedureNull();
-        Console.WriteLine( "okay" );
+        Logger.Writer.LogInformation( "    okay" );
     }
 
     /// <summary>   Assert client should ping. </summary>
@@ -217,7 +221,7 @@ public class OncRpcTcpTests
             {
                 Assert.Fail( $"received {nameof( OncRpcAuthException )} with a incorrect status of {ae.AuthStatus}" );
             }
-            Console.WriteLine( "okay" );
+            Logger.Writer.LogInformation( "    okay" );
         }
         catch ( OncRpcException e )
         {
@@ -257,7 +261,7 @@ public class OncRpcTcpTests
         try
         {
             client.CallAuthenticate( AuthenticationConstants.MachineName, userId, groupId );
-            Console.WriteLine( "okay" );
+            Logger.Writer.LogInformation( "    okay" );
         }
         catch ( OncRpcAuthException ae )
         {
@@ -295,7 +299,7 @@ public class OncRpcTcpTests
             System.Console.Out.Write( $"checking echo of {message}: " );
             string echoed = client.CallRemoteProcedureEcho( message );
             Assert.AreEqual( message, echoed, $"answer '{echoed}' does not match '{message}' call" );
-            System.Console.WriteLine( $"Okay: echoed {echoed}" );
+            Logger.Writer.LogInformation( $"    Okay: echoed {echoed}" );
         }
     }
 
@@ -322,83 +326,83 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldEcho( OncRpcTcpTestClient client )
     {
-        Console.Write( "About to echo: " );
+        Logger.Writer.LogInformation( "About to echo: " );
         string expected = "Hello, Remote Tea!";
         string actual = client.CallRemoteProcedureEcho( expected );
         Assert.AreEqual( expected, actual );
-        Console.WriteLine( $"Okay. Echo: '{actual}'" );
+        Logger.Writer.LogInformation( $"    Okay. Echo: '{actual}'" );
     }
 
     /// <summary>   Assert client should concatenate. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldConcatenate( OncRpcTcpTestClient client )
     {
-        Console.Write( "About to concatenate: " );
+        Logger.Writer.LogInformation( "About to concatenate: " );
         StringVectorCodec strings = new();
         strings.SetValues( new StringCodec[] { new StringCodec( "Hello, " ), new StringCodec( "Remote " ), new StringCodec( "Tea!" ) } );
         string expected = "Hello, Remote Tea!";
         string actual = client.CallRemoteProcedureConcatenateInputParameters( strings );
         Assert.AreEqual( expected, actual );
-        Console.WriteLine( $"Okay. Echo: '{actual}'" );
+        Logger.Writer.LogInformation( $"    Okay. Echo: '{actual}'" );
     }
 
     /// <summary>   Assert client should concatenate exactly. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldConcatenateExactly( OncRpcTcpTestClient client )
     {
-        Console.Write( "About to concatenating exactly three strings: " );
+        Logger.Writer.LogInformation( "About to concatenating exactly three strings: " );
         string expected = "(arg1:Hello )(arg2:Remote )(arg3:Tea!)";
         string actual = client.CallRemoteProcedureConcatenatedThreeItems( "(arg1:Hello )", "(arg2:Remote )", "(arg3:Tea!)" );
         Assert.AreEqual( expected, actual );
-        Console.WriteLine( $"Okay. Echo: '{actual}'" );
+        Logger.Writer.LogInformation( $"    Okay. Echo: '{actual}'" );
     }
 
     /// <summary>   Assert client should check for foo. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldCheckForFoo( OncRpcTcpTestClient client )
     {
-        Console.Write( "About to check for foo: " );
+        Logger.Writer.LogInformation( "About to check for foo: " );
         if ( client.CallRemoteProcedureCompareInputToFoo( ( int ) EnumFoo.BAR ) )
         {
-            Console.WriteLine( "oops: but a bar is not a foo!" );
+            Logger.Writer.LogWarning( "    oops: but a bar is not a foo!" );
             return;
         }
-        Console.Write( "not bar: " );
+        Logger.Writer.LogInformation( "not bar: " );
         if ( !client.CallRemoteProcedureCompareInputToFoo( ( int ) EnumFoo.FOO ) )
         {
-            Console.WriteLine( "oops: a foo should be a foo!" );
+            Logger.Writer.LogWarning( "    oops: a foo should be a foo!" );
             return;
         }
-        Console.WriteLine( "but a foo. ok." );
+        Logger.Writer.LogInformation( "    but a foo. ok." );
     }
 
     /// <summary>   Assert client should get foo. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldGetFoo( OncRpcTcpTestClient client )
     {
-        Console.Write( "About to get a foo: " );
+        Logger.Writer.LogInformation( "About to get a foo: " );
         if ( client.CallRemoteProcedureReturnEnumFooValue() != ( int ) EnumFoo.FOO )
         {
-            Console.WriteLine( "oops: got a bar instead of a foo!" );
+            Logger.Writer.LogWarning( "oops: got a bar instead of a foo!" );
             return;
         }
-        Console.WriteLine( "Okay." );
+        Logger.Writer.LogInformation( "    Okay." );
     }
 
     /// <summary>   Assert client should get numbered foo. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldGetNumberedFoo( OncRpcTcpTestClient client )
     {
-        Console.Write( "About to get a numbered foo string: " );
+        Logger.Writer.LogInformation( "About to get a numbered foo string: " );
         string echo = client.CallRemoteProcedureReturnYouAreFooValue( 42 );
-        Console.WriteLine( $"Okay. Echo: '{echo}'" );
+        Logger.Writer.LogInformation( $"    Okay. Echo: '{echo}'" );
     }
 
     /// <summary>   Assert client should echo linked list. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldEchoLinkedList( OncRpcTcpTestClient client )
     {
-        Console.Write( "Linked List test: " );
+        Logger.Writer.LogInformation( "Linked List test: " );
         LinkedListCodec node1 = new() {
             Foo = 0
         };
@@ -411,20 +415,21 @@ public class OncRpcTcpTests
         };
         node2.Next = node3;
         LinkedListCodec? list = client.CallRemoteProcedureBuildLinkedList( node1 );
-        Console.Write( "Okay. Echo: " );
+        Logger.Writer.LogInformation( "    Okay. Echo: " );
+        StringBuilder builder = new();
         while ( list is not null )
         {
-            Console.Write( list.Foo + ", " );
+            _ = builder.Append( list.Foo + ", " );
             list = list.Next;
         }
-        Console.WriteLine();
+        Logger.Writer.LogInformation( builder.ToString() );
     }
 
     /// <summary>   Assert client should link linked list. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldLinkLinkedList( OncRpcTcpTestClient client )
     {
-        Console.Write( "Linking Linked Lists test: " );
+        Logger.Writer.LogInformation( "Linking Linked Lists test: " );
         LinkedListCodec node1 = new() {
             Foo = 0
         };
@@ -436,13 +441,14 @@ public class OncRpcTcpTests
         };
         node2.Next = node3;
         LinkedListCodec? list = client.CallRemoteProcedureLinkListItems( node2, node1 );
-        Console.Write( "Okay. Echo: " );
+        Logger.Writer.LogInformation( "    Okay. Echo: " );
+        StringBuilder builder = new();
         while ( list is not null )
         {
-            Console.Write( list.Foo + ", " );
+            _ = builder.Append( list.Foo + ", " );
             list = list.Next;
         }
-        Console.WriteLine();
+        Logger.Writer.LogInformation( builder.ToString() );
     }
 
     /// <summary>   (Unit Test Method) client should call remote procedures. </summary>
@@ -463,7 +469,7 @@ public class OncRpcTcpTests
             AssertClientShouldEchoLinkedList( client );
             AssertClientShouldLinkLinkedList( client );
             AssertClientShouldClose( client );
-            Console.WriteLine( "All tests passed." );
+            Logger.Writer.LogInformation( "All tests passed." );
         }
         catch { throw; }
         finally

@@ -1,3 +1,4 @@
+using cc.isr.ONC.RPC.Logging;
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -56,7 +57,7 @@ public abstract class OncRpcServerStubBase : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Console.WriteLine( ex.ToString() ); }
+        catch ( Exception ex ) { Logger.Writer.LogMemberError("Exception disposing", ex ); }
         finally
         {
             this.IsDisposed = true;

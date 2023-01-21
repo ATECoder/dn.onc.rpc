@@ -1,3 +1,4 @@
+using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Portmap;
 
 namespace cc.isr.ONC.RPC.Client;
@@ -34,17 +35,15 @@ namespace cc.isr.ONC.RPC.Client;
 ///     client = OncRpcClient.NewOncRpcClient(IPAddress.Loopback, program, version, OncRpcProtocols.ONCRPC_UDP);
 /// }
 /// catch ( OncRpcProgramNotRegisteredException e ) {
-///     Console.WriteLine("ONC/RPC program server not found");
+///     Logger.LogError(e, "ONC/RPC program server not found");
 ///     System.exit(0);
 /// } 
 /// catch ( OncRpcException e ) {
-///    Console.WriteLine("Could not contact port mapper:");
-///    Console.WriteLine( e.ToString() );
+///    Logger.LogError(e, "Could not contact port mapper:");
 ///    System.exit(0);
 /// } 
 /// catch ( IOException e )  {
-///    Console.WriteLine("Could not contact port mapper:");
-///    Console.WriteLine( e.ToString() );
+///    Logger.LogError(e, "Could not contact port mapper:");
 ///    System.exit(0);
 /// }
 /// </code> <para>
@@ -68,16 +67,15 @@ namespace cc.isr.ONC.RPC.Client;
 /// no return from an ONC/RPC server. It is just used to check whether a server
 /// is still responsive. </para>
 /// <code>
-/// Console.Write("pinging server: ");
+/// Logger.LogInformation("pinging server: ");
 /// try {
 ///    client.Call(0, XdrVoid.XdrVoidInstance, XdrVoid.XdrVoidInstance);
 /// }
 /// catch ( OncRpcException e ) {
-///    Console.WriteLine("method call failed unexpectedly:");
-///    Console.WriteLine( e.ToString() );
+///    Logger.LogError(e, "method call failed unexpectedly:");
 ///    System.exit(1);
 /// }
-/// Console.WriteLine("server is alive.");
+/// Logger.LogInformation("server is alive.");
 /// </code> <para>
 /// 
 /// By definition, the ONC/RPC ping call has program number 0 and expects no parameters and
@@ -145,8 +143,8 @@ namespace cc.isr.ONC.RPC.Client;
 /// } 
 /// catch ( IOException e ) {
 /// }
-/// Console.WriteLine(parameters.question);
-/// Console.WriteLine($"And the answer is: {answer.DefinitiveAnswer}");
+/// Logger.LogInformation(parameters.question);
+/// Logger.LogInformation($"And the answer is: {answer.DefinitiveAnswer}");
 /// </code> <para>
 /// 
 /// When you do not need the client proxy object any longer, you should return the resources
@@ -323,7 +321,7 @@ public abstract class OncRpcClientBase : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Console.WriteLine( ex.ToString() ); }
+        catch ( Exception ex ) { Logger.Writer.LogMemberError("Exception disposing", ex ); }
         finally
         {
             this.IsDisposed = true;

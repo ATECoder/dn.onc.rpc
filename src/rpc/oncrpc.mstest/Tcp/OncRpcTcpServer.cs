@@ -2,7 +2,7 @@ using System.Text;
 using cc.isr.ONC.RPC.Portmap;
 using cc.isr.ONC.RPC.Server;
 using cc.isr.ONC.RPC.MSTest.Codecs;
-using System.Security.Authentication.ExtendedProtection;
+using cc.isr.ONC.RPC.Logging;
 
 namespace cc.isr.ONC.RPC.MSTest.Tcp;
 
@@ -97,29 +97,29 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
         OncRpcEmbeddedPortmapService epm;
 
-        Console.WriteLine( "Checking for portmap service: " );
+        Logger.Writer.LogVerbose( "Checking for portmap service: " );
         bool externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
         if ( externalPortmap )
-            Console.WriteLine( "A portmap service is already running." );
+            Logger.Writer.LogVerbose( "A portmap service is already running." );
         else
-            Console.WriteLine( "No portmap service available." );
+            Logger.Writer.LogVerbose( "No portmap service available." );
 
         // Create embedded portmap service and check whether is has sprung
         // into action.
 
-        Console.WriteLine( "Creating embedded portmap instance: " );
+        Logger.Writer.LogVerbose( "Creating embedded portmap instance: " );
         epm = new OncRpcEmbeddedPortmapService();
 
         if ( !epm.EmbeddedPortmapInUse() )
-            Console.WriteLine( "embedded service not used: " );
+            Logger.Writer.LogVerbose( "embedded service not used: " );
         else
-            Console.WriteLine( "embedded service started: " );
+            Logger.Writer.LogVerbose( "embedded service started: " );
         if ( epm.EmbeddedPortmapInUse() == externalPortmap )
         {
-            Console.WriteLine( "ERROR: no service available or both." );
+            Logger.Writer.LogWarning( "ERROR: no service available or both." );
         }
         else
-            Console.WriteLine( "Passed." );
+            Logger.Writer.LogVerbose( "Passed." );
 
         return epm;
     }

@@ -1,6 +1,6 @@
-
 using System.Net.Sockets;
 
+using cc.isr.ONC.RPC.Logging;
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -408,7 +408,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
             catch ( Exception ex )
             {
 
-                Console.WriteLine( $"Failed dispatching ONC/RPC call: \n{ex} " );
+                Logger.Writer.LogMemberError( $"Failed dispatching ONC/RPC call:", ex );
 
                 // In case of some other runtime exception, we report back to
                 // the caller a system error.
