@@ -16,8 +16,8 @@ public class LocalHostBroadcastTest
     {
         try
         {
-            Logger.Writer.LogInformation( $"{context.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
             _classTestContext = context;
+            Logger.Writer.LogInformation( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}" );
             _server = new() {
                 Listening = false
             };
@@ -60,10 +60,10 @@ public class LocalHostBroadcastTest
 
     private static OncRpcUdpServer? _server;
 
-    private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs args )
+    private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs e )
     {
         if ( _server is null ) return;
-        switch ( args.PropertyName )
+        switch ( e.PropertyName )
         {
             case nameof( OncRpcTcpServer.ReadMessage ):
                 Logger.Writer.LogInformation( _server.ReadMessage );
@@ -72,13 +72,13 @@ public class LocalHostBroadcastTest
                 Logger.Writer.LogInformation( _server.WriteMessage );
                 break;
             case nameof( OncRpcTcpServer.PortNumber ):
-                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.PortNumber}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.PortNumber}" );
                 break;
             case nameof( OncRpcTcpServer.IPv4Address ):
-                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.IPv4Address}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.IPv4Address}" );
                 break;
             case nameof( OncRpcTcpServer.Listening ):
-                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.Listening}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.Listening}" );
                 break;
         }
     }

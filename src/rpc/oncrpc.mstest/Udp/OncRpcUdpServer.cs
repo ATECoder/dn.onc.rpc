@@ -260,9 +260,9 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
                 }
             case RemoteProcedures.Echo:
                 {
-                    StringXdrCodec args = new();
-                    call.RetrieveCall( args );
-                    StringXdrCodec result = new( OncRpcUdpServer.EchoInput( args.Value ) );
+                    StringXdrCodec request = new();
+                    call.RetrieveCall( request );
+                    StringXdrCodec result = new( OncRpcUdpServer.EchoInput( request.Value ) );
                     call.Reply( result );
                     break;
                 }
@@ -291,9 +291,9 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
                 }
             case RemoteProcedures.Echo:
                 {
-                    StringXdrCodec args = new();
-                    call.RetrieveCall( args );
-                    StringXdrCodec result = new( OncRpcUdpServer.EchoInput( args.Value ) );
+                    StringXdrCodec request = new();
+                    call.RetrieveCall( request );
+                    StringXdrCodec result = new( OncRpcUdpServer.EchoInput( request.Value ) );
                     call.Reply( result );
                     break;
                 }

@@ -27,6 +27,20 @@ public class LinkedListCodec : IXdrCodec
         this.Decode( decoder );
     }
 
+    /// <summary>   Copy constructor. </summary>
+    /// <param name="linkedListCodec">  The linked list codec. </param>
+    public LinkedListCodec( LinkedListCodec linkedListCodec )
+    {
+        LinkedListCodec? expected = linkedListCodec;
+        while ( expected != null )
+        {
+            this.Foo = expected.Foo;
+            this.Next = expected.Next;
+            expected = expected.Next;
+        }
+    }
+
+
     /// <summary>   Gets or sets the foo. </summary>
     /// <value> The foo. </value>
     public virtual int Foo { get; set; }

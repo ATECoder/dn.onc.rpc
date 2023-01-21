@@ -241,7 +241,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     ///                         the reply to the appropriate caller. </param>
     /// <param name="state">    ONC/RPC reply message header indicating success or failure and
     ///                         containing associated state information. </param>
-    /// <param name="reply">    If not <see langword="null"/>, then this parameter references the reply to
+    /// <param name="reply">    If not (<see langword="null"/>), then this parameter references the reply to
     ///                         be serialized after the reply message header. </param>
     internal override void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
     {

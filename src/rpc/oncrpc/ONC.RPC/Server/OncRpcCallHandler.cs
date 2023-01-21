@@ -79,16 +79,16 @@ public class OncRpcCallHandler
     /// <value> The transport. </value>
     internal OncRpcTransportBase Transport { get; set; }
 
-    /// <summary>   Retrieves the parameters sent within an ONC/RPC call message. </summary>
+    /// <summary>   Retrieves the <see cref="IXdrCodec"/> request that was sent within an ONC/RPC call message. </summary>
     /// <remarks>
     /// It also makes sure that the deserialization process is properly finished after the call
     /// parameters have been retrieved.
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="call"> The call. </param>
-    public virtual void RetrieveCall( IXdrCodec call )
+    /// <param name="request"> The <see cref="IXdrCodec"/> request that was sent within an ONC/RPC call message. </param>
+    public virtual void RetrieveCall( IXdrCodec request )
     {
-        this.Transport.RetrieveCall( call );
+        this.Transport.RetrieveCall( request );
     }
 
     /// <summary>
@@ -173,7 +173,7 @@ public class OncRpcCallHandler
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="state">    ONC/RPC reply message header indicating success or failure and
     ///                         containing associated state information. </param>
-    /// <param name="reply">    If not <see langword="null"/>, then this parameter references the reply to
+    /// <param name="reply">    If not (<see langword="null"/>), then this parameter references the reply to
     ///                         be serialized after the reply message header. </param>
     public virtual void Reply( OncRpcServerReplyMessage state, IXdrCodec reply )
     {

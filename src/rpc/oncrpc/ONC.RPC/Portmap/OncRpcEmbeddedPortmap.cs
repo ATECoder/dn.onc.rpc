@@ -149,7 +149,7 @@ public class OncRpcEmbeddedPortmapService
 
     /// <summary>   Returns the thread object running the embedded portmap service. </summary>
     /// <returns>
-    /// Thread object or <see langword="null"/> if no embedded portmap service has been started.
+    /// Thread object or (<see langword="null"/>) if no embedded portmap service has been started.
     /// </returns>
     public virtual Thread? GetEmbeddedPortmapServiceThread()
     {
@@ -161,7 +161,7 @@ public class OncRpcEmbeddedPortmapService
     #region " members "
 
     /// <summary>
-    /// Portmap object acting as embedded portmap service or <see langword="null"/>
+    /// Portmap object acting as embedded portmap service or (<see langword="null"/>)
     /// if no embedded portmap service is necessary because the operating system already supplies one
     /// or another port mapper is already running.
     /// </summary>
@@ -169,7 +169,7 @@ public class OncRpcEmbeddedPortmapService
 
     /// <summary>   Returns the embedded portmap service. </summary>
     /// <returns>
-    /// Embedded portmap object or <see langword="null"/> if no embedded portmap service has been started.
+    /// Embedded portmap object or (<see langword="null"/>) if no embedded portmap service has been started.
     /// </returns>
     public virtual OncRpcPortMapService? PortmapService => this._embeddedPortmapService;
 

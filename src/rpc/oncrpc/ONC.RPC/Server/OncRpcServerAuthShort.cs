@@ -56,7 +56,7 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// <summary>   Sets shorthand verifier to be sent back to the caller. </summary>
     /// <remarks>
     /// The caller then can use this shorthand verifier as the new credential with the next ONC/RPC
-    /// calls. If you don't set the verifier or set it to <see langword="null"/>, then the verifier
+    /// calls. If you don't set the verifier or set it to (<see langword="null"/>), then the verifier
     /// returned to the caller will be of type <see cref="OncRpcAuthType.OncRpcAuthTypeNone"/>.
     /// </remarks>
     /// <param name="verifier">    Contains the shorthand authentication verifier (credential)

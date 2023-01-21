@@ -251,25 +251,25 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
                 }
             case RemoteProceduresVersion1.Echo:
                 {
-                    StringXdrCodec args = new();
-                    call.RetrieveCall( args );
-                    StringXdrCodec result = new( OncRpcTcpServer.EchoInput( args.Value ) );
+                    StringXdrCodec request = new();
+                    call.RetrieveCall( request );
+                    StringXdrCodec result = new( OncRpcTcpServer.EchoInput( request.Value ) );
                     call.Reply( result );
                     break;
                 }
             case RemoteProceduresVersion1.ConcatenateInputParameters:
                 {
-                    StringVectorCodec args = new();
-                    call.RetrieveCall( args );
-                    StringXdrCodec result = new( OncRpcTcpServer.ConcatenateInputStringVector( args ) );
+                    StringVectorCodec request = new();
+                    call.RetrieveCall( request );
+                    StringXdrCodec result = new( OncRpcTcpServer.ConcatenateInputStringVector( request ) );
                     call.Reply( result );
                     break;
                 }
             case RemoteProceduresVersion1.CompareInputToFoo:
                 {
-                    IntXdrCodec args = new();
-                    call.RetrieveCall( args );
-                    BooleanXdrCodec result = new( OncRpcTcpServer.CompareInputToFoo( args.Value ) );
+                    IntXdrCodec request = new();
+                    call.RetrieveCall( request );
+                    BooleanXdrCodec result = new( OncRpcTcpServer.CompareInputToFoo( request.Value ) );
                     call.Reply( result );
                     break;
                 }
@@ -280,11 +280,11 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
                     call.Reply( result );
                     break;
                 }
-            case RemoteProceduresVersion1.BuildLinkedList:
+            case RemoteProceduresVersion1.PrependLinkedList:
                 {
-                    LinkedListCodec args = new();
-                    call.RetrieveCall( args );
-                    LinkedListCodec result = OncRpcTcpServer.BuildLinkedList( args );
+                    LinkedListCodec request = new();
+                    call.RetrieveCall( request );
+                    LinkedListCodec result = OncRpcTcpServer.PrependLinkedList( request );
                     call.Reply( result );
                     break;
                 }
@@ -319,41 +319,41 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
                 }
             case RemoteProceduresVersion2.ConcatenateTwoValues:
                 {
-                    DualStringsCodec args = new();
-                    call.RetrieveCall( args );
-                    StringXdrCodec result = new( OncRpcTcpServer.ConcatenateTwoValues( args.Arg1, args.Arg2 ) );
+                    DualStringsCodec request = new();
+                    call.RetrieveCall( request );
+                    StringXdrCodec result = new( OncRpcTcpServer.ConcatenateTwoValues( request.Arg1, request.Arg2 ) );
                     call.Reply( result );
                     break;
                 }
             case RemoteProceduresVersion2.ConcatenateThreeItems:
                 {
-                    TripleStringsCodec args = new();
-                    call.RetrieveCall( args );
-                    StringXdrCodec result = new( OncRpcTcpServer.ConcatenateThreeItems( args.One, args.Two, args.Three ) );
+                    TripleStringsCodec request = new();
+                    call.RetrieveCall( request );
+                    StringXdrCodec result = new( OncRpcTcpServer.ConcatenateThreeItems( request.One, request.Two, request.Three ) );
                     call.Reply( result );
                     break;
                 }
             case RemoteProceduresVersion2.ReturnYouAreFooValue:
                 {
-                    IntXdrCodec args = new();
-                    call.RetrieveCall( args );
-                    StringXdrCodec result = new( OncRpcTcpServer.ReturnYouAreFooValue( args.Value ) );
+                    IntXdrCodec request = new();
+                    call.RetrieveCall( request );
+                    StringXdrCodec result = new( OncRpcTcpServer.ReturnYouAreFooValue( request.Value ) );
                     call.Reply( result );
                     break;
                 }
             case RemoteProceduresVersion2.LinkListItems:
                 {
-                    DualLinkedListsCodec args = new();
-                    call.RetrieveCall( args );
-                    LinkedListCodec result = OncRpcTcpServer.LinkListItems( args.List1, args.List2 );
+                    DualLinkedListsCodec request = new();
+                    call.RetrieveCall( request );
+                    LinkedListCodec result = OncRpcTcpServer.LinkListItems( request.List1, request.List2 );
                     call.Reply( result );
                     break;
                 }
             case RemoteProceduresVersion2.ProcessFourArguments:
                 {
-                    StringTripleIntegerCodec args = new();
-                    call.RetrieveCall( args );
-                    OncRpcTcpServer.ProcessFourArguments( args.A, args.B, args.C, args.D );
+                    StringTripleIntegerCodec request = new();
+                    call.RetrieveCall( request );
+                    OncRpcTcpServer.ProcessFourArguments( request.A, request.B, request.C, request.D );
                     call.Reply( VoidXdrCodec.VoidXdrCodecInstance );
                     break;
                 }
@@ -411,12 +411,22 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         return result.ToString();
     }
 
-    /// <summary>   Build a new linked list. </summary>
+    /// <summary>   Echo a linked list. </summary>
     /// <param name="linkedListCodec">   the linked list codec input. </param>
     /// <returns>   A <see cref="LinkedListCodec"/>. </returns>
-    public static LinkedListCodec BuildLinkedList( LinkedListCodec linkedListCodec )
+    public static LinkedListCodec EchoLinkedList( LinkedListCodec linkedListCodec )
     {
-        LinkedListCodec newNode = new() {
+        LinkedListCodec newNode = new( linkedListCodec );
+        return newNode;
+    }
+
+    /// <summary>   Prepend a node to the given linked list. </summary>
+    /// <param name="linkedListCodec">   the linked list codec input. </param>
+    /// <returns>   A <see cref="LinkedListCodec"/>. </returns>
+    public static LinkedListCodec PrependLinkedList( LinkedListCodec linkedListCodec )
+    {
+        LinkedListCodec newNode
+            = new() {
             Foo = 42,
             Next = linkedListCodec
         };
@@ -432,8 +442,10 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Concatenate two values. </summary>
-    /// <param name="arg1"> The first argument. </param>
-    /// <param name="arg2"> The second argument. </param>
+    /// <param name="arg1"> The first parameter of type <see cref="string"/> to concatenate and to
+    ///                     encode and decode. </param>
+    /// <param name="arg2"> The second parameter of type <see cref="string"/> to concatenate and to
+    ///                     encode and decode. </param>
     /// <returns>   A string. </returns>
     public static string ConcatenateTwoValues( string arg1, string arg2 )
     {
@@ -441,9 +453,10 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Concatenate three items. </summary>
-    /// <param name="one">      The one. </param>
-    /// <param name="two">      The two. </param>
-    /// <param name="three">    The three. </param>
+    /// <remarks>   2023-01-21. </remarks>
+    /// <param name="one">      The first parameter of type <see cref="string"/> to concatenate. </param>
+    /// <param name="two">      The second parameter of type <see cref="string"/> to concatenate. </param>
+    /// <param name="three">    The third parameter of type <see cref="string"/> to concatenate. </param>
     /// <returns>   A string. </returns>
     public static string ConcatenateThreeItems( string one, string two, string three )
     {
@@ -458,14 +471,14 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         return $"You are foo {foo}.";
     }
 
-    /// <summary>   Link linked list <paramref name="l1"/> as next item of linked list <paramref name="l2"/>. </summary>
+    /// <summary>   Link linked list <paramref name="l2"/> as next item of linked list <paramref name="l1"/>. </summary>
     /// <param name="l1">   The first <see cref="LinkedListCodec"/>. </param>
     /// <param name="l2">   The second <see cref="LinkedListCodec"/>. </param>
     /// <returns>   An <see cref="LinkedListCodec"/>. </returns>
     public static LinkedListCodec LinkListItems( LinkedListCodec l1, LinkedListCodec l2 )
     {
-        l2.Next = l1;
-        return l2;
+        l1.Next = l2;
+        return l1;
     }
 
     /// <summary>   Process four arguments. </summary>

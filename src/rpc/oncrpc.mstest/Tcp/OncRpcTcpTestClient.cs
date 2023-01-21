@@ -76,7 +76,7 @@ public class OncRpcTcpTestClient : IDisposable
 
     #endregion
 
-    #region " Properties "
+    #region " members "
 
     /// <summary>   Gets or sets the version. </summary>
     /// <value> The version. </value>
@@ -88,16 +88,19 @@ public class OncRpcTcpTestClient : IDisposable
 
     #endregion
 
-    #region " Procedure Calls "
+    #region " procedure calls "
 
-    /// <summary>   Calls the specified procedure </summary>
+    /// <summary>   Calls the specified procedure. </summary>
+    /// <remarks>   2023-01-21. </remarks>
     /// <param name="procedureNumber">  The procedure number. </param>
     /// <param name="versionNumber">    The version number. </param>
-    /// <param name="parameters">       Options for controlling the operation. </param>
-    /// <param name="result">           The result. </param>
-    private void Call( int procedureNumber, int versionNumber, IXdrCodec parameters, IXdrCodec result )
+    /// <param name="request">          parameter of type <see cref="IXdrCodec"/> to send to the
+    ///                                 remote procedure call. </param>
+    /// <param name="reply">            parameter of type <see cref="IXdrCodec"/> to receive the
+    ///                                 reply from the remote procedure call. </param>
+    private void Call( int procedureNumber, int versionNumber, IXdrCodec request, IXdrCodec reply )
     {
-        this._coreClient?.Call( procedureNumber, versionNumber, parameters, result );
+        this._coreClient?.Call( procedureNumber, versionNumber, request, reply );
     }
 
     /// <summary>   Sets the authentication to be used when making ONC/RPC calls. </summary>
@@ -119,47 +122,47 @@ public class OncRpcTcpTestClient : IDisposable
     /// </summary>
     public virtual void CallRemoteProcedureNull()
     {
-        VoidXdrCodec args = VoidXdrCodec.VoidXdrCodecInstance;
+        VoidXdrCodec request = VoidXdrCodec.VoidXdrCodecInstance;
         VoidXdrCodec result = VoidXdrCodec.VoidXdrCodecInstance;
-        this.Call( this.Version == 1 ? ( int ) RemoteProceduresVersion1.Nop : ( int ) RemoteProceduresVersion2.Nop, this.Version, args, result );
+        this.Call( this.Version == 1 ? ( int ) RemoteProceduresVersion1.Nop : ( int ) RemoteProceduresVersion2.Nop, this.Version, request, result );
     }
 
-    /// <summary>
-    /// Call remote procedure <see cref="RemoteProceduresVersion1.Echo"/>.
-    /// </summary>
-    /// <param name="arg1"> parameter (of type <see cref="string"/>) to the remote procedure call. </param>
-    /// <returns>   Result from remote procedure call (of type String). </returns>
-    public virtual string CallRemoteProcedureEcho( string arg1 )
+    /// <summary>   Call remote procedure <see cref="RemoteProceduresVersion1.Echo"/>. </summary>
+    /// <param name="value">    parameter of type <see cref="string"/> to send to the remote
+    ///                         procedure call. </param>
+    /// <returns>   Result from remote procedure call (of type <see cref="string"/>). </returns>
+    public virtual string CallRemoteProcedureEcho( string value )
     {
-        StringXdrCodec args = new( arg1 );
+        StringXdrCodec request = new( value );
         StringXdrCodec result = new();
-        this.Call( ( int ) RemoteProceduresVersion1.Echo, this.Version, args, result );
+        this.Call( ( int ) RemoteProceduresVersion1.Echo, this.Version, request, result );
         return result.Value;
     }
 
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion1.ConcatenateInputParameters"/>.
     /// </summary>
-    /// <param name="arg1"> parameter (of type <see cref="StringVectorCodec"/>) to the remote
-    ///                     procedure call. </param>
-    /// <returns>   Result from remote procedure call (of type String). </returns>
-    public virtual string CallRemoteProcedureConcatenateInputParameters( StringVectorCodec arg1 )
+    /// <param name="value">    parameter of type <see cref="StringVectorCodec"/> to send to the
+    ///                         remote procedure call. </param>
+    /// <returns>   Result from remote procedure call (of type <see cref="string"/>). </returns>
+    public virtual string CallRemoteProcedureConcatenateInputParameters( StringVectorCodec value )
     {
         StringXdrCodec result = new();
-        this.Call( ( int ) RemoteProceduresVersion1.ConcatenateInputParameters, this.Version, arg1, result );
+        this.Call( ( int ) RemoteProceduresVersion1.ConcatenateInputParameters, this.Version, value, result );
         return result.Value;
     }
 
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion1.CompareInputToFoo"/>.
     /// </summary>
-    /// <param name="arg1"> parameter (of type <see cref="EnumFoo"/> ) to the remote procedure call. </param>
+    /// <param name="value">    parameter of type <see cref="EnumFoo"/> to send to the remote
+    ///                         procedure call. </param>
     /// <returns>   Result from remote procedure call (of type boolean). </returns>
-    public virtual bool CallRemoteProcedureCompareInputToFoo( int arg1 )
+    public virtual bool CallRemoteProcedureCompareInputToFoo( EnumFoo value )
     {
-        IntXdrCodec args = new( arg1 );
+        IntXdrCodec request = new( ( int ) value );
         BooleanXdrCodec result = new();
-        this.Call( ( int ) RemoteProceduresVersion1.CompareInputToFoo, this.Version, args, result );
+        this.Call( ( int ) RemoteProceduresVersion1.CompareInputToFoo, this.Version, request, result );
         return result.Value;
     }
 
@@ -169,24 +172,22 @@ public class OncRpcTcpTestClient : IDisposable
     /// <returns>   Result from remote procedure call (of type <see cref="EnumFoo"/>). </returns>
     public virtual int CallRemoteProcedureReturnEnumFooValue()
     {
-        VoidXdrCodec args = VoidXdrCodec.VoidXdrCodecInstance;
+        VoidXdrCodec request = VoidXdrCodec.VoidXdrCodecInstance;
         IntXdrCodec result = new();
-        this.Call( ( int ) RemoteProceduresVersion1.ReturnEnumFooValue, this.Version, args, result );
+        this.Call( ( int ) RemoteProceduresVersion1.ReturnEnumFooValue, this.Version, request, result );
         return result.Value;
     }
 
     /// <summary>
-    /// Call remote procedure <see cref="RemoteProceduresVersion1.BuildLinkedList"/>.
+    /// Call remote procedure <see cref="RemoteProceduresVersion1.PrependLinkedList"/>.
     /// </summary>
-    /// <param name="arg1"> parameter (of type <see cref="LinkedListCodec"/>) to the remote
-    ///                     procedure call. </param>
-    /// <returns>
-    /// Result from remote procedure call (of type <see cref="LinkedListCodec"/>).
-    /// </returns>
-    public virtual LinkedListCodec CallRemoteProcedureBuildLinkedList( LinkedListCodec arg1 )
+    /// <param name="request">  the request of type <see cref="LinkedListCodec"/> to send to the
+    ///                         remote procedure call. </param>
+    /// <returns>   Result from remote procedure call (of type <see cref="LinkedListCodec"/>). </returns>
+    public virtual LinkedListCodec CallRemoteProcedurePrependLinkedList( LinkedListCodec request )
     {
         LinkedListCodec result = new();
-        this.Call( ( int ) RemoteProceduresVersion1.BuildLinkedList, this.Version, arg1, result );
+        this.Call( ( int ) RemoteProceduresVersion1.PrependLinkedList, this.Version, request, result );
         return result;
     }
 
@@ -198,24 +199,28 @@ public class OncRpcTcpTestClient : IDisposable
     /// </returns>
     public virtual SomeResultCodec CallRemoteProcedureReadSomeResult()
     {
-        VoidXdrCodec args = VoidXdrCodec.VoidXdrCodecInstance;
+        VoidXdrCodec request = VoidXdrCodec.VoidXdrCodecInstance;
         SomeResultCodec result = new();
-        this.Call( ( int ) RemoteProceduresVersion1.RemoteProcedureReadSomeResult, this.Version, args, result );
+        this.Call( ( int ) RemoteProceduresVersion1.RemoteProcedureReadSomeResult, this.Version, request, result );
         return result;
     }
 
-    /// <summary>   Call remote procedure <see cref="RemoteProceduresVersion2.ConcatenateTwoValues"/>. </summary>
-    /// <param name="arg1"> parameter (of type <see cref="string"/>) to the remote procedure call. </param>
-    /// <param name="arg2"> parameter (of type <see cref="string"/>) to the remote procedure call. </param>
+    /// <summary>
+    /// Call remote procedure <see cref="RemoteProceduresVersion2.ConcatenateTwoValues"/>.
+    /// </summary>
+    /// <param name="arg1"> parameter of type <see cref="string"/> to concatenate and send to the
+    ///                     remote procedure call. </param>
+    /// <param name="arg2"> parameter of type <see cref="string"/> to concatenate and send to the
+    ///                     remote procedure call. </param>
     /// <returns>   Result from remote procedure call (of type <see cref="string"/>). </returns>
     public virtual string CallRemoteProcedureConcatenateTwoValues( string arg1, string arg2 )
     {
-        DualStringsCodec args = new() {
+        DualStringsCodec request = new() {
             Arg1 = arg1,
             Arg2 = arg2
         };
         StringXdrCodec result = new();
-        this.Call( ( int ) RemoteProceduresVersion2.ConcatenateTwoValues, RpcProgramConstants.Version2, args, result );
+        this.Call( ( int ) RemoteProceduresVersion2.ConcatenateTwoValues, RpcProgramConstants.Version2, request, result );
         return result.Value;
     }
 
@@ -231,65 +236,64 @@ public class OncRpcTcpTestClient : IDisposable
     /// <returns>   Result from remote procedure call (of type <see cref="string"/>). </returns>
     public virtual string CallRemoteProcedureConcatenatedThreeItems( string one, string two, string three )
     {
-        TripleStringsCodec args = new() {
+        TripleStringsCodec request = new() {
             One = one,
             Two = two,
             Three = three
         };
         StringXdrCodec result = new();
-        this.Call( ( int ) RemoteProceduresVersion2.ConcatenateThreeItems, RpcProgramConstants.Version2, args, result );
+        this.Call( ( int ) RemoteProceduresVersion2.ConcatenateThreeItems, RpcProgramConstants.Version2, request, result );
         return result.Value;
     }
 
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion2.ReturnYouAreFooValue"/>.
     /// </summary>
-    /// <param name="foo">  parameter (of type ENUMFOO) to the remote procedure call. </param>
-    /// <returns>   Result from remote procedure call (of type String). </returns>
-    public virtual string CallRemoteProcedureReturnYouAreFooValue( int foo )
+    /// <param name="value">    parameter of type <see cref="EnumFoo"/> to send to the remote
+    ///                         procedure call. </param>
+    /// <returns>   Result from remote procedure call (of type <see cref="string"/>). </returns>
+    public virtual string CallRemoteProcedureReturnYouAreFooValue( EnumFoo value )
     {
-        IntXdrCodec args = new( foo );
+        IntXdrCodec request = new( ( int ) value );
         StringXdrCodec result = new();
-        this.Call( ( int ) RemoteProceduresVersion2.ReturnYouAreFooValue, RpcProgramConstants.Version2, args, result );
+        this.Call( ( int ) RemoteProceduresVersion2.ReturnYouAreFooValue, RpcProgramConstants.Version2, request, result );
         return result.Value;
     }
 
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion2.LinkListItems"/>.
     /// </summary>
-    /// <param name="list1">    parameter (of type <see cref="LinkedListCodec"/>) to the remote
-    ///                         procedure call. </param>
-    /// <param name="list2">    parameter (of type <see cref="LinkedListCodec"/>) to the remote
-    ///                         procedure call. </param>
-    /// <returns>
-    /// Result from remote procedure call (of type <see cref="LinkedListCodec"/>).
-    /// </returns>
+    /// <param name="list1">    parameter of type <see cref="LinkedListCodec"/> to link and send to
+    ///                         the remote procedure call. </param>
+    /// <param name="list2">    parameter of type <see cref="LinkedListCodec"/> to link and send to
+    ///                         the remote procedure call. </param>
+    /// <returns>   Result from remote procedure call (of type <see cref="LinkedListCodec"/>). </returns>
     public virtual LinkedListCodec CallRemoteProcedureLinkListItems( LinkedListCodec list1, LinkedListCodec list2 )
     {
-        DualLinkedListsCodec args = new() {
+        DualLinkedListsCodec request = new() {
             List1 = list1,
             List2 = list2
         };
         LinkedListCodec result = new();
-        this.Call( ( int ) RemoteProceduresVersion2.LinkListItems, RpcProgramConstants.Version2, args, result );
+        this.Call( ( int ) RemoteProceduresVersion2.LinkListItems, RpcProgramConstants.Version2, request, result );
         return result;
     }
 
     /// <summary>   Call remote procedure <see cref="RemoteProceduresVersion2.ProcessFourArguments"/>. </summary>
-    /// <param name="a">    parameter (of type String) to the remote procedure call. </param>
-    /// <param name="b">    parameter (of type ENUMFOO) to the remote procedure call. </param>
-    /// <param name="c">    parameter (of type ENUMFOO) to the remote procedure call. </param>
-    /// <param name="d">    parameter (of type int) to the remote procedure call. </param>
+    /// <param name="a">    parameter of type <see cref="string"/> to send to the remote procedure call. </param>
+    /// <param name="b">    parameter of type <see cref="EnumFoo"/> to send to the remote procedure call. </param>
+    /// <param name="c">    parameter of type <see cref="EnumFoo"/> to send to the remote procedure call. </param>
+    /// <param name="d">    parameter <see cref="int"/> to send to the remote procedure call. </param>
     public virtual void CallRemoteProcedureProcessFourArguments( string a, int b, int c, int d )
     {
-        StringTripleIntegerCodec args = new() {
+        StringTripleIntegerCodec request = new() {
             A = a,
             B = b,
             C = c,
             D = d
         };
         VoidXdrCodec result = VoidXdrCodec.VoidXdrCodecInstance;
-        this.Call( ( int ) RemoteProceduresVersion2.ProcessFourArguments, RpcProgramConstants.Version2, args, result );
+        this.Call( ( int ) RemoteProceduresVersion2.ProcessFourArguments, RpcProgramConstants.Version2, request, result );
     }
 
 

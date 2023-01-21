@@ -20,8 +20,9 @@ public class OncRpcTcpTests
     {
         try
         {
-            Logger.Writer.LogInformation( $"{context.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name} Tester" );
             _classTestContext = context;
+            Logger.Writer.LogInformation( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}" );
+
             _server = new() {
                 Listening = false
             };
@@ -76,10 +77,10 @@ public class OncRpcTcpTests
     #endregion
 
 
-    private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs args )
+    private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs e )
     {
         if ( _server is null ) return;
-        switch ( args.PropertyName )
+        switch ( e.PropertyName )
         {
             case nameof( OncRpcTcpServer.ReadMessage ):
                 Logger.Writer.LogInformation( _server.ReadMessage );
@@ -88,13 +89,13 @@ public class OncRpcTcpTests
                 Logger.Writer.LogInformation( _server.WriteMessage );
                 break;
             case nameof( OncRpcTcpServer.PortNumber ):
-                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.PortNumber}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.PortNumber}" );
                 break;
             case nameof( OncRpcTcpServer.IPv4Address ):
-                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.IPv4Address}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.IPv4Address}" );
                 break;
             case nameof( OncRpcTcpServer.Listening ):
-                Logger.Writer.LogInformation( $"{args.PropertyName} set to {_server?.Listening}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.Listening}" );
                 break;
         }
     }
@@ -361,19 +362,8 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldCheckForFoo( OncRpcTcpTestClient client )
     {
-        Logger.Writer.LogInformation( "About to check for foo: " );
-        if ( client.CallRemoteProcedureCompareInputToFoo( ( int ) EnumFoo.BAR ) )
-        {
-            Logger.Writer.LogWarning( "    oops: but a bar is not a foo!" );
-            return;
-        }
-        Logger.Writer.LogInformation( "not bar: " );
-        if ( !client.CallRemoteProcedureCompareInputToFoo( ( int ) EnumFoo.FOO ) )
-        {
-            Logger.Writer.LogWarning( "    oops: a foo should be a foo!" );
-            return;
-        }
-        Logger.Writer.LogInformation( "    but a foo. ok." );
+        Assert.IsFalse( client.CallRemoteProcedureCompareInputToFoo( EnumFoo.BAR ), $"oops: but a {EnumFoo.BAR} is not a {EnumFoo.FOO}!" );
+        Assert.IsTrue( client.CallRemoteProcedureCompareInputToFoo( EnumFoo.FOO ), $"oops: a {EnumFoo.FOO} should be a {EnumFoo.FOO}!" );
     }
 
     /// <summary>   Assert client should get foo. </summary>
@@ -381,12 +371,7 @@ public class OncRpcTcpTests
     private static void AssertClientShouldGetFoo( OncRpcTcpTestClient client )
     {
         Logger.Writer.LogInformation( "About to get a foo: " );
-        if ( client.CallRemoteProcedureReturnEnumFooValue() != ( int ) EnumFoo.FOO )
-        {
-            Logger.Writer.LogWarning( "oops: got a bar instead of a foo!" );
-            return;
-        }
-        Logger.Writer.LogInformation( "    Okay." );
+        Assert.AreEqual( client.CallRemoteProcedureReturnEnumFooValue(), ( int ) EnumFoo.FOO, $"oops: got a {EnumFoo.BAR} instead of a {EnumFoo.FOO}!" );
     }
 
     /// <summary>   Assert client should get numbered foo. </summary>
@@ -394,13 +379,15 @@ public class OncRpcTcpTests
     private static void AssertClientShouldGetNumberedFoo( OncRpcTcpTestClient client )
     {
         Logger.Writer.LogInformation( "About to get a numbered foo string: " );
-        string echo = client.CallRemoteProcedureReturnYouAreFooValue( 42 );
-        Logger.Writer.LogInformation( $"    Okay. Echo: '{echo}'" );
+        EnumFoo expectedValue = EnumFoo.FOO;
+        string expected = OncRpcTcpServer.ReturnYouAreFooValue( ( int ) expectedValue );
+        string echo = client.CallRemoteProcedureReturnYouAreFooValue( expectedValue );
+        Assert.AreEqual( expected, echo, $"oops: should echo '{expected}')" );
     }
 
-    /// <summary>   Assert client should echo linked list. </summary>
+    /// <summary>   Assert client should prepend linked list. </summary>
     /// <param name="client">   The client. </param>
-    private static void AssertClientShouldEchoLinkedList( OncRpcTcpTestClient client )
+    private static void AssertClientShouldPrependLinkedList( OncRpcTcpTestClient client )
     {
         Logger.Writer.LogInformation( "Linked List test: " );
         LinkedListCodec node1 = new() {
@@ -414,15 +401,22 @@ public class OncRpcTcpTests
             Foo = 15
         };
         node2.Next = node3;
-        LinkedListCodec? list = client.CallRemoteProcedureBuildLinkedList( node1 );
-        Logger.Writer.LogInformation( "    Okay. Echo: " );
+        LinkedListCodec? list = client.CallRemoteProcedurePrependLinkedList( node1 );
+        LinkedListCodec? expected = OncRpcTcpServer.PrependLinkedList( node1 );
+        Assert.IsNotNull( list, "list should get built" );
+        LinkedListCodec? actual = list;
+        int i = 0;
         StringBuilder builder = new();
-        while ( list is not null )
+        while ( expected != null )
         {
-            _ = builder.Append( list.Foo + ", " );
-            list = list.Next;
+            i++;
+            Assert.IsNotNull( actual, $"node{i} actual list should have the same number of nodes as expected" ); ;
+            Assert.AreEqual( expected.Foo, actual.Foo, $"nodes {i} should have the same value" );
+            _ = builder.Append( actual.Foo + ", " );
+            actual = actual.Next;
+            expected = expected.Next;
         }
-        Logger.Writer.LogInformation( builder.ToString() );
+        Logger.Writer.LogInformation( $"built list {builder}" );
     }
 
     /// <summary>   Assert client should link linked list. </summary>
@@ -441,14 +435,23 @@ public class OncRpcTcpTests
         };
         node2.Next = node3;
         LinkedListCodec? list = client.CallRemoteProcedureLinkListItems( node2, node1 );
-        Logger.Writer.LogInformation( "    Okay. Echo: " );
+        // link the lists as expected by the server
+        node2.Next = node1;
+        LinkedListCodec? expected = node2;
+        Assert.IsNotNull( list, "list should get built" );
+        LinkedListCodec? actual = list;
+        int i = 0;
         StringBuilder builder = new();
-        while ( list is not null )
+        while ( expected != null )
         {
-            _ = builder.Append( list.Foo + ", " );
-            list = list.Next;
+            i++;
+            Assert.IsNotNull( actual, $"node{i} actual list should have the same number of nodes as expected" ); ;
+            Assert.AreEqual( expected.Foo, actual.Foo, $"nodes {i} should have the same value" );
+            _ = builder.Append( actual.Foo + ", " );
+            actual = actual.Next;
+            expected = expected.Next;
         }
-        Logger.Writer.LogInformation( builder.ToString() );
+        Logger.Writer.LogInformation( $"built list {builder}" );
     }
 
     /// <summary>   (Unit Test Method) client should call remote procedures. </summary>
@@ -466,7 +469,7 @@ public class OncRpcTcpTests
             AssertClientShouldCheckForFoo( client );
             AssertClientShouldGetFoo( client );
             AssertClientShouldGetNumberedFoo( client );
-            AssertClientShouldEchoLinkedList( client );
+            AssertClientShouldPrependLinkedList( client );
             AssertClientShouldLinkLinkedList( client );
             AssertClientShouldClose( client );
             Logger.Writer.LogInformation( "All tests passed." );

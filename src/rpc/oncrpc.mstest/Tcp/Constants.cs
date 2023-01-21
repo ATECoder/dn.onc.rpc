@@ -38,9 +38,9 @@ public enum RemoteProceduresVersion1
     [System.ComponentModel.Description( "The remote procedure for returning the EnumFoo.FOO value." )]
     ReturnEnumFooValue = 4,
 
-    /// <summary>   The remote procedure for building a linked list. </summary>
-    [System.ComponentModel.Description( "The remote procedure for building a linked list." )]
-    BuildLinkedList = 5,
+    /// <summary>   The remote procedure for prepending a node to the linked list. </summary>
+    [System.ComponentModel.Description( "The remote procedure for prepending a linked list." )]
+    PrependLinkedList = 5,
 
     /// <summary>   The first remote procedure read. </summary>
     [System.ComponentModel.Description( "The first remote procedure read." )]

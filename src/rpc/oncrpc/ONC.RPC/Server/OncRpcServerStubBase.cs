@@ -113,7 +113,7 @@ public abstract class OncRpcServerStubBase : IDisposable
 
     private Encoding _characterEncoding;
     /// <summary>
-    /// Gets or sets the encoding to use when serializing strings. If <see langword="null"/>, the system's
+    /// Gets or sets the encoding to use when serializing strings. If (<see langword="null"/>), the system's
     /// default encoding is to be used.
     /// </summary>
     /// <value> The character encoding. </value>

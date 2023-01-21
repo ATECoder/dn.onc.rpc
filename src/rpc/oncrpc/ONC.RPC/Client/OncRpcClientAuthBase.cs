@@ -33,7 +33,7 @@ public abstract class OncRpcClientAuthBase
     }
 
     /// <summary>
-    /// Gets or sets or set ( <see langword="private"/> ) type of the authentication for this
+    /// Gets or sets or set ( <see langword="private"/>) type of the authentication for this
     /// authentication class.
     /// </summary>
     /// <value> The type of the authentication. </value>

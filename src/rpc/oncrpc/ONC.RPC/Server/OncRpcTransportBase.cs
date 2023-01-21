@@ -172,7 +172,6 @@ public abstract class OncRpcTransportBase : IDisposable
 
     #endregion
 
-
     #region " members "
 
     /// <summary>
@@ -191,7 +190,7 @@ public abstract class OncRpcTransportBase : IDisposable
     /// Gets or sets the character encoding for serializing strings. 
     /// </summary>
     /// <value>
-    /// The encoding for serializing strings. If <see langword="null"/>, then the
+    /// The encoding for serializing strings. If (<see langword="null"/>), then the
     /// system's default encoding is used.
     /// </value>
     public Encoding CharacterEncoding
@@ -353,7 +352,7 @@ public abstract class OncRpcTransportBase : IDisposable
     /// <param name="callHandler">  A <see cref="OncRpcCallHandler"/> to handle the call. </param>
     /// <param name="state">        ONC/RPC reply message header indicating success or failure and
     ///                             containing associated state information. </param>
-    /// <param name="reply">        If not <see langword="null"/>, then this parameter references the
+    /// <param name="reply">        If not (<see langword="null"/>), then this parameter references the
     ///                             reply to be serialized after the reply message header. </param>
     internal abstract void Reply( OncRpcCallHandler callHandler, OncRpcServerReplyMessage state, IXdrCodec reply );
 

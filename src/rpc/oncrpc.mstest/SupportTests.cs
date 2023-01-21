@@ -2,8 +2,6 @@ using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.EnumExtensions;
 using cc.isr.ONC.RPC.Portmap;
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace cc.isr.ONC.RPC.MSTest;
 
 /// <summary>   (Unit Test Class) a support tests. </summary>
@@ -20,8 +18,8 @@ public class SupportTests
     {
         try
         {
-            Logger.Writer.LogInformation( $"{context.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}" );
             _classTestContext = context;
+            Logger.Writer.LogInformation( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}" );
         }
         catch ( Exception ex )
         {
@@ -60,7 +58,7 @@ public class SupportTests
         AssertShouldGetDescription( OncRpcMessageType.NotSpecified, "Unspecified ONC/RPC message type." );
     }
 
-    /// <summary>   Assert <see langword="int"/> should cast to <see cref="OncRpcAuthType"/>. </summary>
+    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcAuthType"/>. </summary>
     /// <param name="expected"> The expected value. </param>
     private static void AssertIntShouldCastToAuthType( int expected )
     {
@@ -68,7 +66,7 @@ public class SupportTests
         Assert.AreEqual( expected, ( int ) actual );
     }
 
-    /// <summary>   (Unit Test Method) <see langword="int"/> should cast to <see cref="OncRpcAuthType"/>. </summary>
+    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcAuthType"/>. </summary>
     [TestMethod]
     public void IntShouldCastToAuthType()
     {
@@ -83,7 +81,7 @@ public class SupportTests
         _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToAuthType( maxValue + 1 ); } );
     }
 
-    /// <summary>   Assert <see langword="int"/> should cast to <see cref="OncRpcAcceptStatus"/>. </summary>
+    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcAcceptStatus"/>. </summary>
     /// <param name="expected"> The expected value. </param>
     private static void AssertIntShouldCastToAcceptStatus( int expected )
     {
@@ -91,7 +89,7 @@ public class SupportTests
         Assert.AreEqual( expected, ( int ) actual );
     }
 
-    /// <summary>   (Unit Test Method) <see langword="int"/> should cast to <see cref="OncRpcAcceptStatus"/>. </summary>
+    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcAcceptStatus"/>. </summary>
     [TestMethod]
     public void IntShouldCastToAcceptStatus()
     {
@@ -106,7 +104,7 @@ public class SupportTests
         _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToAcceptStatus( maxValue + 1 ); } );
     }
 
-    /// <summary>   Assert <see langword="int"/> should cast to <see cref="OncRpcAuthStatus"/>. </summary>
+    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcAuthStatus"/>. </summary>
     /// <param name="expected"> The expected value. </param>
     private static void AssertIntShouldCastToAuthStatus( int expected )
     {
@@ -114,7 +112,7 @@ public class SupportTests
         Assert.AreEqual( expected, ( int ) actual );
     }
 
-    /// <summary>   (Unit Test Method) <see langword="int"/> should cast to <see cref="OncRpcAuthStatus"/>. </summary>
+    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcAuthStatus"/>. </summary>
     [TestMethod]
     public void IntShouldCastToAuthStatus()
     {
@@ -129,7 +127,7 @@ public class SupportTests
         _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToAuthStatus( maxValue + 1 ); } );
     }
 
-    /// <summary>   Assert <see langword="int"/> should cast to <see cref="OncRpcMessageType"/>. </summary>
+    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcMessageType"/>. </summary>
     /// <param name="expected"> The expected value. </param>
     private static void AssertIntShouldCastToMessageType( int expected )
     {
@@ -137,7 +135,7 @@ public class SupportTests
         Assert.AreEqual( expected, ( int ) actual );
     }
 
-    /// <summary>   (Unit Test Method) <see langword="int"/> should cast to <see cref="OncRpcMessageType"/>. </summary>
+    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcMessageType"/>. </summary>
     [TestMethod]
     public void IntShouldCastToMessageType()
     {
@@ -152,7 +150,7 @@ public class SupportTests
         _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToMessageType( maxValue + 1 ); } );
     }
 
-    /// <summary>   Assert <see langword="int"/> should cast to <see cref="OncRpcExceptionReason"/>. </summary>
+    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcExceptionReason"/>. </summary>
     /// <param name="expected"> The expected value. </param>
     private static void AssertIntShouldCastToExceptionReason( int expected )
     {
@@ -160,7 +158,7 @@ public class SupportTests
         Assert.AreEqual( expected, ( int ) actual );
     }
 
-    /// <summary>   (Unit Test Method) <see langword="int"/> should cast to <see cref="OncRpcExceptionReason"/>. </summary>
+    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcExceptionReason"/>. </summary>
     [TestMethod]
     public void IntShouldCastToExceptionReason()
     {
@@ -175,7 +173,7 @@ public class SupportTests
         _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToExceptionReason( maxValue + 1 ); } );
     }
 
-    /// <summary>   Assert <see langword="int"/> should cast to <see cref="OncRpcProtocols"/>. </summary>
+    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcProtocols"/>. </summary>
     /// <param name="expected"> The expected value. </param>
     private static void AssertIntShouldCastToProtocols( int expected )
     {
@@ -183,7 +181,7 @@ public class SupportTests
         Assert.AreEqual( expected, ( int ) actual );
     }
 
-    /// <summary>   (Unit Test Method) <see langword="int"/> should cast to <see cref="OncRpcProtocols"/>. </summary>
+    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcProtocols"/>. </summary>
     [TestMethod]
     public void IntShouldCastToProtocols()
     {
@@ -198,7 +196,7 @@ public class SupportTests
         _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToProtocols( maxValue + 1 ); } );
     }
 
-    /// <summary>   Assert <see langword="int"/> should cast to <see cref="OncRpcRejectStatus"/>. </summary>
+    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcRejectStatus"/>. </summary>
     /// <param name="expected"> The expected value. </param>
     private static void AssertIntShouldCastToRejectStatus( int expected )
     {
@@ -206,7 +204,7 @@ public class SupportTests
         Assert.AreEqual( expected, ( int ) actual );
     }
 
-    /// <summary>   (Unit Test Method) <see langword="int"/> should cast to <see cref="OncRpcRejectStatus"/>. </summary>
+    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcRejectStatus"/>. </summary>
     [TestMethod]
     public void IntShouldCastToRejectStatus()
     {
@@ -221,7 +219,7 @@ public class SupportTests
         _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToRejectStatus( maxValue + 1 ); } );
     }
 
-    /// <summary>   Assert <see langword="int"/> should cast to <see cref="OncRpcReplyStatus"/>. </summary>
+    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcReplyStatus"/>. </summary>
     /// <param name="expected"> The expected value. </param>
     private static void AssertIntShouldCastToReplyStatus( int expected )
     {
@@ -229,7 +227,7 @@ public class SupportTests
         Assert.AreEqual( expected, ( int ) actual );
     }
 
-    /// <summary>   (Unit Test Method) <see langword="int"/> should cast to <see cref="OncRpcReplyStatus"/>. </summary>
+    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcReplyStatus"/>. </summary>
     [TestMethod]
     public void IntShouldCastToReplyStatus()
     {
@@ -244,7 +242,7 @@ public class SupportTests
         _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToReplyStatus( maxValue + 1 ); } );
     }
 
-    /// <summary>   Assert <see langword="int"/> should cast to <see cref="OncRpcRetransmitMode"/>. </summary>
+    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcRetransmitMode"/>. </summary>
     /// <param name="expected"> The expected value. </param>
     private static void AssertIntShouldCastToRetransmitMode( int expected )
     {
@@ -252,7 +250,7 @@ public class SupportTests
         Assert.AreEqual( expected, ( int ) actual );
     }
 
-    /// <summary>   (Unit Test Method) <see langword="int"/> should cast to <see cref="OncRpcRetransmitMode"/>. </summary>
+    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcRetransmitMode"/>. </summary>
     [TestMethod]
     public void IntShouldCastToRetransmitMode()
     {
@@ -267,7 +265,7 @@ public class SupportTests
         _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToRetransmitMode( maxValue + 1 ); } );
     }
 
-    /// <summary>   Assert <see langword="int"/> should cast to <see cref="OncRpcPortmapServiceProcedure"/>. </summary>
+    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcPortmapServiceProcedure"/>. </summary>
     /// <param name="expected"> The expected value. </param>
     private static void AssertIntShouldCastToPortmapServiceProcedure( int expected )
     {
@@ -275,7 +273,7 @@ public class SupportTests
         Assert.AreEqual( expected, ( int ) actual );
     }
 
-    /// <summary>   (Unit Test Method) <see langword="int"/> should cast to <see cref="OncRpcPortmapServiceProcedure"/>. </summary>
+    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcPortmapServiceProcedure"/>. </summary>
     [TestMethod]
     public void IntShouldCastToPortmapServiceProcedure()
     {

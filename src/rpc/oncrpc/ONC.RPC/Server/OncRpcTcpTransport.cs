@@ -234,7 +234,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     ///                         the reply to the appropriate caller. </param>
     /// <param name="state">    ONC/RPC reply message header indicating success or failure and
     ///                         containing associated state information. </param>
-    /// <param name="reply">    If not <see langword="null"/>, then this parameter references the reply to
+    /// <param name="reply">    If not (<see langword="null"/>), then this parameter references the reply to
     ///                         be serialized after the reply message header. </param>
     internal override void Reply( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state, IXdrCodec reply )
     {
@@ -452,14 +452,14 @@ public class OncRpcTcpTransport : OncRpcTransportBase
 
             /// <summary>
             /// Next item node (in other words: next open transport)
-            /// in the list. This will never be <see langword="null"/> for the first item, but instead reference
+            /// in the list. This will never be (<see langword="null"/>) for the first item, but instead reference
             /// the last item. Thus, the list is circular.
             /// </summary>
             internal Node? Next { get; set; }
 
             /// <summary>
             /// Previous item node (in other words: previous open transport)
-            /// in the list. This will never be <see langword="null"/> for the last item, but instead reference
+            /// in the list. This will never be (<see langword="null"/>) for the last item, but instead reference
             /// the first item. Thus, the list is circular.
             /// </summary>
             internal Node? Prev { get; set; }
