@@ -259,18 +259,29 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// <remarks>
     /// Control in the calling thread immediately returns after the handler thread has been created. <para>
     /// 
-    /// For every incoming TCP/IP connection a handler thread is created
-    /// to handle ONC/RPC calls on this particular connection.</para>
+    /// For every incoming TCP/IP connection a handler thread is created to handle ONC/RPC calls on
+    /// this particular connection.</para> <para>
+    /// 
+    /// @atecoder 2023-01-23: Sets the thread as a background thread to match JAVA set demon. Add
+    /// support for cancellation. Use lambda expression in place of the helper class.
+    /// </para>
     /// </remarks>
-    public override void Listen()
+    /// <param name="cancelSource"> The cancel source. </param>
+    public override void Listen( CancellationTokenSource cancelSource )
     {
 
         // Create a new (daemon) thread which will handle incoming connection
         // requests.
 
+#if false
         TransportHelper t = new( this );
         Thread listenThread = new( new ThreadStart( t.Run ) ) {
             Name = "TCP server transport listener thread"
+        };
+#endif
+        Thread listenThread = new( new ThreadStart( () => this.DoListen( cancelSource ) ) ) {
+            Name = "ONC/RPC TCP server transport listener thread",
+            IsBackground = true
         };
 
         // Now wait for (new) connection requests to come in.
@@ -279,7 +290,6 @@ public class OncRpcTcpTransport : OncRpcTransportBase
         // Let the newly created transport object handle this
         // connection. Note that it will create its own
         // thread for handling.
-
 
         // We are just ignoring most of the IOExceptions as
         // they might be thrown, for instance, if a client
@@ -292,11 +302,54 @@ public class OncRpcTcpTransport : OncRpcTransportBase
         listenThread.Start();
     }
 
+    /// <summary>   Stops listening . </summary>
+    /// <remarks>   2023-01-23. </remarks>
+    /// <param name="cancelSource"> The cancel source. </param>
+    public override void Unlisten( CancellationTokenSource cancelSource )
+    {
+        cancelSource.Cancel();
+    }
 
     #endregion
 
     #region " Thread-Aware Listen Implementation "
 
+    /// <summary>   Get the server to start listening on the transports. </summary>
+    /// <remarks>   @atecode 2023-01-23: add cancellation. </remarks>
+    /// <param name="cancelSource"> The cancel source. </param>
+    private void DoListen( CancellationTokenSource cancelSource )
+    {
+        for ( ; ; )
+            try
+            {
+                // break if cancellation is required
+                if ( cancelSource.Token.IsCancellationRequested ) { break; }
+
+                Socket myServerSocket = this._socket!;
+                if ( myServerSocket == null )
+                    break;
+
+                Socket newSocket = myServerSocket.Accept();
+                OncRpcTcpConnTransport transport = new( this, newSocket );
+
+
+                lock ( this._openTransports )
+                    this._openTransports.Add( transport );
+                transport.Listen( cancelSource );
+            }
+            catch ( OncRpcException )
+            {
+            }
+            catch ( SocketException )
+            {
+                // If the socket has been closed and set to null, don't bother
+                // notifying anybody because we're shutting down
+                if ( this._socket == null )
+                    break;
+            }
+    }
+
+#if false
     private sealed class TransportHelper
     {
         /// <summary>   Constructor. </summary>
@@ -340,6 +393,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
 
         private readonly OncRpcTcpTransport _parent;
     }
+#endif
 
     #endregion
 
@@ -474,6 +528,6 @@ public class OncRpcTcpTransport : OncRpcTransportBase
 
     }
 
-    #endregion
+#endregion
 
 }

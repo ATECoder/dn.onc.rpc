@@ -279,48 +279,55 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// 
     /// Currently only one call after the other is dispatched, so no multi threading is done when
     /// receiving multiple calls. Instead, later calls have to wait for
-    /// the current call to finish before they are handled. </para>
+    /// the current call to finish before they are handled. </para>  <para>
+    ///
+    /// @atecoder 2023-01-23: Sets the thread as a background thread to match JAVA set demon. Add
+    /// support for cancellation. use lambda expression in place of the helper class.
+    /// </para>
     /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    public override void Listen()
+    public override void Listen( CancellationTokenSource cancelSource )
     {
+#if false
+
         TransportHelper t = new( this );
         this._listener = new Thread( new ThreadStart( t.Run ) ) { Name = "UDP server transport listener thread" };
         // Should be a Daemon
         //listener.setDaemon(true);
         this._listener.Start();
+#endif
+
+        this._listener = new Thread( new ThreadStart( () => this.DoListen( cancelSource.Token) ) ) {
+            Name = "ONC/RPC UDP server transport listener thread",
+            IsBackground= true,
+        };
+        this._listener.Start();
+    }
+
+    /// <summary>   Stops listening . </summary>
+    /// <remarks>   2023-01-23. </remarks>
+    /// <param name="cancelSource"> The cancel source. </param>
+    public override void Unlisten( CancellationTokenSource cancelSource )
+    {
+        cancelSource.Cancel();
     }
 
     #endregion
 
     #region " Thread Aware Listener implementation "
 
-    private sealed class TransportHelper
-    {
-        /// <summary>   Constructor. </summary>
-        /// <param name="enclosingTransport">   The enclosing transport. </param>
-        public TransportHelper( OncRpcUdpTransport enclosingTransport )
-        {
-            this._enclosing = enclosingTransport;
-        }
-
-        /// <summary>   Runs this object. </summary>
-        public void Run()
-        {
-            this._enclosing.DoListen();
-        }
-
-        private readonly OncRpcUdpTransport _enclosing;
-    }
-
     /// <summary>
-    /// The real workhorse handling incoming requests, dispatching them and sending back replies.
+    /// Handles incoming requests, dispatches them and sending back replies.
     /// </summary>
-    public virtual void DoListen()
+    /// <remarks>   @atecode 2023-01-23: add cancellation. </remarks>
+    /// <param name="cancelToken">  A token that allows processing to be canceled. </param>
+    private void DoListen( CancellationToken cancelToken )
     {
         OncRpcCallHandler callInfo = new( this );
         for (; ; )
         {
+
+            // break if cancellation is required
+            if ( cancelToken.IsCancellationRequested ) { break; }
 
             // Start decoding the incoming call. This involves remembering
             // from whom we received the call so we can later Sends back the
@@ -467,6 +474,27 @@ public class OncRpcUdpTransport : OncRpcTransportBase
             }
         }
     }
+
+
+#if false
+    private sealed class TransportHelper
+    {
+        /// <summary>   Constructor. </summary>
+        /// <param name="enclosingTransport">   The enclosing transport. </param>
+        public TransportHelper( OncRpcUdpTransport enclosingTransport )
+        {
+            this._enclosing = enclosingTransport;
+        }
+
+        /// <summary>   Runs this object. </summary>
+        public void Run()
+        {
+            this._enclosing.DoListen();
+        }
+
+        private readonly OncRpcUdpTransport _enclosing;
+    }
+#endif
 
     #endregion
 

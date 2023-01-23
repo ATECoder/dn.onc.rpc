@@ -274,11 +274,19 @@ public abstract class OncRpcTransportBase : IDisposable
     /// dispatches them and finally sends back the appropriate reply messages.
     /// </summary>
     /// <remarks>
-    /// Note that you have to supply an implementation for this abstract
-    /// method in derived classes. Your implementation needs to create a new thread to wait for
-    /// incoming requests. The method has to return immediately for the calling thread.
+    /// Note that you have to supply an implementation for this abstract method in derived classes.
+    /// Your implementation needs to create a new thread to wait for incoming requests. The method
+    /// has to return immediately for the calling thread.
     /// </remarks>
-    public abstract void Listen();
+    /// <param name="cancelSource"> The cancel source. </param>
+    public abstract void Listen( CancellationTokenSource cancelSource );
+
+
+    /// <summary>   Stops listening . </summary>
+    /// <remarks>   @atecoder 2023-01-23. </remarks>
+    /// <param name="cancelSource"> The cancel source. </param>
+    public abstract void Unlisten( CancellationTokenSource cancelSource );
+  
 
     #endregion
 

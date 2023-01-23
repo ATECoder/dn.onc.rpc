@@ -262,9 +262,12 @@ public abstract class OncRpcServerStubBase : IDisposable
     ///                             procedure call requests should be done. </param>
     public virtual void Run( OncRpcTransportBase[] transports )
     {
-        int size = transports.Length;
-        for ( int idx = 0; idx < size; ++idx )
-            transports[idx].Listen();
+
+        // Create the cancellation source.
+        CancellationTokenSource cts = new();
+
+        foreach ( var transport in transports )
+            transport.Listen( cts );
 
         // Loop and wait for the shutdown flag to become signaled. If the
         // server's main thread gets interrupted it will not shut itself
@@ -280,6 +283,10 @@ public abstract class OncRpcServerStubBase : IDisposable
                 catch ( Exception )
                 {
                 }
+
+        foreach ( var transport in transports )
+            transport.Unlisten( cts );
+
     }
 
     /// <summary>
