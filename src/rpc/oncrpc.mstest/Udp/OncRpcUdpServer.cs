@@ -174,10 +174,10 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     /// </remarks>
     /// <param name="transports">   Array of server transport objects for which processing of remote
     ///                             procedure call requests should be done. </param>
-    public override void Run( OncRpcTransportBase[] transports )
+    public override void Run( OncRpcTransportBase[] transports, bool closeUponShutdown )
     {
         this.Listening = true;
-        base.Run( transports );
+        base.Run( transports, true );
     }
 
     /// <summary>

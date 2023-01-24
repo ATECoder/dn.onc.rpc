@@ -245,12 +245,14 @@ public class OncRpcEmbeddedPortmapService
         /// </summary>
         public void Run()
         {
-            this._portmap.Run( this._portmap.GetTransports() );
+            this._portmap.Run( this._portmap.GetTransports(), true );
+#if false
             // This is not optimal but we need enough time after we remove the entry
             // from the portmap to respond okay to the client and I haven't figured out
             // any better way yet.
             Thread.Sleep( EmbeddedPortmapServiceThread.PostShutdownTimeout );
             this._portmap.Close();
+#endif
             this._portmap.ServiceThread = null;
         }
 
@@ -281,6 +283,6 @@ public class OncRpcEmbeddedPortmapService
         private readonly OncRpcEmbeddedPortmapService _enclosing;
     }
 
-    #endregion
+#endregion
 
 }

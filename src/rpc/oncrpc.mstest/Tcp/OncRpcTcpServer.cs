@@ -164,16 +164,17 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// Processes incoming remote procedure call requests from all specified transports.
     /// </summary>
     /// <remarks>
-    /// To end processing and to shut the server down signal the <see cref="OncRpcServerStubBase.shutdownSignal"/> 
-    /// object. Note that the thread on which <see cref="Run()"/> is called will ignore
-    /// any interruptions and will silently swallow them.
+    /// To end processing and to shut the server down signal the <see cref="OncRpcServerStubBase.shutdownSignal"/>
+    /// object. Note that the thread on which <see cref="Run()"/> is called will ignore any
+    /// interruptions and will silently swallow them.
     /// </remarks>
-    /// <param name="transports">   Array of server transport objects for which processing of remote
-    ///                             procedure call requests should be done. </param>
-    public override void Run( OncRpcTransportBase[] transports )
+    /// <param name="transports">           Array of server transport objects for which processing of
+    ///                                     remote procedure call requests should be done. </param>
+    /// <param name="closeUponShutdown">    True to close upon shutdown. </param>
+    public override void Run( OncRpcTransportBase[] transports, bool closeUponShutdown )
     {
         this.Listening = true;
-        base.Run( transports );
+        base.Run( transports, closeUponShutdown );
     }
 
     /// <summary>

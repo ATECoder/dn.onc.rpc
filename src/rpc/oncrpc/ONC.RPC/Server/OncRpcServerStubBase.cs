@@ -129,7 +129,7 @@ public abstract class OncRpcServerStubBase : IDisposable
 
     /// <summary>   Gets or sets a value indicating whether the port mapper server is running. </summary>
     /// <value> True if running, false if not. </value>
-    public bool Running { get; private set; }
+    public bool Running { get; protected set; }
 
     #endregion
 
@@ -222,31 +222,21 @@ public abstract class OncRpcServerStubBase : IDisposable
     {
 
         // Ignore all problems during unregistration.
-
         try
         {
-            try
-            {
-                this.Unregister( this._transports );
-            }
-            catch ( OncRpcException )
-            {
-            }
-            this.Register( this._transports );
-            this.Running = true;
-            this.Run( this._transports );
-            try
-            {
-                this.Unregister( this._transports );
-            }
-            catch ( OncRpcException )
-            {
-            }
+            this.Unregister( this._transports );
         }
-        finally
+        catch ( OncRpcException )
         {
-            this.Close();
-            this.Running = false;
+        }
+        this.Register( this._transports );
+        this.Run( this._transports, true );
+        try
+        {
+            this.Unregister( this._transports );
+        }
+        catch ( OncRpcException )
+        {
         }
     }
 
@@ -254,38 +244,64 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// Process incoming remote procedure call requests from all specified transports.
     /// </summary>
     /// <remarks>
-    /// To end processing and to shut the server down signal the <see cref="ShutdownSignal"/> object. 
-    /// Note that the thread on which <see cref="Run()"/> is called will
-    /// ignore any interruptions and will silently swallow them.
+    /// To end processing and to shut the server down signal the <see cref="ShutdownSignal"/> object.
+    /// Note that the thread on which <see cref="Run()"/> is called will ignore any interruptions and
+    /// will silently swallow them.
     /// </remarks>
-    /// <param name="transports">   Array of server transport objects for which processing of remote
-    ///                             procedure call requests should be done. </param>
-    public virtual void Run( OncRpcTransportBase[] transports )
+    /// <param name="transports">           Array of server transport objects for which processing of
+    ///                                     remote procedure call requests should be done. </param>
+    /// <param name="closeUponShutdown">    True to close upon shutdown. </param>
+    public virtual void Run( OncRpcTransportBase[] transports, bool closeUponShutdown )
     {
+
+        this.Running = true;
 
         // Create the cancellation source.
         CancellationTokenSource cts = new();
 
-        foreach ( var transport in transports )
-            transport.Listen( cts );
+        try
+        {
 
-        // Loop and wait for the shutdown flag to become signaled. If the
-        // server's main thread gets interrupted it will not shut itself
-        // down. It can only be stopped by signaling the shutdownSignal
-        // object.
-        for (; ; )
-            lock ( this.ShutdownSignal )
+            foreach ( var transport in transports )
+                transport.Listen( cts );
+
+            // Loop and wait for the shutdown flag to become signaled. If the
+            // server's main thread gets interrupted it will not shut itself
+            // down. It can only be stopped by signaling the shutdownSignal
+            // object.
+            for (; ; )
+                lock ( this.ShutdownSignal )
+                    try
+                    {
+                        _ = Monitor.Wait( this.ShutdownSignal );
+                        break;
+                    }
+                    catch ( Exception )
+                    {
+                    }
+        }
+        catch ( Exception )
+        {
+            throw;
+        }
+        finally
+        {
+
+            foreach ( var transport in transports )
+                transport.Unlisten( cts );
+
+            if ( closeUponShutdown )
+            {
                 try
                 {
-                    _ = Monitor.Wait( this.ShutdownSignal );
-                    break;
+                    this.Close();
                 }
                 catch ( Exception )
                 {
                 }
-
-        foreach ( var transport in transports )
-            transport.Unlisten( cts );
+            }
+            this.Running = false;
+        }
 
     }
 
