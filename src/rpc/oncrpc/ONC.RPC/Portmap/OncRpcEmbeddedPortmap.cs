@@ -112,7 +112,7 @@ public class OncRpcEmbeddedPortmapService
     /// <param name="checkTimeout"> timeout in milliseconds to wait before assuming that no portmap
     ///                             service is currently available [3000]. </param>
     /// <returns>
-    /// <see cref="T:true"/>, if a portmap service (either external or
+    /// <see langword="true"/>, if a portmap service (either external or
     /// embedded) is running and can be contacted.
     /// </returns>
     public static bool IsPortmapRunning( int checkTimeout = 3000 )
@@ -139,7 +139,7 @@ public class OncRpcEmbeddedPortmapService
 
     /// <summary>   Indicates whether the embedded portmap service is in use. </summary>
     /// <returns>
-    /// <see cref="T:true"/>, if embedded portmap service is currently
+    /// <see langword="true"/>, if embedded portmap service is currently
     /// used.
     /// </returns>
     public virtual bool EmbeddedPortmapInUse()
@@ -205,7 +205,7 @@ public class OncRpcEmbeddedPortmapService
         /// <param name="serverIdentification"> the server identification, which includes the program and
         ///                                     version to deregister. The protocol and port fields are
         ///                                     not used. </param>
-        /// <returns>   <see cref="T:true"/> if deregistration succeeded. </returns>
+        /// <returns>   <see langword="true"/> if deregistration succeeded. </returns>
         internal override BooleanXdrCodec UnsetPort( OncRpcServerIdentifierCodec serverIdentification )
         {
             BooleanXdrCodec ok = base.UnsetPort( serverIdentification );

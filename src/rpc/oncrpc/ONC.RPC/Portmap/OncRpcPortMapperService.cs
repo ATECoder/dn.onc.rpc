@@ -186,7 +186,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     /// it wishes to update. Always add new registration entries to the end of the list (vector).
     /// </remarks>
     /// <param name="serverIdentification">   (program, version, protocol, port) to register. </param>
-    /// <returns>   <see cref="T:true"/> if registration succeeded. </returns>
+    /// <returns>   <see langword="true"/> if registration succeeded. </returns>
     internal virtual BooleanXdrCodec SetPort( OncRpcServerIdentifierCodec serverIdentification )
     {
         if ( serverIdentification.Program != OncRpcPortmapConstants.OncRpcPortmapProgramNumber )
@@ -222,7 +222,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     /// </remarks>
     /// <param name="serverIdentification"> (program, version) to deregister. The protocol and port
     ///                                     fields are not used. </param>
-    /// <returns>   <see cref="T:true"/> if deregistration succeeded. </returns>
+    /// <returns>   <see langword="true"/> if deregistration succeeded. </returns>
     internal virtual BooleanXdrCodec UnsetPort( OncRpcServerIdentifierCodec serverIdentification )
     {
         bool ok = false;
@@ -249,7 +249,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     /// </summary>
     /// <param name="addr"> IP address to check. </param>
     /// <returns>
-    /// <see cref="T:true"/> if address specified belongs to one of the
+    /// <see langword="true"/> if address specified belongs to one of the
     /// local addresses of this host.
     /// </returns>
     internal virtual bool IsLocalAddress( IPAddress addr )

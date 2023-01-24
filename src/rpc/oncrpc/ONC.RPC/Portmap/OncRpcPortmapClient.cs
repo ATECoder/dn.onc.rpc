@@ -288,8 +288,8 @@ public class OncRpcPortmapClient : IDisposable
     ///                         <see cref="OncRpcProtocols"/> constants. </param>
     /// <param name="port">     The port number where the ONC/RPC server can be reached. </param>
     /// <returns>
-    /// Indicates whether registration succeeded (<see cref="T:true"/>) or was denied by the portmapper
-    /// (<see cref="T:false"/>).
+    /// Indicates whether registration succeeded (<see langword="true"/>) or was denied by the portmapper
+    /// (<see langword="false"/>).
     /// </returns>
     public virtual bool SetPort( int program, int version, OncRpcProtocols protocol, int port )
     {
@@ -318,8 +318,8 @@ public class OncRpcPortmapClient : IDisposable
     /// <param name="program">  The number of the program to be unregistered. </param>
     /// <param name="version">  The version number of the program. </param>
     /// <returns>
-    /// Indicates whether deregistration succeeded (<see cref="T:true"/>)
-    /// or was denied by the portmapper (<see cref="T:false"/>).
+    /// Indicates whether deregistration succeeded (<see langword="true"/>)
+    /// or was denied by the portmapper (<see langword="false"/>).
     /// </returns>
     public virtual bool UnsetPort( int program, int version )
     {

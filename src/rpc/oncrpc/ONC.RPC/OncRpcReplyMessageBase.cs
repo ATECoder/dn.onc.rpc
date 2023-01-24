@@ -138,7 +138,7 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     /// executed remote procedure call.
     /// </summary>
     /// <returns>
-    /// <see cref="T:true"/> if remote procedure call was accepted and
+    /// <see langword="true"/> if remote procedure call was accepted and
     /// successfully executed.
     /// </returns>
     public virtual bool SuccessfullyAccepted()
