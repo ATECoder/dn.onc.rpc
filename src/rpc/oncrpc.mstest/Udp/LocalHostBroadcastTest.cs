@@ -9,6 +9,15 @@ namespace cc.isr.ONC.RPC.MSTest.Udp;
 public class LocalHostBroadcastTest
 {
 
+    /// <summary>   Gets or sets the server start time typical. </summary>
+    /// <value> The server start time typical. </value>
+    public static int ServerStartTimeTypical { get; set; } = 3500;
+
+    /// <summary>   Gets or sets the server start loop delay. </summary>
+    /// <value> The server start loop delay. </value>
+    public static int ServerStartLoopDelay { get; set; } = 100;
+
+
     /// <summary>   Initializes the fixture. </summary>
     /// <param name="context">  The context. </param>
     [ClassInitialize]
@@ -18,9 +27,8 @@ public class LocalHostBroadcastTest
         {
             _classTestContext = context;
             Logger.Writer.LogInformation( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}" );
-            _server = new() {
-                Listening = false
-            };
+            _server = new();
+
             _server.PropertyChanged += OnServerPropertyChanged;
             _ = Task.Factory.StartNew( () => {
                 Logger.Writer.LogInformation( "starting the server task; this takes ~6 seconds..." );
@@ -28,13 +36,12 @@ public class LocalHostBroadcastTest
             } );
 
             Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
+
             // wait till the server is running.
-            do
-            {
-                System.Threading.Thread.Sleep( 500 );
-            }
-            while ( !_server.Listening );
-            Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Listening ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
+
+            _ = _server.ServerStarted( 2 * LocalHostBroadcastTest.ServerStartTimeTypical, LocalHostBroadcastTest.ServerStartLoopDelay );
+
+            Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Running ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
         }
         catch ( Exception ex )
         {
@@ -77,8 +84,8 @@ public class LocalHostBroadcastTest
             case nameof( OncRpcTcpServer.IPv4Address ):
                 Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.IPv4Address}" );
                 break;
-            case nameof( OncRpcTcpServer.Listening ):
-                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.Listening}" );
+            case nameof( OncRpcTcpServer.Running ):
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.Running}" );
                 break;
         }
     }
@@ -89,7 +96,7 @@ public class LocalHostBroadcastTest
     [TestMethod]
     public void ServerShouldListen()
     {
-        Assert.IsTrue( _server?.Listening );
+        Assert.IsTrue( _server?.Running );
     }
 
     /// <summary>   (Unit Test Method) client should broadcast. </summary>
@@ -110,7 +117,7 @@ public class LocalHostBroadcastTest
     public void ClientShouldBroadcast()
     {
 
-        Assert.IsTrue( _server?.Listening );
+        Assert.IsTrue( _server?.Running );
 
         // Create a portmap client object, which can then be used to contact
         // the local ONC/RPC 'OncRpcUdpServer' test server.

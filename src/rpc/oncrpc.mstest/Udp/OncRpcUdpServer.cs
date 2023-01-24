@@ -140,13 +140,12 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
 
     #region " START / STOP "
 
-    private bool _listening;
-    /// <summary>   Gets or sets a value indicating whether the listening. </summary>
-    /// <value> True if listening, false if not. </value>
-    public bool Listening
+    /// <summary>   Gets or sets a value indicating whether the server is running. </summary>
+    /// <value> True if running, false if not. </value>
+    public override bool Running
     {
-        get => this._listening;
-        set => _ = this.SetProperty( ref this._listening, value );
+        get => base.Running;
+        protected set => _ = this.SetProperty( this.Running, value, () => base.Running = value );
     }
 
     /// <summary>
@@ -181,7 +180,7 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     ///                             procedure call requests should be done. </param>
     public override void Run( OncRpcTransportBase[] transports, bool closeUponShutdown )
     {
-        this.Listening = true;
+        this.Running = true;
         base.Run( transports, true );
     }
 
@@ -197,7 +196,7 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     /// </remarks>
     public override void StopRpcProcessing()
     {
-        this.Listening = false;
+        this.Running = false;
         base.StopRpcProcessing();
     }
 

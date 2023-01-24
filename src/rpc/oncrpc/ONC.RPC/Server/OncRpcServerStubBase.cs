@@ -129,7 +129,7 @@ public abstract class OncRpcServerStubBase : IDisposable
 
     /// <summary>   Gets or sets a value indicating whether the port mapper server is running. </summary>
     /// <value> True if running, false if not. </value>
-    public bool Running { get; protected set; }
+    public virtual bool Running { get; protected set; }
 
     #endregion
 
@@ -204,6 +204,27 @@ public abstract class OncRpcServerStubBase : IDisposable
     #endregion
 
     #region " run and stop "
+
+    /// <summary>   Delays. </summary>
+    /// <param name="delayTime">    The delay time. </param>
+    private static async void Delay( int delayTime )
+    {
+        await Task.Delay( delayTime );
+    }
+
+    /// <summary>   Checks if server started. </summary>
+    /// <param name="timeout">          The timeout. </param>
+    /// <param name="loopDelayTime">    The loop delay time. </param>
+    /// <returns>   True if it succeeds, false if it fails. </returns>
+    public bool ServerStarted( int timeout, int loopDelayTime )
+    {
+        DateTime endTime = DateTime.Now.AddMilliseconds( timeout );
+        while ( endTime > DateTime.Now || !this.Running )
+        {
+            Delay( loopDelayTime );
+        }
+        return this.Running;
+    }
 
     /// <summary>
     /// Gets or sets (<see langword="private"/>) the notification flag for signaling the server to stop processing
