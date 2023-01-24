@@ -97,7 +97,7 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
         OncRpcEmbeddedPortmapService epm;
 
         Logger.Writer.LogInformation( "Checking for portmap service: " );
-        bool externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
+        bool externalPortmap = OncRpcEmbeddedPortmapService.TryPingPortmapService();
         if ( externalPortmap )
             Logger.Writer.LogInformation( "A portmap service is already running." );
         else

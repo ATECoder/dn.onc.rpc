@@ -28,8 +28,7 @@ public class PortmapGetPortTest
         // a local or remote ONC/RPC portmap process. In this test we contact
         // the local port mapper.
 
-        using OncRpcPortmapClient portmap = new( ipAddress!, OncRpcProtocols.OncRpcUdp,
-            Client.OncRpcTcpClient.IOTimeoutDefault, Client.OncRpcUdpClient.IOTimeoutDefault , Client.OncRpcUdpClient.TransmitTimeoutDefault );
+        using OncRpcPortmapClient portmap = new( ipAddress!, OncRpcProtocols.OncRpcUdp, Client.OncRpcUdpClient.TransmitTimeoutDefault );
 
         // portmap.RetransmitMode = OncRpcUdpRetransmitMode.OncRpcFixedTimeout;
         // portmap.RetransmitTimeout = 3*1000;
@@ -37,7 +36,7 @@ public class PortmapGetPortTest
         // Ping the port mapper...
 
         Console.Out.Write( "pinging port mapper: " );
-        portmap.Ping();
+        portmap.PingPortmapService();
         Logger.Writer.LogInformation( "    port mapper is alive." );
 
         // Ask for a non-existent ONC/RPC server.

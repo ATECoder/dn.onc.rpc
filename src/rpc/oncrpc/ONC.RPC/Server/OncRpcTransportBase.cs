@@ -232,8 +232,7 @@ public abstract class OncRpcTransportBase : IDisposable
     {
         try
         {
-            using OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp,
-                OncRpcUdpTransport.IOTimeoutDefault, OncRpcUdpTransport.IOTimeoutDefault, OncRpcUdpTransport.TransmitTimeoutDefault );
+            using OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
             foreach ( var transportRegistrationInfo in this.RegisteredPrograms )
             {
                 // Try to register the port for our transport with the local ONC/RPC
@@ -263,11 +262,15 @@ public abstract class OncRpcTransportBase : IDisposable
     {
         try
         {
-            using OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp,
-                OncRpcUdpTransport.IOTimeoutDefault, OncRpcUdpTransport.IOTimeoutDefault, OncRpcUdpTransport.TransmitTimeoutDefault );
+            using OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
+            foreach ( OncRpcProgramInfo registeredProgram in this.RegisteredPrograms )
+                _ = portmapper.UnsetPort( registeredProgram.Program, registeredProgram.Version );
+
+#if false
             int size = this.RegisteredPrograms.Length;
             for ( int idx = 0; idx < size; ++idx )
                 _ = portmapper.UnsetPort( this.RegisteredPrograms[idx].Program, this.RegisteredPrograms[idx].Version );
+#endif
         }
         catch ( System.IO.IOException )
         {
@@ -294,9 +297,9 @@ public abstract class OncRpcTransportBase : IDisposable
     public abstract void Unlisten( CancellationTokenSource cancelSource );
   
 
-    #endregion
+#endregion
 
-    #region " Encoding / Decoding "
+#region " Encoding / Decoding "
 
     /// <summary>   Retrieves the parameters sent within an ONC/RPC call message. </summary>
     /// <remarks>
@@ -393,6 +396,6 @@ public abstract class OncRpcTransportBase : IDisposable
     /// <value> The dispatcher. </value>
     internal IOncRpcDispatchable Dispatcher { get; set; }
 
-    #endregion
+#endregion
 
 }

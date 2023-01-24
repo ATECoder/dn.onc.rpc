@@ -14,7 +14,7 @@ public class EmbeddedPortmapTest
     internal static OncRpcEmbeddedPortmapService AssertPortmapServiceShouldStart()
     {
         Logger.Writer.LogInformation( "Checking for portmap service: " );
-        bool externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
+        bool externalPortmap = OncRpcEmbeddedPortmapService.TryPingPortmapService();
         if ( externalPortmap )
             Logger.Writer.LogInformation( "A portmap service is already running." );
         else
@@ -36,7 +36,7 @@ public class EmbeddedPortmapTest
             Assert.Fail( "ERROR: no service available or both." );
         }
         Stopwatch sw = Stopwatch.StartNew();
-        externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
+        externalPortmap = OncRpcEmbeddedPortmapService.TryPingPortmapService();
         Assert.IsTrue( externalPortmap, "portmap service is not running" );
         Logger.Writer.LogInformation( $"portmap service is {(externalPortmap ? "running" : "idle")}; elapsed: {sw.ElapsedMilliseconds:0}ms" );
         return epm;
@@ -56,8 +56,7 @@ public class EmbeddedPortmapTest
         int dummyVersion = 42;
         int dummyPort = 42;
 
-        using OncRpcPortmapClient pmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp,
-            Client.OncRpcTcpClient.IOTimeoutDefault, Client.OncRpcUdpClient.IOTimeoutDefault, Client.OncRpcUdpClient.TransmitTimeoutDefault );
+        using OncRpcPortmapClient pmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, Client.OncRpcUdpClient.TransmitTimeoutDefault );
         Console.Out.Write( "Deregistering non-existing program: " );
         bool actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsFalse( actual );
@@ -76,11 +75,11 @@ public class EmbeddedPortmapTest
         // let the service stop.
         int timeout = 1000;
         DateTime endtime = DateTime.Now.AddMilliseconds( timeout );
-        while ( DateTime.Now < endtime && OncRpcEmbeddedPortmapService.IsPortmapRunning( timeout / 5 ) ) { Thread.Sleep( timeout / 5 ); }
+        while ( DateTime.Now < endtime && OncRpcEmbeddedPortmapService.TryPingPortmapService( timeout / 5 ) ) { Thread.Sleep( timeout / 5 ); }
 
         // Check that an embedded portmap service spins down properly if it
         // was started within this test.
-        if ( OncRpcEmbeddedPortmapService.IsPortmapRunning() ) // && !externalPortmap )
+        if ( OncRpcEmbeddedPortmapService.TryPingPortmapService() ) // && !externalPortmap )
             Assert.Fail( "ERROR: embedded portmap service still running." );
 
         // dispose of the portmap service

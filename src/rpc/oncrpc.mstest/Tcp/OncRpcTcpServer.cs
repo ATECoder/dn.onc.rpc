@@ -98,7 +98,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         OncRpcEmbeddedPortmapService epm;
 
         Logger.Writer.LogVerbose( "Checking for portmap service: " );
-        bool externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
+        bool externalPortmap = OncRpcEmbeddedPortmapService.TryPingPortmapService();
         if ( externalPortmap )
             Logger.Writer.LogVerbose( "A portmap service is already running." );
         else

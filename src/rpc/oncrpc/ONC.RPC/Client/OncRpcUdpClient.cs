@@ -14,6 +14,23 @@ namespace cc.isr.ONC.RPC.Client;
 public class OncRpcUdpClient : OncRpcClientBase
 {
 
+    /// <summary>   Gets or sets the default timeout for sending calls or receiving replies. </summary>
+    /// <remarks>
+    /// This timeout interval is used to set the
+    /// <see cref="System.Net.Sockets.Socket"/> send and receive timeouts
+    /// during UDP RPC calls.
+    /// </remarks>
+    /// <value> The transmit timeout default. </value>
+    public static int TransmitTimeoutDefault { get; set; } = 1000;
+
+    /// <summary>   Gets or sets the default timeout for TCP I/O calls. </summary>
+    /// <remarks>
+    /// This timeout interval is used to set the timeouts members of the RPC server using the <see cref="IXdrCodec"/>
+    /// payloads that are transmitted as part of the RPC calls.
+    /// </remarks>
+    /// <value> The i/o timeout default. </value>
+    public static int IOTimeoutDefault { get; set; } = 3000;
+
     #region " construction and cleanup "
 
     /// <summary>
@@ -43,6 +60,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                                                                       : base( host, program, version, port, OncRpcProtocols.OncRpcUdp )
     {
         this.TransmitTimeout = transmitTimeout;
+        this.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
 
         // Constructs the inherited part of our object. This will also try to
         // lookup the port of the desired ONC/RPC server, if no port number

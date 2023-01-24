@@ -224,8 +224,7 @@ public abstract class OncRpcClientBase : IDisposable
         // the other end of the HTTP tunnel (at the web server).
         if ( port == 0 && protocol != OncRpcProtocols.OncRpcHttp )
         {
-            using OncRpcPortmapClient portmap = new( host, OncRpcProtocols.OncRpcUdp,
-                OncRpcTcpClient.IOTimeoutDefault, OncRpcUdpClient.IOTimeoutDefault , OncRpcUdpClient.TransmitTimeoutDefault );
+            using OncRpcPortmapClient portmap = new( host, OncRpcProtocols.OncRpcUdp, OncRpcUdpClient.TransmitTimeoutDefault );
             port = portmap.GetPort( program, version, protocol );
         }
         this.Port = port;
@@ -264,8 +263,10 @@ public abstract class OncRpcClientBase : IDisposable
     ///                         be contacted to find out the port. </param>
     /// <param name="protocol"> <see cref="OncRpcProtocols">Protocol</see>
     ///                                                 to be used for ONC/RPC calls. </param>
-    /// <param name="timeout">  The transmit timeout for <see cref="OncRpcProtocols.OncRpcUdp"/>
-    ///                         or the connection timeout for <see cref="OncRpcProtocols.OncRpcTcp"/>. </param>
+    /// <param name="timeout">  This is the connect timeout in milliseconds for TCP/IP connection
+    ///                         operation or UDP/IP transmission. The I/O for UDP and TCP connection
+    ///                         is set to the default <see cref="OncRpcTcpClient"/> and <see cref="OncRpcUdpClient"/>
+    ///                         default values. </param>
     /// <returns>   An OncRpcClient. </returns>
     public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, int port, OncRpcProtocols protocol, int timeout )
     {
@@ -374,19 +375,6 @@ public abstract class OncRpcClientBase : IDisposable
     /// <value> The minimum buffer size default. </value>
     public static int MinBufferSizeDefault { get; set; } = 1024;
 
-    /// <summary>   Gets or sets the default timeout for sending calls or receiving replies. </summary>
-    /// <remarks> This timeout interval is used to set the 
-    /// <see cref="System.Net.Sockets.Socket"/> send and receive timeouts
-    /// during RPC calls. </remarks>
-    public static int TransmitTimeoutDefault { get; set; } = 1000;
-
-    /// <summary>   Gets or sets the default timeout for connecting or UDP/IP 
-    /// call with retransmissions. </summary>
-    /// <remarks> This timeout interval is used to set the 
-    /// <see cref="System.Net.Sockets.Socket"/> send and receive timeouts
-    /// during RPC calls. </remarks>
-    public static int IOTimeoutDefault { get; set; } = 3000;
-
     /// <summary>   Gets or sets the default encoding. </summary>
     /// <remarks>
     /// The default encoding for VXI-11 is <see cref="Encoding.ASCII"/>, which is a subset of <see cref="Encoding.UTF8"/>
@@ -433,7 +421,7 @@ public abstract class OncRpcClientBase : IDisposable
     /// The timeout must be non-negative. </para>  
     /// </remarks>
     /// <value> The timeout in milliseconds. </value>
-    public int IOTimeout { get; set; } = IOTimeoutDefault;
+    public int IOTimeout { get; set; }
 
     /// <summary>
     /// Gets or sets the timeout during the phase where data is sent within calls, or data is
@@ -460,7 +448,7 @@ public abstract class OncRpcClientBase : IDisposable
     /// </para>
     /// </remarks>
     /// <value> The timeout used when sending calls or receiving replies. </value>
-    public int TransmitTimeout { get; set; } = OncRpcClientBase.TransmitTimeoutDefault;
+    public int TransmitTimeout { get; set; }
 
     /// <summary>
     /// Gets or sets (<see langword="private"/>) the program number of the ONC/RPC server to communicate with.

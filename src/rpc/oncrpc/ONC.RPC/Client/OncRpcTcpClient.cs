@@ -13,6 +13,29 @@ namespace cc.isr.ONC.RPC.Client;
 public class OncRpcTcpClient : OncRpcClientBase
 {
 
+    /// <summary>   Gets or sets the default timeout for sending calls or receiving replies. </summary>
+    /// <remarks>
+    /// This timeout interval is used to set the
+    /// <see cref="System.Net.Sockets.Socket"/> send and receive timeouts
+    /// during TCP RPC calls.
+    /// </remarks>
+    /// <value> The transmit timeout default. </value>
+    public static int TransmitTimeoutDefault { get; set; } = 1000;
+
+    /// <summary>   Gets or sets the default timeout for TCP I/O calls. </summary>
+    /// <remarks>
+    /// This timeout interval is used to set the timeouts members of the RPC server using the <see cref="IXdrCodec"/>
+    /// payloads that are transmitted as part of the RPC calls.
+    /// </remarks>
+    /// <value> The i/o timeout default. </value>
+    public static int IOTimeoutDefault { get; set; } = 3000;
+
+    /// <summary>   Gets or sets the default timeout for connection to a TCP Socket. </summary>
+    /// <value> The connect timeout default. </value>
+    public static int ConnectTimeoutDefault { get; set; } = 2000;
+
+
+
     #region " construction and cleanup "
 
     /// <summary>
@@ -63,7 +86,8 @@ public class OncRpcTcpClient : OncRpcClientBase
         // might have resolved the port number in case the caller specified
         // simply 0 as the port number.
 
-        // Constructs the socket and connect
+        // Construct the socket and set the timeouts to the initial connect timeout
+
         this._socket = new Socket( AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp ) {
             SendTimeout = connectTimeout,
             ReceiveTimeout = connectTimeout,
@@ -72,6 +96,8 @@ public class OncRpcTcpClient : OncRpcClientBase
         this._socket.SendBufferSize = Math.Min( this._socket.SendBufferSize, bufferSize );
         this._socket.ReceiveBufferSize = Math.Min( this._socket.ReceiveBufferSize, bufferSize );
 
+        // connect
+        
         IPEndPoint endPoint = new( host, this.Port );
         this._socket.Connect( endPoint );
 
@@ -80,6 +106,11 @@ public class OncRpcTcpClient : OncRpcClientBase
         this.Encoder = new XdrTcpEncodingStream( this._socket, bufferSize );
         this.Decoder = new XdrTcpDecodingStream( this._socket, bufferSize );
         this.CharacterEncoding = EncodingDefault;
+
+        // set the default timeouts.
+
+        this.IOTimeout = OncRpcTcpClient.IOTimeoutDefault;
+        this.TransmitTimeout = OncRpcTcpClient.TransmitTimeoutDefault;
     }
 
     /// <summary>

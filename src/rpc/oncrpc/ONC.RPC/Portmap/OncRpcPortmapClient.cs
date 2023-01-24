@@ -12,7 +12,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// In addition, it is also possible to contact port mappers using TCP/IP. For this, the
 /// constructor of the
 /// <see cref="OncRpcPortmapClient"/> class also accepts a protocol parameter
-/// (<see cref="OncRpcPortmapClient(IPAddress, OncRpcProtocols, int, int, int)"/>).
+/// (<see cref="OncRpcPortmapClient(IPAddress, OncRpcProtocols, int)"/>).
 /// Technically spoken, instances of <see cref="OncRpcPortmapClient"/> are proxy objects.
 /// <see cref="OncRpcPortmapClient"/> objects currently speak protocol version
 /// 2. The newer transport-independent protocol versions 3 and 4 are
@@ -105,6 +105,10 @@ namespace cc.isr.ONC.RPC.Portmap;
 public class OncRpcPortmapClient : IDisposable
 {
 
+    /// <summary>   Gets or sets the TCP connect timeout default. </summary>
+    /// <value> The TCP connect timeout default. </value>
+    public static int ConnectTimeoutDefault { get; set; } = 3000;
+
     #region " construction and cleanup "
 
     /// <summary>
@@ -113,17 +117,16 @@ public class OncRpcPortmapClient : IDisposable
     /// </summary>
     /// <remarks>   2023-01-23. </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="host">             Host where to contact the portmapper. </param>
-    /// <param name="protocol">         Protocol to use for contacting the portmapper. This can be
-    ///                                 either
-    ///                                 <see cref="OncRpcProtocols.OncRpcUdp"/> or
-    ///                                 <see cref="OncRpcProtocols.OncRpcTcp"/> (HTTP is currently
-    ///                                 not supported). </param>
-    /// <param name="connectTimeout">   Connect timeout in milliseconds for TCP/IP connection
-    ///                                 operation or UDP/IP transmission. </param>
-    /// <param name="ioTimeout">        The i/o timeout. </param>
-    /// <param name="transmitTimeout">  The transmit timeout. </param>
-    public OncRpcPortmapClient( IPAddress host, OncRpcProtocols protocol, int connectTimeout, int ioTimeout, int transmitTimeout )
+    /// <param name="host">     Host where to contact the portmapper. </param>
+    /// <param name="protocol"> Protocol to use for contacting the portmapper. This can be either
+    ///                         <see cref="OncRpcProtocols.OncRpcUdp"/> or
+    ///                         <see cref="OncRpcProtocols.OncRpcTcp"/> (HTTP is currently
+    ///                         not supported). </param>
+    /// <param name="timeout">  This is the connect timeout in milliseconds for TCP/IP connection
+    ///                         operation or UDP/IP transmission. The I/O for UDP and TCP connection
+    ///                         is set to the default <see cref="OncRpcTcpClient"/> and <see cref="OncRpcUdpClient"/>
+    ///                         default values. </param>
+    public OncRpcPortmapClient( IPAddress host, OncRpcProtocols protocol, int timeout )
     {
         switch ( protocol )
         {
@@ -131,8 +134,9 @@ public class OncRpcPortmapClient : IDisposable
                 {
                     this.PortmapClient = new OncRpcUdpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
-                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber, OncRpcUdpClient.BufferSizeDefault, transmitTimeout );
-                    this.PortmapClient.IOTimeout = ioTimeout;
+                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber, OncRpcUdpClient.BufferSizeDefault, timeout ) {
+                        IOTimeout = OncRpcUdpClient.IOTimeoutDefault
+                    };
                     break;
                 }
 
@@ -140,10 +144,10 @@ public class OncRpcPortmapClient : IDisposable
                 {
                     this.PortmapClient = new OncRpcTcpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
-                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber, 0, connectTimeout );
-                    this.PortmapClient.IOTimeout = ioTimeout;
-                    this.PortmapClient.TransmitTimeout = transmitTimeout;
-                    // default buff size
+                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber, 0, timeout ) {
+                        IOTimeout = OncRpcTcpClient.IOTimeoutDefault,
+                        TransmitTimeout = OncRpcTcpClient.TransmitTimeoutDefault
+                    };
                     break;
                 }
 
@@ -372,8 +376,8 @@ public class OncRpcPortmapClient : IDisposable
         return result.ServerIdentifiers.ToArray();
     }
 
-    /// <summary>   Pings the portmapper (try to call procedure 0). </summary>
-    public virtual void Ping()
+    /// <summary>   Pings the Portmap service by calling the null procedure (0). </summary>
+    public virtual void PingPortmapService()
     {
         // @atecode: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
@@ -382,13 +386,13 @@ public class OncRpcPortmapClient : IDisposable
         this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance );
     }
 
-    /// <summary>   Attempts to ping. </summary>
+    /// <summary>   Attempts to ping the Portmap service by calling the null procedure (0). </summary>
     /// <returns>   True if it succeeds, false if it fails. </returns>
-    public virtual bool TryPing()
+    public virtual bool TryPingPortmapService()
     {
         try
         {
-            this.Ping();
+            this.PingPortmapService();
         }
         catch ( Exception )
         {
@@ -396,6 +400,33 @@ public class OncRpcPortmapClient : IDisposable
         }
         return true;
     }
+
+    /// <summary>   Attempts to ping the Portmap service by calling the null procedure (0). </summary>
+    /// <remarks>   Unit tests shows this to take 3 ms. </remarks>
+    /// <param name="checkTimeout"> (Optional) timeout in milliseconds to wait before assuming that
+    ///                             no portmap service is currently available [3000]. </param>
+    /// <returns>   True if it succeeds, false if it fails. </returns>
+    public static bool TryPingPortmapService( int checkTimeout = 3000 )
+    {
+        return OncRpcPortmapClient.TryPingPortmapService( IPAddress.Loopback, checkTimeout );
+    }
+
+    /// <summary>
+    /// Tries to ping the portmap service on the specified host.
+    /// </summary>
+    /// <remarks>   Unit tests shows this to take 3 ms. </remarks>
+    /// <param name="host">         Host where to contact the portmapper. </param>
+    /// <param name="checkTimeout"> (Optional) timeout in milliseconds to wait before assuming that
+    ///                             no portmap service is currently available [3000]. </param>
+    /// <returns>
+    /// <see langword="true"/>, if a portmap service is running and can be contacted.
+    /// </returns>
+    public static bool TryPingPortmapService( IPAddress host, int checkTimeout = 3000 )
+    {
+        using OncRpcPortmapClient portmap = new( host, OncRpcProtocols.OncRpcUdp, checkTimeout );
+        return portmap.TryPingPortmapService();
+    }
+
 
     #endregion
 
