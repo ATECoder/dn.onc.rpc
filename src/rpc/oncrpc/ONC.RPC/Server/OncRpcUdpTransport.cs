@@ -295,7 +295,6 @@ public class OncRpcUdpTransport : OncRpcTransportBase
         //listener.setDaemon(true);
         this._listener.Start();
 #endif
-
         this._listener = new Thread( new ThreadStart( () => this.DoListen( cancelSource.Token) ) ) {
             Name = "ONC/RPC UDP server transport listener thread",
             IsBackground= true,

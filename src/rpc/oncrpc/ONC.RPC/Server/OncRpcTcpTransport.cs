@@ -270,7 +270,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     public override void Listen( CancellationTokenSource cancelSource )
     {
 
-        // Create a new (daemon) thread which will handle incoming connection
+        // Create a new (daemon/background) thread which will handle incoming connection
         // requests.
 
 #if false
