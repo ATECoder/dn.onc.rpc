@@ -122,7 +122,7 @@ public class OncRpcTcpTests
         Logger.Writer.LogInformation( "Connecting... " );
         client.Connect( host, version );
         Assert.IsTrue( client.Connected, "should be connected" );
-        Logger.Writer.LogInformation( "    okay" );
+        Logger.Writer.LogInformation( "connected." );
     }
 
     /// <summary>   Assert client should close. </summary>
@@ -132,7 +132,7 @@ public class OncRpcTcpTests
         Logger.Writer.LogInformation( "Closing... " );
         client.Close();
         Assert.IsFalse( client.Connected, "should be disconnected" );
-        Logger.Writer.LogInformation( "    okay" );
+        Logger.Writer.LogInformation( "disconnected" );
     }
 
     /// <summary>   (Unit Test Method) client should connect. </summary>
@@ -171,9 +171,9 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldPing( OncRpcTcpTestClient client )
     {
-        Logger.Writer.LogInformation( "About to ping: " );
+        Logger.Writer.LogInformation( "Pinging..." );
         client.CallRemoteProcedureNull();
-        Logger.Writer.LogInformation( "    okay" );
+        Logger.Writer.LogInformation( "pined." );
     }
 
     /// <summary>   Assert client should ping. </summary>
@@ -228,7 +228,7 @@ public class OncRpcTcpTests
             {
                 Assert.Fail( $"received {nameof( OncRpcAuthException )} with a incorrect status of {ae.AuthStatus}" );
             }
-            Logger.Writer.LogInformation( "    okay" );
+            Logger.Writer.LogInformation( "expected exception thrown." );
         }
         catch ( OncRpcException e )
         {
@@ -268,7 +268,7 @@ public class OncRpcTcpTests
         try
         {
             client.CallAuthenticate( AuthenticationConstants.MachineName, userId, groupId );
-            Logger.Writer.LogInformation( "    okay" );
+            Logger.Writer.LogInformation( "valid credentials authenticated" );
         }
         catch ( OncRpcAuthException ae )
         {
@@ -306,7 +306,7 @@ public class OncRpcTcpTests
             System.Console.Out.Write( $"checking echo of {message}: " );
             string echoed = client.CallRemoteProcedureEcho( message );
             Assert.AreEqual( message, echoed, $"answer '{echoed}' does not match '{message}' call" );
-            Logger.Writer.LogInformation( $"    Okay: echoed {echoed}" );
+            Logger.Writer.LogInformation( $"echoed {echoed}" );
         }
     }
 
@@ -337,7 +337,7 @@ public class OncRpcTcpTests
         string expected = "Hello, Remote Tea!";
         string actual = client.CallRemoteProcedureEcho( expected );
         Assert.AreEqual( expected, actual );
-        Logger.Writer.LogInformation( $"    Okay. Echo: '{actual}'" );
+        Logger.Writer.LogInformation( $"Echoed '{actual}'" );
     }
 
     /// <summary>   Assert client should concatenate. </summary>
@@ -350,7 +350,7 @@ public class OncRpcTcpTests
         string expected = "Hello, Remote Tea!";
         string actual = client.CallRemoteProcedureConcatenateInputParameters( strings );
         Assert.AreEqual( expected, actual );
-        Logger.Writer.LogInformation( $"    Okay. Echo: '{actual}'" );
+        Logger.Writer.LogInformation( $"concatenated '{actual}'" );
     }
 
     /// <summary>   Assert client should concatenate exactly. </summary>
@@ -361,7 +361,7 @@ public class OncRpcTcpTests
         string expected = "(arg1:Hello )(arg2:Remote )(arg3:Tea!)";
         string actual = client.CallRemoteProcedureConcatenatedThreeItems( "(arg1:Hello )", "(arg2:Remote )", "(arg3:Tea!)" );
         Assert.AreEqual( expected, actual );
-        Logger.Writer.LogInformation( $"    Okay. Echo: '{actual}'" );
+        Logger.Writer.LogInformation( $"concatenated '{actual}'" );
     }
 
     /// <summary>   Assert client should check for foo. </summary>

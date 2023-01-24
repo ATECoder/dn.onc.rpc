@@ -75,7 +75,8 @@ public class OncRpcEmbeddedPortmapServiceStub
     }
 
     /// <summary>   Start the embedded port map service. </summary>
-    /// <remarks> Unit tests show that starting the service might take 328 ms
+    /// <remarks> Unit tests show the following timing:
+    /// checked 110ms, start 220ms, ping: 4ms. Total time is around 330ms
     /// with the new default timeouts for pinging the service. 
     /// </remarks>
     /// <exception cref="InvalidOperationException">    Thrown when the service failed to run

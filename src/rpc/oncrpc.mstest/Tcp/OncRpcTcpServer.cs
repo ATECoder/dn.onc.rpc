@@ -159,6 +159,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         base.Run();
     }
 
+#if false
     /// <summary>
     /// Processes incoming remote procedure call requests from all specified transports.
     /// </summary>
@@ -197,10 +198,11 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     {
         this.StopRpcProcessing();
     }
+#endif
 
-#endregion
+    #endregion
 
-#region " Handle Procedure calls "
+    #region " Handle Procedure calls "
 
     /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>
     /// <remarks>

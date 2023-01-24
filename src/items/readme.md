@@ -46,6 +46,8 @@ For some clues on using [ISR's ONC RPC] see the [ISR's ONC RPC] MS Test project.
 * Added UseBatchingCall boolean value in place of using a zeroed timeout for batching in the standard call. 
 * Broadcast Event: replace sender address with Remote End Point. 
 * Call Handler: replace peer address and port with IPEndPoint.
+* Added specific I/O and transmit timeout to portmap pinging methods with lower value thus reducing the onset of the embedded portmap service from 5 seconds to less than 400 ms.
+* Set threads as background to ensure the threads are stopped once the program terminates.  
 
 ## Feedback
 
