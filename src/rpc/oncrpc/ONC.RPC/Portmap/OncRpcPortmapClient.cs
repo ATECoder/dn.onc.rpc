@@ -132,7 +132,7 @@ public class OncRpcPortmapClient : IDisposable
         {
             case OncRpcProtocols.OncRpcUdp:
                 {
-                    this.PortmapClient = new OncRpcUdpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
+                    this.OncRpcClient = new OncRpcUdpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapPortNumber, OncRpcUdpClient.BufferSizeDefault, timeout ) {
                         IOTimeout = OncRpcUdpClient.IOTimeoutDefault
@@ -142,7 +142,7 @@ public class OncRpcPortmapClient : IDisposable
 
             case OncRpcProtocols.OncRpcTcp:
                 {
-                    this.PortmapClient = new OncRpcTcpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
+                    this.OncRpcClient = new OncRpcTcpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapPortNumber, 0, timeout ) {
                         IOTimeout = OncRpcTcpClient.IOTimeoutDefault,
@@ -163,7 +163,7 @@ public class OncRpcPortmapClient : IDisposable
     /// <summary>   Closes the connection to the portmapper. </summary>
     public virtual void Close()
     {
-        this.PortmapClient?.Close();
+        this.OncRpcClient?.Close();
     }
 
     #region " disposable implementation "
@@ -216,7 +216,7 @@ public class OncRpcPortmapClient : IDisposable
         this.Close();
 
         // dispose of the portmap client.
-        this.PortmapClient?.Dispose();
+        this.OncRpcClient?.Dispose();
 
         // set large fields to null
     }
@@ -239,7 +239,7 @@ public class OncRpcPortmapClient : IDisposable
     /// portmapper.
     /// </summary>
     /// <value> The portmap client proxy object (subclass of <see cref="OncRpcClientBase"/>). </value>
-    public OncRpcClientBase PortmapClient { get; set; }
+    public OncRpcClientBase OncRpcClient { get; set; }
 
     #endregion
 
@@ -276,7 +276,7 @@ public class OncRpcPortmapClient : IDisposable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber, requestCodec, replyCodec );
+        this.OncRpcClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber, requestCodec, replyCodec );
 
         // In case the program is not registered, throw an exception too.
         // @atecode: the specific 'Program Not Registered' exception was removed in favor of
@@ -314,7 +314,7 @@ public class OncRpcPortmapClient : IDisposable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapRegisterServer, requestCodec, resultCodec );
+        this.OncRpcClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapRegisterServer, requestCodec, resultCodec );
 
         return resultCodec.Value;
     }
@@ -344,7 +344,7 @@ public class OncRpcPortmapClient : IDisposable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer, requestCodec, replyCodec );
+        this.OncRpcClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer, requestCodec, replyCodec );
 
         return replyCodec.Value;
     }
@@ -368,7 +368,7 @@ public class OncRpcPortmapClient : IDisposable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers, VoidXdrCodec.VoidXdrCodecInstance, result );
+        this.OncRpcClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers, VoidXdrCodec.VoidXdrCodecInstance, result );
 
         // Copy the server identities from the Vector into the vector (array).
         // OncRpcServerIdentifierCodec[] serverIdentifiers = new OncRpcServerIdentifierCodec[result.ServerIdentifiers.Count];
@@ -383,7 +383,7 @@ public class OncRpcPortmapClient : IDisposable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.PortmapClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance );
+        this.OncRpcClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance );
     }
 
     /// <summary>   Attempts to ping the Portmap service by calling the null procedure (0). </summary>
@@ -423,7 +423,8 @@ public class OncRpcPortmapClient : IDisposable
     /// </returns>
     public static bool TryPingPortmapService( IPAddress host, int checkTimeout = 3000 )
     {
-        using OncRpcPortmapClient portmap = new( host, OncRpcProtocols.OncRpcUdp, checkTimeout );
+        using OncRpcPortmapClient portmap = new( host, OncRpcProtocols.OncRpcUdp, OncRpcUdpClient.TransmitTimeoutDefault );
+        portmap.OncRpcClient.IOTimeout = checkTimeout;
         return portmap.TryPingPortmapService();
     }
 

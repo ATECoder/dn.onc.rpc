@@ -112,6 +112,23 @@ public class LocalHostBroadcastTest
     /// Listening set to False
     /// System.InvalidOperationException: Server still running after stopping RPC Processing. </para>
     /// 
+    /// <code>
+    ///    2023-01-23 21:43:22.310,cc.isr.ONC.RPC.MSTest.Udp.LocalHostBroadcastTest.LocalHostBroadcastTest
+    ///    2023-01-23 21:43:22.315,starting the server task; this takes ~6 seconds...
+    ///    2023-01-23 21:43:22.315,OncRpcTcpServer waiting listening 22.315
+    ///    2023-01-23 21:43:22.316,Checking for portmap service
+    ///    2023-01-23 21:43:25.325, No portmap service available.
+    ///    2023-01-23 21:43:25.326,Creating embedded portmap instance
+    ///    2023-01-23 21:43:25.538, embedded service started; try pinging port map
+    ///    2023-01-23 21:43:25.543,portmap service is running; elapsed: 4ms
+    ///    2023-01-23 21:43:25.547,Running set to True
+    ///    2023-01-23 21:43:29.323, OncRpcTcpServer is running  29.323
+    ///    2023-01-23 21:43:29.329,pinging port mappers in subnet 127.0.0.1:
+    ///    .2023-01-23 21:43:30.335,    done.
+    ///    2023-01-23 21:43:30.336,Found: 127.0.0.1:111
+    ///    2023-01-23 21:43:30.344,Running set to False
+    /// </code>
+    /// 
     /// </remarks>
     [TestMethod]
     public void ClientShouldBroadcast()

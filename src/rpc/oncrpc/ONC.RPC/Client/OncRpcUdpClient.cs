@@ -600,7 +600,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                     // we can try to meet the overall deadline.
 
                     TimeSpan currentTimeout = stopTime - DateTime.Now;
-                    if ( currentTimeout.Ticks < 0 )
+                    if ( currentTimeout.TotalMilliseconds < 1 )
                         currentTimeout = TimeSpan.FromMilliseconds( 1 );
 
                     // @atecoder: fix timeout; was .Seconds, that is, 1000 times larger.

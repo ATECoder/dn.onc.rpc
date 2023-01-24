@@ -1,3 +1,4 @@
+using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Portmap;
 
@@ -232,13 +233,14 @@ public abstract class OncRpcTransportBase : IDisposable
     {
         try
         {
-            using OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
+            using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
+            pmapClient.OncRpcClient.IOTimeout= OncRpcUdpClient.IOTimeoutDefault;
             foreach ( var transportRegistrationInfo in this.RegisteredPrograms )
             {
                 // Try to register the port for our transport with the local ONC/RPC
                 // portmapper. If this fails, bail out with an exception.
 
-                if ( !portmapper.SetPort( transportRegistrationInfo.Program, transportRegistrationInfo.Version, this.Protocol, this.Port ) )
+                if ( !pmapClient.SetPort( transportRegistrationInfo.Program, transportRegistrationInfo.Version, this.Protocol, this.Port ) )
                     throw new OncRpcException( OncRpcExceptionReason.OncRpcCannotRegisterTransport );
             }
         }
@@ -262,10 +264,10 @@ public abstract class OncRpcTransportBase : IDisposable
     {
         try
         {
-            using OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
+            using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
+            pmapClient.OncRpcClient.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
             foreach ( OncRpcProgramInfo registeredProgram in this.RegisteredPrograms )
-                _ = portmapper.UnsetPort( registeredProgram.Program, registeredProgram.Version );
-
+                _ = pmapClient.UnsetPort( registeredProgram.Program, registeredProgram.Version );
 #if false
             int size = this.RegisteredPrograms.Length;
             for ( int idx = 0; idx < size; ++idx )

@@ -224,8 +224,9 @@ public abstract class OncRpcClientBase : IDisposable
         // the other end of the HTTP tunnel (at the web server).
         if ( port == 0 && protocol != OncRpcProtocols.OncRpcHttp )
         {
-            using OncRpcPortmapClient portmap = new( host, OncRpcProtocols.OncRpcUdp, OncRpcUdpClient.TransmitTimeoutDefault );
-            port = portmap.GetPort( program, version, protocol );
+            using OncRpcPortmapClient pmapClient = new( host, OncRpcProtocols.OncRpcUdp, OncRpcUdpClient.TransmitTimeoutDefault );
+            pmapClient.OncRpcClient.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
+            port = pmapClient.GetPort( program, version, protocol );
         }
         this.Port = port;
 

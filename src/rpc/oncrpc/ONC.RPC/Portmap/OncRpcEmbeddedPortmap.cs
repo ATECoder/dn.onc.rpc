@@ -3,7 +3,7 @@ using System.Diagnostics;
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.ONC.RPC.Server;
-
+using cc.isr.ONC.RPC.Client;
 
 namespace cc.isr.ONC.RPC.Portmap;
 
@@ -118,8 +118,9 @@ public class OncRpcEmbeddedPortmapService
     /// </returns>
     public static bool TryPingPortmapService( int checkTimeout = 3000 )
     {
-        using OncRpcPortmapClient portmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, checkTimeout );
-        return portmap.TryPingPortmapService();
+        using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpClient.TransmitTimeoutDefault );
+        pmapClient.OncRpcClient.IOTimeout = checkTimeout;
+        return pmapClient.TryPingPortmapService();
     }
 
 #if false

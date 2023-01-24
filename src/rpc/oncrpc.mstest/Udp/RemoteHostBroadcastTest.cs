@@ -1,6 +1,7 @@
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Portmap;
+using System.Runtime.CompilerServices;
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
@@ -98,13 +99,14 @@ public class RemoteHostBroadcastTest
         {
             Logger.Writer.LogMemberError( $"method call failed unexpectedly:",e );
         }
-        Logger.Writer.LogInformation( "    done." );
+        Logger.Writer.LogInformation( "done." );
 
         // Print addresses of all port mappers found...
 
-        for ( int idx = 0; idx < _portmappers.Count; ++idx )
-            Logger.Writer.LogInformation( $"Found: {_portmappers[idx]!}" );
-
+        foreach ( IPEndPoint endPoint in _portmappers )
+        {
+            Logger.Writer.LogInformation( $"Found: {endPoint}" );
+        }
         // Release resources bound by portmap client object as soon as possible.
 
         client.Close();
