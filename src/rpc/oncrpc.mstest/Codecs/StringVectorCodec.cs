@@ -60,12 +60,16 @@ public class StringVectorCodec : IXdrCodec
     /// <param name="encoder">  XDR stream to which information is sent for encoding. </param>
     public virtual void Encode( XdrEncodingStreamBase encoder )
     {
-        {
-            int size = this._values.Length;
-            encoder.EncodeInt( size );
-            for ( int idx = 0; idx < size; ++idx )
-                this._values[idx].Encode( encoder );
-        }
+        int size = this._values.Length;
+        encoder.EncodeInt( this._values.Length );
+        foreach ( StringCodec stringCodec in this._values ) 
+            stringCodec.Encode( encoder );
+#if false
+        int size = this._values.Length;
+        encoder.EncodeInt( size );
+        for ( int idx = 0; idx < size; ++idx )
+            this._values[idx].Encode( encoder );
+#endif
     }
 
     /// <summary>
@@ -77,12 +81,10 @@ public class StringVectorCodec : IXdrCodec
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public virtual void Decode( XdrDecodingStreamBase decoder )
     {
-        {
-            int size = decoder.DecodeInt();
-            this._values = new StringCodec[size];
-            for ( int idx = 0; idx < size; ++idx )
-                this._values[idx] = new StringCodec( decoder );
-        }
+        int size = decoder.DecodeInt();
+        this._values = new StringCodec[size];
+        for ( int idx = 0; idx < size; ++idx )
+            this._values[idx] = new StringCodec( decoder );
     }
 
 }

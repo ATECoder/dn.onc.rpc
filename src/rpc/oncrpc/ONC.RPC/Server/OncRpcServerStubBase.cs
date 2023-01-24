@@ -194,9 +194,13 @@ public abstract class OncRpcServerStubBase : IDisposable
     ///                             handle incoming remote procedure call requests. </param>
     public virtual void Register( OncRpcTransportBase[] transports )
     {
+        foreach ( OncRpcTransportBase transport in transports)
+            transport.Register();
+#if false
         int size = transports.Length;
         for ( int idx = 0; idx < size; ++idx )
             transports[idx].Register();
+#endif
     }
 
     /// <summary>   Unregister a set of server transports from the local portmapper. </summary>

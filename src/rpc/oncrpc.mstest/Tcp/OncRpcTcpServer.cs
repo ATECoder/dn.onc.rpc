@@ -368,7 +368,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
 #endregion
 
-#region " Remote Procedures "
+    #region " Remote Procedures "
 
     /// <summary>   No operation. </summary>
     public static void Nop()
@@ -404,13 +404,17 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// <returns>   A string. </returns>
     public static string ConcatenateInputStringVector( StringVectorCodec inputCodec )
     {
-        StringBuilder result = new();
+        StringBuilder reply = new();
+        foreach ( StringCodec stringCodec in inputCodec.GetValues() )
+            _ = reply.Append( stringCodec.Value );
+#if false
         int size = inputCodec.GetValues().Length;
         for ( int idx = 0; idx < size; ++idx )
         {
             _ = result.Append( inputCodec.GetValues()[idx].Value );
         }
-        return result.ToString();
+#endif
+        return reply.ToString();
     }
 
     /// <summary>   Echo a linked list. </summary>
