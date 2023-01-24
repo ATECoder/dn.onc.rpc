@@ -24,7 +24,7 @@ public class EmbeddedPortmapTest
         // into action.
 
         Logger.Writer.LogInformation( "Creating embedded portmap instance: " );
-        OncRpcEmbeddedPortmapService epm = new();
+        OncRpcEmbeddedPortmapService epm = new(0 );
 
         if ( !epm.EmbeddedPortmapInUse() )
             Logger.Writer.LogInformation( "embedded service not used: " );
@@ -56,7 +56,8 @@ public class EmbeddedPortmapTest
         int dummyVersion = 42;
         int dummyPort = 42;
 
-        using OncRpcPortmapClient pmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, Client.OncRpcUdpClient.TransmitTimeoutDefault );
+        using OncRpcPortmapClient pmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp,
+            Client.OncRpcTcpClient.IOTimeoutDefault, Client.OncRpcUdpClient.IOTimeoutDefault, Client.OncRpcUdpClient.TransmitTimeoutDefault );
         Console.Out.Write( "Deregistering non-existing program: " );
         bool actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsFalse( actual );

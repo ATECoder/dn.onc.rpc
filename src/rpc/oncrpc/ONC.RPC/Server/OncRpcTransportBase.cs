@@ -161,7 +161,11 @@ public abstract class OncRpcTransportBase : IDisposable
     /// Gets or sets the default timeout for sending RPC calls or receiving RPC replies.
     /// </summary>
     /// <value> The transmit timeout default. </value>
-    public static int TransmitTimeoutDefault { get; set; } = 3000;
+    public static int TransmitTimeoutDefault { get; set; } = 1000;
+
+    /// <summary>   Gets or sets the i/o timeout default. </summary>
+    /// <value> The i/o timeout default. </value>
+    public static int IOTimeoutDefault { get; set; } = 3000;
 
     /// <summary>   Gets or sets the default encoding. </summary>
     /// <remarks>
@@ -228,7 +232,8 @@ public abstract class OncRpcTransportBase : IDisposable
     {
         try
         {
-            using OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
+            using OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp,
+                OncRpcUdpTransport.IOTimeoutDefault, OncRpcUdpTransport.IOTimeoutDefault, OncRpcUdpTransport.TransmitTimeoutDefault );
             foreach ( var transportRegistrationInfo in this.RegisteredPrograms )
             {
                 // Try to register the port for our transport with the local ONC/RPC
@@ -258,7 +263,8 @@ public abstract class OncRpcTransportBase : IDisposable
     {
         try
         {
-            using OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
+            using OncRpcPortmapClient portmapper = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp,
+                OncRpcUdpTransport.IOTimeoutDefault, OncRpcUdpTransport.IOTimeoutDefault, OncRpcUdpTransport.TransmitTimeoutDefault );
             int size = this.RegisteredPrograms.Length;
             for ( int idx = 0; idx < size; ++idx )
                 _ = portmapper.UnsetPort( this.RegisteredPrograms[idx].Program, this.RegisteredPrograms[idx].Version );

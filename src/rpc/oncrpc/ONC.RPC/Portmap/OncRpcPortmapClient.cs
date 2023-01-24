@@ -12,7 +12,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// In addition, it is also possible to contact port mappers using TCP/IP. For this, the
 /// constructor of the
 /// <see cref="OncRpcPortmapClient"/> class also accepts a protocol parameter
-/// (<see cref="OncRpcPortmapClient(IPAddress, OncRpcProtocols, int)"/>).
+/// (<see cref="OncRpcPortmapClient(IPAddress, OncRpcProtocols, int, int, int)"/>).
 /// Technically spoken, instances of <see cref="OncRpcPortmapClient"/> are proxy objects.
 /// <see cref="OncRpcPortmapClient"/> objects currently speak protocol version
 /// 2. The newer transport-independent protocol versions 3 and 4 are
@@ -111,16 +111,19 @@ public class OncRpcPortmapClient : IDisposable
     /// Constructs and initializes an ONC/RPC client object, which can communicate with the
     /// portmapper at the given host using the specified protocol.
     /// </summary>
+    /// <remarks>   2023-01-23. </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    /// <param name="host">     Host where to contact the portmapper. </param>
-    /// <param name="protocol"> Protocol to use for contacting the portmapper. This can be either
-    ///                         <see cref="OncRpcProtocols.OncRpcUdp"/> or
-    ///                         <see cref="OncRpcProtocols.OncRpcTcp"/> (HTTP is currently
-    ///                         not supported). </param>
-    /// <param name="timeout">  Timeout in milliseconds for TCP/IP connection operation or
-    ///                         UDP/IP transmission. </param>
-    ///
-    public OncRpcPortmapClient( IPAddress host, OncRpcProtocols protocol, int timeout )
+    /// <param name="host">             Host where to contact the portmapper. </param>
+    /// <param name="protocol">         Protocol to use for contacting the portmapper. This can be
+    ///                                 either
+    ///                                 <see cref="OncRpcProtocols.OncRpcUdp"/> or
+    ///                                 <see cref="OncRpcProtocols.OncRpcTcp"/> (HTTP is currently
+    ///                                 not supported). </param>
+    /// <param name="connectTimeout">   Connect timeout in milliseconds for TCP/IP connection
+    ///                                 operation or UDP/IP transmission. </param>
+    /// <param name="ioTimeout">        The i/o timeout. </param>
+    /// <param name="transmitTimeout">  The transmit timeout. </param>
+    public OncRpcPortmapClient( IPAddress host, OncRpcProtocols protocol, int connectTimeout, int ioTimeout, int transmitTimeout )
     {
         switch ( protocol )
         {
@@ -128,7 +131,8 @@ public class OncRpcPortmapClient : IDisposable
                 {
                     this.PortmapClient = new OncRpcUdpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
-                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber, OncRpcUdpClient.BufferSizeDefault, timeout );
+                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber, OncRpcUdpClient.BufferSizeDefault, transmitTimeout );
+                    this.PortmapClient.IOTimeout = ioTimeout;
                     break;
                 }
 
@@ -136,7 +140,9 @@ public class OncRpcPortmapClient : IDisposable
                 {
                     this.PortmapClient = new OncRpcTcpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
-                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber, 0, timeout );
+                                                              OncRpcPortmapConstants.OncRpcPortmapPortNumber, 0, connectTimeout );
+                    this.PortmapClient.IOTimeout = ioTimeout;
+                    this.PortmapClient.TransmitTimeout = transmitTimeout;
                     // default buff size
                     break;
                 }
@@ -234,7 +240,6 @@ public class OncRpcPortmapClient : IDisposable
     #endregion
 
     #region " actions "
-
 
     /// <summary>
     /// Asks the portmapper this <see cref="OncRpcPortmapClient"/> object is a proxy for, for the port

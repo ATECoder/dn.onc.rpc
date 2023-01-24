@@ -36,10 +36,12 @@ public class OncRpcEmbeddedPortmapService
     /// <see cref="EmbeddedPortmapInUse()"/>
     /// </remarks>
     /// <param name="checkTimeout"> timeout in milliseconds to wait before assuming that no
-    ///                             portmap service is currently available [3000]. </param>
+    ///                             portmap service is currently available [3000]. 
+    ///                             Set to zero to skip check of portmap already running 
+    ///                             in case this was already done. </param>
     public OncRpcEmbeddedPortmapService( int checkTimeout = 3000 )
     {
-        if ( !IsPortmapRunning( checkTimeout ) )
+        if ( checkTimeout <= 0 || !IsPortmapRunning( checkTimeout ) )
         {
             this._embeddedPortmapService = new EmbeddedPortmapService( this );
             this._embeddedPortmapThread = new EmbeddedPortmapServiceThread( this, this._embeddedPortmapService );
@@ -70,34 +72,31 @@ public class OncRpcEmbeddedPortmapService
     /// <returns>   An OncRpcEmbeddedPortmapService. </returns>
     public static OncRpcEmbeddedPortmapService StartEmbeddedPortmapService()
     {
-        Logger.Writer.LogInformation( $"{DateTime.Now.ToShortTimeString()} Checking for portmap service: " );
-        bool externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
-        if ( externalPortmap )
+        Logger.Writer.LogInformation( $"Checking for portmap service" );
+        bool alreadyRunning = OncRpcEmbeddedPortmapService.IsPortmapRunning();
+        if ( alreadyRunning )
             Logger.Writer.LogInformation( "A portmap service is already running." );
         else
             Logger.Writer.LogInformation( "No portmap service available." );
 
-        // Create embedded portmap service and check whether is has sprung
-        // into action.
+        Logger.Writer.LogInformation( "Creating embedded portmap instance" );
+        OncRpcEmbeddedPortmapService epm = new( 0 );
 
-        Logger.Writer.LogInformation( "Creating embedded portmap instance: " );
-        OncRpcEmbeddedPortmapService epm = new();
-
-        if ( !epm.EmbeddedPortmapInUse() )
-            Logger.Writer.LogInformation( "embedded service not used: " );
-        else
-            Logger.Writer.LogInformation( "embedded service started: " );
-
-        if ( epm.EmbeddedPortmapInUse() == externalPortmap )
+        if ( epm.EmbeddedPortmapInUse() )
         {
-            throw new InvalidOperationException( "Portmap service is not available or not in use." );
+            Logger.Writer.LogInformation( "embedded service started; try pinging port map" );
+
+            Stopwatch sw = Stopwatch.StartNew();
+            alreadyRunning = OncRpcEmbeddedPortmapService.IsPortmapRunning();
+            if ( !alreadyRunning )
+                throw new InvalidOperationException( "Portmap service is not running." );
+            Logger.Writer.LogInformation( $"portmap service is {(alreadyRunning ? "running" : "idle")}; elapsed: {sw.ElapsedMilliseconds:0}ms" );
+            return epm;
         }
-        Stopwatch sw = Stopwatch.StartNew();
-        externalPortmap = OncRpcEmbeddedPortmapService.IsPortmapRunning();
-        if ( !externalPortmap )
-            throw new InvalidOperationException( "Portmap service is not running." );
-        Logger.Writer.LogInformation( $"portmap service is {(externalPortmap ? "running" : "idle")}; elapsed: {sw.ElapsedMilliseconds:0}ms" );
-        return epm;
+
+        else
+            throw new InvalidOperationException( "Portmap service is not available or not in use." );
+
     }
 
     #endregion
@@ -117,24 +116,8 @@ public class OncRpcEmbeddedPortmapService
     /// </returns>
     public static bool IsPortmapRunning( int checkTimeout = 3000 )
     {
-        bool available = false;
-        try
-        {
-            using OncRpcPortmapClient portmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, checkTimeout );
-            portmap.Ping();
-            available = true;
-        }
-        catch ( OncRpcException )
-        {
-            // We get noise from here if the port mapper is down
-            // Logger.Writer.ConsoleWriteException( string.Empty, ex );
-        }
-        catch ( System.IO.IOException )
-        {
-            // We get noise from here if the port mapper is down
-            // Logger.Writer.ConsoleWriteException( string.Empty, ex );
-        }
-        return available;
+        using OncRpcPortmapClient portmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, checkTimeout, checkTimeout, checkTimeout );
+        return portmap.TryPing();
     }
 
     /// <summary>   Indicates whether the embedded portmap service is in use. </summary>
