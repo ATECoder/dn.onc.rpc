@@ -47,7 +47,7 @@ public class OncRpcTcpTests
             _ = _server.ServerStarted( 2 * OncRpcTcpTests.ServerStartTimeTypical, OncRpcTcpTests.ServerStartLoopDelay );
 
             Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Running ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
-            _portMapService = _server!.EmbeddedPortmapService!.PortmapService;
+            _portMapService = _server!.EmbeddedPortmapService!.EmbeddedPortmapService;
         }
         catch ( Exception ex )
         {

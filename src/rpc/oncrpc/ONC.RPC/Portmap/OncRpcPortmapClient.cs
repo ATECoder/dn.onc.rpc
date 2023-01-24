@@ -403,31 +403,30 @@ public class OncRpcPortmapClient : IDisposable
 
     /// <summary>   Attempts to ping the Portmap service by calling the null procedure (0). </summary>
     /// <remarks>   Unit tests shows this to take 3 ms. </remarks>
-    /// <param name="checkTimeout"> (Optional) timeout in milliseconds to wait before assuming that
-    ///                             no portmap service is currently available [3000]. </param>
+    /// <param name="ioTimeout">        (Optional) timeout in milliseconds to wait before assuming
+    ///                                 that no portmap service is currently available [100]. </param>
+    /// <param name="transmitTimeout">  (Optional) The transmit timeout; defaults to 25 ms. </param>
     /// <returns>   True if it succeeds, false if it fails. </returns>
-    public static bool TryPingPortmapService( int checkTimeout = 3000 )
+    public static bool TryPingPortmapService( int ioTimeout = 100, int transmitTimeout = 25 )
     {
-        return OncRpcPortmapClient.TryPingPortmapService( IPAddress.Loopback, checkTimeout );
+        return OncRpcPortmapClient.TryPingPortmapService( IPAddress.Loopback, ioTimeout, transmitTimeout );
     }
 
-    /// <summary>
-    /// Tries to ping the portmap service on the specified host.
-    /// </summary>
+    /// <summary>   Tries to ping the portmap service on the specified host. </summary>
     /// <remarks>   Unit tests shows this to take 3 ms. </remarks>
-    /// <param name="host">         Host where to contact the portmapper. </param>
-    /// <param name="checkTimeout"> (Optional) timeout in milliseconds to wait before assuming that
-    ///                             no portmap service is currently available [3000]. </param>
+    /// <param name="host">             Host where to contact the portmapper. </param>
+    /// <param name="ioTimeout">        (Optional) timeout in milliseconds to wait before assuming
+    ///                                 that no portmap service is currently available [100]. </param>
+    /// <param name="transmitTimeout">  (Optional) The transmit timeout; defaults to 25 ms. </param>
     /// <returns>
     /// <see langword="true"/>, if a portmap service is running and can be contacted.
     /// </returns>
-    public static bool TryPingPortmapService( IPAddress host, int checkTimeout = 3000 )
+    public static bool TryPingPortmapService( IPAddress host, int ioTimeout = 100, int transmitTimeout = 25 )
     {
-        using OncRpcPortmapClient portmap = new( host, OncRpcProtocols.OncRpcUdp, OncRpcUdpClient.TransmitTimeoutDefault );
-        portmap.OncRpcClient.IOTimeout = checkTimeout;
+        using OncRpcPortmapClient portmap = new( host, OncRpcProtocols.OncRpcUdp, transmitTimeout );
+        portmap.OncRpcClient.IOTimeout = ioTimeout;
         return portmap.TryPingPortmapService();
     }
-
 
     #endregion
 

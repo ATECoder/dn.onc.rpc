@@ -51,7 +51,7 @@ public class EmbeddedPortmapTest
 
         Logger.Writer.LogInformation( "Starting the embedded portmap service" );
         Stopwatch stopwatch = Stopwatch.StartNew();
-        OncRpcEmbeddedPortmapService epm = OncRpcEmbeddedPortmapService.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
+        OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
         // OncRpcEmbeddedPortmapService epm = EmbeddedPortmapTest.AssertPortmapServiceShouldStart();
         Logger.Writer.LogInformation( $"The embedded portmap service started in {stopwatch.ElapsedMilliseconds:0}ms" );
 
@@ -82,11 +82,11 @@ public class EmbeddedPortmapTest
         // let the service stop.
         int timeout = 1000;
         DateTime endtime = DateTime.Now.AddMilliseconds( timeout );
-        while ( DateTime.Now < endtime && OncRpcEmbeddedPortmapService.TryPingPortmapService( timeout / 5 ) ) { Thread.Sleep( timeout / 5 ); }
+        while ( DateTime.Now < endtime && OncRpcEmbeddedPortmapServiceStub.TryPingPortmapService( timeout / 5 ) ) { Thread.Sleep( timeout / 5 ); }
 
         // Check that an embedded portmap service spins down properly if it
         // was started within this test.
-        if ( OncRpcEmbeddedPortmapService.TryPingPortmapService() ) // && !externalPortmap )
+        if ( OncRpcEmbeddedPortmapServiceStub.TryPingPortmapService() ) // && !externalPortmap )
             Assert.Fail( "ERROR: embedded portmap service still running." );
 
         // dispose of the portmap service

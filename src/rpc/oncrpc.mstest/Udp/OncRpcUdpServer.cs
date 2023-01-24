@@ -161,7 +161,7 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     /// </remarks>
     public override void Run()
     {
-        _ = OncRpcEmbeddedPortmapService.StartEmbeddedPortmapService();
+        _ = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
 #if false
         // OncRpcUdpServer.EstablishPortmapService();
 #endif

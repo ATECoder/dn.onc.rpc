@@ -140,7 +140,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// <remarks> @atecoder: This was added to allow the disposal of the Portmap service
     /// with unit testing. </remarks>
     /// <value> The embedded portmap service. </value>
-    public OncRpcEmbeddedPortmapService? EmbeddedPortmapService { get; private set; }
+    public OncRpcEmbeddedPortmapServiceStub? EmbeddedPortmapService { get; private set; }
 
     /// <summary>
     /// All inclusive convenience method: register server transports with port mapper, then Runs the
@@ -155,7 +155,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// </remarks>
     public override void Run()
     {
-        this.EmbeddedPortmapService = OncRpcEmbeddedPortmapService.StartEmbeddedPortmapService();
+        this.EmbeddedPortmapService = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
         base.Run();
     }
 

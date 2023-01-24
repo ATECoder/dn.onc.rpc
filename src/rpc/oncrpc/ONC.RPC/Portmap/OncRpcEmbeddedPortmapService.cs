@@ -4,10 +4,10 @@ namespace cc.isr.ONC.RPC.Portmap
 {
     /// <summary>   A service for accessing embedded Portmap information. </summary>
     /// <remarks>   2023-01-23. </remarks>
-    public class EmbeddedPortmapService : OncRpcPortMapService
+    public class OncRpcEmbeddedPortmapService : OncRpcPortMapService
     {
         /// <summary>   Creates a new instance of an embeddable portmap service. </summary>
-        public EmbeddedPortmapService()
+        public OncRpcEmbeddedPortmapService()
         {
         }
 
