@@ -68,6 +68,13 @@ public abstract class OncRpcServerStubBase : IDisposable
     /// <value> True if this object is disposed, false if not. </value>
     protected bool IsDisposed { get; private set; }
 
+    /// <summary>   Delays. </summary>
+    /// <param name="delayTime">    The delay time. </param>
+    private static async void Delay( int delayTime )
+    {
+        await Task.Delay( delayTime );
+    }
+
     /// <summary>
     /// Releases the unmanaged resources used by the XdrDecodingStreamBase and optionally releases
     /// the managed resources.
@@ -88,7 +95,7 @@ public abstract class OncRpcServerStubBase : IDisposable
         DateTime endTime = DateTime.Now.AddMilliseconds( 1000 );
         while ( this.Running && endTime < DateTime.Now )
         {
-            Thread.Sleep( 100 );
+            OncRpcServerStubBase.Delay( 100 );
         }
         if ( !this.Running )
             this.Close();
@@ -204,13 +211,6 @@ public abstract class OncRpcServerStubBase : IDisposable
     #endregion
 
     #region " run and stop "
-
-    /// <summary>   Delays. </summary>
-    /// <param name="delayTime">    The delay time. </param>
-    private static async void Delay( int delayTime )
-    {
-        await Task.Delay( delayTime );
-    }
 
     /// <summary>   Checks if server started. </summary>
     /// <param name="timeout">          The timeout. </param>

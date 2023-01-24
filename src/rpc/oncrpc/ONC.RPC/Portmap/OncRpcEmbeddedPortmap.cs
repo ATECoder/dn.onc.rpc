@@ -48,7 +48,8 @@ public class OncRpcEmbeddedPortmapService
             this._embeddedPortmapService = new EmbeddedPortmapService( this );
             this._embeddedPortmapThread = new EmbeddedPortmapServiceThread( this, this._embeddedPortmapService );
             this._embeddedPortmapService.ServiceThread = new Thread( new ThreadStart( this._embeddedPortmapThread.Run ) ) {
-                Name = "Embedded Portmap Service Thread"
+                Name = "Embedded Portmap Service Thread",
+                IsBackground= true,
             };
             this._embeddedPortmapService.ServiceThread.Start();
         }
@@ -69,6 +70,9 @@ public class OncRpcEmbeddedPortmapService
     }
 
     /// <summary>   Start the embedded port map service. </summary>
+    /// <remarks> Unit tests show that starting the service might take 328 ms
+    /// with the new default timeouts for pinging the service. 
+    /// </remarks>
     /// <exception cref="InvalidOperationException">    Thrown when the service failed to run
     ///                                                 or is not available. </exception>
     /// <returns>   An OncRpcEmbeddedPortmapService. </returns>
@@ -86,11 +90,10 @@ public class OncRpcEmbeddedPortmapService
 
         if ( epm.EmbeddedPortmapServiceStarted() )
         {
-            Logger.Writer.LogInformation( "embedded service started; try pinging port map" );
+            Logger.Writer.LogInformation( "embedded service started; try pinging the port map service" );
 
             Stopwatch sw = Stopwatch.StartNew();
-            alreadyRunning = OncRpcEmbeddedPortmapService.TryPingPortmapService();
-            if ( !alreadyRunning )
+            if ( !OncRpcEmbeddedPortmapService.TryPingPortmapService() )
                 throw new InvalidOperationException( "Portmap service is not running." );
             Logger.Writer.LogInformation( $"portmap service is {(alreadyRunning ? "running" : "idle")}; elapsed: {sw.ElapsedMilliseconds:0}ms" );
             return epm;
@@ -110,16 +113,16 @@ public class OncRpcEmbeddedPortmapService
     /// an embedded portmap service.
     /// </summary>
     /// <remarks>   Unit tests shows this to take 3 ms. </remarks>
-    /// <param name="checkTimeout"> (Optional) timeout in milliseconds to wait before assuming that
-    ///                             no portmap service is currently available [3000]. </param>
+    /// <param name="ioTimeout">        (Optional) The i/o timeout; defaults to 100 ms. </param>
+    /// <param name="transmitTimeout">  (Optional) The transmit timeout; defaults to 25 ms. </param>
     /// <returns>
     /// <see langword="true"/>, if a portmap service (either external or embedded) is running and can
     /// be contacted.
     /// </returns>
-    public static bool TryPingPortmapService( int checkTimeout = 3000 )
+    public static bool TryPingPortmapService( int ioTimeout = 100, int transmitTimeout = 25 )
     {
-        using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpClient.TransmitTimeoutDefault );
-        pmapClient.OncRpcClient.IOTimeout = checkTimeout;
+        using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, transmitTimeout );
+        pmapClient.OncRpcClient.IOTimeout = ioTimeout;
         return pmapClient.TryPingPortmapService();
     }
 

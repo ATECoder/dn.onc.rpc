@@ -48,8 +48,12 @@ public class EmbeddedPortmapTest
     [TestMethod]
     public void EmbeddedPortmapServiceShouldPass()
     {
+
+        Logger.Writer.LogInformation( "Starting the embedded portmap service" );
+        Stopwatch stopwatch = Stopwatch.StartNew();
         OncRpcEmbeddedPortmapService epm = OncRpcEmbeddedPortmapService.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
         // OncRpcEmbeddedPortmapService epm = EmbeddedPortmapTest.AssertPortmapServiceShouldStart();
+        Logger.Writer.LogInformation( $"The embedded portmap service started in {stopwatch.ElapsedMilliseconds:0}ms" );
 
         // Now register dummy ONC/RPC program. Note that the embedded
         // portmap service must not automatically spin down when deregistering
@@ -60,7 +64,7 @@ public class EmbeddedPortmapTest
         int dummyPort = 42;
 
         using OncRpcPortmapClient pmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, Client.OncRpcUdpClient.TransmitTimeoutDefault );
-        Console.Out.Write( "Deregistering non-existing program: " );
+        Logger.Writer.LogInformation( "Deregistering non-existing program: " );
         bool actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsFalse( actual );
         Logger.Writer.LogInformation( "   Passed." );
