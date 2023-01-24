@@ -10,6 +10,7 @@ namespace cc.isr.ONC.RPC.MSTest.PortMapper;
 public class EmbeddedPortmapTest
 {
 
+#if false
     /// <summary>   Assert portmap service should start. </summary>
     internal static OncRpcEmbeddedPortmapService AssertPortmapServiceShouldStart()
     {
@@ -41,12 +42,14 @@ public class EmbeddedPortmapTest
         Logger.Writer.LogInformation( $"portmap service is {(externalPortmap ? "running" : "idle")}; elapsed: {sw.ElapsedMilliseconds:0}ms" );
         return epm;
     }
+#endif
 
     /// <summary>   (Unit Test Method) embedded portmap service should pass. </summary>
     [TestMethod]
     public void EmbeddedPortmapServiceShouldPass()
     {
-        OncRpcEmbeddedPortmapService epm = AssertPortmapServiceShouldStart();
+        OncRpcEmbeddedPortmapService epm = OncRpcEmbeddedPortmapService.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
+        // OncRpcEmbeddedPortmapService epm = EmbeddedPortmapTest.AssertPortmapServiceShouldStart();
 
         // Now register dummy ONC/RPC program. Note that the embedded
         // portmap service must not automatically spin down when deregistering

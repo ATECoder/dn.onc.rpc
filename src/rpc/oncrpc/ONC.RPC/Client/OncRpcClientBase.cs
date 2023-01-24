@@ -410,13 +410,20 @@ public abstract class OncRpcClientBase : IDisposable
     public bool UseCallBatching { get; set; }
 
     /// <summary>
-    /// Gets or sets the timeout (in milliseconds) for communication with an ONC/RPC server.
+    /// Gets or sets the timeout (in milliseconds) for setting the ONC/RPC server timeouts and
+    /// communication with an ONC/RPC server.
     /// </summary>
     /// <remarks>
+    /// With TCP, the <see cref="IOTimeout"/> is used only for setting the ONC/RPC server timeouts 
+    /// by way of the <see cref="IXdrCodec"/> payloads for the RPC calls. <para>
+    /// 
+    /// With UDP, the I/O timeout sets the total timeout of the RPC call, which is broken to shorter 
+    /// <see cref="OncRpcClientBase.TransmitTimeout"/> intervals. The <see cref="OncRpcRetransmitMode"/>
+    /// is used to determine how timeouts are changed on retransmission in case of failures.
+    /// </para>
+    /// 
     /// The <see cref="Call(int, IXdrCodec, IXdrCodec)"/> method will throw a <see cref="ThreadInterruptedException"/>
     /// exception if no answer from the ONC/RPC server is received within the timeout time span. <para>
-    /// 
-    /// The default timeout value is 30 seconds (30,000 milliseconds). </para><para>
     /// 
     /// The timeout must be non-negative. </para>  
     /// </remarks>

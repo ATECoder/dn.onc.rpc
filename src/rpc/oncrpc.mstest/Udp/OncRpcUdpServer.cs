@@ -89,6 +89,7 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
 
     #region " Port mapper "
 
+#if false
     private static void EstablishPortmapService()
     {
 
@@ -133,6 +134,7 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
 
         Logger.Writer.LogInformation( "    Passed." );
     }
+#endif
 
     #endregion
 
@@ -160,7 +162,10 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     /// </remarks>
     public override void Run()
     {
-        OncRpcUdpServer.EstablishPortmapService();
+        _ = OncRpcEmbeddedPortmapService.StartEmbeddedPortmapService();
+#if false
+        // OncRpcUdpServer.EstablishPortmapService();
+#endif
         base.Run();
     }
 
@@ -202,9 +207,9 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
         this.StopRpcProcessing();
     }
 
-    #endregion
+#endregion
 
-    #region " Handle Procedure calls "
+#region " Handle Procedure calls "
 
     /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>
     /// <remarks>
@@ -303,9 +308,9 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
         }
     }
 
-    #endregion
+#endregion
 
-    #region " Remote Procedures "
+#region " Remote Procedures "
 
     /// <summary>   No operation. </summary>
     public static void Nop()
@@ -321,6 +326,6 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
         return input;
     }
 
-    #endregion
+#endregion
 
 }

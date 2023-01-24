@@ -90,11 +90,10 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     #region " Port mapper "
 
+#if false
     private static OncRpcEmbeddedPortmapService EstablishPortmapService()
     {
-
         // Ignore all problems during unregistration.
-
         OncRpcEmbeddedPortmapService epm;
 
         Logger.Writer.LogVerbose( "Checking for portmap service: " );
@@ -123,7 +122,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
         return epm;
     }
-
+#endif
     #endregion
 
     #region " START / STOP "
@@ -156,7 +155,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// </remarks>
     public override void Run()
     {
-        this.EmbeddedPortmapService = OncRpcTcpServer.EstablishPortmapService();
+        this.EmbeddedPortmapService = OncRpcEmbeddedPortmapService.StartEmbeddedPortmapService();
         base.Run();
     }
 
@@ -199,9 +198,9 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         this.StopRpcProcessing();
     }
 
-    #endregion
+#endregion
 
-    #region " Handle Procedure calls "
+#region " Handle Procedure calls "
 
     /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>
     /// <remarks>
@@ -365,9 +364,9 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     }
 
-    #endregion
+#endregion
 
-    #region " Remote Procedures "
+#region " Remote Procedures "
 
     /// <summary>   No operation. </summary>
     public static void Nop()
@@ -492,6 +491,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     {
     }
 
-    #endregion
+#endregion
 
 }

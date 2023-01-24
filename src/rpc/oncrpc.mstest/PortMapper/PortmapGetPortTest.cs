@@ -15,7 +15,8 @@ public class PortmapGetPortTest
     public void PortmapShouldGetPort()
     {
 
-        OncRpcEmbeddedPortmapService epm = EmbeddedPortmapTest.AssertPortmapServiceShouldStart();
+        OncRpcEmbeddedPortmapService epm = OncRpcEmbeddedPortmapService.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
+        // OncRpcEmbeddedPortmapService epm = EmbeddedPortmapTest.AssertPortmapServiceShouldStart();
 
         IPHostEntry host = Dns.GetHostEntry( Dns.GetHostName() );
 

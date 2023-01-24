@@ -25,8 +25,9 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     /// <summary>   Gets or sets the default timeout for TCP I/O calls. </summary>
     /// <remarks>
-    /// This timeout interval is used to set the timeouts members of the RPC server using the <see cref="IXdrCodec"/>
-    /// payloads that are transmitted as part of the RPC calls.
+    /// With UDP, the I/O timeout sets the total timeout of the RPC call, which is broken to 
+    /// shorter <see cref="OncRpcClientBase.TransmitTimeout"/>. The <see cref="RetransmitMode"/> 
+    /// then is used to determine retransmission in case of failure.
     /// </remarks>
     /// <value> The i/o timeout default. </value>
     public static int IOTimeoutDefault { get; set; } = 3000;
