@@ -516,6 +516,8 @@ public abstract class OncRpcClientBase : IDisposable
 
     #region " actions "
 
+    private readonly object _lock = new object();   
+
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>
     /// The <see cref="OncRpcUdpClient"/> uses a similar timeout scheme as
@@ -530,7 +532,7 @@ public abstract class OncRpcClientBase : IDisposable
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
     public virtual void Call( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
-        lock ( this )
+        lock ( _lock )
             // Use the default version number as specified for this client.
             this.Call( procedureNumber, this.Version, requestCodec, replyCodec );
     }

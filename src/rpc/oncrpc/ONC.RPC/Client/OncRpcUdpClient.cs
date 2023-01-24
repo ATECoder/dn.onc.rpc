@@ -194,6 +194,8 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     #region " actions "
 
+    private readonly object _lock = new object();
+
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>
     /// The <see cref="OncRpcUdpClient"/> uses a similar timeout scheme as
@@ -210,7 +212,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     public override void Call( int procedureNumber, int versionNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
         if ( this._socket is null || this._encoder is null || this._encoder is null ) return;
-        lock ( this )
+        lock ( _lock )
             //Refresh:
             for ( int refreshesLeft = 1; refreshesLeft >= 0; --refreshesLeft )
             {
@@ -553,7 +555,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     {
 
         if ( this._socket is null || this._encoder is null || this._decoder is null ) return;
-        lock ( this )
+        lock ( _lock )
         {
 
             // First, build the ONC/RPC call header. Then put the sending
@@ -599,12 +601,12 @@ public class OncRpcUdpClient : OncRpcClientBase
                     // Calculate timeout until the total timeout is reached, so
                     // we can try to meet the overall deadline.
 
-                    TimeSpan currentTimeout = stopTime - DateTime.Now;
-                    if ( currentTimeout.TotalMilliseconds < 1 )
-                        currentTimeout = TimeSpan.FromMilliseconds( 1 );
+                    TimeSpan timeRemaining = stopTime - DateTime.Now;
 
                     // @atecoder: fix timeout; was .Seconds, that is, 1000 times larger.
-                    this._socket.ReceiveTimeout = currentTimeout.Milliseconds;
+                    // also, must be at least 1ms.
+
+                    this._socket.ReceiveTimeout =( int ) Math.Max( 1, timeRemaining.TotalMilliseconds ) ;
 
                     // Then wait for datagrams to arrive...
 

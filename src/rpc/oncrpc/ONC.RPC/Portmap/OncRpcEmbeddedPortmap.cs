@@ -25,7 +25,7 @@ public class OncRpcEmbeddedPortmapService
 {
 
     /// <summary>   The default Portmap service startup time in milliseconds. </summary>
-    public static int StartupTimeDefault = 200;
+    public static int StartupTimeDefault = 250;
 
     #region " construction and cleanup "
 

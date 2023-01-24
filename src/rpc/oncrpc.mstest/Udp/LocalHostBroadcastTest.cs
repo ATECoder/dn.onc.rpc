@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using System.Diagnostics;
 
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.MSTest.Tcp;
@@ -29,7 +30,7 @@ public class LocalHostBroadcastTest
             Logger.Writer.LogInformation( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}" );
             _server = new();
 
-            _server.PropertyChanged += OnServerPropertyChanged;
+            // _server.PropertyChanged += OnServerPropertyChanged;
             _ = Task.Factory.StartNew( () => {
                 Logger.Writer.LogInformation( "starting the server task; this takes ~6 seconds..." );
                 _server.Run();
@@ -133,7 +134,6 @@ public class LocalHostBroadcastTest
     [TestMethod]
     public void ClientShouldBroadcast()
     {
-
         Assert.IsTrue( _server?.Running );
 
         // Create a portmap client object, which can then be used to contact

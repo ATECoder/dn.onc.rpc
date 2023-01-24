@@ -55,7 +55,6 @@ public class RemoteHostBroadcastTest
 	public static void ReplyReceived( object? sender, OncRpcBroadcastEventArgs e )
     {
         _portmappers.Add( e.RemoteEndPoint );
-        Console.Out.Write( "." );
     }
 
     /// <summary>   Report reply failures. </summary>

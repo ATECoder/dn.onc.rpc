@@ -185,6 +185,8 @@ public class OncRpcTcpClient : OncRpcClientBase
 
     #region " actions "
 
+    private readonly object _lock = new object();
+
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>
     /// Note!: <para>
@@ -207,7 +209,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     public override void Call( int procedureNumber, int versionNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
         if ( this._socket is null || this.Encoder is null || this.Decoder is null ) return;
-        lock ( this )
+        lock ( _lock )
             // Refresh:
             for ( int refreshesLeft = 1; refreshesLeft >= 0; --refreshesLeft )
             {
@@ -358,7 +360,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     public virtual void BatchCall( int procedureNumber, IXdrCodec requestCodec, bool flush )
     {
         if ( this._socket is null || this.Encoder is null ) { return; }
-        lock ( this )
+        lock ( _lock )
         {
             // First, build the ONC/RPC call header. Then put the sending
             // stream into a known state and encode the parameters to be
