@@ -47,7 +47,6 @@ public class OncRpcTcpTests
             _ = _server.ServerStarted( 2 * OncRpcTcpTests.ServerStartTimeTypical, OncRpcTcpTests.ServerStartLoopDelay );
 
             Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Running ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
-            _portMapService = _server!.EmbeddedPortmapService!.EmbeddedPortmapService;
         }
         catch ( Exception ex )
         {
@@ -66,20 +65,13 @@ public class OncRpcTcpTests
     {
         if ( _server is not null )
         {
-            if ( _server.Running )
-            {
-                _server.StopRpcProcessing();
-            }
+            _server.EmbeddedPortmapService?.Dispose();
             _server.Dispose();
             _server = null;
         }
-        // this does not solve the test abortion issue on testing the broadcast.
-        // _portMapService?.Dispose();
     }
 
-    private static OncRpcPortMapService? _portMapService;
     private static OncRpcTcpServer? _server;
-
 
     #endregion
 

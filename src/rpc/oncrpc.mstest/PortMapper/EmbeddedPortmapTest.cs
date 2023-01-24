@@ -51,8 +51,7 @@ public class EmbeddedPortmapTest
 
         Logger.Writer.LogInformation( "Starting the embedded portmap service" );
         Stopwatch stopwatch = Stopwatch.StartNew();
-        OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
-        // OncRpcEmbeddedPortmapService epm = EmbeddedPortmapTest.AssertPortmapServiceShouldStart();
+        using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
         Logger.Writer.LogInformation( $"The embedded portmap service started in {stopwatch.ElapsedMilliseconds:0}ms" );
 
         // Now register dummy ONC/RPC program. Note that the embedded
@@ -64,21 +63,22 @@ public class EmbeddedPortmapTest
         int dummyPort = 42;
 
         using OncRpcPortmapClient pmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, Client.OncRpcUdpClient.TransmitTimeoutDefault );
-        Logger.Writer.LogInformation( "Deregistering non-existing program: " );
+        Logger.Writer.LogInformation( "Deregistering non-existing program;" );
         bool actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsFalse( actual );
-        Logger.Writer.LogInformation( "   Passed." );
+        Logger.Writer.LogInformation( "deregistering a non-existing program was ignored." );
 
-        Console.Out.Write( "Registering dummy program: " );
+        Console.Out.Write( "Registering dummy program;" );
         actual = pmap.SetPort( dummyProgram, dummyVersion, OncRpcProtocols.OncRpcTcp, dummyPort );
         Assert.IsTrue( actual );
-        Logger.Writer.LogInformation( "    Passed." );
+        Logger.Writer.LogInformation( "Registering a dummy program worked." );
 
-        Console.Out.Write( "Deregistering dummy program: " );
+        Console.Out.Write( "Deregistering dummy program;" );
         actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsTrue( actual );
-        Logger.Writer.LogInformation( "    Passed." );
+        Logger.Writer.LogInformation( "Deregistering the registered dummy program worked." );
 
+#if false
         // let the service stop.
         int timeout = 1000;
         DateTime endtime = DateTime.Now.AddMilliseconds( timeout );
@@ -88,10 +88,12 @@ public class EmbeddedPortmapTest
         // was started within this test.
         if ( OncRpcEmbeddedPortmapServiceStub.TryPingPortmapService() ) // && !externalPortmap )
             Assert.Fail( "ERROR: embedded portmap service still running." );
+#endif
 
         // dispose of the portmap service
-        // this does not solve the test abortion issue on testing the broadcast.
-        // epm?.PortmapService?.Dispose();
+        Logger.Writer.LogInformation( $"Exiting test method; {nameof(OncRpcEmbeddedPortmapServiceStub)} will be disposed..." );
+
+
     }
 
 }

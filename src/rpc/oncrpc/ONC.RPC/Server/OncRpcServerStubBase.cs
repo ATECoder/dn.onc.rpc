@@ -89,7 +89,10 @@ public abstract class OncRpcServerStubBase : IDisposable
         }
 
         // free unmanaged resources and override finalizer
-        this.StopRpcProcessing();
+
+        // if this works, this should also lead to closing.
+        if ( this.Running )
+            this.StopRpcProcessing();
 
         // await for the port map service to stop running
         DateTime endTime = DateTime.Now.AddMilliseconds( 1000 );
@@ -97,10 +100,8 @@ public abstract class OncRpcServerStubBase : IDisposable
         {
             OncRpcServerStubBase.Delay( 100 );
         }
-        if ( !this.Running )
-            this.Close();
-        else
-            throw new InvalidOperationException( "Server still running after stopping RPC Processing." );
+        if ( this.Running )
+            throw new InvalidOperationException( "Server still running after sending the stop signal." );
 
         // set large fields to null
     }

@@ -15,8 +15,7 @@ public class PortmapGetPortTest
     public void PortmapShouldGetPort()
     {
 
-        OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
-        // OncRpcEmbeddedPortmapService epm = EmbeddedPortmapTest.AssertPortmapServiceShouldStart();
+        using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
 
         IPHostEntry host = Dns.GetHostEntry( Dns.GetHostName() );
 
@@ -36,14 +35,14 @@ public class PortmapGetPortTest
 
         // Ping the port mapper...
 
-        Console.Out.Write( "pinging port mapper: " );
+        Logger.Writer.LogInformation( "pinging port mapper;" );
         portmap.PingPortmapService();
-        Logger.Writer.LogInformation( "    port mapper is alive." );
+        Logger.Writer.LogInformation( "port mapper pinged." );
 
         // Ask for a non-existent ONC/RPC server.
 
         int port;
-        Console.Out.Write( "getPort() for non-existing program: " );
+        Logger.Writer.LogInformation( $"{nameof(OncRpcPortmapClient.GetPort)} for non-existing program" );
         try
         {
             port = portmap.GetPort( 1, 1, OncRpcProtocols.OncRpcUdp );
@@ -55,12 +54,12 @@ public class PortmapGetPortTest
             {
                 Assert.Fail( $"method call failed unexpectedly: {e}" );
             }
-            Logger.Writer.LogInformation( "succeeded (RPC_PROGNOTREGISTERED)." );
+            Logger.Writer.LogInformation( $"succeeded; received error code ({OncRpcExceptionReason.OncRpcProgramNotRegistered}({( int )OncRpcExceptionReason.OncRpcProgramNotRegistered})." );
         }
 
         // Register dummy ONC/RPC server.
 
-        Console.Out.Write( "setPort() dummy server identification: " );
+        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.SetPort )} dummy server identification: " );
         try
         {
             _ = portmap.SetPort( 1, 42, OncRpcProtocols.OncRpcUdp, 65535 );
@@ -69,13 +68,12 @@ public class PortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Logger.Writer.LogInformation( "    succeeded." );
+        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.SetPort )} succeeded." );
 
         // Now dump the current list of registered servers.
         OncRpcServerIdentifierCodec[] list = Array.Empty<OncRpcServerIdentifierCodec>();
-        int i;
         bool found = false;
-        Console.Out.Write( "listServers(): " );
+        Logger.Writer.LogInformation( $"executing {nameof( OncRpcPortmapClient.ListRegisteredServers )}" );
         try
         {
             list = portmap.ListRegisteredServers();
@@ -84,20 +82,20 @@ public class PortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Logger.Writer.LogInformation( "    succeeded." );
+        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.ListRegisteredServers )} succeeded." );
 
-        Logger.Writer.LogInformation( "Servers(): " );
+        Logger.Writer.LogInformation( "listing Registered servers" );
         Logger.Writer.LogInformation( $" Program Version Protocol Port" );
-        for ( i = 0; i < list.Length; ++i )
+        foreach ( OncRpcServerIdentifierCodec value in list )
         {
-            if ( list[i].Program == 1 && list[i].Version == 42 && list[i].Protocol == OncRpcProtocols.OncRpcUdp && list[i].Port == 65535 )
+            if ( value.Program == 1 && value.Version == 42 && value.Protocol == OncRpcProtocols.OncRpcUdp && value.Port == 65535 )
                 found = true;
-            Logger.Writer.LogInformation( $"  {list[i].Program} {list[i].Version} {list[i].Protocol} {list[i].Port}" );
+            Logger.Writer.LogInformation( $"{value.Program} {value.Version} {value.Protocol} {value.Port}" );
         }
-        Assert.IsTrue( found, "registered dummy server ident not found." );
+        Assert.IsTrue( found, "expected dummy server was not found among the registered servers." );
 
         // Deregister dummy ONC/RPC server.
-        Console.Out.Write( "unsetPort() dummy server identification: " );
+        Logger.Writer.LogInformation( $"executing {nameof( OncRpcPortmapClient.UnsetPort )} dummy server identification: " );
         try
         {
             _ = portmap.UnsetPort( 1, 42 );
@@ -106,12 +104,12 @@ public class PortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Logger.Writer.LogInformation( "    succeeded." );
+        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.UnsetPort )} succeeded." );
 
         // Now dump again the current list of registered servers.
         found = false;
         list = Array.Empty<OncRpcServerIdentifierCodec>();
-        Console.Out.Write( "listServers(): " );
+        Logger.Writer.LogInformation( $"executing {nameof( OncRpcPortmapClient.ListRegisteredServers )}" );
         try
         {
             list = portmap.ListRegisteredServers();
@@ -120,23 +118,18 @@ public class PortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Logger.Writer.LogInformation( "     succeeded." );
-        for ( i = 0; i < list.Length; ++i )
-            if ( list[i].Program == 1 && list[i].Version == 42 && list[i].Protocol == OncRpcProtocols.OncRpcUdp && list[i].Port == 65535 )
-            {
-                found = true;
-                break;
-            }
-        if ( found )
+        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.ListRegisteredServers )}succeeded." );
+
+        foreach ( OncRpcServerIdentifierCodec value in list )
         {
-            Assert.Fail( "registered dummy server ident still found after deregistering." );
+            if ( value.Program == 1 && value.Version == 42 && value.Protocol == OncRpcProtocols.OncRpcUdp && value.Port == 65535 )
+                Assert.Fail( $"registered dummy ({value.Program},{value.Version}) server still found after deregistering." );
         }
 
         // Release resources bound by portmap client object as soon as possible
         portmap.Close();
 
         // dispose of the portmap service
-        // this does not solve the test abortion issue on testing the broadcast.
-        // epm?.PortmapService?.Dispose();
+        Logger.Writer.LogInformation( $"Exiting test method; {nameof( OncRpcEmbeddedPortmapServiceStub )} will be disposed..." );
     }
 }

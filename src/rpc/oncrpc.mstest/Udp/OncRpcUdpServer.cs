@@ -161,13 +161,11 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     /// </remarks>
     public override void Run()
     {
-        _ = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
-#if false
-        // OncRpcUdpServer.EstablishPortmapService();
-#endif
+        using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
         base.Run();
     }
 
+#if false
     /// <summary>
     /// Process incoming remote procedure call requests from all specified transports.
     /// </summary>
@@ -205,10 +203,11 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
     {
         this.StopRpcProcessing();
     }
+#endif
 
-#endregion
+    #endregion
 
-#region " Handle Procedure calls "
+    #region " Handle Procedure calls "
 
     /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>
     /// <remarks>
@@ -239,7 +238,7 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
         {
             call.RetrieveCall( VoidXdrCodec.VoidXdrCodecInstance );
             call.Reply( VoidXdrCodec.VoidXdrCodecInstance );
-            this.Shutdown();
+            this.StopRpcProcessing();
         }
         else
         {

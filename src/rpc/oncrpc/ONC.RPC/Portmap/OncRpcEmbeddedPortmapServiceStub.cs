@@ -20,7 +20,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcEmbeddedPortmapServiceStub
+public class OncRpcEmbeddedPortmapServiceStub : IDisposable
 {
 
     #region " construction and cleanup "
@@ -116,16 +116,78 @@ public class OncRpcEmbeddedPortmapServiceStub
 
     }
 
-#endregion
+    #region " disposable implementation "
 
-#region " members "
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
+    /// resources.
+    /// </summary>
+    /// <remarks> 
+    /// Takes account of and updates <see cref="IsDisposed"/>.
+    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// </remarks>
+    public void Dispose()
+    {
+        if ( this.IsDisposed ) { return; }
+        try
+        {
+            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            this.Dispose( true );
+
+            // uncomment the following line if Finalize() is overridden above.
+            GC.SuppressFinalize( this );
+        }
+        catch ( Exception ex ) { Logger.Writer.LogMemberError( "Exception disposing", ex ); }
+        finally
+        {
+            this.IsDisposed = true;
+        }
+    }
+
+    /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
+    /// <value> True if this object is disposed, false if not. </value>
+    protected bool IsDisposed { get; private set; }
+
+    /// <summary>
+    /// Releases the unmanaged resources used by the XdrDecodingStreamBase and optionally releases
+    /// the managed resources.
+    /// </summary>
+    /// <param name="disposing">    True to release both managed and unmanaged resources; false to
+    ///                             release only unmanaged resources. </param>
+    protected virtual void Dispose( bool disposing )
+    {
+        if ( disposing )
+        {
+            // dispose managed state (managed objects)
+        }
+
+        // free unmanaged resources and override finalizer
+        // I am assuming that the socket used in the derived classes include unmanaged resources.
+        this._embeddedPortmapService?.Dispose();
+        this._embeddedPortmapService = null;
+
+        // set large fields to null
+    }
+
+    /// <summary>   Finalizer. </summary>
+    ~OncRpcEmbeddedPortmapServiceStub()
+    {
+        if ( this.IsDisposed ) { return; }
+        this.Dispose( false );
+    }
+
+    #endregion
+
+    #endregion
+
+    #region " members "
 
     /// <summary>
     /// Portmap object acting as embedded portmap service or (<see langword="null"/>)
     /// if no embedded portmap service is necessary because the operating system already supplies one
     /// or another port mapper is already running.
     /// </summary>
-    private readonly OncRpcEmbeddedPortmapService? _embeddedPortmapService;
+    private OncRpcEmbeddedPortmapService? _embeddedPortmapService;
 
     /// <summary>   Returns the embedded portmap service. </summary>
     /// <returns>

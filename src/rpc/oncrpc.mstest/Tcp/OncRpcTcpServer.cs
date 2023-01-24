@@ -3,6 +3,7 @@ using cc.isr.ONC.RPC.Portmap;
 using cc.isr.ONC.RPC.Server;
 using cc.isr.ONC.RPC.MSTest.Codecs;
 using cc.isr.ONC.RPC.Logging;
+using System.Security.Cryptography;
 
 namespace cc.isr.ONC.RPC.MSTest.Tcp;
 
@@ -135,7 +136,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         protected set => _ = this.SetProperty( this.Running, value, () => base.Running = value );
     }
 
-
     /// <summary>   Gets or sets the embedded portmap service. </summary>
     /// <remarks> @atecoder: This was added to allow the disposal of the Portmap service
     /// with unit testing. </remarks>
@@ -155,7 +155,8 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// </remarks>
     public override void Run()
     {
-        this.EmbeddedPortmapService = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
+        using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
+        this.EmbeddedPortmapService = epm;
         base.Run();
     }
 
