@@ -1,10 +1,9 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
+namespace cc.isr.ONC.RPC.Client;
 
-namespace cc.isr.ONC.RPC.MSTest.Udp;
-
-public partial class OncRpcUdpServer : INotifyPropertyChanged
+public partial class OncRpcClientStubBase : INotifyPropertyChanged
 {
     /// <summary>   Occurs when a property value changes. </summary>
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -132,6 +131,5 @@ public partial class OncRpcUdpServer : INotifyPropertyChanged
 
         return true;
     }
-
 
 }

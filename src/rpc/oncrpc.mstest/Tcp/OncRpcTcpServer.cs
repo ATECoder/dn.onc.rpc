@@ -126,83 +126,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 #endif
     #endregion
 
-    #region " START / STOP "
-
-    /// <summary>   Gets or sets a value indicating whether the server is running. </summary>
-    /// <value> True if running, false if not. </value>
-    public override bool Running
-    {
-        get => base.Running;
-        protected set => _ = this.SetProperty( this.Running, value, () => base.Running = value );
-    }
-
-    /// <summary>   Gets or sets the embedded portmap service. </summary>
-    /// <remarks> @atecoder: This was added to allow the disposal of the Portmap service
-    /// with unit testing. </remarks>
-    /// <value> The embedded portmap service. </value>
-    public OncRpcEmbeddedPortmapServiceStub? EmbeddedPortmapService { get; private set; }
-
-    /// <summary>
-    /// All inclusive convenience method: register server transports with port mapper, then Runs the
-    /// call dispatcher until the server is signaled to shut down, and finally deregister the
-    /// transports.
-    /// </summary>
-    /// <remarks>
-    /// All inclusive convenience method: register server transports with port mapper, then Runs the
-    /// call dispatcher until the server is signaled to shut down, and finally deregister the 
-    /// transports.
-    /// TODO: Implement on connected upon registration so as to provide connection information to event listeners.
-    /// </remarks>
-    public override void Run()
-    {
-        using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
-        this.EmbeddedPortmapService = epm;
-        base.Run();
-    }
-
-#if false
-    /// <summary>
-    /// Processes incoming remote procedure call requests from all specified transports.
-    /// </summary>
-    /// <remarks>
-    /// To end processing and to shut the server down signal the <see cref="OncRpcServerStubBase.shutdownSignal"/>
-    /// object. Note that the thread on which <see cref="Run()"/> is called will ignore any
-    /// interruptions and will silently swallow them.
-    /// </remarks>
-    /// <param name="transports">           Array of server transport objects for which processing of
-    ///                                     remote procedure call requests should be done. </param>
-    /// <param name="closeUponShutdown">    True to close upon shutdown. </param>
-    public override void Run( OncRpcTransportBase[] transports, bool closeUponShutdown )
-    {
-        this.Running = true;
-        base.Run( transports, closeUponShutdown );
-    }
-
-    /// <summary>
-    /// Notifies the RPC server to stop processing of remote procedure call requests as soon as
-    /// possible.
-    /// </summary>
-    /// <remarks>
-    /// Notifies the RPC server to stop processing of remote procedure call requests as soon as
-    /// possible. Note that each transport has its own thread, so processing will not stop before the
-    /// transports have been closed by calling the <see cref="Close(OncRpcTransportBase[])"/>
-    /// method of the server.
-    /// </remarks>
-    public override void StopRpcProcessing()
-    {
-        this.Running = false;
-        base.StopRpcProcessing();
-    }
-
-    /// <summary>   Shuts down this server. </summary>
-    public virtual void Shutdown()
-    {
-        this.StopRpcProcessing();
-    }
-#endif
-
-    #endregion
-
     #region " Handle Procedure calls "
 
     /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>
@@ -367,7 +290,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     }
 
-#endregion
+    #endregion
 
     #region " Remote Procedures "
 
@@ -408,13 +331,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
         StringBuilder reply = new();
         foreach ( StringCodec stringCodec in inputCodec.GetValues() )
             _ = reply.Append( stringCodec.Value );
-#if false
-        int size = inputCodec.GetValues().Length;
-        for ( int idx = 0; idx < size; ++idx )
-        {
-            _ = result.Append( inputCodec.GetValues()[idx].Value );
-        }
-#endif
         return reply.ToString();
     }
 

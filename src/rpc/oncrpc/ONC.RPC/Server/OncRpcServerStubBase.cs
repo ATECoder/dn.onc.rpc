@@ -11,7 +11,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public abstract class OncRpcServerStubBase : IDisposable
+public abstract partial class OncRpcServerStubBase : IDisposable
 {
 
     #region " construction and cleanup "
@@ -130,14 +130,20 @@ public abstract class OncRpcServerStubBase : IDisposable
         get => this._characterEncoding;
         set {
             this._characterEncoding = value;
+            this.SetProperty( this.CharacterEncoding, value, () => this._characterEncoding = value );
             foreach ( var transport in this._transports )
                 transport.CharacterEncoding = value;
         }
     }
 
-    /// <summary>   Gets or sets a value indicating whether the port mapper server is running. </summary>
+    private bool _running;
+    /// <summary>   Gets or sets a value indicating whether the server is running. </summary>
     /// <value> True if running, false if not. </value>
-    public virtual bool Running { get; protected set; }
+    public virtual bool Running
+    {
+        get => this._running;
+        protected set => _ = this.SetProperty( this.Running, value, () => this._running = value );
+    }
 
     #endregion
 
@@ -197,11 +203,6 @@ public abstract class OncRpcServerStubBase : IDisposable
     {
         foreach ( OncRpcTransportBase transport in transports)
             transport.Register();
-#if false
-        int size = transports.Length;
-        for ( int idx = 0; idx < size; ++idx )
-            transports[idx].Register();
-#endif
     }
 
     /// <summary>   Unregister a set of server transports from the local portmapper. </summary>

@@ -3,6 +3,8 @@ using System.Diagnostics;
 
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.MSTest.Tcp;
+using cc.isr.ONC.RPC.Portmap;
+
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 [TestClass]
@@ -32,7 +34,9 @@ public class LocalHostBroadcastTest
 
             // _server.PropertyChanged += OnServerPropertyChanged;
             _ = Task.Factory.StartNew( () => {
-                Logger.Writer.LogInformation( "starting the server task; this takes ~6 seconds..." );
+                Logger.Writer.LogInformation( "starting the embedded port map service; this takes ~3.5 seconds..." );
+                using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
+                Logger.Writer.LogInformation( "starting the server task; this takes ~2.5 seconds..." );
                 _server.Run();
             } );
 

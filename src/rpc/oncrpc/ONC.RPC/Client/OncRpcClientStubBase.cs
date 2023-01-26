@@ -17,7 +17,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// </code> 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.
 /// </remarks>
-public abstract class OncRpcClientStubBase : IDisposable
+public abstract partial class OncRpcClientStubBase : IDisposable
 {
 
     #region " construction and cleanup "

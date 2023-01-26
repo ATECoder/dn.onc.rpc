@@ -36,7 +36,9 @@ public class OncRpcTcpTests
 
             _server.PropertyChanged += OnServerPropertyChanged;
             _ = Task.Factory.StartNew( () => {
-                Logger.Writer.LogInformation( "starting the server task; this takes ~6 seconds..." );
+                Logger.Writer.LogInformation( "starting the portmap service; this takes ~3.5 seconds..." );
+                using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
+                Logger.Writer.LogInformation( "starting the server task; this takes ~2.4 seconds..." );
                 _server.Run();
             } );
 
@@ -65,7 +67,6 @@ public class OncRpcTcpTests
     {
         if ( _server is not null )
         {
-            _server.EmbeddedPortmapService?.Dispose();
             _server.Dispose();
             _server = null;
         }

@@ -1,10 +1,9 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
+namespace cc.isr.ONC.RPC.Server;
 
-namespace cc.isr.ONC.RPC.MSTest.Tcp;
-
-public partial class OncRpcTcpServer : INotifyPropertyChanged
+public partial class OncRpcServerStubBase : INotifyPropertyChanged
 {
     /// <summary>   Occurs when a property value changes. </summary>
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -23,7 +22,7 @@ public partial class OncRpcTcpServer : INotifyPropertyChanged
     /// <param name="value">        The value. </param>
     /// <param name="propertyName"> (Optional) Name of the property. </param>
     /// <returns>   True if it succeeds, false if it fails. </returns>
-    protected virtual bool OnPropertyChanged<T>( ref T backingField, T value, [CallerMemberName] string? propertyName = "" )
+    protected virtual bool OnPropertyChanged<T>( ref T backingField, T value, [CallerMemberName] string? propertyName = null )
     {
         if ( EqualityComparer<T>.Default.Equals( backingField, value ) )
             return false;
@@ -46,7 +45,6 @@ public partial class OncRpcTcpServer : INotifyPropertyChanged
         this.OnPropertyChanged( propertyName );
         return true;
     }
-
 
     /// <summary>
     /// Compares the current and new values for a given nested property. If the value has changed,
