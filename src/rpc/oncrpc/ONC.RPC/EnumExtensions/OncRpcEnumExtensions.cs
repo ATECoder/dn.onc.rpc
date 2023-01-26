@@ -83,16 +83,16 @@ public static class OncRpcEnumExtensions
             : throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcExceptionReason )}" );
     }
 
-    /// <summary>   An int extension method that converts a value to a <see cref="OncRpcProtocols"/>. </summary>
+    /// <summary>   An int extension method that converts a value to a <see cref="OncRpcProtocol"/>. </summary>
     /// <exception cref="ArgumentException">    Thrown when one or more arguments have unsupported or
     ///                                         illegal values. </exception>
     /// <param name="value">    An enum constant representing the enum value. </param>
     /// <returns>   Value as the OncRpcProtocols. </returns>
-    public static OncRpcProtocols ToProtocols( this int value )
+    public static OncRpcProtocol ToProtocols( this int value )
     {
-        return Enum.IsDefined( typeof( OncRpcProtocols ), value )
-            ? ( OncRpcProtocols ) value
-            : throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcProtocols )}" );
+        return Enum.IsDefined( typeof( OncRpcProtocol ), value )
+            ? ( OncRpcProtocol ) value
+            : throw new ArgumentException( $"{typeof( int )} value of {value} cannot be cast to {nameof( OncRpcProtocol )}" );
     }
 
     /// <summary>   An int extension method that converts a value to a <see cref="OncRpcRejectStatus"/>. </summary>

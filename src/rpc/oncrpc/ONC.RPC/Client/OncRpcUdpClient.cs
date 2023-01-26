@@ -58,7 +58,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     ///                                 or data is received within replies. This timeout must be
     ///                                 greater than 0. </param>
     public OncRpcUdpClient( IPAddress host, int program, int version, int port, int bufferSize, int transmitTimeout )
-                                                                      : base( host, program, version, port, OncRpcProtocols.OncRpcUdp )
+                                                                      : base( host, program, version, port, OncRpcProtocol.OncRpcUdp )
     {
         this.TransmitTimeout = transmitTimeout;
         this.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;

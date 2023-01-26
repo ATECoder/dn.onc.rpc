@@ -42,11 +42,11 @@ public abstract class OncRpcTransportBase : IDisposable
     ///                                     dispatching (handling) ONC/RPC calls. </param>
     /// <param name="port">                 Number of port where the server will wait for incoming
     ///                                     calls. </param>
-    /// <param name="protocol">             The protocol, .e.g., <see cref="OncRpcProtocols.OncRpcTcp"/>
-    ///                                     or <see cref="OncRpcProtocols.OncRpcUdp"/> </param>
+    /// <param name="protocol">             The protocol, .e.g., <see cref="OncRpcProtocol.OncRpcTcp"/>
+    ///                                     or <see cref="OncRpcProtocol.OncRpcUdp"/> </param>
     /// <param name="registeredPrograms">   Array of program and version number tuples of the ONC/RPC
     ///                                     programs and versions handled by this transport. </param>
-    protected OncRpcTransportBase( IOncRpcDispatchable dispatcher, int port, OncRpcProtocols protocol,
+    protected OncRpcTransportBase( IOncRpcDispatchable dispatcher, int port, OncRpcProtocol protocol,
                                    OncRpcProgramInfo[] registeredPrograms )
     {
         this.Dispatcher = dispatcher;
@@ -186,9 +186,9 @@ public abstract class OncRpcTransportBase : IDisposable
     /// <value> The Port number where we're listening for incoming ONC/RPC requests. </value>
     internal int Port { get; set; }
 
-    /// <summary>   Gets or sets the protocol, e.g., <see cref="OncRpcProtocols.OncRpcTcp"/> or <see cref="OncRpcProtocols.OncRpcTcp"/>. </summary>
+    /// <summary>   Gets or sets the protocol, e.g., <see cref="OncRpcProtocol.OncRpcTcp"/> or <see cref="OncRpcProtocol.OncRpcTcp"/>. </summary>
     /// <value> The protocol. </value>
-    internal OncRpcProtocols Protocol { get; private set; }
+    internal OncRpcProtocol Protocol { get; private set; }
 
     private Encoding _characterEncoding;
     /// <summary>
@@ -233,7 +233,7 @@ public abstract class OncRpcTransportBase : IDisposable
     {
         try
         {
-            using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
+            using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
             pmapClient.OncRpcClient.IOTimeout= OncRpcUdpClient.IOTimeoutDefault;
             foreach ( var transportRegistrationInfo in this.RegisteredPrograms )
             {
@@ -264,7 +264,7 @@ public abstract class OncRpcTransportBase : IDisposable
     {
         try
         {
-            using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
+            using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
             pmapClient.OncRpcClient.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
             foreach ( OncRpcProgramInfo registeredProgram in this.RegisteredPrograms )
                 _ = pmapClient.UnsetPort( registeredProgram.Program, registeredProgram.Version );

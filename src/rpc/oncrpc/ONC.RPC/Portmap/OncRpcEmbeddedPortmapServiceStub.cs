@@ -213,7 +213,7 @@ public class OncRpcEmbeddedPortmapServiceStub : IDisposable
     /// </returns>
     public static bool TryPingPortmapService( int ioTimeout = 100, int transmitTimeout = 25 )
     {
-        using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, transmitTimeout );
+        using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, transmitTimeout );
         pmapClient.OncRpcClient.IOTimeout = ioTimeout;
         return pmapClient.TryPingPortmapService();
     }

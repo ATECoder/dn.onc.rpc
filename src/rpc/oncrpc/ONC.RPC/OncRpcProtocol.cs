@@ -9,7 +9,7 @@ namespace cc.isr.ONC.RPC;
 ///  
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public enum OncRpcProtocols
+public enum OncRpcProtocol
 {
 
     /// <summary>   An enum constant representing the not specified option. </summary>

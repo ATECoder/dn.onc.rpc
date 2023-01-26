@@ -15,13 +15,13 @@ namespace cc.isr.ONC.RPC.Client;
 /// In order to communicate with an ONC/RPC server, you need to create an
 /// ONC/RPC client, represented by classes derived from <see cref="OncRpcClientBase"/>. The most
 /// generic way to generate an ONC/RPC client is as follows: use
-/// <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocols, int)"/> and specify: </para>
+/// <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocol, int)"/> and specify: </para>
 /// <list type="bullet"> <item>
 /// the host (of class <see cref="IPAddress"/>) where the ONC/RPC server resides, </item><item>
 /// the ONC/RPC program number of the server to contact,</item><item>
 /// the program's version number,</item><item>
 /// and finally the IP protocol to use when talking to the server. This can be either
-/// <see cref="OncRpcProtocols.OncRpcUdp"/> or <see cref="OncRpcProtocols.OncRpcTcp"/>.</item></list> <para>
+/// <see cref="OncRpcProtocol.OncRpcUdp"/> or <see cref="OncRpcProtocol.OncRpcTcp"/>.</item></list> <para>
 ///  
 /// The next code snippet shows how to create an ONC/RPC client, which can
 /// communicate over UDP/IP with the ONC/RPC server for program number
@@ -56,7 +56,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// You might also get an IOException when using TCP/IP and the server
 /// cannot be contacted because it does not accept new connections.  </para> <para>
 /// 
-/// Instead of calling <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocols, int)"/>
+/// Instead of calling <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocol, int)"/>
 /// you can also directly create objects of classes <see cref="OncRpcTcpClient"/>
 /// and <see cref="OncRpcUdpClient"/>
 /// if you know at compile time which kind of IP protocol you will use. </para> <para>
@@ -202,10 +202,10 @@ public abstract class OncRpcClientBase : IDisposable
     /// <param name="port">     Port number of the ONC/RPC server. Specify <c>0</c>
     ///                         if this is not known and the portmap process located at host should
     ///                         be contacted to find out the port. </param>
-    /// <param name="protocol"> <see cref="OncRpcProtocols">Protocol</see> to be used for
+    /// <param name="protocol"> <see cref="OncRpcProtocol">Protocol</see> to be used for
     ///                         ONC/RPC calls. This information is necessary, so port lookups through 
     ///                         the portmapper can be done. </param>
-    internal OncRpcClientBase( IPAddress host, int program, int version, int port, OncRpcProtocols protocol )
+    internal OncRpcClientBase( IPAddress host, int program, int version, int port, OncRpcProtocol protocol )
     {
         // Set up the basics...
         this.Host = host;
@@ -222,9 +222,9 @@ public abstract class OncRpcClientBase : IDisposable
         // In case of tunneling through the HTTP protocol, we accept a port
         // number of zero and do not resolve it. This task is left up to
         // the other end of the HTTP tunnel (at the web server).
-        if ( port == 0 && protocol != OncRpcProtocols.OncRpcHttp )
+        if ( port == 0 && protocol != OncRpcProtocol.OncRpcHttp )
         {
-            using OncRpcPortmapClient pmapClient = new( host, OncRpcProtocols.OncRpcUdp, OncRpcUdpClient.TransmitTimeoutDefault );
+            using OncRpcPortmapClient pmapClient = new( host, OncRpcProtocol.OncRpcUdp, OncRpcUdpClient.TransmitTimeoutDefault );
             pmapClient.OncRpcClient.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
             port = pmapClient.GetPort( program, version, protocol );
         }
@@ -241,12 +241,12 @@ public abstract class OncRpcClientBase : IDisposable
     /// <param name="host">     Host address where the desired ONC/RPC server resides. </param>
     /// <param name="program">  Program number of the desired ONC/RPC server. </param>
     /// <param name="version">  Version number of the desired ONC/RPC server. </param>
-    /// <param name="protocol"> <see cref="OncRpcProtocols">Protocol</see>
+    /// <param name="protocol"> <see cref="OncRpcProtocol">Protocol</see>
     ///                         to be used for ONC/RPC calls. </param>
-    /// <param name="timeout">  The transmit timeout for <see cref="OncRpcProtocols.OncRpcUdp"/>
-    ///                         or the connection timeout for <see cref="OncRpcProtocols.OncRpcTcp"/>. </param>
+    /// <param name="timeout">  The transmit timeout for <see cref="OncRpcProtocol.OncRpcUdp"/>
+    ///                         or the connection timeout for <see cref="OncRpcProtocol.OncRpcTcp"/>. </param>
     /// <returns>   An OncRpcClient. </returns>
-    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, OncRpcProtocols protocol, int timeout )
+    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, OncRpcProtocol protocol, int timeout )
     {
         return NewOncRpcClient( host, program, version, 0, protocol, timeout );
     }
@@ -262,18 +262,18 @@ public abstract class OncRpcClientBase : IDisposable
     /// <param name="port">     Port number of the ONC/RPC server. Specify <c>0</c>
     ///                         if this is not known and the portmap process located at host should
     ///                         be contacted to find out the port. </param>
-    /// <param name="protocol"> <see cref="OncRpcProtocols">Protocol</see>
+    /// <param name="protocol"> <see cref="OncRpcProtocol">Protocol</see>
     ///                                                 to be used for ONC/RPC calls. </param>
     /// <param name="timeout">  This is the connect timeout in milliseconds for TCP/IP connection
     ///                         operation or UDP/IP transmission. The I/O for UDP and TCP connection
     ///                         is set to the default <see cref="OncRpcTcpClient"/> and <see cref="OncRpcUdpClient"/>
     ///                         default values. </param>
     /// <returns>   An OncRpcClient. </returns>
-    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, int port, OncRpcProtocols protocol, int timeout )
+    public static OncRpcClientBase NewOncRpcClient( IPAddress host, int program, int version, int port, OncRpcProtocol protocol, int timeout )
     {
         switch ( protocol )
         {
-            case OncRpcProtocols.OncRpcUdp:
+            case OncRpcProtocol.OncRpcUdp:
                 {
                     // Now we need to create a protocol client object, which will know
                     // how to create the network connection and how to send and receive
@@ -281,7 +281,7 @@ public abstract class OncRpcClientBase : IDisposable
                     return new OncRpcUdpClient( host, program, version, OncRpcUdpClient.BufferSizeDefault, port, timeout );
                 }
 
-            case OncRpcProtocols.OncRpcTcp:
+            case OncRpcProtocol.OncRpcTcp:
                 {
                     return new OncRpcTcpClient( host, program, version, port, OncRpcTcpClient.BufferSizeDefault, timeout );
                 }
@@ -289,7 +289,7 @@ public abstract class OncRpcClientBase : IDisposable
             default:
                 {
                     throw new OncRpcException(
-                                $"; expected {nameof( OncRpcProtocols.OncRpcUdp )}({OncRpcProtocols.OncRpcUdp}) or {nameof( OncRpcProtocols.OncRpcTcp )}({OncRpcProtocols.OncRpcTcp}); actual: {protocol}",
+                                $"; expected {nameof( OncRpcProtocol.OncRpcUdp )}({OncRpcProtocol.OncRpcUdp}) or {nameof( OncRpcProtocol.OncRpcTcp )}({OncRpcProtocol.OncRpcTcp}); actual: {protocol}",
                                  OncRpcExceptionReason.OncRpcUnknownIpProtocol );
                 }
         }

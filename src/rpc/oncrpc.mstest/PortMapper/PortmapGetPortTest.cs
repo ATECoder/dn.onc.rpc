@@ -28,7 +28,7 @@ public class PortmapGetPortTest
         // a local or remote ONC/RPC portmap process. In this test we contact
         // the local port mapper.
 
-        using OncRpcPortmapClient portmap = new( ipAddress!, OncRpcProtocols.OncRpcUdp, Client.OncRpcUdpClient.TransmitTimeoutDefault );
+        using OncRpcPortmapClient portmap = new( ipAddress!, OncRpcProtocol.OncRpcUdp, Client.OncRpcUdpClient.TransmitTimeoutDefault );
 
         // portmap.RetransmitMode = OncRpcUdpRetransmitMode.OncRpcFixedTimeout;
         // portmap.RetransmitTimeout = 3*1000;
@@ -45,7 +45,7 @@ public class PortmapGetPortTest
         Logger.Writer.LogInformation( $"{nameof(OncRpcPortmapClient.GetPort)} for non-existing program" );
         try
         {
-            port = portmap.GetPort( 1, 1, OncRpcProtocols.OncRpcUdp );
+            port = portmap.GetPort( 1, 1, OncRpcProtocol.OncRpcUdp );
             Assert.Fail( "method call failed (a non-existing program was found)." );
         }
         catch ( OncRpcException e )
@@ -62,7 +62,7 @@ public class PortmapGetPortTest
         Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.SetPort )} dummy server identification: " );
         try
         {
-            _ = portmap.SetPort( 1, 42, OncRpcProtocols.OncRpcUdp, 65535 );
+            _ = portmap.SetPort( 1, 42, OncRpcProtocol.OncRpcUdp, 65535 );
         }
         catch ( OncRpcException e )
         {
@@ -88,7 +88,7 @@ public class PortmapGetPortTest
         Logger.Writer.LogInformation( $" Program Version Protocol Port" );
         foreach ( OncRpcServerIdentifierCodec value in list )
         {
-            if ( value.Program == 1 && value.Version == 42 && value.Protocol == OncRpcProtocols.OncRpcUdp && value.Port == 65535 )
+            if ( value.Program == 1 && value.Version == 42 && value.Protocol == OncRpcProtocol.OncRpcUdp && value.Port == 65535 )
                 found = true;
             Logger.Writer.LogInformation( $"{value.Program} {value.Version} {value.Protocol} {value.Port}" );
         }
@@ -122,7 +122,7 @@ public class PortmapGetPortTest
 
         foreach ( OncRpcServerIdentifierCodec value in list )
         {
-            if ( value.Program == 1 && value.Version == 42 && value.Protocol == OncRpcProtocols.OncRpcUdp && value.Port == 65535 )
+            if ( value.Program == 1 && value.Version == 42 && value.Protocol == OncRpcProtocol.OncRpcUdp && value.Port == 65535 )
                 Assert.Fail( $"registered dummy ({value.Program},{value.Version}) server still found after deregistering." );
         }
 

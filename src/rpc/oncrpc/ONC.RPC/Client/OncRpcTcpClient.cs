@@ -68,7 +68,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     ///                             setting will apply. <i>Note that this timeout only applies to the
     ///                             connection phase, but <b>not</b> to later communication.</i> </param>
     public OncRpcTcpClient( IPAddress host, int program, int version, int port,
-                                            int bufferSize, int connectTimeout ) : base( host, program, version, port, OncRpcProtocols.OncRpcTcp )
+                                            int bufferSize, int connectTimeout ) : base( host, program, version, port, OncRpcProtocol.OncRpcTcp )
     {
 
         // Constructs the inherited part of our object. This will also try to

@@ -62,14 +62,14 @@ public class EmbeddedPortmapTest
         int dummyVersion = 42;
         int dummyPort = 42;
 
-        using OncRpcPortmapClient pmap = new( IPAddress.Loopback, OncRpcProtocols.OncRpcUdp, Client.OncRpcUdpClient.TransmitTimeoutDefault );
+        using OncRpcPortmapClient pmap = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, Client.OncRpcUdpClient.TransmitTimeoutDefault );
         Logger.Writer.LogInformation( "Deregistering non-existing program;" );
         bool actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsFalse( actual );
         Logger.Writer.LogInformation( "deregistering a non-existing program was ignored." );
 
         Console.Out.Write( "Registering dummy program;" );
-        actual = pmap.SetPort( dummyProgram, dummyVersion, OncRpcProtocols.OncRpcTcp, dummyPort );
+        actual = pmap.SetPort( dummyProgram, dummyVersion, OncRpcProtocol.OncRpcTcp, dummyPort );
         Assert.IsTrue( actual );
         Logger.Writer.LogInformation( "Registering a dummy program worked." );
 

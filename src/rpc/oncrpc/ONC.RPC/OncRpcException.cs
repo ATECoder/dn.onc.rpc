@@ -234,7 +234,7 @@ public enum OncRpcExceptionReason
 
     /// <summary>
     /// The caller specified an unknown/unsupported IP protocol. Currently, only
-    /// <see cref="OncRpcProtocols.OncRpcTcp"/> and <see cref="OncRpcProtocols.OncRpcUdp"/>
+    /// <see cref="OncRpcProtocol.OncRpcTcp"/> and <see cref="OncRpcProtocol.OncRpcUdp"/>
     /// are supported. <para>
     /// 
     /// Renamed from <c>RPC_UNKNOWNPROTO = 17</c>. </para></summary>

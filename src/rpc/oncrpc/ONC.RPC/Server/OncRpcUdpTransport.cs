@@ -80,7 +80,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// <param name="bufferSize">   Size of buffer for receiving and sending UDP/IP datagrams
     ///                             containing ONC/RPC call and reply messages. </param>
     public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddr, int port,
-        OncRpcProgramInfo[] info, int bufferSize ) : base( dispatcher, port, OncRpcProtocols.OncRpcUdp, info )
+        OncRpcProgramInfo[] info, int bufferSize ) : base( dispatcher, port, OncRpcProtocol.OncRpcUdp, info )
     {
 
         // Make sure the buffer is large enough and resize system buffers

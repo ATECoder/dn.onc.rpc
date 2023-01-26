@@ -12,7 +12,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// In addition, it is also possible to contact port mappers using TCP/IP. For this, the
 /// constructor of the
 /// <see cref="OncRpcPortmapClient"/> class also accepts a protocol parameter
-/// (<see cref="OncRpcPortmapClient(IPAddress, OncRpcProtocols, int)"/>).
+/// (<see cref="OncRpcPortmapClient(IPAddress, OncRpcProtocol, int)"/>).
 /// Technically spoken, instances of <see cref="OncRpcPortmapClient"/> are proxy objects.
 /// <see cref="OncRpcPortmapClient"/> objects currently speak protocol version
 /// 2. The newer transport-independent protocol versions 3 and 4 are
@@ -43,7 +43,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// (server) number <c>0x49678</c> (by coincidence this happens to be the program number of
 /// the <a href="http://www.acplt.org/ks">ACPLT/KS</a>
 /// protocol). To ask for the port number of a given program number, use the
-/// <see cref="GetPort(int, int, OncRpcProtocols)"/> </para> method.
+/// <see cref="GetPort(int, int, OncRpcProtocol)"/> </para> method.
 /// <code>
 /// int port;
 /// try {
@@ -60,13 +60,13 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// Logger.Writer.LogInformation( $"Program available at port {port}" );
 /// </code> <para>
 /// 
-/// In the call to <see cref="GetPort(int, int, OncRpcProtocols)"/>, the first parameter
+/// In the call to <see cref="GetPort(int, int, OncRpcProtocol)"/>, the first parameter
 /// specifies the ONC/RPC program number, the second parameter specifies the program's version
 /// number, and the third parameter specifies the IP protocol to use when issuing ONC/RPC calls.
-/// Currently, only <see cref="OncRpcProtocols.OncRpcUdp"/> and <see cref="OncRpcProtocols.OncRpcTcp"/>
+/// Currently, only <see cref="OncRpcProtocol.OncRpcUdp"/> and <see cref="OncRpcProtocol.OncRpcTcp"/>
 /// are supported. But who needs other protocols anyway?! </para> <para>
 /// 
-/// In case <see cref="GetPort(int, int, OncRpcProtocols)"/>
+/// In case <see cref="GetPort(int, int, OncRpcProtocol)"/>
 /// succeeds, it returns the number of the port where the appropriate ONC/RPC server waits for
 /// incoming ONC/RPC calls. If the ONC/RPC program is not registered with the particular ONC/RPC
 /// portmapper, an <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/>
@@ -119,18 +119,18 @@ public class OncRpcPortmapClient : IDisposable
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="host">     Host where to contact the portmapper. </param>
     /// <param name="protocol"> Protocol to use for contacting the portmapper. This can be either
-    ///                         <see cref="OncRpcProtocols.OncRpcUdp"/> or
-    ///                         <see cref="OncRpcProtocols.OncRpcTcp"/> (HTTP is currently
+    ///                         <see cref="OncRpcProtocol.OncRpcUdp"/> or
+    ///                         <see cref="OncRpcProtocol.OncRpcTcp"/> (HTTP is currently
     ///                         not supported). </param>
     /// <param name="timeout">  This is the connect timeout in milliseconds for TCP/IP connection
     ///                         operation or UDP/IP transmission. The I/O for UDP and TCP connection
     ///                         is set to the default <see cref="OncRpcTcpClient"/> and <see cref="OncRpcUdpClient"/>
     ///                         default values. </param>
-    public OncRpcPortmapClient( IPAddress host, OncRpcProtocols protocol, int timeout )
+    public OncRpcPortmapClient( IPAddress host, OncRpcProtocol protocol, int timeout )
     {
         switch ( protocol )
         {
-            case OncRpcProtocols.OncRpcUdp:
+            case OncRpcProtocol.OncRpcUdp:
                 {
                     this.OncRpcClient = new OncRpcUdpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
@@ -140,7 +140,7 @@ public class OncRpcPortmapClient : IDisposable
                     break;
                 }
 
-            case OncRpcProtocols.OncRpcTcp:
+            case OncRpcProtocol.OncRpcTcp:
                 {
                     this.OncRpcClient = new OncRpcTcpClient( host, OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                               OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
@@ -154,7 +154,7 @@ public class OncRpcPortmapClient : IDisposable
             default:
                 {
                     throw new OncRpcException(
-                                $"; expected {nameof( OncRpcProtocols.OncRpcUdp )}({OncRpcProtocols.OncRpcUdp}) or {nameof( OncRpcProtocols.OncRpcTcp )}({OncRpcProtocols.OncRpcTcp}); actual: {protocol}",
+                                $"; expected {nameof( OncRpcProtocol.OncRpcUdp )}({OncRpcProtocol.OncRpcUdp}) or {nameof( OncRpcProtocol.OncRpcTcp )}({OncRpcProtocol.OncRpcTcp}); actual: {protocol}",
                                 OncRpcExceptionReason.OncRpcUnknownIpProtocol );
                 }
         }
@@ -255,9 +255,9 @@ public class OncRpcPortmapClient : IDisposable
     /// <param name="version">  Program version number. </param>
     /// <param name="protocol"> Protocol later on used for communication with the ONC/RPC server in
     ///                         question. This can be one of the protocols constants defined in the
-    ///                         <see cref="OncRpcProtocols"/> interface. </param>
+    ///                         <see cref="OncRpcProtocol"/> interface. </param>
     /// <returns>   port number of ONC/RPC server in question. </returns>
-    public virtual int GetPort( int program, int version, OncRpcProtocols protocol )
+    public virtual int GetPort( int program, int version, OncRpcProtocol protocol )
     {
         // Fill in the request parameters. Note that requestCodec.Port is
         // not used. BTW - it is automatically initialized as 0 by the
@@ -294,13 +294,13 @@ public class OncRpcPortmapClient : IDisposable
     /// <param name="program">  The number of the program to be registered. </param>
     /// <param name="version">  The version number of the program. </param>
     /// <param name="protocol"> The protocol spoken by the ONC/RPC server. Can be one of the
-    ///                         <see cref="OncRpcProtocols"/> constants. </param>
+    ///                         <see cref="OncRpcProtocol"/> constants. </param>
     /// <param name="port">     The port number where the ONC/RPC server can be reached. </param>
     /// <returns>
     /// Indicates whether registration succeeded (<see langword="true"/>) or was denied by the portmapper
     /// (<see langword="false"/>).
     /// </returns>
-    public virtual bool SetPort( int program, int version, OncRpcProtocols protocol, int port )
+    public virtual bool SetPort( int program, int version, OncRpcProtocol protocol, int port )
     {
         // Fill in the request parameters.
         OncRpcServerIdentifierCodec requestCodec = new( program, version, protocol, port );
@@ -333,7 +333,7 @@ public class OncRpcPortmapClient : IDisposable
     public virtual bool UnsetPort( int program, int version )
     {
         // Fill in the request codec.
-        OncRpcServerIdentifierCodec requestCodec = new( program, version, OncRpcProtocols.NotSpecified, 0 );
+        OncRpcServerIdentifierCodec requestCodec = new( program, version, OncRpcProtocol.NotSpecified, 0 );
         BooleanXdrCodec replyCodec = new( false );
 
         // Try to contact the portmap process. If something goes "boing"
@@ -423,7 +423,7 @@ public class OncRpcPortmapClient : IDisposable
     /// </returns>
     public static bool TryPingPortmapService( IPAddress host, int ioTimeout = 100, int transmitTimeout = 25 )
     {
-        using OncRpcPortmapClient portmap = new( host, OncRpcProtocols.OncRpcUdp, transmitTimeout );
+        using OncRpcPortmapClient portmap = new( host, OncRpcProtocol.OncRpcUdp, transmitTimeout );
         portmap.OncRpcClient.IOTimeout = ioTimeout;
         return portmap.TryPingPortmapService();
     }

@@ -87,7 +87,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     ///                             fragments over TCP/IP. The fragments built up to form ONC/RPC
     ///                             call and reply messages. </param>
     public OncRpcTcpTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddr, int port, OncRpcProgramInfo[] info, int bufferSize )
-                                                                : base( dispatcher, port, OncRpcProtocols.OncRpcTcp, info )
+                                                                : base( dispatcher, port, OncRpcProtocol.OncRpcTcp, info )
     {
         this._openTransports = new TransportList();
 

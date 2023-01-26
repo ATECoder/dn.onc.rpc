@@ -49,11 +49,11 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
         // This is just a convenience.
         this.ServerIdentifierCodecs.Add( new OncRpcServerIdentifierCodec( OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                                           OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
-                                                                          OncRpcProtocols.OncRpcTcp,
+                                                                          OncRpcProtocol.OncRpcTcp,
                                                                           OncRpcPortmapConstants.OncRpcPortmapPortNumber ) );
         this.ServerIdentifierCodecs.Add( new OncRpcServerIdentifierCodec( OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                                           OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
-                                                                          OncRpcProtocols.OncRpcUdp,
+                                                                          OncRpcProtocol.OncRpcUdp,
                                                                           OncRpcPortmapConstants.OncRpcPortmapPortNumber ) );
 
         // Determine all local IP addresses assigned to this host.

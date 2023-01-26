@@ -75,7 +75,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// <param name="parent">           Parent server transport which created us. </param>
     /// <param name="transmitTimeout">  The transmit timeout when sending calls or receiving replies. </param>
     public OncRpcTcpConnTransport( IOncRpcDispatchable dispatcher, Socket socket, OncRpcProgramInfo[] info, int bufferSize, OncRpcTcpTransport parent,
-                                                                    int transmitTimeout ) : base( dispatcher, 0, OncRpcProtocols.OncRpcTcp, info )
+                                                                    int transmitTimeout ) : base( dispatcher, 0, OncRpcProtocol.OncRpcTcp, info )
     {
         this._parent = parent;
         this._transmitTimeout = transmitTimeout;

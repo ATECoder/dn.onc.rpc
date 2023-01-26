@@ -19,7 +19,7 @@ public class OncRpcTcpTestClient : IDisposable
         this.Host = host;
         this.Version = version;
         this._coreClient = OncRpcClientBase.NewOncRpcClient( host, RpcProgramConstants.ProgramNumber, version, 0,
-                                                             OncRpcProtocols.OncRpcTcp, Client.OncRpcTcpClient.IOTimeoutDefault );
+                                                             OncRpcProtocol.OncRpcTcp, Client.OncRpcTcpClient.IOTimeoutDefault );
     }
 
     /// <summary>   Gets or sets a value indicating whether the ONC/RPC client is connected. </summary>

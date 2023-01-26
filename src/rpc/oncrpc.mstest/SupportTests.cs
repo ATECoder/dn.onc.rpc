@@ -173,21 +173,21 @@ public class SupportTests
         _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToExceptionReason( maxValue + 1 ); } );
     }
 
-    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcProtocols"/>. </summary>
+    /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcProtocol"/>. </summary>
     /// <param name="expected"> The expected value. </param>
     private static void AssertIntShouldCastToProtocols( int expected )
     {
-        OncRpcProtocols actual = expected.ToProtocols();
+        OncRpcProtocol actual = expected.ToProtocols();
         Assert.AreEqual( expected, ( int ) actual );
     }
 
-    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcProtocols"/>. </summary>
+    /// <summary>   (Unit Test Method) <see cref="int"/> should cast to <see cref="OncRpcProtocol"/>. </summary>
     [TestMethod]
     public void IntShouldCastToProtocols()
     {
         int value = 0;
         int maxValue = 0;
-        foreach ( var enumValue in Enum.GetValues( typeof( OncRpcProtocols ) ) )
+        foreach ( var enumValue in Enum.GetValues( typeof( OncRpcProtocol ) ) )
         {
             value = ( int ) enumValue;
             maxValue = value > maxValue ? value : maxValue;

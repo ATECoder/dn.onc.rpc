@@ -32,9 +32,9 @@ public abstract partial class OncRpcClientStubBase : IDisposable
     /// <param name="port">     The port. </param>
     /// <param name="protocol"> The protocol to be used for ONC/RPC calls. This information is
     ///                         necessary, so port lookups through the portmapper can be done. </param>
-    /// <param name="timeout">  The transmit timeout for <see cref="OncRpcProtocols.OncRpcUdp"/>
-    ///                         or the connection timeout for <see cref="OncRpcProtocols.OncRpcTcp"/>. </param>
-    public OncRpcClientStubBase( IPAddress host, int program, int version, int port, OncRpcProtocols protocol, int timeout )
+    /// <param name="timeout">  The transmit timeout for <see cref="OncRpcProtocol.OncRpcUdp"/>
+    ///                         or the connection timeout for <see cref="OncRpcProtocol.OncRpcTcp"/>. </param>
+    public OncRpcClientStubBase( IPAddress host, int program, int version, int port, OncRpcProtocol protocol, int timeout )
     {
         this.Client = OncRpcClientBase.NewOncRpcClient( host, program, version, port, protocol, timeout );
     }

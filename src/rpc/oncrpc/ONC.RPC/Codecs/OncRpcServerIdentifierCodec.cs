@@ -39,7 +39,7 @@ public class OncRpcServerIdentifierCodec : IXdrCodec
     /// <param name="protocol"> The protocol used for communicating with the ONC/RPC server in
     ///                         question. </param>
     /// <param name="port">     The port number of the ONC/RPC server in question. </param>
-    public OncRpcServerIdentifierCodec( int program, int version, OncRpcProtocols protocol, int port )
+    public OncRpcServerIdentifierCodec( int program, int version, OncRpcProtocol protocol, int port )
     {
         this.Program = program;
         this.Version = version;
@@ -68,11 +68,11 @@ public class OncRpcServerIdentifierCodec : IXdrCodec
 
     /// <summary>
     /// Gets or sets the protocol used for communicating with the ONC/RPC server in question. This
-    /// can be one of the constants defined in the <see cref="OncRpcProtocols"/>
+    /// can be one of the constants defined in the <see cref="OncRpcProtocol"/>
     /// interface.
     /// </summary>
     /// <value> The protocol. </value>
-    public OncRpcProtocols Protocol { get; set; }
+    public OncRpcProtocol Protocol { get; set; }
 
     /// <summary>   Gets or sets the port number of the ONC/RPC server in question. </summary>
     /// <value> The port. </value>
