@@ -62,7 +62,7 @@ public class StringVectorCodec : IXdrCodec
     {
         int size = this._values.Length;
         encoder.EncodeInt( this._values.Length );
-        foreach ( StringCodec stringCodec in this._values ) 
+        foreach ( StringCodec stringCodec in this._values )
             stringCodec.Encode( encoder );
 #if false
         int size = this._values.Length;

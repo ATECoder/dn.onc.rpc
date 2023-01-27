@@ -91,7 +91,7 @@ public class EmbeddedPortmapTest
 #endif
 
         // dispose of the portmap service
-        Logger.Writer.LogInformation( $"Exiting test method; {nameof(OncRpcEmbeddedPortmapServiceStub)} will be disposed..." );
+        Logger.Writer.LogInformation( $"Exiting test method; {nameof( OncRpcEmbeddedPortmapServiceStub )} will be disposed..." );
 
 
     }

@@ -340,7 +340,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
         {
 
             // break if cancellation is required
-            if ( cancelToken.IsCancellationRequested) { break; }
+            if ( cancelToken.IsCancellationRequested ) { break; }
 
             // Start decoding the incoming call. This involves remembering
             // from whom we received the call so we can later Sends back the

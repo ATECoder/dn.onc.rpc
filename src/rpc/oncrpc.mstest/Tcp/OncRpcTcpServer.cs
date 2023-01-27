@@ -247,7 +247,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
                 {
                     DualStringsCodec request = new();
                     call.RetrieveCall( request );
-                    StringXdrCodec result = new( OncRpcTcpServer.ConcatenateTwoValues( request.Arg1, request.Arg2 ) );
+                    StringXdrCodec result = new( OncRpcTcpServer.ConcatenateTwoValues( request.FirstValue, request.SecondValue ) );
                     call.Reply( result );
                     break;
                 }
@@ -350,9 +350,9 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     {
         LinkedListCodec newNode
             = new() {
-            Foo = 42,
-            Next = linkedListCodec
-        };
+                Foo = 42,
+                Next = linkedListCodec
+            };
         return newNode;
     }
 
@@ -365,14 +365,15 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Concatenate two values. </summary>
-    /// <param name="arg1"> The first parameter of type <see cref="string"/> to concatenate and to
-    ///                     encode and decode. </param>
-    /// <param name="arg2"> The second parameter of type <see cref="string"/> to concatenate and to
-    ///                     encode and decode. </param>
+    /// <remarks>   2023-01-26. </remarks>
+    /// <param name="firstValue">   The first parameter of type <see cref="string"/> to concatenate
+    ///                             and to encode and decode. </param>
+    /// <param name="secondValue">  The second parameter of type <see cref="string"/> to concatenate
+    ///                             and to encode and decode. </param>
     /// <returns>   A string. </returns>
-    public static string ConcatenateTwoValues( string arg1, string arg2 )
+    public static string ConcatenateTwoValues( string firstValue, string secondValue )
     {
-        return $"{arg1}{arg2}";
+        return $"{firstValue}{secondValue}";
     }
 
     /// <summary>   Concatenate three items. </summary>
@@ -414,6 +415,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     {
     }
 
-#endregion
+    #endregion
 
 }

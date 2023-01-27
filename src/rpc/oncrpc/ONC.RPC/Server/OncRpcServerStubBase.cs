@@ -57,7 +57,7 @@ public abstract partial class OncRpcServerStubBase : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Logger.Writer.LogMemberError("Exception disposing", ex ); }
+        catch ( Exception ex ) { Logger.Writer.LogMemberError( "Exception disposing", ex ); }
         finally
         {
             this.IsDisposed = true;
@@ -201,7 +201,7 @@ public abstract partial class OncRpcServerStubBase : IDisposable
     ///                             handle incoming remote procedure call requests. </param>
     public virtual void Register( OncRpcTransportBase[] transports )
     {
-        foreach ( OncRpcTransportBase transport in transports)
+        foreach ( OncRpcTransportBase transport in transports )
             transport.Register();
     }
 

@@ -319,7 +319,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// <param name="cancelSource"> The cancel source. </param>
     private void DoListen( CancellationTokenSource cancelSource )
     {
-        for ( ; ; )
+        for (; ; )
             try
             {
                 // break if cancellation is required
@@ -528,6 +528,6 @@ public class OncRpcTcpTransport : OncRpcTransportBase
 
     }
 
-#endregion
+    #endregion
 
 }

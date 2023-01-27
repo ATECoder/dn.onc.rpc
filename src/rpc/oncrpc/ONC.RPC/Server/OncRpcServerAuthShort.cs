@@ -110,7 +110,7 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
         // according to Sun's specification.
 
         this.VerifierAuthType = decoder.DecodeInt().ToAuthType();
-        this.VerifierAuthMessageLength  = decoder.DecodeInt();
+        this.VerifierAuthMessageLength = decoder.DecodeInt();
         // @atecoder was:
         // if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
         if ( this.VerifierAuthType != Client.OncRpcClientAuthUnix.VerifierAuthTypeDefault

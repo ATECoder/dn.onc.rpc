@@ -41,15 +41,6 @@ public class OncRpcEmbeddedPortmapServiceStub : IDisposable
     {
         if ( ioTimeout <= 0 || !TryPingPortmapService( ioTimeout, transmitTimeout ) )
         {
-#if false
-            this._embeddedPortmapService = new EmbeddedPortmapService( this );
-            this._embeddedPortmapThread = new EmbeddedPortmapServiceThread( this, this._embeddedPortmapService );
-            this._embeddedPortmapService.ServiceThread = new Thread( new ThreadStart( this._embeddedPortmapThread.Run ) ) {
-                Name = "Embedded Portmap Service Thread",
-                IsBackground= true,
-            };
-            this._embeddedPortmapService.ServiceThread.Start();
-#endif
             this._embeddedPortmapService = new OncRpcEmbeddedPortmapService();
             Thread listenThread = new( new ThreadStart( () => this._embeddedPortmapService.Run( this._embeddedPortmapService.GetTransports(),
                                                                                                            true ) ) ) {

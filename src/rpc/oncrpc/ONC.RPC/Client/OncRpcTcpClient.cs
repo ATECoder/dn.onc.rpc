@@ -97,7 +97,7 @@ public class OncRpcTcpClient : OncRpcClientBase
         this._socket.ReceiveBufferSize = Math.Min( this._socket.ReceiveBufferSize, bufferSize );
 
         // connect
-        
+
         IPEndPoint endPoint = new( host, this.Port );
         this._socket.Connect( endPoint );
 

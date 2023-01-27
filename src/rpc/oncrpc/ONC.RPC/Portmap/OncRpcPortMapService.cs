@@ -166,7 +166,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     {
         OncRpcServerIdentifierCodec? identification = null;
         OncRpcGetPortCodec reply = new();
-        foreach ( OncRpcServerIdentifierCodec svr in this.ServerIdentifierCodecs)
+        foreach ( OncRpcServerIdentifierCodec svr in this.ServerIdentifierCodecs )
         {
             if ( svr.Program == serverIdentification.Program && svr.Protocol == serverIdentification.Protocol )
             {
@@ -303,7 +303,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
             if ( addr.Equals( this._locals[idx] ) )
                 return true;
 #endif
-        foreach ( IPAddress localAddress in this._locals)
+        foreach ( IPAddress localAddress in this._locals )
             if ( addr.Equals( localAddress ) ) return true;
         return false;
     }
@@ -398,6 +398,6 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
             call.ReplyProgramNotAvailable();
     }
 
-#endregion
+    #endregion
 
 }

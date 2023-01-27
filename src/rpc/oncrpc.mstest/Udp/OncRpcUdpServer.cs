@@ -237,9 +237,9 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
         }
     }
 
-#endregion
+    #endregion
 
-#region " Remote Procedures "
+    #region " Remote Procedures "
 
     /// <summary>   No operation. </summary>
     public static void Nop()
@@ -255,6 +255,6 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
         return input;
     }
 
-#endregion
+    #endregion
 
 }

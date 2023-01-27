@@ -91,10 +91,10 @@ public static class LoggingExtensions
     /// <param name="logger">   The logger to act on. </param>
     /// <param name="message">  The message. </param>
     /// <param name="ex">       The exception. </param>
-    public static void LogError( this ILogger logger, string message, Exception ex  )
+    public static void LogError( this ILogger logger, string message, Exception ex )
     {
         if ( logger.IsEnabled( LogLevel.Error ) )
-            logger.Write(LogLevel.Error, BuildMessage( message, ex ) );
+            logger.Write( LogLevel.Error, BuildMessage( message, ex ) );
     }
 
     /// <summary>   Console write exception. </summary>

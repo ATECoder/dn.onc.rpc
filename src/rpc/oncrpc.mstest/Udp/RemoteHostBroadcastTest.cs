@@ -96,7 +96,7 @@ public class RemoteHostBroadcastTest
         }
         catch ( OncRpcException e )
         {
-            Logger.Writer.LogMemberError( $"method call failed unexpectedly:",e );
+            Logger.Writer.LogMemberError( $"method call failed unexpectedly:", e );
         }
         Logger.Writer.LogInformation( "done." );
 

@@ -187,7 +187,7 @@ public class OncRpcPortmapClient : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Logger.Writer.LogMemberError("Exception disposing", ex ); }
+        catch ( Exception ex ) { Logger.Writer.LogMemberError( "Exception disposing", ex ); }
         finally
         {
             this.IsDisposed = true;

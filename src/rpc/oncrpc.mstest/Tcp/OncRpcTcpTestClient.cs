@@ -208,16 +208,17 @@ public class OncRpcTcpTestClient : IDisposable
     /// <summary>
     /// Call remote procedure <see cref="RemoteProceduresVersion2.ConcatenateTwoValues"/>.
     /// </summary>
-    /// <param name="arg1"> parameter of type <see cref="string"/> to concatenate and send to the
-    ///                     remote procedure call. </param>
-    /// <param name="arg2"> parameter of type <see cref="string"/> to concatenate and send to the
-    ///                     remote procedure call. </param>
+    /// <remarks>   2023-01-26. </remarks>
+    /// <param name="firstValue">   parameter of type <see cref="string"/> to concatenate and send to
+    ///                             the remote procedure call. </param>
+    /// <param name="secondValue">  parameter of type <see cref="string"/> to concatenate and send to
+    ///                             the remote procedure call. </param>
     /// <returns>   Result from remote procedure call (of type <see cref="string"/>). </returns>
-    public virtual string CallRemoteProcedureConcatenateTwoValues( string arg1, string arg2 )
+    public virtual string CallRemoteProcedureConcatenateTwoValues( string firstValue, string secondValue )
     {
         DualStringsCodec request = new() {
-            Arg1 = arg1,
-            Arg2 = arg2
+            FirstValue = firstValue,
+            SecondValue = secondValue
         };
         StringXdrCodec result = new();
         this.Call( ( int ) RemoteProceduresVersion2.ConcatenateTwoValues, RpcProgramConstants.Version2, request, result );

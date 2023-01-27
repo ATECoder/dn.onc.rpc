@@ -606,7 +606,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                     // @atecoder: fix timeout; was .Seconds, that is, 1000 times larger.
                     // also, must be at least 1ms.
 
-                    this._socket.ReceiveTimeout =( int ) Math.Max( 1, timeRemaining.TotalMilliseconds ) ;
+                    this._socket.ReceiveTimeout = ( int ) Math.Max( 1, timeRemaining.TotalMilliseconds );
 
                     // Then wait for datagrams to arrive...
 

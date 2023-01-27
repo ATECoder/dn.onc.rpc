@@ -107,7 +107,7 @@ public abstract class OncRpcTransportBase : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Logger.Writer.LogMemberError("Exception disposing", ex ); }
+        catch ( Exception ex ) { Logger.Writer.LogMemberError( "Exception disposing", ex ); }
         finally
         {
             this.IsDisposed = true;
@@ -234,7 +234,7 @@ public abstract class OncRpcTransportBase : IDisposable
         try
         {
             using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
-            pmapClient.OncRpcClient.IOTimeout= OncRpcUdpClient.IOTimeoutDefault;
+            pmapClient.OncRpcClient.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
             foreach ( var transportRegistrationInfo in this.RegisteredPrograms )
             {
                 // Try to register the port for our transport with the local ONC/RPC
@@ -297,11 +297,11 @@ public abstract class OncRpcTransportBase : IDisposable
     /// <remarks>   @atecoder 2023-01-23. </remarks>
     /// <param name="cancelSource"> The cancel source. </param>
     public abstract void Unlisten( CancellationTokenSource cancelSource );
-  
 
-#endregion
 
-#region " Encoding / Decoding "
+    #endregion
+
+    #region " Encoding / Decoding "
 
     /// <summary>   Retrieves the parameters sent within an ONC/RPC call message. </summary>
     /// <remarks>
@@ -398,6 +398,6 @@ public abstract class OncRpcTransportBase : IDisposable
     /// <value> The dispatcher. </value>
     internal IOncRpcDispatchable Dispatcher { get; set; }
 
-#endregion
+    #endregion
 
 }

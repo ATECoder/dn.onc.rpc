@@ -42,7 +42,7 @@ public class PortmapGetPortTest
         // Ask for a non-existent ONC/RPC server.
 
         int port;
-        Logger.Writer.LogInformation( $"{nameof(OncRpcPortmapClient.GetPort)} for non-existing program" );
+        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.GetPort )} for non-existing program" );
         try
         {
             port = portmap.GetPort( 1, 1, OncRpcProtocol.OncRpcUdp );
@@ -54,7 +54,7 @@ public class PortmapGetPortTest
             {
                 Assert.Fail( $"method call failed unexpectedly: {e}" );
             }
-            Logger.Writer.LogInformation( $"succeeded; received error code ({OncRpcExceptionReason.OncRpcProgramNotRegistered}({( int )OncRpcExceptionReason.OncRpcProgramNotRegistered})." );
+            Logger.Writer.LogInformation( $"succeeded; received error code ({OncRpcExceptionReason.OncRpcProgramNotRegistered}({( int ) OncRpcExceptionReason.OncRpcProgramNotRegistered})." );
         }
 
         // Register dummy ONC/RPC server.

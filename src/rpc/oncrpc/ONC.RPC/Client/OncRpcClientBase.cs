@@ -324,7 +324,7 @@ public abstract class OncRpcClientBase : IDisposable
             // uncomment the following line if Finalize() is overridden above.
             GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Logger.Writer.LogMemberError("Exception disposing", ex ); }
+        catch ( Exception ex ) { Logger.Writer.LogMemberError( "Exception disposing", ex ); }
         finally
         {
             this.IsDisposed = true;
@@ -516,7 +516,7 @@ public abstract class OncRpcClientBase : IDisposable
 
     #region " actions "
 
-    private readonly object _lock = new object();   
+    private readonly object _lock = new object();
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>
