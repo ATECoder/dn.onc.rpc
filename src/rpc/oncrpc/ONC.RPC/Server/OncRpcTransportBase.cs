@@ -268,11 +268,6 @@ public abstract class OncRpcTransportBase : IDisposable
             pmapClient.OncRpcClient.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
             foreach ( OncRpcProgramInfo registeredProgram in this.RegisteredPrograms )
                 _ = pmapClient.UnsetPort( registeredProgram.Program, registeredProgram.Version );
-#if false
-            int size = this.RegisteredPrograms.Length;
-            for ( int idx = 0; idx < size; ++idx )
-                _ = portmapper.UnsetPort( this.RegisteredPrograms[idx].Program, this.RegisteredPrograms[idx].Version );
-#endif
         }
         catch ( System.IO.IOException )
         {

@@ -272,13 +272,6 @@ public class OncRpcTcpTransport : OncRpcTransportBase
 
         // Create a new (daemon/background) thread which will handle incoming connection
         // requests.
-
-#if false
-        TransportHelper t = new( this );
-        Thread listenThread = new( new ThreadStart( t.Run ) ) {
-            Name = "TCP server transport listener thread"
-        };
-#endif
         Thread listenThread = new( new ThreadStart( () => this.DoListen( cancelSource ) ) ) {
             Name = "ONC/RPC TCP server transport listener thread",
             IsBackground = true

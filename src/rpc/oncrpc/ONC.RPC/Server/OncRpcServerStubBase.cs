@@ -130,9 +130,9 @@ public abstract partial class OncRpcServerStubBase : IDisposable
         get => this._characterEncoding;
         set {
             this._characterEncoding = value;
-            this.SetProperty( this.CharacterEncoding, value, () => this._characterEncoding = value );
-            foreach ( var transport in this._transports )
-                transport.CharacterEncoding = value;
+            if ( this.SetProperty( this.CharacterEncoding, value, () => this._characterEncoding = value ) )
+                foreach ( var transport in this._transports )
+                    transport.CharacterEncoding = value;
         }
     }
 

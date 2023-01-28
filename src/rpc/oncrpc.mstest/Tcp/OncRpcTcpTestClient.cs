@@ -51,7 +51,7 @@ public class OncRpcTcpTestClient : IDisposable
     /// </summary>
     /// <param name="disposing">    True to release both managed and unmanaged resources; false to
     ///                             release only unmanaged resources. </param>
-    private void Dispose( bool disposing )
+    protected virtual void Dispose( bool disposing )
     {
         if ( !this.IsDisposed() && disposing )
             this.Close();
