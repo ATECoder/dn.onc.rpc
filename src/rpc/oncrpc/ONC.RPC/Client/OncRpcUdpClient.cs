@@ -212,7 +212,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     public override void Call( int procedureNumber, int versionNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
         if ( this._socket is null || this._encoder is null || this._encoder is null ) return;
-        lock ( _lock )
+        lock ( this._lock )
             //Refresh:
             for ( int refreshesLeft = 1; refreshesLeft >= 0; --refreshesLeft )
             {
@@ -555,7 +555,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     {
 
         if ( this._socket is null || this._encoder is null || this._decoder is null ) return;
-        lock ( _lock )
+        lock ( this._lock )
         {
 
             // First, build the ONC/RPC call header. Then put the sending

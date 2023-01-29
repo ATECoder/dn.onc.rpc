@@ -69,6 +69,7 @@ Bug reports and contributions are welcome at the [ISR's ONC RPC] repository.
 [Java ONC RPC]: https://github.com/remotetea/remotetea/tree/master/src/tests/org/acplt/oncrpc
 
 [VXI11.CSharp]: https://github.com/Xanliang/VXI11.CSharp 
+[albahari advanced threading]: https://www.albahari.com/threading/part4.aspx
 
 [ISR's VXI-11]: https://github.com/ATECoder/dn.vxi11
 [ISR's VXI-11 IEEE488]: https://github.com/ATECoder/dn.vxi11/src/vxi/ieee488

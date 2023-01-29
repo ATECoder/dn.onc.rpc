@@ -346,11 +346,12 @@ public abstract class OncRpcClientBase : IDisposable
         if ( disposing )
         {
             // dispose managed state (managed objects)
+
+            // I am assuming that the socket used in the derived classes include unmanaged resources.
+            this.Close();
         }
 
         // free unmanaged resources and override finalizer
-        // I am assuming that the socket used in the derived classes include unmanaged resources.
-        this.Close();
 
         // set large fields to null
     }
@@ -532,7 +533,7 @@ public abstract class OncRpcClientBase : IDisposable
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
     public virtual void Call( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
-        lock ( _lock )
+        lock ( this._lock )
             // Use the default version number as specified for this client.
             this.Call( procedureNumber, this.Version, requestCodec, replyCodec );
     }

@@ -1,4 +1,6 @@
 using cc.isr.ONC.RPC.Logging;
+using static System.Net.WebRequestMethods;
+
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -273,7 +275,10 @@ public abstract partial class OncRpcServerStubBase : IDisposable
     /// <remarks>
     /// To end processing and to shut the server down signal the <see cref="ShutdownSignal"/> object.
     /// Note that the thread on which <see cref="Run()"/> is called will ignore any interruptions and
-    /// will silently swallow them.
+    /// will silently swallow them. <para>
+    /// 
+    /// <see href="https://www.albahari.com/threading/part4.aspx"/>
+    /// </para>
     /// </remarks>
     /// <param name="transports">           Array of server transport objects for which processing of
     ///                                     remote procedure call requests should be done. </param>

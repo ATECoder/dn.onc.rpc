@@ -149,6 +149,22 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// </summary>
     private Socket? _socket;
 
+    protected override void Dispose( bool disposing )
+    {
+        if ( disposing )
+        {
+
+        }
+
+        // close is called by overriding the base close, which is called by dispose.
+        
+        this._socket?.Dispose();
+        this._socket = null;
+
+        base.Dispose( disposing );
+
+    }
+
     #endregion
 
     #region " members "
@@ -209,7 +225,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     public override void Call( int procedureNumber, int versionNumber, IXdrCodec requestCodec, IXdrCodec replyCodec )
     {
         if ( this._socket is null || this.Encoder is null || this.Decoder is null ) return;
-        lock ( _lock )
+        lock ( this._lock )
             // Refresh:
             for ( int refreshesLeft = 1; refreshesLeft >= 0; --refreshesLeft )
             {
@@ -360,7 +376,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     public virtual void BatchCall( int procedureNumber, IXdrCodec requestCodec, bool flush )
     {
         if ( this._socket is null || this.Encoder is null ) { return; }
-        lock ( _lock )
+        lock ( this._lock )
         {
             // First, build the ONC/RPC call header. Then put the sending
             // stream into a known state and encode the parameters to be
