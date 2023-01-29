@@ -17,7 +17,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// </code> 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.
 /// </remarks>
-public abstract partial class OncRpcClientStubBase : IDisposable
+public abstract partial class OncRpcClientStubBase : ICloseable
 {
 
     #region " construction and cleanup "
@@ -53,11 +53,16 @@ public abstract partial class OncRpcClientStubBase : IDisposable
     /// <summary>
     /// Close the connection to an ONC/RPC server and free all network-related resources.
     /// </summary>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    public virtual void Close()
+    /// <remarks>
+    /// The general contract of <see cref="Close()"/> is that it closes and disposes of the 
+    /// ONC/RPC client. A closed client cannot perform RPC calls and cannot be reopened. <para>
+    /// 
+    /// The <see cref="Close()"/> method of calls <see cref="Dispose(bool)"/> and is not 
+    /// <see langword="virtual"/>.</para>
+    /// </remarks>
+    public void Close()
     {
-        this.Client?.Close();
-        this.Client = null;
+        (( IDisposable ) this).Dispose();
     }
 
     #region " disposable implementation "
@@ -66,9 +71,9 @@ public abstract partial class OncRpcClientStubBase : IDisposable
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
     /// resources.
     /// </summary>
-    /// <remarks> 
-    /// Takes account of and updates <see cref="IsDisposed"/>.
-    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// <remarks>
+    /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
+    /// within a try...finaly block.
     /// </remarks>
     public void Dispose()
     {
@@ -76,41 +81,56 @@ public abstract partial class OncRpcClientStubBase : IDisposable
         try
         {
             // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+
             this.Dispose( true );
 
-            // uncomment the following line if Finalize() is overridden above.
-            GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Logger.Writer.LogMemberError( "exception disposing", ex ); }
+        catch { throw; }
         finally
         {
+            // uncomment the following line if Finalize() is overridden above.
+
+            GC.SuppressFinalize( this );
+
+            // mark things as disposed.
+
             this.IsDisposed = true;
         }
     }
 
     /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
     /// <value> True if this object is disposed, false if not. </value>
-    protected bool IsDisposed { get; private set; }
+    public bool IsDisposed { get; private set; }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the XdrDecodingStreamBase and optionally releases
-    /// the managed resources.
+    /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
     /// </summary>
-    /// <param name="disposing">    True to release both managed and unmanaged resources; false to
-    ///                             release only unmanaged resources. </param>
+    /// <param name="disposing">    True to release large objects and managed and unmanaged resources;
+    ///                             false to release only unmanaged resources and large objects. </param>
     protected virtual void Dispose( bool disposing )
     {
         if ( disposing )
         {
             // dispose managed state (managed objects)
+            ICloseable? client = this.Client;
+            if ( client is not null )
+            {
+                try
+                {
+                    this.Client?.Close();
+                }
+                catch ( Exception )
+                {
+                    throw;
+                }
+                finally
+                {
+                    this.Client = null;
+                }
+            }
         }
 
         // free unmanaged resources and override finalizer
-        // I am assuming that the socket used in the derived classes include unmanaged resources.
-        this.Close();
-
-        // dispose of the client.
-        this.Client?.Dispose();
 
         // set large fields to null
     }
@@ -123,6 +143,11 @@ public abstract partial class OncRpcClientStubBase : IDisposable
     }
 
     #endregion
+
+    #region " construction and cleanup "
+
+    #endregion
+
 
     #endregion
 

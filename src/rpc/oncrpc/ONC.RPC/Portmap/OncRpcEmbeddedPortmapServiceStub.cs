@@ -140,11 +140,10 @@ public class OncRpcEmbeddedPortmapServiceStub : IDisposable
     protected bool IsDisposed { get; private set; }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the XdrDecodingStreamBase and optionally releases
-    /// the managed resources.
+    /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
     /// </summary>
-    /// <param name="disposing">    True to release both managed and unmanaged resources; false to
-    ///                             release only unmanaged resources. </param>
+    /// <param name="disposing">    True to release large objects and managed and unmanaged resources;
+    ///                             false to release only unmanaged resources and large objects. </param>
     protected virtual void Dispose( bool disposing )
     {
         if ( disposing )

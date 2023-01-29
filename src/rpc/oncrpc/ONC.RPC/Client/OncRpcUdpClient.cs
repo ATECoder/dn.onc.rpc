@@ -96,36 +96,6 @@ public class OncRpcUdpClient : OncRpcClientBase
     }
 
     /// <summary>
-    /// Close the connection to an ONC/RPC server and free all network-related resources.
-    /// </summary>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
-    public override void Close()
-    {
-        if ( this._socket is not null )
-        {
-            Socket socket = this._socket;
-            if ( socket.Connected )
-                socket.Shutdown( SocketShutdown.Both );
-            this._socket = null;
-            socket.Close();
-        }
-
-        if ( this._encoder is not null )
-        {
-            XdrEncodingStreamBase xdrStream = this._encoder;
-            this._encoder = null;
-            xdrStream.Close();
-        }
-
-        if ( this._decoder is not null )
-        {
-            XdrDecodingStreamBase xdrStream = this._decoder;
-            this._decoder = null;
-            xdrStream.Close();
-        }
-    }
-
-    /// <summary>
     /// UDP socket used for datagram-based communication with an ONC/RPC
     /// server.
     /// </summary>
@@ -140,6 +110,100 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// XDR decoding stream used when receiving replies via UDP/IP from an ONC/RPC server.
     /// </summary>
     private XdrUdpDecodingStream? _decoder;
+
+
+    private readonly System.Net.Sockets.NetworkStream? _dataStream;
+
+    /// <summary>
+    /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
+    /// </summary>
+    /// <exception cref="AggregateException">   Thrown when an Aggregate error condition occurs. </exception>
+    /// <param name="disposing">    True to release large objects and managed and unmanaged resources;
+    ///                             false to release only unmanaged resources and large objects. </param>
+    protected override void Dispose( bool disposing )
+    {
+        List<Exception> exceptions = new();
+        if ( disposing )
+        {
+            IDisposable? dataStream = this._dataStream;
+            if ( dataStream != null )
+            {
+                dataStream.Dispose();
+            }
+            else
+            {
+                //
+                // if the NetworkStream wasn't created, the Socket might
+                // still be there and needs to be closed. In the case in which
+                // we are bound to a local IPEndPoint this will remove the
+                // binding and free up the IPEndPoint for later uses.
+
+                Socket? socket = this._socket;
+                if ( socket is not null )
+                {
+                    try
+                    {
+                        if ( socket.Connected )
+                            socket.Shutdown( SocketShutdown.Both );
+                    }
+                    catch ( Exception ex )
+                    { exceptions.Add( ex ); }
+                    finally
+                    {
+                        socket.Close();
+                        this._socket = null;
+                    }
+                }
+            }
+
+            XdrEncodingStreamBase? encoder = this._encoder;
+            if ( encoder is not null )
+            {
+                try
+                {
+                    encoder.Close();
+                }
+                catch ( Exception ex )
+                { exceptions.Add( ex ); }
+                finally
+                {
+                    this._encoder = null;
+                }
+            }
+
+            XdrDecodingStreamBase? decoder = this._decoder;
+            if ( decoder is not null )
+            {
+                try
+                {
+                    decoder.Close();
+                }
+                catch ( Exception ex )
+                { exceptions.Add( ex ); }
+                finally
+                {
+                    this._decoder = null;
+                }
+            }
+        }
+
+        try
+        {
+            base.Dispose( disposing );
+        }
+        catch ( Exception ex )
+        { exceptions.Add( ex ); }
+        finally
+        {
+        }
+
+        if ( exceptions.Any() )
+        {
+            AggregateException aggregateException = new( exceptions );
+            throw aggregateException;
+        }
+    }
+
 
     #endregion
 

@@ -1,3 +1,5 @@
+using System.Net.Sockets;
+
 using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Portmap;
@@ -70,20 +72,9 @@ public abstract class OncRpcTransportBase : IDisposable
     /// Wait for handler threads to complete their current ONC/RPC request (with timeout), then close
     /// connections and kill the threads. </item></list>
     /// </remarks>
-    public virtual void Close()
+    public void Close()
     {
-        if ( this.Encoder is not null )
-        {
-            XdrEncodingStreamBase xdrStream = this.Encoder;
-            this.Encoder = null;
-            xdrStream.Close();
-        }
-        if ( this.Decoder is not null )
-        {
-            XdrDecodingStreamBase xdrStream = this.Decoder;
-            this.Decoder = null;
-            xdrStream.Close();
-        }
+        (( IDisposable ) this).Dispose();
     }
 
     #region " disposable implementation "
@@ -92,9 +83,9 @@ public abstract class OncRpcTransportBase : IDisposable
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
     /// resources.
     /// </summary>
-    /// <remarks> 
-    /// Takes account of and updates <see cref="IsDisposed"/>.
-    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// <remarks>
+    /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
+    /// within a try...finaly block.
     /// </remarks>
     public void Dispose()
     {
@@ -102,38 +93,76 @@ public abstract class OncRpcTransportBase : IDisposable
         try
         {
             // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+
             this.Dispose( true );
 
-            // uncomment the following line if Finalize() is overridden above.
-            GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Logger.Writer.LogMemberError( "Exception disposing", ex ); }
+        catch { throw; }
         finally
         {
+            // uncomment the following line if Finalize() is overridden above.
+
+            GC.SuppressFinalize( this );
+
+            // mark things as disposed.
+
             this.IsDisposed = true;
         }
     }
 
     /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
     /// <value> True if this object is disposed, false if not. </value>
-    protected bool IsDisposed { get; private set; }
+    public bool IsDisposed { get; private set; }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the XdrDecodingStreamBase and optionally releases
-    /// the managed resources.
+    /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
     /// </summary>
-    /// <param name="disposing">    True to release both managed and unmanaged resources; false to
-    ///                             release only unmanaged resources. </param>
+    /// <param name="disposing">    True to release large objects and managed and unmanaged resources;
+    ///                             false to release only unmanaged resources and large objects. </param>
     protected virtual void Dispose( bool disposing )
     {
+        List<Exception> exceptions = new();
         if ( disposing )
         {
-            // dispose managed state (managed objects)
+
+            XdrEncodingStreamBase? encoder = this.Encoder;
+            if ( encoder is not null )
+            {
+                try
+                {
+                    encoder.Close();
+                }
+                catch ( Exception ex )
+                { exceptions.Add( ex ); }
+                finally
+                {
+                    this.Encoder = null;
+                }
+            }
+
+            XdrDecodingStreamBase? decoder = this.Decoder;
+            if ( decoder is not null )
+            {
+                try
+                {
+                    decoder.Close();
+                }
+                catch ( Exception ex )
+                { exceptions.Add( ex ); }
+                finally
+                {
+                    this.Decoder = null;
+                }
+            }
+        }
+
+        if ( exceptions.Any() )
+        {
+            AggregateException aggregateException = new( exceptions );
+            throw aggregateException;
         }
 
         // free unmanaged resources and override finalizer
-        // I am assuming that the socket used in the derived classes include unmanaged resources.
-        this.Close();
 
         // set large fields to null
     }

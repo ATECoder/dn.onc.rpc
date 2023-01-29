@@ -148,6 +148,79 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// </summary>
     private Thread? _listener;
 
+    private readonly System.Net.Sockets.NetworkStream? _dataStream;
+
+    /// <summary>
+    /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
+    /// Closes the server transport and frees any resources associated with it.
+    /// </summary>
+    /// <remarks>
+    /// Note that the server transport is <b>not deregistered</b>. You'll have to do it manually if
+    /// you need to do so. The reason for this behavior is, that the portmapper removes all entries
+    /// regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC program number and version.
+    /// <para>
+    /// 
+    /// Calling this method on a <see cref="OncRpcTcpTransport"/> results in the listening TCP
+    /// network socket immediately being closed. In addition, all server transports handling the
+    /// individual TCP/IP connections will also be closed. The handler threads will therefore either
+    /// terminate directly or when they try to sent back replies.</para>
+    /// </remarks>
+    /// <exception cref="AggregateException">   Thrown when an Aggregate error condition occurs. </exception>
+    /// <param name="disposing">    True to release large objects and managed and unmanaged resources;
+    ///                             false to release only unmanaged resources and large objects. </param>
+    protected override void Dispose( bool disposing )
+    {
+        List<Exception> exceptions = new();
+        if ( disposing )
+        {
+            IDisposable? dataStream = this._dataStream;
+            if ( dataStream != null )
+            {
+                dataStream.Dispose();
+            }
+            else
+            {
+                // if the NetworkStream wasn't created, the Socket might
+                // still be there and needs to be closed. In the case in which
+                // we are bound to a local IPEndPoint this will remove the
+                // binding and free up the IPEndPoint for later uses.
+
+                Socket? socket = this._socket;
+                if ( socket is not null )
+                {
+                    try
+                    {
+                        if ( socket.Connected )
+                            socket.Shutdown( SocketShutdown.Both );
+                    }
+                    catch ( Exception ex )
+                    { exceptions.Add( ex ); }
+                    finally
+                    {
+                        socket.Close();
+                        this._socket = null;
+                    }
+                }
+            }
+        }
+
+        try
+        {
+            base.Dispose( disposing );
+        }
+        catch ( Exception ex )
+        { exceptions.Add( ex ); }
+        finally
+        {
+        }
+
+        if ( exceptions.Any() )
+        {
+            AggregateException aggregateException = new( exceptions );
+            throw aggregateException;
+        }
+    }
+
     #endregion
 
     #region " actions "
