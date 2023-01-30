@@ -3,6 +3,7 @@ using System.Diagnostics;
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.ONC.RPC.Server;
+using System;
 
 namespace cc.isr.ONC.RPC.Portmap;
 
@@ -20,7 +21,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcEmbeddedPortmapServiceStub : IDisposable
+public class OncRpcEmbeddedPortmapServiceStub : ICloseable
 {
 
     #region " construction and cleanup "
@@ -51,7 +52,7 @@ public class OncRpcEmbeddedPortmapServiceStub : IDisposable
         }
     }
 
-    /// <summary>   Stop the embedded portmap service if it is running. </summary>
+    /// <summary>   Stop the embedded portmap service synchronously if it is running. </summary>
     /// <remarks>
     /// Normally you should not use this method except you need to force the embedded portmap service
     /// to terminate. Under normal conditions the thread responsible for the embedded portmap service
@@ -62,7 +63,15 @@ public class OncRpcEmbeddedPortmapServiceStub : IDisposable
     public virtual void Shutdown()
     {
         OncRpcServerStubBase? oncRpcServerStub = this._embeddedPortmapService;
-        oncRpcServerStub?.StopRpcProcessing();
+        oncRpcServerStub?.Shutdown();
+    }
+
+    /// <summary>   Shutdown asynchronously. </summary>
+    public virtual async Task ShutdownAsync()
+    {
+        OncRpcServerStubBase? oncRpcServerStub = this._embeddedPortmapService;
+        if ( oncRpcServerStub != null ) 
+            await oncRpcServerStub.ShutdownAsync();
     }
 
     /// <summary>   Start the embedded port map service. </summary>
@@ -107,15 +116,53 @@ public class OncRpcEmbeddedPortmapServiceStub : IDisposable
 
     }
 
+    /// <summary>
+    /// Closes the connection to an ONC/RPC server and frees all network-related resources.
+    /// </summary>
+    /// <remarks>
+    /// This implementation of close and dispose follows the implementation of the <see cref="System.Net.Sockets.TcpClient"/>
+    /// at
+    /// <see href="https://github.com/microsoft/referencesource/blob/master/System/net/System/Net/Sockets/TCPClient.cs"/>
+    /// with the following modifications:
+    /// <list type="bullet"> <item>
+    /// <see cref="Close()"/> is not <see langword="virtual"/> </item><item>
+    /// <see cref="Close()"/> calls <see cref="IDisposable.Dispose()"/> </item><item>
+    /// Consequently, <see cref="Close()"/> need not be overridden. </item><item>
+    /// <see cref="Close()"/> does not hide any exception that might be thrown by <see cref="IDisposable.Dispose()"/>
+    /// </item></list>
+    /// <list type="bullet"> <item>
+    /// The <see cref="IDisposable.Dispose()"/> method skips if <see cref="ICloseable.IsDisposed"/>
+    /// is <see langword="true"/>; </item><item>
+    /// The <see cref="XdrEncodingStreamBase.Dispose(bool)"/> accumulates and throws an aggregate
+    /// exception </item><item>
+    /// The <see cref="IDisposable.Dispose()"/> method throws the aggregate exception from <see cref="XdrEncodingStreamBase.Dispose(bool)"/>
+    /// . </item></list>
+    /// </remarks>
+    public void Close()
+    {
+        (( IDisposable ) this).Dispose();
+    }
+
     #region " disposable implementation "
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
     /// resources.
     /// </summary>
-    /// <remarks> 
-    /// Takes account of and updates <see cref="IsDisposed"/>.
-    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// <remarks>
+    /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
+    /// within a try...finaly block. <para>
+    ///
+    /// Because this class is implementing <see cref="IDisposable"/> and is not sealed, then it
+    /// should include the call to <see cref="GC.SuppressFinalize(object)"/> even if it does not
+    /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
+    /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
+    /// method. </para> <para>
+    /// 
+    /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
+    /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
+    ///
+    /// If releasing unmanaged code or freeing large objects then override <see cref="Object.Finalize()"/>. </para>
     /// </remarks>
     public void Dispose()
     {
@@ -125,19 +172,23 @@ public class OncRpcEmbeddedPortmapServiceStub : IDisposable
             // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
             this.Dispose( true );
 
-            // uncomment the following line if Finalize() is overridden above.
-            GC.SuppressFinalize( this );
         }
         catch ( Exception ex ) { Logger.Writer.LogMemberError( "Exception disposing", ex ); }
         finally
         {
+            // this is included because this class is not sealed.
+
+            GC.SuppressFinalize( this );
+
+            // mark things as disposed.
+
             this.IsDisposed = true;
         }
     }
 
     /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
     /// <value> True if this object is disposed, false if not. </value>
-    protected bool IsDisposed { get; private set; }
+    public bool IsDisposed { get; private set; }
 
     /// <summary>
     /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
@@ -149,21 +200,26 @@ public class OncRpcEmbeddedPortmapServiceStub : IDisposable
         if ( disposing )
         {
             // dispose managed state (managed objects)
+
+            ICloseable? portmapService = this._embeddedPortmapService;
+            try
+            {
+                portmapService?.Close();
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                this._embeddedPortmapService = null;
+            }
+
         }
 
         // free unmanaged resources and override finalizer
-        // I am assuming that the socket used in the derived classes include unmanaged resources.
-        this._embeddedPortmapService?.Dispose();
-        this._embeddedPortmapService = null;
 
         // set large fields to null
-    }
-
-    /// <summary>   Finalizer. </summary>
-    ~OncRpcEmbeddedPortmapServiceStub()
-    {
-        if ( this.IsDisposed ) { return; }
-        this.Dispose( false );
     }
 
     #endregion
@@ -204,7 +260,7 @@ public class OncRpcEmbeddedPortmapServiceStub : IDisposable
     public static bool TryPingPortmapService( int ioTimeout = 100, int transmitTimeout = 25 )
     {
         using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, transmitTimeout );
-        pmapClient.OncRpcClient.IOTimeout = ioTimeout;
+        pmapClient.OncRpcClient!.IOTimeout = ioTimeout;
         return pmapClient.TryPingPortmapService();
     }
 

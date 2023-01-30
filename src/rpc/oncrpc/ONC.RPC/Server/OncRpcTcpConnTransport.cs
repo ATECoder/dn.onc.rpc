@@ -133,15 +133,13 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// </summary>
     private readonly int _transmitTimeout;
 
-    private readonly System.Net.Sockets.NetworkStream? _dataStream;
-
     /// <summary>
     /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
     /// Closes the server transport and frees any resources associated with it.
     /// </summary>
     /// <remarks>
     /// Note that the server transport is <b>not deregistered</b>. You'll have to do it manually if
-    /// you need to do so. The reason for this behavior is, that the portmapper removes all entries
+    /// you need to do so. The reason for this behavior is that the portmapper removes all entries
     /// regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC program number and version.
     /// <para>
     /// 
@@ -158,33 +156,27 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
         List<Exception> exceptions = new();
         if ( disposing )
         {
-            IDisposable? dataStream = this._dataStream;
-            if ( dataStream != null )
-            {
-                dataStream.Dispose();
-            }
-            else
-            {
-                // if the NetworkStream wasn't created, the Socket might
-                // still be there and needs to be closed. In the case in which
-                // we are bound to a local IPEndPoint this will remove the
-                // binding and free up the IPEndPoint for later uses.
+            // dispose managed state (managed objects)
 
-                Socket? socket = this._socket;
-                if ( socket is not null )
+            // if a NetworkStream wasn't created, the Socket might
+            // still be there and needs to be closed. In the case in which
+            // we are bound to a local IPEndPoint this will remove the
+            // binding and free up the IPEndPoint for later uses.
+
+            Socket? socket = this._socket;
+            if ( socket is not null )
+            {
+                try
                 {
-                    try
-                    {
-                        if ( socket.Connected )
-                            socket.Shutdown( SocketShutdown.Both );
-                    }
-                    catch ( Exception ex )
-                    { exceptions.Add( ex ); }
-                    finally
-                    {
-                        socket.Close();
-                        this._socket = null;
-                    }
+                    if ( socket.Connected )
+                        socket.Shutdown( SocketShutdown.Both );
+                }
+                catch ( Exception ex )
+                { exceptions.Add( ex ); }
+                finally
+                {
+                    socket.Close();
+                    this._socket = null;
                 }
             }
 
@@ -204,6 +196,12 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
             }
 
         }
+
+        // free unmanaged resources and override finalizer
+
+        // set large fields to null
+
+        // call base dispose( bool ).
 
         try
         {

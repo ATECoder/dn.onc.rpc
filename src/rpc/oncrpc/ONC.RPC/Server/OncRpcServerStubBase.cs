@@ -13,7 +13,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public abstract partial class OncRpcServerStubBase : IDisposable
+public abstract partial class OncRpcServerStubBase : ICloseable
 {
 
     #region " construction and cleanup "
@@ -26,16 +26,14 @@ public abstract partial class OncRpcServerStubBase : IDisposable
 
     }
 
-    /// <summary>   Close all transports listed in a set of server transports. </summary>
+    /// <summary>   Terminates listening if active and closes the  all transports listed in a set of server transports. </summary>
     /// <remarks>
     /// Only by calling this method processing of remote procedure calls by individual transports can
     /// be stopped. This is because every server transport is handled by its own thread.
     /// </remarks>
-    public virtual void Close()
+    public void Close()
     {
-        if ( this._transports is not null )
-            foreach ( var transport in this._transports )
-                transport.Close();
+        (( IDisposable ) this).Dispose();
     }
 
     #region " disposable implementation "
@@ -44,9 +42,20 @@ public abstract partial class OncRpcServerStubBase : IDisposable
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
     /// resources.
     /// </summary>
-    /// <remarks> 
-    /// Takes account of and updates <see cref="IsDisposed"/>.
-    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// <remarks>
+    /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
+    /// within a try...finaly block. <para>
+    ///
+    /// Because this class is implementing <see cref="IDisposable"/> and is not sealed, then it
+    /// should include the call to <see cref="GC.SuppressFinalize(object)"/> even if it does not
+    /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
+    /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
+    /// method. </para> <para>
+    /// 
+    /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
+    /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
+    ///
+    /// If releasing unmanaged code or freeing large objects then override <see cref="Object.Finalize()"/>. </para>
     /// </remarks>
     public void Dispose()
     {
@@ -54,21 +63,26 @@ public abstract partial class OncRpcServerStubBase : IDisposable
         try
         {
             // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+
             this.Dispose( true );
 
-            // uncomment the following line if Finalize() is overridden above.
-            GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Logger.Writer.LogMemberError( "Exception disposing", ex ); }
+        catch { throw; }
         finally
         {
+            // this is included because this class is not sealed.
+
+            GC.SuppressFinalize( this );
+
+            // mark things as disposed.
+
             this.IsDisposed = true;
         }
     }
 
     /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
     /// <value> True if this object is disposed, false if not. </value>
-    protected bool IsDisposed { get; private set; }
+    public bool IsDisposed { get; private set; }
 
     /// <summary>   Delays. </summary>
     /// <param name="delayTime">    The delay time. </param>
@@ -77,44 +91,69 @@ public abstract partial class OncRpcServerStubBase : IDisposable
         await Task.Delay( delayTime );
     }
 
+    /// <summary>   Gets or sets the shutdown timeout. </summary>
+    /// <value> The shutdown timeout. </value>
+    public static int ShutdownTimeout { get; set; } = 1000;
+
     /// <summary>
-    /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
+    /// Terminates listening if active and closes the  all transports listed in a set of server
+    /// transports. Performs application-defined tasks associated with freeing, releasing, or
+    /// resetting unmanaged resources.
     /// </summary>
-    /// <param name="disposing">    True to release large objects and managed and unmanaged resources;
-    ///                             false to release only unmanaged resources and large objects. </param>
+    /// <remarks>
+    /// Allows a timeout of <see cref="OncRpcServerStubBase.ShutdownTimeout"/> milliseconds for
+    /// the server to stop listening before raising an exception to that effect.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException">    Thrown when the requested operation is
+    ///                                                 invalid. </exception>
+    /// <exception cref="AggregateException">           Thrown when an Aggregate error condition
+    ///                                                 occurs. </exception>
+    /// <param name="disposing">    True to release both managed and unmanaged resources; false to
+    ///                             release only unmanaged resources. </param>
     protected virtual void Dispose( bool disposing )
     {
+        List<Exception> exceptions = new();
         if ( disposing )
         {
             // dispose managed state (managed objects)
+
+            try
+            {
+                this.Shutdown( OncRpcServerStubBase.ShutdownTimeout , 25);
+            }
+            catch ( Exception ex )
+            { exceptions.Add( ex ); }
+        }
+
+        if ( exceptions.Any() )
+        {
+            AggregateException aggregateException = new( exceptions );
+            throw aggregateException;
         }
 
         // free unmanaged resources and override finalizer
 
-        // if this works, this should also lead to closing.
-        if ( this.Running )
-            this.StopRpcProcessing();
-
-        // await for the port map service to stop running
-        DateTime endTime = DateTime.Now.AddMilliseconds( 1000 );
-        while ( this.Running && endTime < DateTime.Now )
-        {
-            OncRpcServerStubBase.Delay( 100 );
-        }
-        if ( this.Running )
-            throw new InvalidOperationException( "Server still running after sending the stop signal." );
-
         // set large fields to null
     }
 
-    /// <summary>   Finalizer. </summary>
-    ~OncRpcServerStubBase()
-    {
-        if ( this.IsDisposed ) { return; }
-        this.Dispose( false );
-    }
+    #endregion
 
     #endregion
+
+    #region " thread exception handler "
+
+    /// <summary>
+    /// Event queue for all listeners interested in ThreadExceptionOccurred events.
+    /// </summary>
+    public event ThreadExceptionEventHandler? ThreadExceptionOccurred;
+
+    /// <summary>   Executes the <see cref="ThreadExceptionOccurred"/> event. </summary>
+    /// <param name="e">    Event information to send to registered event handlers. </param>
+    protected virtual void OnThreadException( ThreadExceptionEventArgs e )
+    {
+        var handler = this.ThreadExceptionOccurred;
+        handler?.Invoke( this, e );
+    }
 
     #endregion
 
@@ -281,8 +320,8 @@ public abstract partial class OncRpcServerStubBase : IDisposable
     /// </remarks>
     /// <param name="transports">           Array of server transport objects for which processing of
     ///                                     remote procedure call requests should be done. </param>
-    /// <param name="closeUponShutdown">    True to close upon shutdown. </param>
-    public virtual void Run( OncRpcTransportBase[] transports, bool closeUponShutdown )
+    /// <param name="closeTransportsUponShutdown">    True to close transports upon stopping the server. </param>
+    public virtual void Run( OncRpcTransportBase[] transports, bool closeTransportsUponShutdown )
     {
 
         this.Running = true;
@@ -321,11 +360,11 @@ public abstract partial class OncRpcServerStubBase : IDisposable
             foreach ( var transport in transports )
                 transport.Unlisten( cts );
 
-            if ( closeUponShutdown )
+            if ( closeTransportsUponShutdown )
             {
                 try
                 {
-                    this.Close();
+                    this.CloseTransports();
                 }
                 catch ( Exception )
                 {
@@ -334,6 +373,16 @@ public abstract partial class OncRpcServerStubBase : IDisposable
             this.Running = false;
         }
 
+    }
+
+    /// <summary>   Closes the transports. </summary>
+    /// <remarks>   2023-01-30. </remarks>
+    private void CloseTransports()
+    {
+        var transports = this._transports;
+        if ( transports is not null )
+            foreach ( var transport in this._transports )
+                transport.Close();
     }
 
     /// <summary>
@@ -348,8 +397,74 @@ public abstract partial class OncRpcServerStubBase : IDisposable
     {
         if ( this.ShutdownSignal is not null )
             lock ( this.ShutdownSignal )
-                Monitor.Pulse( this.ShutdownSignal );
+                Monitor.PulseAll( this.ShutdownSignal );
     }
+
+    /// <summary>   Shuts down this object and frees any resources it is using. </summary>
+    /// <remarks> Unit test results shows that it took 4ms to shut down the server. </remarks>
+    /// <exception cref="InvalidOperationException">    Thrown when the requested operation is
+    ///                                                 invalid. </exception>
+    /// <exception cref="AggregateException">           Thrown when an Aggregate error condition
+    ///                                                 occurs. </exception>
+    /// <param name="timeout">      (Optional) The timeout. </param>
+    /// <param name="loopDelay">    (Optional) The loop delay. </param>
+    public void Shutdown( int timeout = 100, int loopDelay = 5 )
+    {
+        List<Exception> exceptions = new();
+
+        try
+        {
+            // if this works, this should also lead to closing.
+            if ( this.Running )
+                this.StopRpcProcessing();
+
+            // await for the port map service to stop running
+            DateTime endTime = DateTime.Now.AddMilliseconds( timeout );
+            while ( this.Running && endTime > DateTime.Now )
+            {
+                OncRpcServerStubBase.Delay( loopDelay );
+            }
+            if ( this.Running )
+                throw new InvalidOperationException( "Server still running after sending the stop signal." );
+        }
+        catch ( Exception ex )
+        { exceptions.Add( ex ); }
+        finally
+        {
+        }
+
+        try
+        {
+            this.CloseTransports();
+        }
+        catch ( Exception ex )
+        {
+            { exceptions.Add( ex ); }
+        }
+        finally
+        {
+            this._transports = Array.Empty<OncRpcTransportBase>();
+        }
+
+        if ( exceptions.Any() )
+        {
+            AggregateException aggregateException = new( exceptions );
+            throw aggregateException;
+        }
+
+    }
+
+    /// <summary>   Shutdown asynchronous. </summary>
+    /// <param name="timeout">      (Optional) The timeout. </param>
+    /// <param name="loopDelay">    (Optional) The loop delay. </param>
+    /// <returns>   A Task. </returns>
+    public virtual async Task ShutdownAsync( int timeout = 1000, int loopDelay = 25 )
+    {
+        await Task.Factory.StartNew( () => { this.Shutdown( timeout, loopDelay ); } )
+                .ContinueWith( failedTask => this.OnThreadException( new ThreadExceptionEventArgs( failedTask.Exception ) ), TaskContinuationOptions.OnlyOnFaulted );
+    }
+
+
 
     #endregion
 

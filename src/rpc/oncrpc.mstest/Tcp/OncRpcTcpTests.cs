@@ -1,9 +1,11 @@
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
 
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.MSTest.Codecs;
 using cc.isr.ONC.RPC.Portmap;
+using cc.isr.ONC.RPC.Server;
 
 namespace cc.isr.ONC.RPC.MSTest.Tcp;
 
@@ -67,7 +69,14 @@ public class OncRpcTcpTests
     {
         if ( _server is not null )
         {
-            _server.Dispose();
+            //_server.Shutdown( 2000, 25 );
+            bool running = _server.Running;
+            OncRpcServerStubBase.ShutdownTimeout = 2000;
+            Stopwatch sw = Stopwatch.StartNew();
+             _server.Dispose();
+            // it takes 35 ms to dispose the server with 25 ms llop delay and 4 ms with 5 ms loop delay.
+            Logging.Logger.Writer.LogInformation($"Running {running}; server disposed in {sw.ElapsedMilliseconds:0}ms");
+            running = _server.Running;
             _server = null;
         }
     }

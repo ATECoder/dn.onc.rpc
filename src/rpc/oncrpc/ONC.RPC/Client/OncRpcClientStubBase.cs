@@ -73,7 +73,18 @@ public abstract partial class OncRpcClientStubBase : ICloseable
     /// </summary>
     /// <remarks>
     /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
-    /// within a try...finaly block.
+    /// within a try...finaly block. <para>
+    ///
+    /// Because this class is implementing <see cref="IDisposable"/> and is not sealed, then it
+    /// should include the call to <see cref="GC.SuppressFinalize(object)"/> even if it does not
+    /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
+    /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
+    /// method. </para> <para>
+    /// 
+    /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
+    /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
+    ///
+    /// If releasing unmanaged code or freeing large objects then override <see cref="Object.Finalize()"/>. </para>
     /// </remarks>
     public void Dispose()
     {
@@ -88,7 +99,7 @@ public abstract partial class OncRpcClientStubBase : ICloseable
         catch { throw; }
         finally
         {
-            // uncomment the following line if Finalize() is overridden above.
+            // this is included because this class is not sealed.
 
             GC.SuppressFinalize( this );
 
@@ -112,12 +123,13 @@ public abstract partial class OncRpcClientStubBase : ICloseable
         if ( disposing )
         {
             // dispose managed state (managed objects)
+
             ICloseable? client = this.Client;
             if ( client is not null )
             {
                 try
                 {
-                    this.Client?.Close();
+                    client?.Close();
                 }
                 catch ( Exception )
                 {
@@ -135,19 +147,7 @@ public abstract partial class OncRpcClientStubBase : ICloseable
         // set large fields to null
     }
 
-    /// <summary>   Finalizer. </summary>
-    ~OncRpcClientStubBase()
-    {
-        if ( this.IsDisposed ) { return; }
-        this.Dispose( false );
-    }
-
     #endregion
-
-    #region " construction and cleanup "
-
-    #endregion
-
 
     #endregion
 

@@ -1,6 +1,8 @@
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Codecs;
+using System.Net.Sockets;
+using System;
 
 namespace cc.isr.ONC.RPC.Portmap;
 
@@ -102,7 +104,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public class OncRpcPortmapClient : IDisposable
+public class OncRpcPortmapClient : ICloseable
 {
 
     /// <summary>   Gets or sets the TCP connect timeout default. </summary>
@@ -160,10 +162,31 @@ public class OncRpcPortmapClient : IDisposable
         }
     }
 
-    /// <summary>   Closes the connection to the portmapper. </summary>
-    public virtual void Close()
+    /// <summary>
+    /// Closes the connection to an ONC/RPC server and frees all network-related resources.
+    /// </summary>
+    /// <remarks>
+    /// This implementation of close and dispose follows the implementation of the <see cref="System.Net.Sockets.TcpClient"/>
+    /// at
+    /// <see href="https://github.com/microsoft/referencesource/blob/master/System/net/System/Net/Sockets/TCPClient.cs"/>
+    /// with the following modifications:
+    /// <list type="bullet"> <item>
+    /// <see cref="Close()"/> is not <see langword="virtual"/> </item><item>
+    /// <see cref="Close()"/> calls <see cref="IDisposable.Dispose()"/> </item><item>
+    /// Consequently, <see cref="Close()"/> need not be overridden. </item><item>
+    /// <see cref="Close()"/> does not hide any exception that might be thrown by <see cref="IDisposable.Dispose()"/>
+    /// </item></list>
+    /// <list type="bullet"> <item>
+    /// The <see cref="IDisposable.Dispose()"/> method skips if <see cref="ICloseable.IsDisposed"/>
+    /// is <see langword="true"/>; </item><item>
+    /// The <see cref="XdrEncodingStreamBase.Dispose(bool)"/> accumulates and throws an aggregate
+    /// exception </item><item>
+    /// The <see cref="IDisposable.Dispose()"/> method throws the aggregate exception from <see cref="XdrEncodingStreamBase.Dispose(bool)"/>
+    /// . </item></list>
+    /// </remarks>
+    public void Close()
     {
-        this.OncRpcClient?.Close();
+        (( IDisposable ) this).Dispose();
     }
 
     #region " disposable implementation "
@@ -172,9 +195,20 @@ public class OncRpcPortmapClient : IDisposable
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
     /// resources.
     /// </summary>
-    /// <remarks> 
-    /// Takes account of and updates <see cref="IsDisposed"/>.
-    /// Encloses <see cref="Dispose(bool)"/> within a try...finaly block.
+    /// <remarks>
+    /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
+    /// within a try...finaly block. <para>
+    /// 
+    /// Because this class is implementing <see cref="IDisposable"/> and is not sealed, then it
+    /// should include the call to <see cref="GC.SuppressFinalize(object)"/> even if it does not
+    /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
+    /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
+    /// method. </para> <para>
+    /// 
+    /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
+    /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
+    ///
+    /// If releasing unmanaged code or freeing large objects then override <see cref="Object.Finalize()"/>. </para>
     /// </remarks>
     public void Dispose()
     {
@@ -182,21 +216,26 @@ public class OncRpcPortmapClient : IDisposable
         try
         {
             // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+
             this.Dispose( true );
 
-            // uncomment the following line if Finalize() is overridden above.
-            GC.SuppressFinalize( this );
         }
-        catch ( Exception ex ) { Logger.Writer.LogMemberError( "Exception disposing", ex ); }
+        catch { throw; }
         finally
         {
+            // this is included because this class is not sealed.
+
+            GC.SuppressFinalize( this );
+
+            // mark things as disposed.
+
             this.IsDisposed = true;
         }
     }
 
     /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
     /// <value> True if this object is disposed, false if not. </value>
-    protected bool IsDisposed { get; private set; }
+    public bool IsDisposed { get; private set; }
 
     /// <summary>
     /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
@@ -208,23 +247,31 @@ public class OncRpcPortmapClient : IDisposable
         if ( disposing )
         {
             // dispose managed state (managed objects)
+
+            this.OncRpcClient?.Close();
+
+            ICloseable? client = this.OncRpcClient;
+            if ( client is not null )
+            {
+                try
+                {
+                    client.Close();
+                }
+                catch
+                { throw; }
+                finally
+                {
+                    this.OncRpcClient = null;
+                }
+            }
+
+
         }
 
         // free unmanaged resources and override finalizer
-        // I am assuming that the socket used in the derived classes include unmanaged resources.
-        this.Close();
-
-        // dispose of the portmap client.
-        this.OncRpcClient?.Dispose();
 
         // set large fields to null
-    }
 
-    /// <summary>   Finalizer. </summary>
-    ~OncRpcPortmapClient()
-    {
-        if ( this.IsDisposed ) { return; }
-        this.Dispose( false );
     }
 
     #endregion
@@ -238,7 +285,7 @@ public class OncRpcPortmapClient : IDisposable
     /// portmapper.
     /// </summary>
     /// <value> The portmap client proxy object (subclass of <see cref="OncRpcClientBase"/>). </value>
-    public OncRpcClientBase OncRpcClient { get; set; }
+    public OncRpcClientBase? OncRpcClient { get; set; }
 
     #endregion
 
@@ -275,7 +322,7 @@ public class OncRpcPortmapClient : IDisposable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.OncRpcClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber, requestCodec, replyCodec );
+        this.OncRpcClient?.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber, requestCodec, replyCodec );
 
         // In case the program is not registered, throw an exception too.
         // @atecode: the specific 'Program Not Registered' exception was removed in favor of
@@ -313,7 +360,7 @@ public class OncRpcPortmapClient : IDisposable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.OncRpcClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapRegisterServer, requestCodec, resultCodec );
+        this.OncRpcClient!.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapRegisterServer, requestCodec, resultCodec );
 
         return resultCodec.Value;
     }
@@ -343,7 +390,7 @@ public class OncRpcPortmapClient : IDisposable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.OncRpcClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer, requestCodec, replyCodec );
+        this.OncRpcClient?.Call((int)OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer, requestCodec, replyCodec);
 
         return replyCodec.Value;
     }
@@ -367,7 +414,7 @@ public class OncRpcPortmapClient : IDisposable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.OncRpcClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers, VoidXdrCodec.VoidXdrCodecInstance, result );
+        this.OncRpcClient?.Call((int)OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers, VoidXdrCodec.VoidXdrCodecInstance, result);
 
         // Copy the server identities from the Vector into the vector (array).
         // OncRpcServerIdentifierCodec[] serverIdentifiers = new OncRpcServerIdentifierCodec[result.ServerIdentifiers.Count];
@@ -382,7 +429,7 @@ public class OncRpcPortmapClient : IDisposable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.OncRpcClient.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance );
+        this.OncRpcClient?.Call((int)OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance);
     }
 
     /// <summary>   Attempts to ping the Portmap service by calling the null procedure (0). </summary>
@@ -423,7 +470,7 @@ public class OncRpcPortmapClient : IDisposable
     public static bool TryPingPortmapService( IPAddress host, int ioTimeout = 100, int transmitTimeout = 25 )
     {
         using OncRpcPortmapClient portmap = new( host, OncRpcProtocol.OncRpcUdp, transmitTimeout );
-        portmap.OncRpcClient.IOTimeout = ioTimeout;
+        portmap.OncRpcClient!.IOTimeout = ioTimeout;
         return portmap.TryPingPortmapService();
     }
 

@@ -23,7 +23,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
-public abstract class OncRpcTransportBase : IDisposable
+public abstract class OncRpcTransportBase : ICloseable
 {
 
     #region " construction and cleanup "
@@ -85,7 +85,18 @@ public abstract class OncRpcTransportBase : IDisposable
     /// </summary>
     /// <remarks>
     /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
-    /// within a try...finaly block.
+    /// within a try...finaly block. <para>
+    ///
+    /// Because this class is implementing <see cref="IDisposable"/> and is not sealed, then it
+    /// should include the call to <see cref="GC.SuppressFinalize(object)"/> even if it does not
+    /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
+    /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
+    /// method. </para> <para>
+    /// 
+    /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
+    /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
+    ///
+    /// If releasing unmanaged code or freeing large objects then override <see cref="Object.Finalize()"/>. </para>
     /// </remarks>
     public void Dispose()
     {
@@ -100,7 +111,7 @@ public abstract class OncRpcTransportBase : IDisposable
         catch { throw; }
         finally
         {
-            // uncomment the following line if Finalize() is overridden above.
+            // this is included because this class is not sealed.
 
             GC.SuppressFinalize( this );
 
@@ -116,7 +127,20 @@ public abstract class OncRpcTransportBase : IDisposable
 
     /// <summary>
     /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
+    /// Closes the server transport and frees any resources associated with it.
     /// </summary>
+    /// <remarks>
+    /// Note that the server transport is <b>not deregistered</b>. You'll have to do it manually if
+    /// you need to do so. The reason for this behavior is that the portmapper removes all entries
+    /// regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC program number and version.
+    /// <para>
+    /// 
+    /// Calling this method on a <see cref="OncRpcTcpTransport"/> results in the listening TCP
+    /// network socket immediately being closed. In addition, all server transports handling the
+    /// individual TCP/IP connections will also be closed. The handler threads will therefore either
+    /// terminate directly or when they try to sent back replies.</para>
+    /// </remarks>
+    /// <exception cref="AggregateException">   Thrown when an Aggregate error condition occurs. </exception>
     /// <param name="disposing">    True to release large objects and managed and unmanaged resources;
     ///                             false to release only unmanaged resources and large objects. </param>
     protected virtual void Dispose( bool disposing )
@@ -124,6 +148,7 @@ public abstract class OncRpcTransportBase : IDisposable
         List<Exception> exceptions = new();
         if ( disposing )
         {
+            // dispose managed state (managed objects)
 
             XdrEncodingStreamBase? encoder = this.Encoder;
             if ( encoder is not null )
@@ -165,13 +190,6 @@ public abstract class OncRpcTransportBase : IDisposable
         // free unmanaged resources and override finalizer
 
         // set large fields to null
-    }
-
-    /// <summary>   Finalizer. </summary>
-    ~OncRpcTransportBase()
-    {
-        if ( this.IsDisposed ) { return; }
-        this.Dispose( false );
     }
 
     #endregion
@@ -263,7 +281,7 @@ public abstract class OncRpcTransportBase : IDisposable
         try
         {
             using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
-            pmapClient.OncRpcClient.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
+            pmapClient.OncRpcClient!.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
             foreach ( var transportRegistrationInfo in this.RegisteredPrograms )
             {
                 // Try to register the port for our transport with the local ONC/RPC
@@ -294,7 +312,7 @@ public abstract class OncRpcTransportBase : IDisposable
         try
         {
             using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, OncRpcUdpTransport.TransmitTimeoutDefault );
-            pmapClient.OncRpcClient.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
+            pmapClient.OncRpcClient!.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
             foreach ( OncRpcProgramInfo registeredProgram in this.RegisteredPrograms )
                 _ = pmapClient.UnsetPort( registeredProgram.Program, registeredProgram.Version );
         }

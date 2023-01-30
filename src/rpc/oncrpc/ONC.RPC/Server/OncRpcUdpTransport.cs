@@ -105,41 +105,6 @@ public class OncRpcUdpTransport : OncRpcTransportBase
         this.Decoder = new XdrUdpDecodingStream( this._socket, bufferSize );
     }
 
-    /// <summary>   Close the server transport and free any resources associated with it. </summary>
-    /// <remarks>
-    /// Note that the server transport is <b>not deregistered</b>. You'll
-    /// have to do it manually if you need to do so. The reason for this behavior is, that the
-    /// portmapper removes all entries regardless of the protocol (TCP/IP or UDP/IP) for a given
-    /// ONC/RPC program number and version. <para>
-    /// 
-    /// Calling this method on a <see cref="OncRpcUdpTransport"/>
-    /// results in the UDP network socket immediately being closed. The handler thread will therefore
-    /// either terminate directly or when it tries to sent back a reply which it was about to handle
-    /// at the time the close method was called. </para>
-    /// </remarks>
-    public override void Close()
-    {
-        if ( this._socket is not null )
-        {
-
-            // Since there is a non-zero chance of getting race conditions,
-            // we now first set the socket instance member to null, before
-            // we close the corresponding socket. This avoids null-pointer
-            // exceptions in the method which waits for new requests: it is
-            // possible that this method is awakened because the socket has
-            // been closed before we could set the socket instance member to
-            // null. Many thanks to Michael Smith for tracking down this one.
-
-            // @atecoder: added shutdown
-            Socket socket = this._socket;
-            if ( socket.Connected )
-                socket.Shutdown( SocketShutdown.Both );
-            this._socket = null;
-            socket.Close();
-        }
-        base.Close();
-    }
-
     /// <summary>   UDP socket used for datagram-based communication with ONC/RPC clients. </summary>
     private Socket? _socket;
 
@@ -148,15 +113,13 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// </summary>
     private Thread? _listener;
 
-    private readonly System.Net.Sockets.NetworkStream? _dataStream;
-
     /// <summary>
     /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
     /// Closes the server transport and frees any resources associated with it.
     /// </summary>
     /// <remarks>
     /// Note that the server transport is <b>not deregistered</b>. You'll have to do it manually if
-    /// you need to do so. The reason for this behavior is, that the portmapper removes all entries
+    /// you need to do so. The reason for this behavior is that the portmapper removes all entries
     /// regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC program number and version.
     /// <para>
     /// 
@@ -173,36 +136,36 @@ public class OncRpcUdpTransport : OncRpcTransportBase
         List<Exception> exceptions = new();
         if ( disposing )
         {
-            IDisposable? dataStream = this._dataStream;
-            if ( dataStream != null )
-            {
-                dataStream.Dispose();
-            }
-            else
-            {
-                // if the NetworkStream wasn't created, the Socket might
-                // still be there and needs to be closed. In the case in which
-                // we are bound to a local IPEndPoint this will remove the
-                // binding and free up the IPEndPoint for later uses.
+            // dispose managed state (managed objects)
 
-                Socket? socket = this._socket;
-                if ( socket is not null )
+            // if a NetworkStream wasn't created, the Socket might
+            // still be there and needs to be closed. In the case in which
+            // we are bound to a local IPEndPoint this will remove the
+            // binding and free up the IPEndPoint for later uses.
+
+            Socket? socket = this._socket;
+            if ( socket is not null )
+            {
+                try
                 {
-                    try
-                    {
-                        if ( socket.Connected )
-                            socket.Shutdown( SocketShutdown.Both );
-                    }
-                    catch ( Exception ex )
-                    { exceptions.Add( ex ); }
-                    finally
-                    {
-                        socket.Close();
-                        this._socket = null;
-                    }
+                    if ( socket.Connected )
+                        socket.Shutdown( SocketShutdown.Both );
+                }
+                catch ( Exception ex )
+                { exceptions.Add( ex ); }
+                finally
+                {
+                    socket.Close();
+                    this._socket = null;
                 }
             }
         }
+
+        // free unmanaged resources and override finalizer
+
+        // set large fields to null
+
+        // call base dispose( bool ).
 
         try
         {

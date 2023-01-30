@@ -78,14 +78,6 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                     break;
                 }
             }
-#if false
-            for ( int idx = 0; idx < addrs.Length; ++idx )
-                if ( addrs[idx].Equals( loopback ) )
-                {
-                    loopbackIncluded = true;
-                    break;
-                }
-#endif
 
             if ( loopbackIncluded )
                 this._locals = addrs;
