@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Net.NetworkInformation;
 
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Server;
@@ -86,14 +87,15 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     }
 
     /// <summary>   Start the embedded port map service. </summary>
-    /// <remarks> Unit tests show the following timing:
-    /// checked 110ms, start 220ms, ping: 4ms. Total time is around 330ms
-    /// with the new default timeouts for pinging the service. 
+    /// <remarks>
+    /// Unit tests show the following timing: checked 110ms, start 220ms, ping: 4ms. Total time is
+    /// around 330ms with the new default timeouts for pinging the service.
     /// </remarks>
-    /// <exception cref="InvalidOperationException">    Thrown when the service failed to run
-    ///                                                 or is not available. </exception>
+    /// <exception cref="InvalidOperationException">    Thrown when the service failed to run or is
+    ///                                                 not available. </exception>
+    /// <param name="validate"> (Optional) True to validate the port map after onset. </param>
     /// <returns>   An OncRpcEmbeddedPortmapService. </returns>
-    public static OncRpcEmbeddedPortmapServiceStub StartEmbeddedPortmapService()
+    public static OncRpcEmbeddedPortmapServiceStub StartEmbeddedPortmapService( bool validate = false )
     {
         Logger.Writer.LogInformation( $"Checking for portmap service" );
         Stopwatch sw = Stopwatch.StartNew();
@@ -107,32 +109,40 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
         Logger.Writer.LogInformation( "Creating embedded portmap instance" );
         sw = Stopwatch.StartNew();
 
-        if ( alreadyRunning ) return new OncRpcEmbeddedPortmapServiceStub( true );
-
-        OncRpcEmbeddedPortmapServiceStub epm = new( 0 );
-
-        return !epm.EmbeddedPortmapServiceStarted()
-            ? throw new InvalidOperationException( "Portmap service is not available or not in use." )
-            : epm;
-
-#if false
-        if ( epm.EmbeddedPortmapServiceStarted() )
+        if ( alreadyRunning )
         {
-            int startTime = ( int ) sw.ElapsedMilliseconds;
-            Logger.Writer.LogInformation( "embedded service started; try pinging the port map service" );
+            Logger.Writer.LogInformation( $"external portmap service is running; checked {checkTime}ms" );
+            return new OncRpcEmbeddedPortmapServiceStub( true );
+        }
+        else
+        {
+            OncRpcEmbeddedPortmapServiceStub epm = new( 0 );
 
-            sw = Stopwatch.StartNew();
-            bool pinged = OncRpcPortmapClient.TryPingPortmapService();
-            if ( !pinged )
-                throw new InvalidOperationException( "Portmap service is not running." );
-            int pingTime = ( int ) sw.ElapsedMilliseconds;
-            Logger.Writer.LogInformation( $"portmap service is {(pinged ? "running" : "idle")}; checked {checkTime}ms, start {startTime}ms, ping: {pingTime}ms " );
+            // wait for the service to start.
+            if ( epm.EmbeddedPortmapServiceStarted() )
+
+                // validate if requested.
+                if ( validate )
+                {
+                    int startTime = ( int ) sw.ElapsedMilliseconds;
+                    Logger.Writer.LogInformation( "embedded service started; try pinging the port map service" );
+
+                    sw = Stopwatch.StartNew();
+                    bool pinged = OncRpcPortmapClient.TryPingPortmapService();
+                    if ( !pinged )
+                        throw new InvalidOperationException( "Portmap service is not running." );
+                    int pingTime = ( int ) sw.ElapsedMilliseconds;
+                    Logger.Writer.LogInformation( $"portmap service is {(pinged ? "running" : "idle")}; checked {checkTime}ms, start {startTime}ms, ping: {pingTime}ms " );
+                }
+                else
+                    Logger.Writer.LogInformation( $"portmap service started; checked {checkTime}ms." );
+
+            else
+            {
+                throw new InvalidOperationException( "External portmap service is not available; embedded portmap service did not start." );
+            }
             return epm;
         }
-
-        else
-            throw new InvalidOperationException( "Portmap service is not available or not in use." );
-#endif
     }
 
     /// <summary>

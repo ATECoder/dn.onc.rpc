@@ -353,13 +353,6 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     public override void Listen( CancellationTokenSource cancelSource )
     {
 
-#if false
-        TransportHelper t = new( this );
-        Thread listener = new( new ThreadStart( () => t.Run( cancelSource ) ) ) {
-            Name = "TCP server transport connection thread",
-            IsBackground = true
-        };
-#endif
         Thread listener = new( new ThreadStart( () => this.DoListen( cancelSource.Token ) ) ) {
             Name = "ONC/RPC TCP server transport connection thread",
             IsBackground = true
@@ -537,31 +530,6 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
             }
         }
     }
-
-#if false
-    /// <summary>   A transport helper. This class cannot be inherited. </summary>
-    private sealed class TransportHelper
-    {
-        /// <summary>   Constructor. </summary>
-        /// <remarks>   
-        /// @atecoder 2023-01-23: add cancellation token. </remarks>
-        /// <param name="enclosing">    The enclosing. </param>
-        public TransportHelper( OncRpcTcpConnTransport enclosing )
-        {
-            this._enclosing = enclosing;
-        }
-
-        private readonly OncRpcTcpConnTransport _enclosing;
-
-        /// <summary>   Starts the listening loop listening. </summary>
-        public void Run( CancellationTokenSource cancelSource )
-        {
-
-            this._enclosing.DoListen( cancelSource.Token );
-        }
-    }
-#endif
-
 
     #endregion
 
