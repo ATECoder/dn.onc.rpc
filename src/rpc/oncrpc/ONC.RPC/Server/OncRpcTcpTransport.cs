@@ -388,52 +388,6 @@ public class OncRpcTcpTransport : OncRpcTransportBase
             }
     }
 
-#if false
-    private sealed class TransportHelper
-    {
-        /// <summary>   Constructor. </summary>
-        /// <param name="parentTransport">   Parent server transport which created us. </param>
-        public TransportHelper( OncRpcTcpTransport parentTransport )
-        {
-            this._parent = parentTransport;
-        }
-
-        /// <summary>   Get the server to start listening on the transports. </summary>
-        public void Run()
-        {
-            for (; ; )
-                try
-                {
-                    Socket myServerSocket = this._parent!._socket!;
-                    if ( myServerSocket == null )
-                        break;
-
-                    Socket newSocket = myServerSocket.Accept();
-                    // OncRpcTcpConnTransport transport = new( this._enclosing.Dispatcher, newSocket, this._enclosing.RegisteredPrograms,
-                    //                                         this._enclosing.BufferSize, this._enclosing, this._enclosing.TransmitTimeout );
-                    OncRpcTcpConnTransport transport = new( this._parent, newSocket );
-
-
-                    lock ( this._parent._openTransports )
-                        this._parent._openTransports.Add( transport );
-                    transport.Listen();
-                }
-                catch ( OncRpcException )
-                {
-                }
-                catch ( SocketException )
-                {
-                    // If the socket has been closed and set to null, don't bother
-                    // notifying anybody because we're shutting down
-                    if ( this._parent._socket == null )
-                        break;
-                }
-        }
-
-        private readonly OncRpcTcpTransport _parent;
-    }
-#endif
-
     #endregion
 
     #region " transport linked list "

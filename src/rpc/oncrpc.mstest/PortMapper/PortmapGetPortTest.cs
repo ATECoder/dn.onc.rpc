@@ -7,15 +7,19 @@ namespace cc.isr.ONC.RPC.MSTest.PortMapper;
 
 /// <summary>   (Unit Test Class) a portmap get port test. </summary>
 [TestClass]
-public class PortmapGetPortTest
+public class APortmapGetPortTest
 {
 
     /// <summary>   (Unit Test Method) portmap should get port. </summary>
+    /// <remarks> THIS TEST OFTEN FAILED WHEN RUN AFTER THE EMBEDDED PORTMAP TEST. 
+    /// so we changed the order for now. </remarks>
     [TestMethod]
     public void PortmapShouldGetPort()
     {
-
         using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
+
+        // It is assumed that no external portmap services are available.
+        Assert.IsFalse( epm.UsingExternalPortmapService, $"External portmap services are not expected." );
 
         IPHostEntry host = Dns.GetHostEntry( Dns.GetHostName() );
 

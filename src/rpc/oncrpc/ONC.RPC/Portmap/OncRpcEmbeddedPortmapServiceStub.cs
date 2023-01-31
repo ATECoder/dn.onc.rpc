@@ -38,16 +38,29 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// <param name="transmitTimeout">  (Optional) The transmit timeout; defaults to 25 ms. </param>
     public OncRpcEmbeddedPortmapServiceStub( int ioTimeout = 100, int transmitTimeout = 25 )
     {
-        if ( ioTimeout <= 0 || !TryPingPortmapService( ioTimeout, transmitTimeout ) )
+        if ( ioTimeout <= 0 || !OncRpcPortmapClient.TryPingPortmapService( ioTimeout, transmitTimeout ) )
         {
             this._embeddedPortmapService = new OncRpcEmbeddedPortmapService();
-            Thread listenThread = new( new ThreadStart( () => this._embeddedPortmapService.Run( this._embeddedPortmapService.GetTransports(),
-                                                                                                           true ) ) ) {
-                Name = "ONC/RPC Embedded Portmap Service Thread",
-                IsBackground = true
-            };
-            listenThread.Start();
+            _ = this._embeddedPortmapService!.StartAsync();
         }
+        else
+        {
+            this.UsingExternalPortmapService = true;
+        }
+    }
+
+    /// <summary>
+    /// Constructs an empty portmap service of class server <see cref="OncRpcEmbeddedPortmapServiceStub"/>
+    /// and starts the service if no other (external) portmap service is available.
+    /// </summary>
+    /// <remarks>
+    /// The constructor starts the portmap service in its own thread and then returns.
+    /// </remarks>
+    /// <param name="usingExternalPortmapService">  True if portmap service already running, false if
+    ///                                             not. </param>
+    public OncRpcEmbeddedPortmapServiceStub( bool usingExternalPortmapService )
+    {
+        this.UsingExternalPortmapService = usingExternalPortmapService;
     }
 
     /// <summary>   Stop the embedded portmap service synchronously if it is running. </summary>
@@ -84,7 +97,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     {
         Logger.Writer.LogInformation( $"Checking for portmap service" );
         Stopwatch sw = Stopwatch.StartNew();
-        bool alreadyRunning = OncRpcEmbeddedPortmapServiceStub.TryPingPortmapService();
+        bool alreadyRunning = OncRpcPortmapClient.TryPingPortmapService();
         int checkTime = ( int ) sw.ElapsedMilliseconds;
         if ( alreadyRunning )
             Logger.Writer.LogInformation( "A portmap service is already running." );
@@ -93,15 +106,23 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
 
         Logger.Writer.LogInformation( "Creating embedded portmap instance" );
         sw = Stopwatch.StartNew();
+
+        if ( alreadyRunning ) return new OncRpcEmbeddedPortmapServiceStub( true );
+
         OncRpcEmbeddedPortmapServiceStub epm = new( 0 );
 
+        return !epm.EmbeddedPortmapServiceStarted()
+            ? throw new InvalidOperationException( "Portmap service is not available or not in use." )
+            : epm;
+
+#if false
         if ( epm.EmbeddedPortmapServiceStarted() )
         {
             int startTime = ( int ) sw.ElapsedMilliseconds;
             Logger.Writer.LogInformation( "embedded service started; try pinging the port map service" );
 
             sw = Stopwatch.StartNew();
-            bool pinged = OncRpcEmbeddedPortmapServiceStub.TryPingPortmapService();
+            bool pinged = OncRpcPortmapClient.TryPingPortmapService();
             if ( !pinged )
                 throw new InvalidOperationException( "Portmap service is not running." );
             int pingTime = ( int ) sw.ElapsedMilliseconds;
@@ -111,7 +132,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
 
         else
             throw new InvalidOperationException( "Portmap service is not available or not in use." );
-
+#endif
     }
 
     /// <summary>
@@ -141,7 +162,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
         (( IDisposable ) this).Dispose();
     }
 
-    #region " disposable implementation "
+#region " disposable implementation "
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
@@ -220,11 +241,11 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
         // set large fields to null
     }
 
-    #endregion
+#endregion
 
-    #endregion
+#endregion
 
-    #region " members "
+#region " members "
 
     /// <summary>
     /// Portmap object acting as embedded portmap service or (<see langword="null"/>)
@@ -239,10 +260,17 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// </returns>
     public virtual OncRpcPortMapService? EmbeddedPortmapService => this._embeddedPortmapService;
 
+    /// <summary>
+    /// Gets or sets a value indicating whether an external portmap service
+    /// was already running when trying to establish this embedded portmap service, in which case we
+    /// do not have a <see cref="EmbeddedPortmapService"/>
+    /// </summary>
+    /// <value> True if portmap service already running, false if not. </value>
+    public bool UsingExternalPortmapService { get; set; } = false;
 
-    #endregion
+#endregion
 
-    #region " actions "
+#region " actions "
 
     /// <summary>
     /// Tries to ping the portmap service regardless whether it's supplied by the operating system or
@@ -255,26 +283,12 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// <see langword="true"/>, if a portmap service (either external or embedded) is running and can
     /// be contacted.
     /// </returns>
-    public static bool TryPingPortmapService( int ioTimeout = 100, int transmitTimeout = 25 )
+    public static bool TryPingPortmapService1( int ioTimeout = 100, int transmitTimeout = 25 )
     {
         using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, transmitTimeout );
         pmapClient.OncRpcClient!.IOTimeout = ioTimeout;
         return pmapClient.TryPingPortmapService();
     }
-
-#if false
-    /// <summary>   Indicates whether the embedded portmap service is in use. </summary>
-    /// <returns>
-    /// <see langword="true"/>, if embedded portmap service is currently
-    /// used.
-    /// </returns>
-    public virtual bool EmbeddedPortmapInUse()
-    {
-        return this.EmbeddedPortmapServiceStarted( 200 );
-        // return this._embeddedPortmapService is not null && this._embeddedPortmapService.Running; // .ServiceThread is not null;
-        // return this._embeddedPortmapService?.ServiceThread is not null;
-    }
-#endif
 
     /// <summary>   Determines if we can embedded portmap service started without waiting for timeout. </summary>
     /// <returns>   True if it succeeds, false if it fails. </returns>
@@ -303,9 +317,9 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
         // return this._embeddedPortmapService?.ServiceThread is not null;
     }
 
-    #endregion
+#endregion
 
-    #region " embedded portmap service and thread classes "
+#region " embedded portmap service and thread classes "
 
 #if false
     /// <summary>   Returns the thread object running the embedded portmap service. </summary>
@@ -441,6 +455,6 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     }
 #endif
 
-    #endregion
+#endregion
 
 }

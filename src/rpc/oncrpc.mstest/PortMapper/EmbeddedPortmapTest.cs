@@ -10,6 +10,12 @@ namespace cc.isr.ONC.RPC.MSTest.PortMapper;
 public class EmbeddedPortmapTest
 {
 
+    /// <summary>   Cleanup fixture. </summary>
+    [ClassCleanup]
+    public static void CleanupFixture()
+    {
+    }
+
     /// <summary>   (Unit Test Method) embedded portmap service should pass. </summary>
     [TestMethod]
     public void EmbeddedPortmapServiceShouldPass()
@@ -18,6 +24,9 @@ public class EmbeddedPortmapTest
         Logger.Writer.LogInformation( "Starting the embedded portmap service" );
         Stopwatch stopwatch = Stopwatch.StartNew();
         using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
+
+        // It is assumed that no external portmap services are available.
+        Assert.IsFalse( epm.UsingExternalPortmapService, $"External portmap services are not expected." );
 
         Logger.Writer.LogInformation( $"The embedded portmap service started in {stopwatch.ElapsedMilliseconds:0}ms" );
 
@@ -49,7 +58,5 @@ public class EmbeddedPortmapTest
         // dispose of the portmap service
         Logger.Writer.LogInformation( $"Exiting test method; {nameof( OncRpcEmbeddedPortmapServiceStub )} will be disposed..." );
 
-
     }
-
 }

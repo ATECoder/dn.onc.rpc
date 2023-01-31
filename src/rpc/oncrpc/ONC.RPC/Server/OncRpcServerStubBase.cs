@@ -372,6 +372,32 @@ public abstract partial class OncRpcServerStubBase : ICloseable
 
     }
 
+    /// <summary>   Starts the server using the all inclusive <see cref="Run()"/> asynchronously. </summary>
+    /// <returns>   A Task. </returns>
+    public virtual async Task RunAsync()
+    {
+        await Task.Factory.StartNew( () => { this.Run(); } );
+    }
+
+    /// <summary>   Starts the server using the existing transports synchronously. </summary>
+    /// <param name="closeTransportsUponShutdown">  (Optional) True to close transports upon stopping
+    ///                                             the server. </param>
+    public virtual void Start( bool closeTransportsUponShutdown = true )
+    {
+        this.Run( this._transports, closeTransportsUponShutdown );
+    }
+
+    /// <summary>   Starts the server using the existing transports asynchronously. </summary>
+    /// <param name="closeTransportsUponShutdown">  (Optional) True to close transports upon stopping
+    ///                                             the server. </param>
+    /// <returns>   A Task. </returns>
+    public virtual async Task StartAsync( bool closeTransportsUponShutdown = true )
+    {
+        await Task.Factory.StartNew( () => { this.Start( closeTransportsUponShutdown ); } )
+                    .ContinueWith( failedTask => this.OnThreadException( new ThreadExceptionEventArgs( failedTask.Exception ) ),
+                                                                                TaskContinuationOptions.OnlyOnFaulted );
+    }
+
     /// <summary>   Closes the transports. </summary>
     /// <remarks>   2023-01-30. </remarks>
     private void CloseTransports()
