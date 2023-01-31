@@ -611,7 +611,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
     /// <param name="requestCodec">     The XDR codec that is sent to the procedure call. </param>
     /// <param name="replyCodec">       The XDR codec that receives the result of the procedure call. </param>
-    /// <param name="timeout">          The timeout. </param>
+    /// <param name="timeout">          The timeout in milliseconds. </param>
     public virtual void BroadcastCall( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec, int timeout )
     {
 

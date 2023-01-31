@@ -83,13 +83,6 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// <value> True if this object is disposed, false if not. </value>
     public bool IsDisposed { get; private set; }
 
-    /// <summary>   Delays. </summary>
-    /// <param name="delayTime">    The delay time. </param>
-    private static async void Delay( int delayTime )
-    {
-        await Task.Delay( delayTime );
-    }
-
     /// <summary>   Gets or sets the shutdown timeout. </summary>
     /// <value> The shutdown timeout. </value>
     public static int ShutdownTimeout { get; set; } = 1000;
@@ -118,7 +111,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
 
             try
             {
-                this.Shutdown( OncRpcServerStubBase.ShutdownTimeout, 25 );
+                this.Shutdown( OncRpcServerStubBase.ShutdownTimeout, 5 );
             }
             catch ( Exception ex )
             { exceptions.Add( ex ); }
@@ -270,15 +263,15 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     #region " run and stop "
 
     /// <summary>   Checks if server started. </summary>
-    /// <param name="timeout">          The timeout. </param>
-    /// <param name="loopDelayTime">    The loop delay time. </param>
+    /// <param name="timeout">      The timeout in milliseconds. </param>
+    /// <param name="loopDelay">    The loop delay time in milliseconds. </param>
     /// <returns>   True if it succeeds, false if it fails. </returns>
-    public bool ServerStarted( int timeout, int loopDelayTime )
+    public bool ServerStarted( int timeout = 200, int loopDelay = 5 )
     {
         DateTime endTime = DateTime.Now.AddMilliseconds( timeout );
         while ( endTime > DateTime.Now || !this.Running )
         {
-            Delay( loopDelayTime );
+            Task.Delay( loopDelay ).Wait();
         }
         return this.Running;
     }
@@ -448,8 +441,8 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     ///                                                 invalid. </exception>
     /// <exception cref="AggregateException">           Thrown when an Aggregate error condition
     ///                                                 occurs. </exception>
-    /// <param name="timeout">      (Optional) The timeout. </param>
-    /// <param name="loopDelay">    (Optional) The loop delay. </param>
+    /// <param name="timeout">      (Optional) The timeout in milliseconds. </param>
+    /// <param name="loopDelay">    (Optional) The loop delay in milliseconds. </param>
     public void Shutdown( int timeout = 100, int loopDelay = 5 )
     {
         List<Exception> exceptions = new();
@@ -464,7 +457,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
             DateTime endTime = DateTime.Now.AddMilliseconds( timeout );
             while ( this.Running && endTime > DateTime.Now )
             {
-                OncRpcServerStubBase.Delay( loopDelay );
+                Task.Delay( loopDelay ).Wait();
             }
             if ( this.Running )
                 throw new InvalidOperationException( "Server still running after sending the stop signal." );
@@ -497,8 +490,8 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     }
 
     /// <summary>   Shutdown asynchronous. </summary>
-    /// <param name="timeout">      (Optional) The timeout. </param>
-    /// <param name="loopDelay">    (Optional) The loop delay. </param>
+    /// <param name="timeout">      (Optional) The timeout in milliseconds. </param>
+    /// <param name="loopDelay">    (Optional) The loop delay in milliseconds. </param>
     /// <returns>   A Task. </returns>
     public virtual async Task ShutdownAsync( int timeout = 1000, int loopDelay = 25 )
     {
