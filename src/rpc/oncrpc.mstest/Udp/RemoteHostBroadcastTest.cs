@@ -1,7 +1,6 @@
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Portmap;
-using System.Runtime.CompilerServices;
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
@@ -37,6 +36,7 @@ public class RemoteHostBroadcastTest
     [ClassCleanup]
     public static void CleanupFixture()
     {
+        _classTestContext = null;
     }
 
     private static readonly List<IPEndPoint> _portmappers = new();

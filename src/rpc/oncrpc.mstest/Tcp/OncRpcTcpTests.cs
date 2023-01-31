@@ -37,6 +37,7 @@ public class OncRpcTcpTests
             _server = new();
 
             _server.PropertyChanged += OnServerPropertyChanged;
+            _server.ThreadExceptionOccurred -= OnThreadExceptionOccurred;
             _ = Task.Factory.StartNew( () => {
                 Logger.Writer.LogInformation( "starting the portmap service; this takes ~3.5 seconds..." );
                 using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
@@ -67,19 +68,36 @@ public class OncRpcTcpTests
     [ClassCleanup]
     public static void CleanupFixture()
     {
-        if ( _server is not null )
+        OncRpcTcpServer? server = _server;
+        if ( server is not null )
         {
-            //_server.Shutdown( 2000, 25 );
-            bool running = _server.Running;
-            OncRpcServerStubBase.ShutdownTimeout = 2000;
-            Stopwatch sw = Stopwatch.StartNew();
-             _server.Dispose();
-            // it takes 35 ms to dispose the server with 25 ms llop delay and 4 ms with 5 ms loop delay.
-            Logging.Logger.Writer.LogInformation($"Running {running}; server disposed in {sw.ElapsedMilliseconds:0}ms");
-            running = _server.Running;
-            _server = null;
+            try
+            {
+                //_server.Shutdown( 2000, 25 );
+                bool running = server.Running;
+                OncRpcServerStubBase.ShutdownTimeout = 2000;
+                Stopwatch sw = Stopwatch.StartNew();
+                server.Dispose();
+                // it takes 35 ms to dispose the server with 25 ms loop delay and 4 ms with 5 ms loop delay.
+                Logging.Logger.Writer.LogInformation( $"Running {running}; server disposed in {sw.ElapsedMilliseconds:0}ms" );
+                running = server.Running;
+                
+                server.PropertyChanged -= OnServerPropertyChanged;
+                server.ThreadExceptionOccurred -= OnThreadExceptionOccurred;
+            }
+            catch ( Exception ex )
+            {
+                Logger.Writer.LogError( "exception cleanup up text fixture", ex );
+            }
+            finally
+            {
+                _server = null;
+                _classTestContext = null;
+            }
         }
+
     }
+
 
     private static OncRpcTcpServer? _server;
 
@@ -108,6 +126,16 @@ public class OncRpcTcpTests
         }
     }
 
+    private static void OnThreadExceptionOccurred( object? sender, ThreadExceptionEventArgs e )
+    {
+        string name = "unknown";
+        if ( _server is OncRpcTcpServer )
+        {
+            name = nameof( OncRpcTcpServer );
+        }
+        Logger.Writer.LogError( $"Thread exception occurred at {name} instance", e.Exception );
+    }
+
     /// <summary>   (Unit Test Method) server should be listening. </summary>
     [TestMethod]
     public void ServerShouldBeListening()
@@ -127,30 +155,12 @@ public class OncRpcTcpTests
         Logger.Writer.LogInformation( "connected." );
     }
 
-    /// <summary>   Assert client should close. </summary>
-    /// <param name="client">   The client. </param>
-    private static void AssertClientShouldClose( OncRpcTcpTestClient client )
-    {
-        Logger.Writer.LogInformation( "Closing... " );
-        client.Close();
-        Assert.IsFalse( client.Connected, "should be disconnected" );
-        Logger.Writer.LogInformation( "disconnected" );
-    }
-
     /// <summary>   (Unit Test Method) client should connect. </summary>
     [TestMethod]
     public void ClientShouldConnect()
     {
         using OncRpcTcpTestClient client = new();
-        try
-        {
-            AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
-        }
-        catch { throw; }
-        finally
-        {
-            AssertClientShouldClose( client );
-        }
+        AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
     }
 
     /// <summary>   (Unit Test Method) client should connect version 2. </summary>
@@ -158,15 +168,7 @@ public class OncRpcTcpTests
     public void ClientShouldConnectVersion2()
     {
         using OncRpcTcpTestClient client = new();
-        try
-        {
-            AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version2 );
-        }
-        catch { throw; }
-        finally
-        {
-            AssertClientShouldClose( client );
-        }
+        AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version2 );
     }
 
     /// <summary>   Assert client should ping. </summary>
@@ -183,16 +185,8 @@ public class OncRpcTcpTests
     public void ClientShouldPing()
     {
         using OncRpcTcpTestClient client = new();
-        try
-        {
-            AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
-            AssertClientShouldPing( client );
-        }
-        catch { throw; }
-        finally
-        {
-            AssertClientShouldClose( client );
-        }
+        AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
+        AssertClientShouldPing( client );
     }
 
     /// <summary>   (Unit Test Method) client should ping version 2. </summary>
@@ -200,16 +194,8 @@ public class OncRpcTcpTests
     public void ClientShouldPingVersion2()
     {
         using OncRpcTcpTestClient client = new();
-        try
-        {
-            AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version2 );
-            AssertClientShouldPing( client );
-        }
-        catch { throw; }
-        finally
-        {
-            AssertClientShouldClose( client );
-        }
+        AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version2 );
+        AssertClientShouldPing( client );
     }
 
     /// <summary>   Assert client should fail authentication. </summary>
@@ -247,16 +233,8 @@ public class OncRpcTcpTests
     public void ClientShouldFailAuthentication()
     {
         using OncRpcTcpTestClient client = new();
-        try
-        {
-            AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
-            AssertClientShouldFailAuthentication( client );
-        }
-        catch { throw; }
-        finally
-        {
-            AssertClientShouldClose( client );
-        }
+        AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
+        AssertClientShouldFailAuthentication( client );
     }
 
     /// <summary>   Assert client should authenticate. </summary>
@@ -283,19 +261,11 @@ public class OncRpcTcpTests
     public void ClientShouldAuthenticate()
     {
         // this seems to be required to allow the sequence to work.
-        this.ClientShouldConnect();
+        // this.ClientShouldConnect();
 
         using OncRpcTcpTestClient client = new();
-        try
-        {
-            AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
-            AssertClientShouldAuthenticate( client );
-        }
-        catch { throw; }
-        finally
-        {
-            AssertClientShouldClose( client );
-        }
+        AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
+        AssertClientShouldAuthenticate( client );
     }
 
     /// <summary>   Assert client should echo messages. </summary>
@@ -317,18 +287,10 @@ public class OncRpcTcpTests
     public void ClientShouldEchoMessages()
     {
         using OncRpcTcpTestClient client = new();
-        try
-        {
-            AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
-            AssertClientShouldAuthenticate( client );
-            string[] messages = new string[] { "UNIX", "AUTH", "is like", "*NO* authentication", "--", "it", "uses", "*NO CRYPTOGRAPHY*", "for securing", "ONC/RPC messages" };
-            AssertClientShouldEchoMessages( client, messages );
-        }
-        catch { throw; }
-        finally
-        {
-            AssertClientShouldClose( client );
-        }
+        AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
+        AssertClientShouldAuthenticate( client );
+        string[] messages = new string[] { "UNIX", "AUTH", "is like", "*NO* authentication", "--", "it", "uses", "*NO CRYPTOGRAPHY*", "for securing", "ONC/RPC messages" };
+        AssertClientShouldEchoMessages( client, messages );
     }
 
     /// <summary>   Assert client should echo. </summary>
@@ -467,27 +429,17 @@ public class OncRpcTcpTests
     public void ClientShouldCallRemoteProcedures()
     {
         using OncRpcTcpTestClient client = new();
-        try
-        {
-            AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
-            AssertClientShouldPing( client );
-            AssertClientShouldEcho( client );
-            AssertClientShouldConcatenate( client );
-            AssertClientShouldConcatenateExactly( client );
-            AssertClientShouldCheckForFoo( client );
-            AssertClientShouldGetFoo( client );
-            AssertClientShouldGetNumberedFoo( client );
-            AssertClientShouldPrependLinkedList( client );
-            AssertClientShouldLinkLinkedList( client );
-            AssertClientShouldClose( client );
-            Logger.Writer.LogInformation( "All tests passed." );
-        }
-        catch { throw; }
-        finally
-        {
-            AssertClientShouldClose( client );
-        }
-
+        AssertClientShouldConnect( client, IPAddress.Loopback, RpcProgramConstants.Version1 );
+        AssertClientShouldPing( client );
+        AssertClientShouldEcho( client );
+        AssertClientShouldConcatenate( client );
+        AssertClientShouldConcatenateExactly( client );
+        AssertClientShouldCheckForFoo( client );
+        AssertClientShouldGetFoo( client );
+        AssertClientShouldGetNumberedFoo( client );
+        AssertClientShouldPrependLinkedList( client );
+        AssertClientShouldLinkLinkedList( client );
+        Logger.Writer.LogInformation( "All tests passed." );
     }
 
 }

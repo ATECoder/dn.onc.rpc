@@ -26,53 +26,112 @@ public class OncRpcTcpTestClient : IDisposable
     /// <value> True if connected, false if not. </value>
     public bool Connected => this._coreClient is not null;
 
-    /// <summary>   Query if this object is disposed. </summary>
-    /// <returns>   True if disposed, false if not. </returns>
-    public bool IsDisposed()
+    public void Close()
     {
-        return this._coreClient is null;
+        (( IDisposable ) this).Dispose();
     }
+
+    #region " disposable implementation "
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
     /// resources.
     /// </summary>
-    void IDisposable.Dispose()
+    /// <remarks>
+    /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
+    /// within a try...finaly block. <para>
+    ///
+    /// Because this class is implementing <see cref="IDisposable"/> and is not sealed, then it
+    /// should include the call to <see cref="GC.SuppressFinalize(object)"/> even if it does not
+    /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
+    /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
+    /// method. </para> <para>
+    /// 
+    /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
+    /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
+    ///
+    /// If releasing unmanaged code or freeing large objects then override <see cref="Object.Finalize()"/>. </para>
+    /// </remarks>
+    public void Dispose()
     {
-        this.Dispose( true );
-        // Take this object off the finalization(Queue) and prevent finalization code 
-        // from executing a second time.
-        GC.SuppressFinalize( this );
+        if ( this.IsDisposed ) { return; }
+        try
+        {
+            // Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+
+            this.Dispose( true );
+
+        }
+        catch { throw; }
+        finally
+        {
+            // this is included because this class is not sealed.
+
+            GC.SuppressFinalize( this );
+
+            // mark things as disposed.
+        }
     }
 
+    /// <summary>   Gets or sets a value indicating whether this object is disposed. </summary>
+    /// <value> True if this object is disposed, false if not. </value>
+    public bool IsDisposed => this._coreClient is null;
+
     /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
-    /// resources.
+    /// Releases unmanaged, large objects and (optionally) managed resources used by this class.
+    /// Closes the server transport and frees any resources associated with it.
     /// </summary>
+    /// <remarks>
+    /// Note that the server transport is <b>not deregistered</b>. You'll have to do it manually if
+    /// you need to do so. The reason for this behavior is that the portmapper removes all entries
+    /// regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC program number and version.
+    /// <para>
+    /// 
+    /// Calling this method on a <see cref="OncRpcTcpTransport"/> results in the listening TCP
+    /// network socket immediately being closed. In addition, all server transports handling the
+    /// individual TCP/IP connections will also be closed. The handler threads will therefore either
+    /// terminate directly or when they try to sent back replies.</para>
+    /// </remarks>
+    /// <exception cref="AggregateException">   Thrown when an Aggregate error condition occurs. </exception>
     /// <param name="disposing">    True to release large objects and managed and unmanaged resources;
     ///                             false to release only unmanaged resources and large objects. </param>
     protected virtual void Dispose( bool disposing )
     {
-        if ( !this.IsDisposed() && disposing )
-            this.Close();
+        List<Exception> exceptions = new();
+        if ( disposing )
+        {
+            // dispose managed state (managed objects)
+
+            var client =  this._coreClient;
+
+            if ( client is not null )
+            {
+                try
+                {
+                    client.Close();
+                }
+                catch ( Exception ex )
+                { exceptions.Add( ex ); }
+                finally
+                {
+                    this._coreClient = null;
+                }
+            }
+
+        }
+
+        if ( exceptions.Any() )
+        {
+            AggregateException aggregateException = new( exceptions );
+            throw aggregateException;
+        }
+
+        // free unmanaged resources and override finalizer
+
+        // set large fields to null
     }
 
-    /// <summary>   Closes this object. </summary>
-    public void Close()
-    {
-        try
-        {
-            this._coreClient?.Close();
-        }
-        catch ( Exception )
-        {
-            throw;
-        }
-        finally
-        {
-            this._coreClient = null;
-        }
-    }
+    #endregion
 
     #endregion
 

@@ -10,40 +10,6 @@ namespace cc.isr.ONC.RPC.MSTest.PortMapper;
 public class EmbeddedPortmapTest
 {
 
-#if false
-    /// <summary>   Assert portmap service should start. </summary>
-    internal static OncRpcEmbeddedPortmapService AssertPortmapServiceShouldStart()
-    {
-        Logger.Writer.LogInformation( "Checking for portmap service: " );
-        bool externalPortmap = OncRpcEmbeddedPortmapService.TryPingPortmapService();
-        if ( externalPortmap )
-            Logger.Writer.LogInformation( "A portmap service is already running." );
-        else
-            Logger.Writer.LogInformation( "No portmap service available." );
-
-        // Create embedded portmap service and check whether is has sprung
-        // into action.
-
-        Logger.Writer.LogInformation( "Creating embedded portmap instance: " );
-        OncRpcEmbeddedPortmapService epm = new(0 );
-
-        if ( !epm.EmbeddedPortmapInUse() )
-            Logger.Writer.LogInformation( "embedded service not used: " );
-        else
-            Logger.Writer.LogInformation( "embedded service started: " );
-
-        if ( epm.EmbeddedPortmapInUse() == externalPortmap )
-        {
-            Assert.Fail( "ERROR: no service available or both." );
-        }
-        Stopwatch sw = Stopwatch.StartNew();
-        externalPortmap = OncRpcEmbeddedPortmapService.TryPingPortmapService();
-        Assert.IsTrue( externalPortmap, "portmap service is not running" );
-        Logger.Writer.LogInformation( $"portmap service is {(externalPortmap ? "running" : "idle")}; elapsed: {sw.ElapsedMilliseconds:0}ms" );
-        return epm;
-    }
-#endif
-
     /// <summary>   (Unit Test Method) embedded portmap service should pass. </summary>
     [TestMethod]
     public void EmbeddedPortmapServiceShouldPass()
@@ -52,6 +18,7 @@ public class EmbeddedPortmapTest
         Logger.Writer.LogInformation( "Starting the embedded portmap service" );
         Stopwatch stopwatch = Stopwatch.StartNew();
         using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
+
         Logger.Writer.LogInformation( $"The embedded portmap service started in {stopwatch.ElapsedMilliseconds:0}ms" );
 
         // Now register dummy ONC/RPC program. Note that the embedded
@@ -63,6 +30,7 @@ public class EmbeddedPortmapTest
         int dummyPort = 42;
 
         using OncRpcPortmapClient pmap = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, Client.OncRpcUdpClient.TransmitTimeoutDefault );
+
         Logger.Writer.LogInformation( "Deregistering non-existing program;" );
         bool actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsFalse( actual );
@@ -77,18 +45,6 @@ public class EmbeddedPortmapTest
         actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsTrue( actual );
         Logger.Writer.LogInformation( "Deregistering the registered dummy program worked." );
-
-#if false
-        // let the service stop.
-        int timeout = 1000;
-        DateTime endtime = DateTime.Now.AddMilliseconds( timeout );
-        while ( DateTime.Now < endtime && OncRpcEmbeddedPortmapServiceStub.TryPingPortmapService( timeout / 5 ) ) { Thread.Sleep( timeout / 5 ); }
-
-        // Check that an embedded portmap service spins down properly if it
-        // was started within this test.
-        if ( OncRpcEmbeddedPortmapServiceStub.TryPingPortmapService() ) // && !externalPortmap )
-            Assert.Fail( "ERROR: embedded portmap service still running." );
-#endif
 
         // dispose of the portmap service
         Logger.Writer.LogInformation( $"Exiting test method; {nameof( OncRpcEmbeddedPortmapServiceStub )} will be disposed..." );

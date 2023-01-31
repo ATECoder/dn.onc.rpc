@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Diagnostics;
 
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.MSTest.Tcp;
@@ -33,6 +32,8 @@ public class LocalHostBroadcastTest
             _server = new();
 
             // _server.PropertyChanged += OnServerPropertyChanged;
+            _server.ThreadExceptionOccurred += OnThreadExceptionOccurred;
+
             _ = Task.Factory.StartNew( () => {
                 Logger.Writer.LogInformation( "starting the embedded port map service; this takes ~3.5 seconds..." );
                 using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
@@ -65,11 +66,37 @@ public class LocalHostBroadcastTest
     [ClassCleanup]
     public static void CleanupFixture()
     {
-        _server?.Dispose();
-        _server = null;
+        OncRpcUdpServer? server = _server;
+        if ( server is not null )
+        {
+            try
+            {
+                server.Dispose();
+                server.PropertyChanged -= OnServerPropertyChanged;
+                server.ThreadExceptionOccurred -= OnThreadExceptionOccurred;
+            }
+            catch ( Exception ex )
+            {
+                Logger.Writer.LogError( "Exception cleaning up fixture", ex );
+            }
+            finally
+            {
+                _server = null;
+                _classTestContext = null; }
+            }
     }
 
     private static OncRpcUdpServer? _server;
+
+    private static void OnThreadExceptionOccurred( object? sender, ThreadExceptionEventArgs e )
+    {
+        string name = "unknown";
+        if ( _server is OncRpcUdpServer )
+        {
+            name = nameof( OncRpcUdpServer );
+        }
+        Logger.Writer.LogError( $"Thread exception occurred at {name} instance", e.Exception );
+    }
 
     private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs e )
     {

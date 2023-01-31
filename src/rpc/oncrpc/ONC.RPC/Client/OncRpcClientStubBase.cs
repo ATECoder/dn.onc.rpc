@@ -1,4 +1,3 @@
-using cc.isr.ONC.RPC.Logging;
 namespace cc.isr.ONC.RPC.Client;
 
 /// <summary>

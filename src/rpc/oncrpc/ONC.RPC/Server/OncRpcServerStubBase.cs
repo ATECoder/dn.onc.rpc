@@ -1,6 +1,3 @@
-using cc.isr.ONC.RPC.Logging;
-using static System.Net.WebRequestMethods;
-
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
