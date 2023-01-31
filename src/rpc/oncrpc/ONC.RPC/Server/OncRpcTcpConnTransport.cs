@@ -145,7 +145,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// 
     /// Calling this method on a <see cref="OncRpcTcpTransport"/> results in the listening TCP
     /// network socket immediately being closed. In addition, all server transports handling the
-    /// individual TCP/IP connections will also be closed. The handler threads will therefore either
+    /// individual TCP/IP connections will also be closed. The handler tasks will therefore either
     /// terminate directly or when they try to sent back replies.</para>
     /// </remarks>
     /// <exception cref="AggregateException">   Thrown when an Aggregate error condition occurs. </exception>
@@ -334,50 +334,29 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
         this.EndEncoding();
     }
 
-    /// <summary>
-    /// Creates a new thread and uses this thread to handle the new connection to receive ONC/RPC
-    /// requests, then dispatching them and finally sending back reply messages.
-    /// </summary>
-    /// <remarks>
-    /// Control in the calling thread immediately returns after the handler thread has been created. <para>
-    /// 
-    /// Currently only one call after the other is dispatched, so no multi threading is done when
-    /// receiving multiple calls. Instead, later calls have to wait for the current call to finish
-    /// before they are handled.</para> <para>
-    /// 
-    /// @atecoder 2023-01-23: Sets the thread as a background thread to match JAVA set demon. Add
-    /// support for cancellation. use lambda expression in place of the helper class.
-    /// </para>
-    /// </remarks>
-    /// <param name="cancelSource"> The cancel source. </param>
-    public override void Listen( CancellationTokenSource cancelSource )
-    {
-
-        Thread listener = new( new ThreadStart( () => this.DoListen( cancelSource.Token ) ) ) {
-            Name = "ONC/RPC TCP server transport connection thread",
-            IsBackground = true
-        };
-        listener.Start();
-    }
-
-    /// <summary>   Stops listening . </summary>
-    /// <remarks>   2023-01-23. </remarks>
-    /// <param name="cancelSource"> The cancel source. </param>
-    public override void Unlisten( CancellationTokenSource cancelSource )
-    {
-        cancelSource.Cancel();
-    }
-
     #endregion
 
-    #region " Thread-Aware Listen Implementation "
+    #region " listen implementation "
 
-    /// <summary>
-    /// Handles incoming requests, dispatches them and sending back replies.
-    /// </summary>
-    /// <remarks>   @atecode 2023-01-23: add cancellation. </remarks>
-    /// <param name="cancelToken">  A token that allows processing to be canceled. </param>
-    private void DoListen( CancellationToken cancelToken )
+    /// <summary>   Handles incoming requests, dispatches them and sending back replies. </summary>
+    /// <remarks>
+    /// For every incoming TCP/IP connection a handler task is created to handle ONC/RPC calls on
+    /// this particular connection. <para>
+    /// 
+    /// Now wait for (new) connection requests to come in. </para><para>
+    /// 
+    /// Let the newly created transport object handle this connection. Note that it will create its
+    /// own task for handling. </para><para>
+    /// 
+    /// We are just ignoring most of the IOExceptions as they might be thrown, for instance, if a
+    /// client attempts a connection and resets it before it is pulled off by accept(). If the socket
+    /// has been gone away after an IOException this means that the transport has been closed, so we
+    /// end this task gracefully. </para><para>
+    /// 
+    /// @atecode 2023-01-23: add cancellation. </para>
+    /// </remarks>
+    /// <param name="cancelSource"> A cancellation source that allows processing to be canceled. </param>
+    protected override void DoListen( CancellationTokenSource cancelSource )
     {
         if ( this._socket is null || this.Decoder is null ) { return; }
         OncRpcCallHandler callInfo = new( this );
@@ -385,7 +364,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
         {
 
             // break if cancellation is required
-            if ( cancelToken.IsCancellationRequested ) { break; }
+            if ( cancelSource.IsCancellationRequested ) { break; }
 
             // Start decoding the incoming call. This involves remembering
             // from whom we received the call so we can later Sends back the

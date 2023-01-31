@@ -174,26 +174,6 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                 identification = svr;
             }
         }
-#if false
-        int size = this.ServerIdentifierCodecs.Count;
-        for ( int idx = 0; idx < size; ++idx )
-        {
-            OncRpcServerIdentifierCodec svr = ( OncRpcServerIdentifierCodec ) this.ServerIdentifierCodecs[idx]!;
-            if ( svr.Program == serverIdentification.Program && svr.Protocol == serverIdentification.Protocol )
-            {
-                // (program, protocol) already matches. If it has the same
-                // version, then we're done. Otherwise we remember this
-                // entry for possible later usage and search further through
-                // the list.
-                if ( svr.Version == serverIdentification.Version )
-                {
-                    reply.Port = svr.Port;
-                    return reply;
-                }
-                identification = svr;
-            }
-        }
-#endif
 
         // Return port of "best" match, if one was found at all, otherwise
         // just return 0, which indicates an invalid UDP/TCP port.
@@ -227,21 +207,9 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
                     // due to duplicated UDP calls).
                     return new BooleanXdrCodec( svr.Port == serverIdentification.Port );
             }
-#if false
-            for ( int idx = 0; idx < size; ++idx )
-            {
-                OncRpcServerIdentifierCodec svr = ( OncRpcServerIdentifierCodec ) this.ServerIdentifierCodecs[idx]!;
-                if ( svr.Program == serverIdentification.Program &&
-                    svr.Version == serverIdentification.Version &&
-                     svr.Protocol == serverIdentification.Protocol )
-                    // In case (program, version, protocol) is already
-                    // registered only accept, if the port stays the same.
-                    // This will silently accept double registrations (i.e.,
-                    // due to duplicated UDP calls).
-                    return new BooleanXdrCodec( svr.Port == serverIdentification.Port );
-            }
-#endif
+
             // Add new registration entry to end of the list.
+
             this.ServerIdentifierCodecs.Add( serverIdentification );
             return new BooleanXdrCodec( true );
         }
@@ -289,12 +257,6 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     /// </returns>
     internal virtual bool IsLocalAddress( IPAddress addr )
     {
-#if false
-        int size = this._locals.Length;
-        for ( int idx = 0; idx < size; ++idx )
-            if ( addr.Equals( this._locals[idx] ) )
-                return true;
-#endif
         foreach ( IPAddress localAddress in this._locals )
             if ( addr.Equals( localAddress ) ) return true;
         return false;

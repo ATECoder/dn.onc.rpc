@@ -255,7 +255,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     #region " actions "
 
-    private readonly object _lock = new ();
+    private readonly object _lock = new();
 
     /// <summary>   Calls a remote procedure on an ONC/RPC server. </summary>
     /// <remarks>

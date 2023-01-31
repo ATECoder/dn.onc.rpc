@@ -196,7 +196,7 @@ public class OncRpcTcpClient : OncRpcClientBase
             base.Dispose( disposing );
         }
         catch ( Exception ex )
-            { exceptions.Add( ex ); }
+        { exceptions.Add( ex ); }
         finally
         {
         }

@@ -63,11 +63,11 @@ public abstract class OncRpcTransportBase : ICloseable
     /// program number and version. <para>
     /// 
     /// Derived classes can choose between different behavior for shutting down the associated
-    /// transport handler threads: </para> <list type="bullet"> <item>
-    /// Close the transport immediately and let the threads stumble on the closed network connection.</item>
+    /// transport handler tasks: </para> <list type="bullet"> <item>
+    /// Close the transport immediately and let the tasks stumble on the closed network connection.</item>
     /// <item>
-    /// Wait for handler threads to complete their current ONC/RPC request (with timeout), then close
-    /// connections and kill the threads. </item></list>
+    /// Wait for handler tasks to complete their current ONC/RPC request (with timeout), then close
+    /// connections and kill the tasks. </item></list>
     /// </remarks>
     public void Close()
     {
@@ -134,7 +134,7 @@ public abstract class OncRpcTransportBase : ICloseable
     /// 
     /// Calling this method on a <see cref="OncRpcTcpTransport"/> results in the listening TCP
     /// network socket immediately being closed. In addition, all server transports handling the
-    /// individual TCP/IP connections will also be closed. The handler threads will therefore either
+    /// individual TCP/IP connections will also be closed. The handler tasks will therefore either
     /// terminate directly or when they try to sent back replies.</para>
     /// </remarks>
     /// <exception cref="AggregateException">   Thrown when an Aggregate error condition occurs. </exception>
@@ -320,23 +320,59 @@ public abstract class OncRpcTransportBase : ICloseable
     }
 
     /// <summary>
-    /// Creates a new thread and uses this thread to listen to incoming ONC/RPC requests, then
-    /// dispatches them and finally sends back the appropriate reply messages.
+    /// Starts listening to incoming ONC/RPC requests asynchronously: receives, and dispatches
+    /// each request and sends back the appropriate reply messages.
     /// </summary>
     /// <remarks>
     /// Note that you have to supply an implementation for this abstract method in derived classes.
-    /// Your implementation needs to create a new thread to wait for incoming requests. The method
-    /// has to return immediately for the calling thread.
+    /// Your implementation needs to create a new task to wait for incoming requests. The method
+    /// has to return immediately for the calling task. <para>
+    /// 
+    /// Currently only one call after the other is dispatched, so no multi tasking is done when
+    /// receiving multiple calls. Instead, later calls have to wait for the current call to finish
+    /// before they are handled. </para>  <para>
+    /// 
+    /// @atecode 20230131: replaced threads with tasks and error handling. </para>
     /// </remarks>
     /// <param name="cancelSource"> The cancel source. </param>
-    public abstract void Listen( CancellationTokenSource cancelSource );
+    public async Task ListenAsync( CancellationTokenSource cancelSource )
+    {
+        await Task.Factory.StartNew( () => { this.DoListen( cancelSource ); } )
+                .ContinueWith( failedTask => this.OnThreadException( new ThreadExceptionEventArgs( failedTask.Exception ) ),
+                                                                              TaskContinuationOptions.OnlyOnFaulted );
+    }
 
+    /// <summary>
+    /// Executes the listen operation: Handles incoming requests, dispatches them and sends back
+    /// replies.
+    /// </summary>
+    /// <remarks>   @atecode 2023-01-23: add cancellation. </remarks>
+    /// <param name="cancelSource"> The cancellation source that allows processing to be canceled. </param>
+    protected abstract void DoListen( CancellationTokenSource cancelSource );
 
     /// <summary>   Stops listening . </summary>
-    /// <remarks>   @atecoder 2023-01-23. </remarks>
     /// <param name="cancelSource"> The cancel source. </param>
-    public abstract void Unlisten( CancellationTokenSource cancelSource );
+    public void Unlisten( CancellationTokenSource cancelSource )
+    {
+        cancelSource.Cancel();
+    }
 
+    #endregion
+
+    #region " thread exception handler "
+
+    /// <summary>
+    /// Event queue for all listeners interested in ThreadExceptionOccurred events.
+    /// </summary>
+    public event ThreadExceptionEventHandler? ThreadExceptionOccurred;
+
+    /// <summary>   Executes the <see cref="ThreadExceptionOccurred"/> event. </summary>
+    /// <param name="e">    Event information to send to registered event handlers. </param>
+    protected virtual void OnThreadException( ThreadExceptionEventArgs e )
+    {
+        var handler = this.ThreadExceptionOccurred;
+        handler?.Invoke( this, e );
+    }
 
     #endregion
 

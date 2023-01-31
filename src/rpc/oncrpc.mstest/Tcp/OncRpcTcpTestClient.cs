@@ -89,7 +89,7 @@ public class OncRpcTcpTestClient : IDisposable
     /// 
     /// Calling this method on a <see cref="OncRpcTcpTransport"/> results in the listening TCP
     /// network socket immediately being closed. In addition, all server transports handling the
-    /// individual TCP/IP connections will also be closed. The handler threads will therefore either
+    /// individual TCP/IP connections will also be closed. The handler tasks will therefore either
     /// terminate directly or when they try to sent back replies.</para>
     /// </remarks>
     /// <exception cref="AggregateException">   Thrown when an Aggregate error condition occurs. </exception>
@@ -102,7 +102,7 @@ public class OncRpcTcpTestClient : IDisposable
         {
             // dispose managed state (managed objects)
 
-            var client =  this._coreClient;
+            var client = this._coreClient;
 
             if ( client is not null )
             {

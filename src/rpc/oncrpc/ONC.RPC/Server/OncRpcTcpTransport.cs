@@ -133,7 +133,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// 
     /// Calling this method on a <see cref="OncRpcTcpTransport"/> results in the listening TCP
     /// network socket immediately being closed. In addition, all server transports handling the
-    /// individual TCP/IP connections will also be closed. The handler threads will therefore either
+    /// individual TCP/IP connections will also be closed. The handler tasks will therefore either
     /// terminate directly or when they try to sent back replies.</para>
     /// </remarks>
     /// <exception cref="AggregateException">   Thrown when an Aggregate error condition occurs. </exception>
@@ -298,65 +298,29 @@ public class OncRpcTcpTransport : OncRpcTransportBase
         throw new InvalidOperationException( $"{nameof( OncRpcTcpTransport.Reply )} is abstract and cannot be called." );
     }
 
-    /// <summary>
-    /// Creates a new thread and uses this thread to listen to incoming ONC/RPC requests, then
-    /// dispatches them and finally sends back the appropriate reply messages.
-    /// </summary>
-    /// <remarks>
-    /// Control in the calling thread immediately returns after the handler thread has been created. <para>
-    /// 
-    /// For every incoming TCP/IP connection a handler thread is created to handle ONC/RPC calls on
-    /// this particular connection.</para> <para>
-    /// 
-    /// @atecoder 2023-01-23: Sets the thread as a background thread to match JAVA set demon. Add
-    /// support for cancellation. Use lambda expression in place of the helper class.
-    /// </para>
-    /// </remarks>
-    /// <param name="cancelSource"> The cancel source. </param>
-    public override void Listen( CancellationTokenSource cancelSource )
-    {
-
-        // Create a new (daemon/background) thread which will handle incoming connection
-        // requests.
-        Thread listenThread = new( new ThreadStart( () => this.DoListen( cancelSource ) ) ) {
-            Name = "ONC/RPC TCP server transport listener thread",
-            IsBackground = true
-        };
-
-        // Now wait for (new) connection requests to come in.
-
-
-        // Let the newly created transport object handle this
-        // connection. Note that it will create its own
-        // thread for handling.
-
-        // We are just ignoring most of the IOExceptions as
-        // they might be thrown, for instance, if a client
-        // attempts a connection and resets it before it is
-        // pulled off by accept(). If the socket has been
-        // gone away after an IOException this means that the
-        // transport has been closed, so we end this thread
-        // gracefully.
-
-        listenThread.Start();
-    }
-
-    /// <summary>   Stops listening . </summary>
-    /// <remarks>   2023-01-23. </remarks>
-    /// <param name="cancelSource"> The cancel source. </param>
-    public override void Unlisten( CancellationTokenSource cancelSource )
-    {
-        cancelSource.Cancel();
-    }
-
     #endregion
 
-    #region " Thread-Aware Listen Implementation "
+    #region " listen implementation "
 
     /// <summary>   Get the server to start listening on the transports. </summary>
-    /// <remarks>   @atecode 2023-01-23: add cancellation. </remarks>
+    /// <remarks>
+    /// For every incoming TCP/IP connection a handler task is created to handle ONC/RPC calls on
+    /// this particular connection. <para>
+    /// 
+    /// Now wait for (new) connection requests to come in. </para><para>
+    /// 
+    /// Let the newly created transport object handle this connection. Note that it will create its
+    /// own task for handling. </para><para>
+    /// 
+    /// We are just ignoring most of the IOExceptions as they might be thrown, for instance, if a
+    /// client attempts a connection and resets it before it is pulled off by accept(). If the socket
+    /// has been gone away after an IOException this means that the transport has been closed, so we
+    /// end this task gracefully. </para><para>
+    /// 
+    /// @atecode 2023-01-23: add cancellation. </para>
+    /// </remarks>
     /// <param name="cancelSource"> The cancel source. </param>
-    private void DoListen( CancellationTokenSource cancelSource )
+    protected override void DoListen( CancellationTokenSource cancelSource )
     {
         for (; ; )
             try
@@ -374,7 +338,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
 
                 lock ( this._openTransports )
                     this._openTransports.Add( transport );
-                transport.Listen( cancelSource );
+                _ = transport.ListenAsync( cancelSource );
             }
             catch ( OncRpcException )
             {

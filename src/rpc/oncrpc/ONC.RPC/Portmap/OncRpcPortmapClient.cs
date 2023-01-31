@@ -387,7 +387,7 @@ public class OncRpcPortmapClient : ICloseable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.OncRpcClient?.Call((int)OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer, requestCodec, replyCodec);
+        this.OncRpcClient?.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapUnregisterServer, requestCodec, replyCodec );
 
         return replyCodec.Value;
     }
@@ -411,7 +411,7 @@ public class OncRpcPortmapClient : ICloseable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.OncRpcClient?.Call((int)OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers, VoidXdrCodec.VoidXdrCodecInstance, result);
+        this.OncRpcClient?.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers, VoidXdrCodec.VoidXdrCodecInstance, result );
 
         // Copy the server identities from the Vector into the vector (array).
         // OncRpcServerIdentifierCodec[] serverIdentifiers = new OncRpcServerIdentifierCodec[result.ServerIdentifiers.Count];
@@ -426,7 +426,7 @@ public class OncRpcPortmapClient : ICloseable
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
-        this.OncRpcClient?.Call((int)OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance);
+        this.OncRpcClient?.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing, VoidXdrCodec.VoidXdrCodecInstance, VoidXdrCodec.VoidXdrCodecInstance );
     }
 
     /// <summary>   Attempts to ping the Portmap service by calling the null procedure (0). </summary>

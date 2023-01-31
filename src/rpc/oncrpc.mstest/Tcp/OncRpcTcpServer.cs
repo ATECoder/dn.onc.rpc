@@ -86,43 +86,6 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     #endregion
 
-    #region " Port mapper "
-
-#if false
-    private static OncRpcEmbeddedPortmapService EstablishPortmapService()
-    {
-        // Ignore all problems during unregistration.
-        OncRpcEmbeddedPortmapService epm;
-
-        Logger.Writer.LogVerbose( "Checking for portmap service: " );
-        bool externalPortmap = OncRpcEmbeddedPortmapService.TryPingPortmapService();
-        if ( externalPortmap )
-            Logger.Writer.LogVerbose( "A portmap service is already running." );
-        else
-            Logger.Writer.LogVerbose( "No portmap service available." );
-
-        // Create embedded portmap service and check whether is has sprung
-        // into action.
-
-        Logger.Writer.LogVerbose( "Creating embedded portmap instance: " );
-        epm = new OncRpcEmbeddedPortmapService();
-
-        if ( !epm.EmbeddedPortmapInUse() )
-            Logger.Writer.LogVerbose( "embedded service not used: " );
-        else
-            Logger.Writer.LogVerbose( "embedded service started: " );
-        if ( epm.EmbeddedPortmapInUse() == externalPortmap )
-        {
-            Logger.Writer.LogWarning( "ERROR: no service available or both." );
-        }
-        else
-            Logger.Writer.LogVerbose( "Passed." );
-
-        return epm;
-    }
-#endif
-    #endregion
-
     #region " Handle Procedure calls "
 
     /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>

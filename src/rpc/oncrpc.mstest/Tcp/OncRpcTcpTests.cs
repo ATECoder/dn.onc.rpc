@@ -81,7 +81,7 @@ public class OncRpcTcpTests
                 // it takes 35 ms to dispose the server with 25 ms loop delay and 4 ms with 5 ms loop delay.
                 Logging.Logger.Writer.LogInformation( $"Running {running}; server disposed in {sw.ElapsedMilliseconds:0}ms" );
                 running = server.Running;
-                
+
                 server.PropertyChanged -= OnServerPropertyChanged;
                 server.ThreadExceptionOccurred -= OnThreadExceptionOccurred;
             }

@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -26,7 +28,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// <summary>   Terminates listening if active and closes the  all transports listed in a set of server transports. </summary>
     /// <remarks>
     /// Only by calling this method processing of remote procedure calls by individual transports can
-    /// be stopped. This is because every server transport is handled by its own thread.
+    /// be stopped. This is because every server transport is handled by its own task.
     /// </remarks>
     public void Close()
     {
@@ -116,7 +118,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
 
             try
             {
-                this.Shutdown( OncRpcServerStubBase.ShutdownTimeout , 25);
+                this.Shutdown( OncRpcServerStubBase.ShutdownTimeout, 25 );
             }
             catch ( Exception ex )
             { exceptions.Add( ex ); }
@@ -150,6 +152,14 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     {
         var handler = this.ThreadExceptionOccurred;
         handler?.Invoke( this, e );
+    }
+
+    /// <summary>   Executes the <see cref="ThreadExceptionOccurred"/> event. </summary>
+    /// <param name="sender">   Source of the event. </param>
+    /// <param name="e">        Event information to send to registered event handlers. </param>
+    protected virtual void OnThreadException( object sender, ThreadExceptionEventArgs e )
+    {
+        if ( sender is not null ) { this.OnThreadException( e ); };
     }
 
     #endregion
@@ -196,6 +206,10 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     public virtual void SetTransports( OncRpcTransportBase[] transports )
     {
         this._transports = transports ?? Array.Empty<OncRpcTransportBase>();
+
+        // register the transport exception handling.
+        foreach ( OncRpcTransportBase transport in this._transports )
+            transport.ThreadExceptionOccurred += this.OnThreadException;
     }
     /// <summary>
     /// gets the array containing ONC/RPC server transport objects which describe what transports an ONC/RPC
@@ -309,7 +323,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// </summary>
     /// <remarks>
     /// To end processing and to shut the server down signal the <see cref="ShutdownSignal"/> object.
-    /// Note that the thread on which <see cref="Run()"/> is called will ignore any interruptions and
+    /// Note that the task on which <see cref="Run()"/> is called will ignore any interruptions and
     /// will silently swallow them. <para>
     /// 
     /// <see href="https://www.albahari.com/threading/part4.aspx"/>
@@ -330,10 +344,10 @@ public abstract partial class OncRpcServerStubBase : ICloseable
         {
 
             foreach ( var transport in transports )
-                transport.Listen( cts );
+                _ = transport.ListenAsync( cts );
 
             // Loop and wait for the shutdown flag to become signaled. If the
-            // server's main thread gets interrupted it will not shut itself
+            // server's main task gets interrupted it will not shut itself
             // down. It can only be stopped by signaling the shutdownSignal
             // object.
             for (; ; )
@@ -376,7 +390,9 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// <returns>   A Task. </returns>
     public virtual async Task RunAsync()
     {
-        await Task.Factory.StartNew( () => { this.Run(); } );
+        await Task.Factory.StartNew( () => { this.Run(); } )
+                    .ContinueWith( failedTask => this.OnThreadException( new ThreadExceptionEventArgs( failedTask.Exception ) ),
+                                                                                TaskContinuationOptions.OnlyOnFaulted );
     }
 
     /// <summary>   Starts the server using the existing transports synchronously. </summary>
@@ -405,7 +421,10 @@ public abstract partial class OncRpcServerStubBase : ICloseable
         var transports = this._transports;
         if ( transports is not null )
             foreach ( var transport in this._transports )
+            {
+                transport.ThreadExceptionOccurred -= this.OnThreadException;
                 transport.Close();
+            }
     }
 
     /// <summary>
@@ -413,7 +432,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// possible.
     /// </summary>
     /// <remarks>
-    /// Note that each transport has its own thread, so processing will not stop before the
+    /// Note that each transport has its own task, so processing will not stop before the
     /// transports have been closed by calling the <see cref="Close()"/> method of the server.
     /// </remarks>
     public virtual void StopRpcProcessing()

@@ -82,8 +82,9 @@ public class LocalHostBroadcastTest
             finally
             {
                 _server = null;
-                _classTestContext = null; }
+                _classTestContext = null;
             }
+        }
     }
 
     private static OncRpcUdpServer? _server;

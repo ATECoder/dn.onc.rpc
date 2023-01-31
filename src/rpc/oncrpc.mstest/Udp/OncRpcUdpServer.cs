@@ -85,57 +85,6 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
 
     #endregion
 
-    #region " Port mapper "
-
-#if false
-    private static void EstablishPortmapService()
-    {
-
-        // Ignore all problems during unregistration.
-
-        OncRpcEmbeddedPortmapService epm;
-
-        Logger.Writer.LogInformation( "Checking for portmap service: " );
-        bool externalPortmap = OncRpcEmbeddedPortmapService.TryPingPortmapService();
-        if ( externalPortmap )
-            Logger.Writer.LogInformation( "A portmap service is already running." );
-        else
-            Logger.Writer.LogInformation( "No portmap service available." );
-
-        // Create embedded portmap service and check whether is has sprung
-        // into action.
-
-        Logger.Writer.LogInformation( "Creating embedded portmap instance: " );
-        try
-        {
-            epm = new OncRpcEmbeddedPortmapService();
-
-            if ( !epm.EmbeddedPortmapInUse() )
-                Logger.Writer.LogInformation( "embedded service not used: " );
-            else
-                Logger.Writer.LogInformation( "embedded service started: " );
-
-            if ( epm.EmbeddedPortmapInUse() == externalPortmap )
-            {
-                Logger.Writer.LogWarning( "ERROR: no service available or both." );
-                return;
-            }
-        }
-        catch ( IOException e )
-        {
-            Logger.Writer.LogMemberError( $"ERROR: failed:", e );
-        }
-        catch ( OncRpcException e )
-        {
-            Logger.Writer.LogMemberError( $"ERROR: failed:", e );
-        }
-
-        Logger.Writer.LogInformation( "    Passed." );
-    }
-#endif
-
-    #endregion
-
     #region " Handle Procedure calls "
 
     /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>

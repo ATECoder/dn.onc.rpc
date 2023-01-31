@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Net.NetworkInformation;
 
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Server;
@@ -7,15 +6,15 @@ using cc.isr.ONC.RPC.Server;
 namespace cc.isr.ONC.RPC.Portmap;
 
 /// <summary>
-/// The class server <see cref="OncRpcEmbeddedPortmapServiceStub"/> provides an embeddable Portmap service, which is
-/// automatically started in its own thread if the (operating) system does not already provide
-/// the portmap service.
+/// The class server <see cref="OncRpcEmbeddedPortmapServiceStub"/> provides an embeddable
+/// Portmap service, which is automatically started in its own task if the (operating) system
+/// does not already provide the portmap service.
 /// </summary>
 /// <remarks>
 /// If an embedded portmap service is started it will stop only after the last ONC/RPC program
 /// has been deregistered. <para>
 /// 
-/// This class need not be disposable as the service will automatically terminate after the last 
+/// This class need not be disposable as the service will automatically terminate after the last
 /// program deregisters. </para><para>
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
@@ -30,11 +29,12 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// and starts the service if no other (external) portmap service is available.
     /// </summary>
     /// <remarks>
-    /// Call <see cref="StartEmbeddedPortmapServiceAsync"/> to start the portmap service in its own thread and then returns.
+    /// Call <see cref="StartEmbeddedPortmapServiceAsync"/> to start the portmap service in its own
+    /// task and then returns.
     /// </remarks>
-    /// <param name="ioTimeout">        (Optional) timeout in milliseconds to wait before assuming
-    ///                                 that no portmap service is currently available [100]. </param>
-    /// <param name="transmitTimeout">  (Optional) The transmit timeout; defaults to 25 ms. </param>
+    /// <param name="ioTimeout">        Timeout in milliseconds to wait before assuming that no
+    ///                                 portmap service is currently available [100]. </param>
+    /// <param name="transmitTimeout">  The transmit timeout; defaults to 25 ms. </param>
     public OncRpcEmbeddedPortmapServiceStub( int ioTimeout, int transmitTimeout ) : this( OncRpcPortmapClient.TryPingPortmapService( ioTimeout, transmitTimeout ) )
     {
     }
@@ -44,7 +44,8 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// if no other (external) portmap service is available.
     /// </summary>
     /// <remarks>
-    /// Call <see cref="StartEmbeddedPortmapServiceAsync"/> to start the portmap service in its own thread and then returns.
+    /// Call <see cref="StartEmbeddedPortmapServiceAsync"/> to start the portmap service in its own
+    /// task and then returns.
     /// </remarks>
     /// <param name="usingExternalPortmapService">  True if portmap service already running, false if
     ///                                             not. </param>
@@ -66,9 +67,9 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// <summary>   Stop the embedded portmap service synchronously if it is running. </summary>
     /// <remarks>
     /// Normally you should not use this method except you need to force the embedded portmap service
-    /// to terminate. Under normal conditions the thread responsible for the embedded portmap service
+    /// to terminate. Under normal conditions the task responsible for the embedded portmap service
     /// will terminate automatically after the last ONC/RPC program has been deregistered.
-    /// This method just signals the portmap thread to stop processing ONC/RPC portmap calls and to
+    /// This method just signals the portmap task to stop processing ONC/RPC portmap calls and to
     /// terminate itself after it has cleaned up after itself.
     /// </remarks>
     public virtual void Shutdown()
@@ -81,7 +82,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     public virtual async Task ShutdownAsync()
     {
         OncRpcServerStubBase? oncRpcServerStub = this._embeddedPortmapService;
-        if ( oncRpcServerStub != null ) 
+        if ( oncRpcServerStub != null )
             await oncRpcServerStub.ShutdownAsync();
     }
 
@@ -175,7 +176,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
         (( IDisposable ) this).Dispose();
     }
 
-#region " disposable implementation "
+    #region " disposable implementation "
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
@@ -254,11 +255,11 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
         // set large fields to null
     }
 
-#endregion
+    #endregion
 
-#endregion
+    #endregion
 
-#region " members "
+    #region " members "
 
     /// <summary>
     /// Portmap object acting as embedded portmap service or (<see langword="null"/>)
@@ -281,9 +282,9 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// <value> True if portmap service already running, false if not. </value>
     public bool UsingExternalPortmapService { get; set; } = false;
 
-#endregion
+    #endregion
 
-#region " actions "
+    #region " actions "
 
     /// <summary>
     /// Tries to ping the portmap service regardless whether it's supplied by the operating system or
@@ -327,147 +328,8 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
         while ( endTime > DateTime.Now || !this.EmbeddedPortmapServiceStartedImmediate() )
         { this.Delay( 10 ); }
         return this.EmbeddedPortmapServiceStartedImmediate();
-        // return this._embeddedPortmapService?.ServiceThread is not null;
     }
 
-#endregion
-
-#region " embedded portmap service and thread classes "
-
-#if false
-    /// <summary>   Returns the thread object running the embedded portmap service. </summary>
-    /// <returns>
-    /// Thread object or (<see langword="null"/>) if no embedded portmap service has been started.
-    /// </returns>
-    public virtual Thread? GetEmbeddedPortmapServiceThread()
-    {
-        return this._embeddedPortmapService?.ServiceThread;
-    }
-
-    /// <summary>   References thread object running the embedded portmap service. </summary>
-    private readonly EmbeddedPortmapServiceThread? _embeddedPortmapThread;
-
-
-    private class EmbeddedPortmapService : OncRpcPortMapService
-    {
-        /// <summary>   Creates a new instance of an embeddable portmap service. </summary>
-        /// <param name="enclosing">    The enclosing. </param>
-        public EmbeddedPortmapService( OncRpcEmbeddedPortmapService enclosing )
-        {
-            this._enclosing = enclosing;
-        }
-
-        /// <summary>   Thread running the embedded portmap service. </summary>
-        public Thread? ServiceThread { get; set; }
-
-        /// <summary>
-        /// Deregister all port settings for a particular (program, version) for all transports (TCP, UDP,
-        /// etc.).
-        /// </summary>
-        /// <remarks>
-        /// This method basically falls back to the implementation provided by the <c>rpcgen</c>
-        /// superclass, but checks whether there are other ONC/RPC programs registered. If not, it
-        /// signals itself to shut down the portmap service.
-        /// </remarks>
-        /// <param name="serverIdentification"> the server identification, which includes the program and
-        ///                                     version to deregister. The protocol and port fields are
-        ///                                     not used. </param>
-        /// <returns>   <see langword="true"/> if deregistration succeeded. </returns>
-        internal override BooleanXdrCodec UnsetPort( OncRpcServerIdentifierCodec serverIdentification )
-        {
-            BooleanXdrCodec ok = base.UnsetPort( serverIdentification );
-            if ( ok.Value )
-            {
-
-                // Check for registered programs other than OncRpcPortmapConstants.OncRpcPortmapProgramNumber.
-
-                bool onlyPmap = true;
-                int size = this.ServerIdentifierCodecs.Count;
-                for ( int idx = 0; idx < size; ++idx )
-                    if ( (( OncRpcServerIdentifierCodec ) this.ServerIdentifierCodecs[idx]!).Program != OncRpcPortmapConstants.OncRpcPortmapProgramNumber )
-                    {
-                        onlyPmap = false;
-                        break;
-                    }
-
-                // If only portmap-related entries are left, then shut down this
-                // portmap service.
-
-                if ( onlyPmap && this.ServiceThread is not null )
-                    this.StopRpcProcessing();
-            }
-            return ok;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage( "CodeQuality", "IDE0052:Remove unread private members", Justification = "<Pending>" )]
-        private readonly OncRpcEmbeddedPortmapService _enclosing;
-    }
-
-    private class EmbeddedPortmapServiceThread
-    {
-
-        /// <summary>   (Immutable) the post shutdown timeout required, at this time, to provide enough time after 
-        /// the removal of the entries from the portmap to respond okay to the client. </summary>
-        public const int PostShutdownTimeout = 1000;
-
-        /// <summary>
-        /// Constructs a new embedded portmap service thread and associate it with the portmap object to
-        /// be used as the service.
-        /// </summary>
-        /// <remarks> The service is not started yet. </remarks>
-        /// <param name="enclosing">    The enclosing embedded portmap service. </param>
-        /// <param name="portmap">      The embedded portmap service object this thread belongs to. </param>
-        public EmbeddedPortmapServiceThread( OncRpcEmbeddedPortmapService enclosing, EmbeddedPortmapService portmap )
-        {
-            this._enclosing = enclosing;
-            this._portmap = portmap;
-        }
-
-        /// <summary>
-        /// Runs the embedded portmap service thread, starting dispatching of all portmap transports until
-        /// we get the signal to shut down.
-        /// </summary>
-        public void Run()
-        {
-            this._portmap.Run( this._portmap.GetTransports(), true );
-#if false
-            // This is not optimal but we need enough time after we remove the entry
-            // from the portmap to respond okay to the client and I haven't figured out
-            // any better way yet.
-            Thread.Sleep( EmbeddedPortmapServiceThread.PostShutdownTimeout );
-            this._portmap.Close();
-#endif
-            this._portmap.ServiceThread = null;
-        }
-
-        /// <summary>   Attempts to run. </summary>
-        /// <returns>   A Tuple( True if it succeeds, false if it fails; Exception if it fails). </returns>
-        public (bool Success, Exception? Exception) TryRun()
-        {
-            try
-            {
-                this.Run();
-            }
-            catch ( Exception e )
-            {
-                return (false, e);
-            }
-            return (true, null);
-        }
-
-        /// <summary>   (Immutable) The embedded portmap service object this thread belongs to. </summary>
-        /// <remarks>
-        /// The service object implements the ONC/RPC dispatcher and the individual remote procedures for
-        /// a port mapper).
-        /// </remarks>
-        private readonly EmbeddedPortmapService _portmap;
-
-        /// <summary>   (Immutable) the enclosing. </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage( "CodeQuality", "IDE0052:Remove unread private members", Justification = "<Pending>" )]
-        private readonly OncRpcEmbeddedPortmapService _enclosing;
-    }
-#endif
-
-#endregion
+    #endregion
 
 }
