@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
