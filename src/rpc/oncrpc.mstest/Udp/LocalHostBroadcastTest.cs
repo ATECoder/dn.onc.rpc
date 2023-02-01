@@ -3,6 +3,7 @@ using System.ComponentModel;
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.MSTest.Tcp;
 using cc.isr.ONC.RPC.Portmap;
+using cc.isr.ONC.RPC.Server;
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
@@ -32,20 +33,23 @@ public class LocalHostBroadcastTest
             _server = new();
 
             // _server.PropertyChanged += OnServerPropertyChanged;
-            _server.ThreadExceptionOccurred += OnThreadExceptionOccurred;
+            _server.ThreadExceptionOccurred += OnThreadException;
 
             _ = Task.Factory.StartNew( () => {
                 Logger.Writer.LogInformation( "starting the embedded port map service; this takes ~3.5 seconds..." );
                 using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
+                epm.EmbeddedPortmapService!.ThreadExceptionOccurred += OnThreadException;
+
                 Logger.Writer.LogInformation( "starting the server task; this takes ~2.5 seconds..." );
                 _server.Run();
             } );
 
             Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
 
-            // wait till the server is running.
+            // because the initializing task is not awaited, we need to wait for the server to start here.
 
-            _ = _server.ServerStarted( 2 * LocalHostBroadcastTest.ServerStartTimeTypical, LocalHostBroadcastTest.ServerStartLoopDelay );
+            if ( !_server.ServerStarted( 2 * LocalHostBroadcastTest.ServerStartTimeTypical, LocalHostBroadcastTest.ServerStartLoopDelay ) )
+                throw new InvalidOperationException( "failed starting the ONC/RPC server." );
 
             Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Running ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
         }
@@ -73,7 +77,7 @@ public class LocalHostBroadcastTest
             {
                 server.Dispose();
                 server.PropertyChanged -= OnServerPropertyChanged;
-                server.ThreadExceptionOccurred -= OnThreadExceptionOccurred;
+                server.ThreadExceptionOccurred -= OnThreadException;
             }
             catch ( Exception ex )
             {
@@ -89,35 +93,34 @@ public class LocalHostBroadcastTest
 
     private static OncRpcUdpServer? _server;
 
-    private static void OnThreadExceptionOccurred( object? sender, ThreadExceptionEventArgs e )
+    private static void OnThreadException( object? sender, ThreadExceptionEventArgs e )
     {
         string name = "unknown";
-        if ( _server is OncRpcUdpServer )
-        {
-            name = nameof( OncRpcUdpServer );
-        }
+        if ( sender is OncRpcUdpServer ) name = nameof( OncRpcUdpServer );
+        if ( sender is OncRpcServerStubBase ) name = nameof( OncRpcServerStubBase );
+
         Logger.Writer.LogError( $"Thread exception occurred at {name} instance", e.Exception );
     }
 
     private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs e )
     {
-        if ( _server is null ) return;
+        if ( sender is not OncRpcUdpServer ) return;
         switch ( e.PropertyName )
         {
             case nameof( OncRpcTcpServer.ReadMessage ):
-                Logger.Writer.LogInformation( _server.ReadMessage );
+                Logger.Writer.LogInformation( ((OncRpcUdpServer ) sender).ReadMessage );
                 break;
             case nameof( OncRpcTcpServer.WriteMessage ):
-                Logger.Writer.LogInformation( _server.WriteMessage );
+                Logger.Writer.LogInformation( (( OncRpcUdpServer ) sender).WriteMessage );
                 break;
             case nameof( OncRpcTcpServer.PortNumber ):
-                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.PortNumber}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).PortNumber}" );
                 break;
             case nameof( OncRpcTcpServer.IPv4Address ):
-                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.IPv4Address}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).IPv4Address}" );
                 break;
             case nameof( OncRpcTcpServer.Running ):
-                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.Running}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).Running}" );
                 break;
         }
     }
@@ -133,15 +136,13 @@ public class LocalHostBroadcastTest
 
     /// <summary>   (Unit Test Method) client should broadcast. </summary>
     /// <remarks>
-    /// NOTE!: This test often fails after running the other tests. Then it takes a bit of time for the
-    /// test to run. <para>
-    ///     
+    /// NOTE!: This test often fails after running the other tests. Then it takes a bit of time for
+    /// the test to run. <para>
+    /// 
     /// With a set of two network cards, setting the server to any located the server on 192.168.0.40
     /// as the local host. </para><para>
     /// Pinging the local host at 192.168.4.255 yields no result; </para><para>
-    /// pinging port mappers in subnet: 127.0.0.1. done.
-    /// Found: 127.0.0.1:111
-    /// Listening set to False
+    /// pinging port mappers in subnet: 127.0.0.1. done. Found: 127.0.0.1:111 Listening set to False
     /// System.InvalidOperationException: Server still running after stopping RPC Processing. </para>
     /// 
     /// <code>
@@ -160,7 +161,6 @@ public class LocalHostBroadcastTest
     ///    2023-01-23 21:43:30.336,Found: 127.0.0.1:111
     ///    2023-01-23 21:43:30.344,Running set to False
     /// </code>
-    /// 
     /// </remarks>
     [TestMethod]
     public void ClientShouldBroadcast()

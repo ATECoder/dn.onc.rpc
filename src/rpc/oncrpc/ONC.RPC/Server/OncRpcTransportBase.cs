@@ -337,7 +337,7 @@ public abstract class OncRpcTransportBase : ICloseable
     /// <param name="cancelSource"> The cancel source. </param>
     public async Task ListenAsync( CancellationTokenSource cancelSource )
     {
-        await Task.Factory.StartNew( () => { this.DoListen( cancelSource ); } )
+        await Task.Factory.StartNew( () => { this.Listen( cancelSource ); } )
                 .ContinueWith( failedTask => this.OnThreadException( new ThreadExceptionEventArgs( failedTask.Exception ) ),
                                                                               TaskContinuationOptions.OnlyOnFaulted );
     }
@@ -348,7 +348,7 @@ public abstract class OncRpcTransportBase : ICloseable
     /// </summary>
     /// <remarks>   @atecode 2023-01-23: add cancellation. </remarks>
     /// <param name="cancelSource"> The cancellation source that allows processing to be canceled. </param>
-    protected abstract void DoListen( CancellationTokenSource cancelSource );
+    protected abstract void Listen( CancellationTokenSource cancelSource );
 
     /// <summary>   Stops listening . </summary>
     /// <param name="cancelSource"> The cancel source. </param>

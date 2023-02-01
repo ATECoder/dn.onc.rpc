@@ -323,7 +323,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// @atecode 2023-01-23: add cancellation. </para>
     /// </remarks>
     /// <param name="cancelSource"> The cancellation source that allows processing to be canceled. </param>
-    protected override void DoListen( CancellationTokenSource cancelSource )
+    protected override void Listen( CancellationTokenSource cancelSource )
     {
         OncRpcCallHandler callInfo = new( this );
         for (; ; )

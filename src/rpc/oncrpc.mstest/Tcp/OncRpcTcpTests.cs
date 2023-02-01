@@ -37,19 +37,23 @@ public class OncRpcTcpTests
             _server = new();
 
             _server.PropertyChanged += OnServerPropertyChanged;
-            _server.ThreadExceptionOccurred -= OnThreadExceptionOccurred;
+            _server.ThreadExceptionOccurred -= OnThreadException;
             _ = Task.Factory.StartNew( () => {
+
                 Logger.Writer.LogInformation( "starting the portmap service; this takes ~3.5 seconds..." );
                 using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
+                epm.EmbeddedPortmapService!.ThreadExceptionOccurred += OnThreadException;
+
                 Logger.Writer.LogInformation( "starting the server task; this takes ~2.4 seconds..." );
                 _server.Run();
             } );
 
             Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
 
-            // wait till the server is running.
+            // because the initializing task is not awaited, we need to wait for the server to start here.
 
-            _ = _server.ServerStarted( 2 * OncRpcTcpTests.ServerStartTimeTypical, OncRpcTcpTests.ServerStartLoopDelay );
+            if ( !_server.ServerStarted( 2 * OncRpcTcpTests.ServerStartTimeTypical, OncRpcTcpTests.ServerStartLoopDelay ) )
+                throw new InvalidOperationException( "failed starting the ONC/RPC server." );
 
             Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Running ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
         }
@@ -83,7 +87,7 @@ public class OncRpcTcpTests
                 running = server.Running;
 
                 server.PropertyChanged -= OnServerPropertyChanged;
-                server.ThreadExceptionOccurred -= OnThreadExceptionOccurred;
+                server.ThreadExceptionOccurred -= OnThreadException;
             }
             catch ( Exception ex )
             {
@@ -105,34 +109,33 @@ public class OncRpcTcpTests
 
     private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs e )
     {
-        if ( _server is null ) return;
+        if ( sender is not OncRpcTcpServer ) return;
         switch ( e.PropertyName )
         {
             case nameof( OncRpcTcpServer.ReadMessage ):
-                Logger.Writer.LogInformation( _server.ReadMessage );
+                Logger.Writer.LogInformation( ( ( OncRpcTcpServer ) sender).ReadMessage );
                 break;
             case nameof( OncRpcTcpServer.WriteMessage ):
-                Logger.Writer.LogInformation( _server.WriteMessage );
+                Logger.Writer.LogInformation( (( OncRpcTcpServer ) sender).WriteMessage );
                 break;
             case nameof( OncRpcTcpServer.PortNumber ):
-                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.PortNumber}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {(( OncRpcTcpServer ) sender).PortNumber}" );
                 break;
             case nameof( OncRpcTcpServer.IPv4Address ):
-                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.IPv4Address}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {(( OncRpcTcpServer ) sender).IPv4Address}" );
                 break;
             case nameof( OncRpcTcpServer.Running ):
-                Logger.Writer.LogInformation( $"{e.PropertyName} set to {_server?.Running}" );
+                Logger.Writer.LogInformation( $"{e.PropertyName} set to {(( OncRpcTcpServer ) sender).Running}" );
                 break;
         }
     }
 
-    private static void OnThreadExceptionOccurred( object? sender, ThreadExceptionEventArgs e )
+    private static void OnThreadException( object? sender, ThreadExceptionEventArgs e )
     {
         string name = "unknown";
-        if ( _server is OncRpcTcpServer )
-        {
-            name = nameof( OncRpcTcpServer );
-        }
+        if ( sender is OncRpcTcpServer ) name = nameof( OncRpcTcpServer );
+        if ( sender is OncRpcServerStubBase ) name = nameof( OncRpcServerStubBase );
+
         Logger.Writer.LogError( $"Thread exception occurred at {name} instance", e.Exception );
     }
 

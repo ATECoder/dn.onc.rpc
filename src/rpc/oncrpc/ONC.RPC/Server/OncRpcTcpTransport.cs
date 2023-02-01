@@ -320,7 +320,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// @atecode 2023-01-23: add cancellation. </para>
     /// </remarks>
     /// <param name="cancelSource"> The cancel source. </param>
-    protected override void DoListen( CancellationTokenSource cancelSource )
+    protected override void Listen( CancellationTokenSource cancelSource )
     {
         for (; ; )
             try

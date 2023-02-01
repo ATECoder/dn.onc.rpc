@@ -356,7 +356,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// @atecode 2023-01-23: add cancellation. </para>
     /// </remarks>
     /// <param name="cancelSource"> A cancellation source that allows processing to be canceled. </param>
-    protected override void DoListen( CancellationTokenSource cancelSource )
+    protected override void Listen( CancellationTokenSource cancelSource )
     {
         if ( this._socket is null || this.Decoder is null ) { return; }
         OncRpcCallHandler callInfo = new( this );
