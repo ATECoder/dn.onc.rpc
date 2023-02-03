@@ -495,7 +495,7 @@ public abstract class OncRpcClientBase : ICloseable
 
     /// <summary>   Gets the IP endpoint. </summary>
     /// <value> The IP endpoint. </value>
-    public IPEndPoint IPEndpoint => this.Host is null ? new IPEndPoint( IPAddress.None, 0 ) : new IPEndPoint( this.Host, this.Port );
+    public IPEndPoint IPEndpoint => this.Host is null ? new IPEndPoint( IPAddress.Any, 0 ) : new IPEndPoint( this.Host, this.Port );
 
     /// <summary>
     /// Get or set the <see cref="OncRpcClientAuthBase">Authentication protocol</see> object to be used

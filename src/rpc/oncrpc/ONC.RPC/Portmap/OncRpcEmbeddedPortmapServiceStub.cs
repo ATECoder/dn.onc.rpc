@@ -103,7 +103,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
         Logger.Writer.LogInformation( $"Checking for portmap service" );
         Stopwatch sw = Stopwatch.StartNew();
         bool alreadyRunning = OncRpcPortmapClient.TryPingPortmapService( ioTimeout, transmitTimeout );
-        int checkTime = ( int ) sw.ElapsedMilliseconds;
+        double checkTime = sw.Elapsed.TotalMilliseconds;
         if ( alreadyRunning )
             Logger.Writer.LogInformation( "A portmap service is already running." );
         else
@@ -114,7 +114,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
 
         if ( alreadyRunning )
         {
-            Logger.Writer.LogInformation( $"external portmap service is running; checked {checkTime}ms" );
+            Logger.Writer.LogInformation( $"Found that an external portmap service is running in {checkTime}ms" );
             return new OncRpcEmbeddedPortmapServiceStub( true );
         }
         else
@@ -128,18 +128,18 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
                 // validate if requested.
                 if ( validate )
                 {
-                    int startTime = ( int ) sw.ElapsedMilliseconds;
-                    Logger.Writer.LogInformation( "embedded service started; try pinging the port map service" );
+                    int startTime = ( int ) sw.Elapsed.TotalMilliseconds;
+                    Logger.Writer.LogInformation( "Embedded service started; trying to ping using the port map service" );
 
                     sw = Stopwatch.StartNew();
                     bool pinged = OncRpcPortmapClient.TryPingPortmapService();
                     if ( !pinged )
                         throw new InvalidOperationException( "Portmap service is not running." );
-                    int pingTime = ( int ) sw.ElapsedMilliseconds;
-                    Logger.Writer.LogInformation( $"portmap service is {(pinged ? "running" : "idle")}; checked {checkTime}ms, start {startTime}ms, ping: {pingTime}ms " );
+                    int pingTime = ( int ) sw.Elapsed.TotalMilliseconds;
+                    Logger.Writer.LogInformation( $"Portmap service is {(pinged ? "running" : "idle")}; checked in {checkTime}ms, started in {startTime}ms, pinged in {pingTime}ms " );
                 }
                 else
-                    Logger.Writer.LogInformation( $"portmap service started; checked {checkTime}ms." );
+                    Logger.Writer.LogInformation( $"Portmap service started; checked {checkTime:0.0} ms." );
 
             else
             {

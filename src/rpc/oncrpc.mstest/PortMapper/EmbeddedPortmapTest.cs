@@ -28,7 +28,7 @@ public class EmbeddedPortmapTest
         // It is assumed that no external portmap services are available.
         Assert.IsFalse( epm.UsingExternalPortmapService, $"External portmap services are not expected." );
 
-        Logger.Writer.LogInformation( $"The embedded portmap service started in {stopwatch.ElapsedMilliseconds:0}ms" );
+        Logger.Writer.LogInformation( $"The embedded portmap service started in {stopwatch.Elapsed.TotalMilliseconds:0.0} ms" );
 
         // Now register dummy ONC/RPC program. Note that the embedded
         // portmap service must not automatically spin down when deregistering

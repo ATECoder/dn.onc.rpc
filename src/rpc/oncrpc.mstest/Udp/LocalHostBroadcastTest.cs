@@ -99,7 +99,7 @@ public class LocalHostBroadcastTest
         if ( sender is OncRpcUdpServer ) name = nameof( OncRpcUdpServer );
         if ( sender is OncRpcServerStubBase ) name = nameof( OncRpcServerStubBase );
 
-        Logger.Writer.LogError( $"Thread exception occurred at {name} instance", e.Exception );
+        Logger.Writer.LogError( $"{name} encountered an exception during an asynchronous operation", e.Exception );
     }
 
     private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs e )

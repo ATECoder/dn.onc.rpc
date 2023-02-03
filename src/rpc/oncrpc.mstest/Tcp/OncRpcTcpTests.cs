@@ -83,7 +83,7 @@ public class OncRpcTcpTests
                 Stopwatch sw = Stopwatch.StartNew();
                 server.Dispose();
                 // it takes 35 ms to dispose the server with 25 ms loop delay and 4 ms with 5 ms loop delay.
-                Logging.Logger.Writer.LogInformation( $"Running {running}; server disposed in {sw.ElapsedMilliseconds:0}ms" );
+                Logging.Logger.Writer.LogInformation( $"Running {running}; server disposed in {sw.Elapsed.TotalMilliseconds:0.0} ms" );
                 running = server.Running;
 
                 server.PropertyChanged -= OnServerPropertyChanged;
@@ -136,7 +136,7 @@ public class OncRpcTcpTests
         if ( sender is OncRpcTcpServer ) name = nameof( OncRpcTcpServer );
         if ( sender is OncRpcServerStubBase ) name = nameof( OncRpcServerStubBase );
 
-        Logger.Writer.LogError( $"Thread exception occurred at {name} instance", e.Exception );
+        Logger.Writer.LogError( $"{name}  encountered an exception during an asynchronous operation", e.Exception );
     }
 
     /// <summary>   (Unit Test Method) server should be listening. </summary>

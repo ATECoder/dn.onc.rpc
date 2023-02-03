@@ -1,11 +1,13 @@
 using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Portmap;
+using System.Net.Sockets;
+using System.Net;
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 [TestClass]
-[TestCategory( "192.168.0.255" )]
+[TestCategory( "broadcast" )]
 public class RemoteHostBroadcastTest
 {
 
@@ -41,6 +43,30 @@ public class RemoteHostBroadcastTest
 
     private static readonly List<IPEndPoint> _portmappers = new();
 
+    /// <summary>   Gets local inter network (IPv4) addresses. </summary>
+    /// <returns>   An array of IPv4 addresses. </returns>
+    public static IPAddress[] GetLocalInterNetworkAddresses()
+    {
+        IPAddress[] localIPs = Dns.GetHostAddresses( Dns.GetHostName() );
+        return localIPs.Where( ip => ip.AddressFamily == AddressFamily.InterNetwork ).ToArray();
+    }
+
+    /// <summary>   Gets local broadcast addresses. </summary>
+    /// <returns>   An array of IPv4 broadcast addresses. </returns>
+    public static IPAddress[] GetLocalBroadcastAddresses()
+    {
+        List<IPAddress> ipv4s = new();
+        foreach ( IPAddress ip in GetLocalInterNetworkAddresses() )
+        {
+            if ( ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork )
+            {
+                byte[] bytes = ip.GetAddressBytes();
+                bytes[3] = 255;
+                ipv4s.Add( new IPAddress( bytes ) );
+            }
+        }
+        return ipv4s.ToArray();
+    }
 
     /// <summary>
     /// List of addresses of port mappers that replied to our call...
@@ -132,10 +158,14 @@ public class RemoteHostBroadcastTest
     /// Keithley 2450 at 192.168.0.153 </para>
     /// </remarks>
     [TestMethod]
+    [TestCategory( "broadcast" )]
     public void ClientShouldBroadcast()
     {
-        IPAddress address = IPAddress.Parse( "192.168.0.255" );
-        RemoteHostBroadcastTest.AssertClientShouldBroadcast( address, 2001 );
+        foreach ( IPAddress ip in GetLocalBroadcastAddresses() )
+        {
+            Logger.Writer.LogInformation( $"{nameof(ClientShouldBroadcast)} at {ip}" ) ;
+            RemoteHostBroadcastTest.AssertClientShouldBroadcast( ip, 2001 );
+        }
     }
 
 }
