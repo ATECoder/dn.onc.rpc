@@ -150,9 +150,9 @@ public class LocalHostBroadcastTest
     ///   2023-02-02 20:09:55.720,cc.isr.ONC.RPC.MSTest.Udp.LocalHostBroadcastTest.LocalHostBroadcastTest
     ///   2023-02-02 20:09:55.726,OncRpcTcpServer waiting listening 55.725
     ///   2023-02-02 20:09:55.726,starting the embedded port map service; this takes ~3.5 seconds...
-    ///   2023-02-02 20:09:55.726,Checking for portmap service
-    ///   2023-02-02 20:09:55.848, No portmap service available.
-    ///   2023-02-02 20:09:55.848,Creating embedded portmap instance
+    ///   2023-02-02 20:09:55.726,Checking for Portmap service
+    ///   2023-02-02 20:09:55.848, No Portmap service available.
+    ///   2023-02-02 20:09:55.848,Creating embedded Portmap instance
     ///   2023-02-02 20:09:56.072, Portmap service started; checked 121.6 ms.
     ///   2023-02-02 20:09:56.072,starting the server task; this takes ~2.5 seconds...
     ///   2023-02-02 20:10:02.779,OncRpcTcpServer is running  02.779

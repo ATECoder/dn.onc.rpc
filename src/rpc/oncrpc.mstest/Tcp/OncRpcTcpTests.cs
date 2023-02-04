@@ -40,7 +40,7 @@ public class OncRpcTcpTests
             _server.ThreadExceptionOccurred -= OnThreadException;
             _ = Task.Factory.StartNew( () => {
 
-                Logger.Writer.LogInformation( "starting the portmap service; this takes ~3.5 seconds..." );
+                Logger.Writer.LogInformation( "starting the Portmap service; this takes ~3.5 seconds..." );
                 using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
                 epm.EmbeddedPortmapService!.ThreadExceptionOccurred += OnThreadException;
 
@@ -305,10 +305,10 @@ public class OncRpcTcpTests
     /// Standard Output: 
     ///   2023-02-02 20:00:17.657,cc.isr.ONC.RPC.MSTest.Tcp.OncRpcTcpTests.OncRpcTcpTests
     ///   2023-02-02 20:00:17.658,OncRpcTcpServer waiting listening 17.658
-    ///   2023-02-02 20:00:17.658,starting the portmap service; this takes ~3.5 seconds...
-    ///   2023-02-02 20:00:17.658,Checking for portmap service
-    ///   2023-02-02 20:00:17.763, No portmap service available.
-    ///   2023-02-02 20:00:17.763,Creating embedded portmap instance
+    ///   2023-02-02 20:00:17.658,starting the Portmap service; this takes ~3.5 seconds...
+    ///   2023-02-02 20:00:17.658,Checking for Portmap service
+    ///   2023-02-02 20:00:17.763, No Portmap service available.
+    ///   2023-02-02 20:00:17.763,Creating embedded Portmap instance
     ///   2023-02-02 20:00:17.977, Portmap service started; checked 105.2 ms.
     ///   2023-02-02 20:00:17.978,starting the server task; this takes ~2.4 seconds...
     ///   2023-02-02 20:00:17.980,Running set to True

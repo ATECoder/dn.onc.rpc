@@ -447,7 +447,7 @@ public class OncRpcPortmapClient : ICloseable
     /// <summary>   Attempts to ping the Portmap service by calling the null procedure (0). </summary>
     /// <remarks>   Unit tests shows this to take 3 ms. </remarks>
     /// <param name="ioTimeout">        (Optional) timeout in milliseconds to wait before assuming
-    ///                                 that no portmap service is currently available [100]. </param>
+    ///                                 that no Portmap service is currently available [100]. </param>
     /// <param name="transmitTimeout">  (Optional) The transmit timeout; defaults to 25 ms. </param>
     /// <returns>   True if it succeeds, false if it fails. </returns>
     public static bool TryPingPortmapService( int ioTimeout = 100, int transmitTimeout = 25 )
@@ -455,14 +455,14 @@ public class OncRpcPortmapClient : ICloseable
         return OncRpcPortmapClient.TryPingPortmapService( IPAddress.Loopback, ioTimeout, transmitTimeout );
     }
 
-    /// <summary>   Tries to ping the portmap service on the specified host. </summary>
+    /// <summary>   Tries to ping the Portmap service on the specified host. </summary>
     /// <remarks>   Unit tests shows this to take 3 ms. </remarks>
     /// <param name="host">             Host where to contact the portmapper. </param>
     /// <param name="ioTimeout">        (Optional) timeout in milliseconds to wait before assuming
-    ///                                 that no portmap service is currently available [100]. </param>
+    ///                                 that no Portmap service is currently available [100]. </param>
     /// <param name="transmitTimeout">  (Optional) The transmit timeout; defaults to 25 ms. </param>
     /// <returns>
-    /// <see langword="true"/>, if a portmap service is running and can be contacted.
+    /// <see langword="true"/>, if a Portmap service is running and can be contacted.
     /// </returns>
     public static bool TryPingPortmapService( IPAddress host, int ioTimeout = 100, int transmitTimeout = 25 )
     {

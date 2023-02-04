@@ -23,7 +23,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     #region " construction and cleanup "
 
     /// <summary> 
-    /// Creates a new portmap service instance. Creates the transport registration information and UDP and TCP-
+    /// Creates a new Portmap service instance. Creates the transport registration information and UDP and TCP-
     /// based transports, which will be bound later to port 111.
     /// </summary>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>

@@ -24,7 +24,7 @@ public enum OncRpcPortmapServiceProcedure
     OncRpcPortmapPing = 0,
 
     /// <summary>
-    /// Procedure number of portmap service to register an ONC/RPC server. <para>
+    /// Procedure number of Portmap service to register an ONC/RPC server. <para>
     /// 
     /// When a program first becomes available on a machine, it registers itself with the port mapper
     /// program on that machine. The program passes its program, version and transport protocol numbers,
@@ -39,7 +39,7 @@ public enum OncRpcPortmapServiceProcedure
     OncRpcPortmapRegisterServer = 1,
 
     /// <summary>
-    /// Procedure number of portmap service to unregister an ONC/RPC server. <para>
+    /// Procedure number of Portmap service to unregister an ONC/RPC server. <para>
     /// 
     /// When a program becomes unavailable, it should unregister itself with the port mapper program on the same machine.
     /// The parameters and results have meanings identical to those of the <see cref="OncRpcPortmapServiceProcedure.OncRpcPortmapRegisterServer"/>
@@ -50,7 +50,7 @@ public enum OncRpcPortmapServiceProcedure
     OncRpcPortmapUnregisterServer = 2,
 
     /// <summary>
-    /// Procedure number of portmap service to retrieve port number of a particular ONC/RPC server. <para>
+    /// Procedure number of Portmap service to retrieve port number of a particular ONC/RPC server. <para>
     /// 
     /// Given a program, version, and transport protocol numbers, this procedure returns the port number on 
     /// which the program is awaiting call requests. A port value of zero means the program has not been 
@@ -61,7 +61,7 @@ public enum OncRpcPortmapServiceProcedure
     OncRpcPortmapGetPortNumber = 3,
 
     /// <summary>
-    /// Procedure number of portmap service to return information about all currently registered
+    /// Procedure number of Portmap service to return information about all currently registered
     /// ONC/RPC servers. <para>
     /// 
     /// This procedure enumerates all entries in the port mapper database. The procedure takes no parameters 
@@ -73,7 +73,7 @@ public enum OncRpcPortmapServiceProcedure
 
     /// <summary>
     /// (Immutable)
-    /// Procedure number of portmap service to indirectly call a remote procedure an ONC/RPC server
+    /// Procedure number of Portmap service to indirectly call a remote procedure an ONC/RPC server
     /// through the ONC/RPC portmapper. <para>
     /// 
     /// This procedure allows a caller to call another remote procedure on the same machine without knowing 

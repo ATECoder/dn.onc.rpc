@@ -6,7 +6,7 @@ namespace cc.isr.ONC.RPC.Portmap
     /// <remarks>   2023-01-23. </remarks>
     public class OncRpcEmbeddedPortmapService : OncRpcPortMapService
     {
-        /// <summary>   Creates a new instance of an embeddable portmap service. </summary>
+        /// <summary>   Creates a new instance of an embeddable Portmap service. </summary>
         public OncRpcEmbeddedPortmapService()
         {
         }
@@ -18,7 +18,7 @@ namespace cc.isr.ONC.RPC.Portmap
         /// <remarks>
         /// This method basically falls back to the implementation provided by the <c>rpcgen</c>
         /// superclass, but checks whether there are other ONC/RPC programs registered. If not, it
-        /// signals itself to shut down the portmap service.
+        /// signals itself to shut down the Portmap service.
         /// </remarks>
         /// <param name="serverIdentification"> the server identification, which includes the program and
         ///                                     version to deregister. The protocol and port fields are
@@ -43,7 +43,7 @@ namespace cc.isr.ONC.RPC.Portmap
                     }
                 }
 
-                // If only portmap-related entries are left, then shut down this portmap service
+                // If only portmap-related entries are left, then shut down this Portmap service
                 // by sending the shutdown signal
                 if ( onlyPmap && this.Running )
                     this.StopRpcProcessing();

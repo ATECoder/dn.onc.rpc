@@ -2,7 +2,6 @@ using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Portmap;
 using System.Net.Sockets;
-using System.Net;
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 

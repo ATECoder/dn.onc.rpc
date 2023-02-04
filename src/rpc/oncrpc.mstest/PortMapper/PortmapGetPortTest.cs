@@ -15,9 +15,9 @@ public class APortmapGetPortTest
     /// so we changed the order for now. 
     /// <code>
     /// Standard Output: 
-    ///   2023-02-02 20:00:16.956,Checking for portmap service
-    ///   2023-02-02 20:00:17.062, No portmap service available.
-    ///   2023-02-02 20:00:17.062,Creating embedded portmap instance
+    ///   2023-02-02 20:00:16.956,Checking for Portmap service
+    ///   2023-02-02 20:00:17.062, No Portmap service available.
+    ///   2023-02-02 20:00:17.062,Creating embedded Portmap instance
     ///   2023-02-02 20:00:17.289, Portmap service started; checked 105.5 ms.
     ///   2023-02-02 20:00:17.290,Host: 192.168.4.28
     ///   2023-02-02 20:00:17.290,pinging port mapper;
@@ -45,8 +45,8 @@ public class APortmapGetPortTest
     {
         using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
 
-        // It is assumed that no external portmap services are available.
-        Assert.IsFalse( epm.UsingExternalPortmapService, $"External portmap services are not expected." );
+        // It is assumed that no external Portmap services are available.
+        Assert.IsFalse( epm.UsingExternalPortmapService, $"External Portmap services are not expected." );
 
         IPHostEntry host = Dns.GetHostEntry( Dns.GetHostName() );
 
@@ -160,7 +160,7 @@ public class APortmapGetPortTest
         // Release resources bound by portmap client object as soon as possible
         portmap.Close();
 
-        // dispose of the portmap service
+        // dispose of the Portmap service
         Logger.Writer.LogInformation( $"Exiting test method; {nameof( OncRpcEmbeddedPortmapServiceStub )} will be disposed..." );
     }
 }
