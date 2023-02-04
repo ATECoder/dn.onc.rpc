@@ -17,6 +17,24 @@ public class EmbeddedPortmapTest
     }
 
     /// <summary>   (Unit Test Method) embedded portmap service should pass. </summary>
+    /// <remarks>
+    /// <code>
+    /// Standard Output: 
+    ///   2023-02-02 20:00:17.305,Starting the embedded portmap service
+    ///   2023-02-02 20:00:17.305,Checking for portmap service
+    ///   2023-02-02 20:00:17.413, No portmap service available.
+    ///   2023-02-02 20:00:17.413,Creating embedded portmap instance
+    ///   2023-02-02 20:00:17.636, Portmap service started; checked 107.8 ms.
+    ///   2023-02-02 20:00:17.636,The embedded portmap service started in 330.8 ms
+    ///   2023-02-02 20:00:17.636,Deregistering non-existing program;
+    ///   2023-02-02 20:00:17.637,deregistering a non-existing program was ignored.
+    ///   2023-02-02 20:00:17.637,Registering dummy program;
+    ///   2023-02-02 20:00:17.637,Registering a dummy program worked.
+    ///   2023-02-02 20:00:17.637,Deregistering dummy program;
+    ///   2023-02-02 20:00:17.637,Deregistering the registered dummy program worked.
+    ///   2023-02-02 20:00:17.637, Exiting test method; OncRpcEmbeddedPortmapServiceStub will be disposed...
+    /// </code>
+    /// </remarks>
     [TestMethod]
     public void EmbeddedPortmapServiceShouldPass()
     {
@@ -45,12 +63,12 @@ public class EmbeddedPortmapTest
         Assert.IsFalse( actual );
         Logger.Writer.LogInformation( "deregistering a non-existing program was ignored." );
 
-        Console.Out.Write( "Registering dummy program;" );
+        Logger.Writer.LogInformation( "Registering dummy program;" );
         actual = pmap.SetPort( dummyProgram, dummyVersion, OncRpcProtocol.OncRpcTcp, dummyPort );
         Assert.IsTrue( actual );
         Logger.Writer.LogInformation( "Registering a dummy program worked." );
 
-        Console.Out.Write( "Deregistering dummy program;" );
+        Logger.Writer.LogInformation( "Deregistering dummy program;" );
         actual = pmap.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsTrue( actual );
         Logger.Writer.LogInformation( "Deregistering the registered dummy program worked." );

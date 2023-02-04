@@ -155,10 +155,17 @@ public class OncRpcTcpTests
         Logger.Writer.LogInformation( "Connecting... " );
         client.Connect( host, version );
         Assert.IsTrue( client.Connected, "should be connected" );
-        Logger.Writer.LogInformation( "connected." );
+        Logger.Writer.LogInformation( $"{client.Host} connected." );
     }
 
     /// <summary>   (Unit Test Method) client should connect. </summary>
+    /// <remarks>
+    /// <code>
+    /// Standard Output: 
+    ///   2023-02-02 20:00:24.750,Connecting...
+    ///   2023-02-02 20:00:24.751,connected.
+    /// </code>
+    /// </remarks>
     [TestMethod]
     public void ClientShouldConnect()
     {
@@ -167,6 +174,13 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) client should connect version 2. </summary>
+    /// <remarks>
+    /// <code>
+    /// Standard Output: 
+    ///   2023-02-02 20:00:24.751,Connecting...
+    ///   2023-02-02 20:00:24.751,connected.
+    /// </code>
+    /// </remarks>
     [TestMethod]
     public void ClientShouldConnectVersion2()
     {
@@ -180,10 +194,19 @@ public class OncRpcTcpTests
     {
         Logger.Writer.LogInformation( "Pinging..." );
         client.CallRemoteProcedureNull();
-        Logger.Writer.LogInformation( "pined." );
+        Logger.Writer.LogInformation( $"{client.Host} pinged." );
     }
 
     /// <summary>   Assert client should ping. </summary>
+    /// <remarks>
+    /// <code>
+    /// Standard Output: 
+    ///   2023-02-02 20:00:24.755,Connecting...
+    ///   2023-02-02 20:00:24.756,connected.
+    ///   2023-02-02 20:00:24.756,Pinging...
+    ///   2023-02-02 20:00:24.756,pinged.
+    /// </code>
+    /// </remarks>
     [TestMethod]
     public void ClientShouldPing()
     {
@@ -193,6 +216,15 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) client should ping version 2. </summary>
+    /// <remarks>
+    /// <code>
+    /// Standard Output: 
+    ///   2023-02-02 20:00:24.756,Connecting...
+    ///   2023-02-02 20:00:24.757,connected.
+    ///   2023-02-02 20:00:24.757,Pinging...
+    ///   2023-02-02 20:00:24.757,pined.
+    /// </code>
+    /// </remarks>
     [TestMethod]
     public void ClientShouldPingVersion2()
     {
@@ -208,7 +240,7 @@ public class OncRpcTcpTests
         int userId = 0;
         int groupId = 0;
         string machineName = AuthenticationConstants.MachineName;
-        System.Console.Out.Write( $"checking  {nameof( OncRpcAuthType.OncRpcAuthTypeUnix )} on machine: {machineName} with invalid credentials user id: {userId} & Group ID = {groupId}: " );
+        Logger.Writer.LogInformation( $"{client.Host} checking  {nameof( OncRpcAuthType.OncRpcAuthTypeUnix )} on machine: {machineName} with invalid credentials user id: {userId} & Group ID = {groupId}: " );
         try
         {
             client.CallAuthenticate( AuthenticationConstants.MachineName, userId, groupId );
@@ -219,19 +251,27 @@ public class OncRpcTcpTests
             {
                 Assert.Fail( $"received {nameof( OncRpcAuthException )} with a incorrect status of {ae.AuthStatus}" );
             }
-            Logger.Writer.LogInformation( "expected exception thrown." );
+            Logger.Writer.LogInformation( $"{client.Host} expected exception thrown." );
         }
         catch ( OncRpcException e )
         {
-            Assert.Fail( $"received {nameof( OncRpcException )}: {e}" );
+            Assert.Fail( $"{client.Host} received {nameof( OncRpcException )}: {e}" );
         }
         catch ( Exception ex )
         {
-            Assert.Fail( $"received exception: {ex}" );
+            Assert.Fail( $"{client.Host} received exception: {ex}" );
         }
     }
 
     /// <summary>   (Unit Test Method) client should fail authentication. </summary>
+    /// <remarks>
+    /// <code>
+    /// Standard Output: 
+    ///   2023-02-02 20:00:24.754,Connecting...
+    ///   2023-02-02 20:00:24.754,connected.
+    ///   checking OncRpcAuthTypeUnix on machine: limedevb with invalid credentials user id: 0 & Group ID = 0:
+    /// </code>
+    /// </remarks>
     [TestMethod]
     public void ClientShouldFailAuthentication()
     {
@@ -247,19 +287,37 @@ public class OncRpcTcpTests
         int userId = AuthenticationConstants.UserIdentity;
         int groupId = AuthenticationConstants.GroupIdentity;
         string machineName = AuthenticationConstants.MachineName;
-        System.Console.Out.Write( $"checking {nameof( OncRpcAuthType.OncRpcAuthTypeUnix )} on machine: {machineName} with valid credentials user id: {userId} & Group ID = {groupId}: " );
+        Logger.Writer.LogInformation( $"{client.Host} checking {nameof( OncRpcAuthType.OncRpcAuthTypeUnix )} on machine: {machineName} with valid credentials user id: {userId} & Group ID = {groupId}: " );
         try
         {
             client.CallAuthenticate( AuthenticationConstants.MachineName, userId, groupId );
-            Logger.Writer.LogInformation( "valid credentials authenticated" );
+            Logger.Writer.LogInformation( $"{client.Host} valid credentials authenticated" );
         }
         catch ( OncRpcAuthException ae )
         {
-            Assert.Fail( $"received {nameof( OncRpcAuthException )} with a status of {ae.AuthStatus}: {ae}" );
+            Assert.Fail( $"{client.Host} received {nameof( OncRpcAuthException )} with a status of {ae.AuthStatus}: {ae}" );
         }
     }
 
     /// <summary>   (Unit Test Method) client should authenticate. </summary>
+    /// <remarks>
+    /// <code>
+    /// Standard Output: 
+    ///   2023-02-02 20:00:17.657,cc.isr.ONC.RPC.MSTest.Tcp.OncRpcTcpTests.OncRpcTcpTests
+    ///   2023-02-02 20:00:17.658,OncRpcTcpServer waiting listening 17.658
+    ///   2023-02-02 20:00:17.658,starting the portmap service; this takes ~3.5 seconds...
+    ///   2023-02-02 20:00:17.658,Checking for portmap service
+    ///   2023-02-02 20:00:17.763, No portmap service available.
+    ///   2023-02-02 20:00:17.763,Creating embedded portmap instance
+    ///   2023-02-02 20:00:17.977, Portmap service started; checked 105.2 ms.
+    ///   2023-02-02 20:00:17.978,starting the server task; this takes ~2.4 seconds...
+    ///   2023-02-02 20:00:17.980,Running set to True
+    ///   2023-02-02 20:00:24.736, OncRpcTcpServer is running  24.736
+    ///   2023-02-02 20:00:24.737,Connecting...
+    ///   2023-02-02 20:00:24.738,connected.
+    ///   checking OncRpcAuthTypeUnix on machine: limedevb with valid credentials user id: 42 & Group ID = 815: 2023-02-02 20:00:24.741, valid credentials authenticated
+    /// </code>
+    /// </remarks>
     [TestMethod]
     public void ClientShouldAuthenticate()
     {
@@ -278,14 +336,32 @@ public class OncRpcTcpTests
     {
         foreach ( string message in messages )
         {
-            System.Console.Out.Write( $"checking echo of {message}: " );
+            Logger.Writer.LogInformation( $"{client.Host} checking echo of {message}: " );
             string echoed = client.CallRemoteProcedureEcho( message );
-            Assert.AreEqual( message, echoed, $"answer '{echoed}' does not match '{message}' call" );
-            Logger.Writer.LogInformation( $"echoed {echoed}" );
+            Assert.AreEqual( message, echoed, $"{client.Host} answer '{echoed}' does not match '{message}' call" );
+            Logger.Writer.LogInformation( $"{client.Host} echoed {echoed}" );
         }
     }
 
     /// <summary>   (Unit Test Method) client should echo messages. </summary>
+    /// <remarks>
+    /// <code>
+    /// Standard Output: 
+    ///   2023-02-02 20:00:24.752,Connecting...
+    ///   2023-02-02 20:00:24.752,connected.
+    ///   checking OncRpcAuthTypeUnix on machine: limedevb with valid credentials user id: 42 & Group ID = 815: 2023-02-02 20:00:24.752, valid credentials authenticated
+    ///   checking echo of UNIX: 2023-02-02 20:00:24.752, echoed UNIX
+    ///   checking echo of AUTH: 2023-02-02 20:00:24.753,echoed AUTH
+    ///   checking echo of is like: 2023-02-02 20:00:24.753,echoed is like
+    ///   checking echo of *NO* authentication: 2023-02-02 20:00:24.753, echoed *NO* authentication
+    ///   checking echo of --: 2023-02-02 20:00:24.753,echoed --
+    ///   checking echo of it: 2023-02-02 20:00:24.753, echoed it
+    ///   checking echo of uses: 2023-02-02 20:00:24.753,echoed uses
+    ///   checking echo of* NO CRYPTOGRAPHY*: 2023-02-02 20:00:24.753,echoed* NO CRYPTOGRAPHY*
+    ///   checking echo of for securing: 2023-02-02 20:00:24.753,echoed for securing
+    ///   checking echo of ONC/RPC messages: 2023-02-02 20:00:24.754, echoed ONC/RPC messages
+    /// </code>
+    /// </remarks>
     [TestMethod]
     public void ClientShouldEchoMessages()
     {
@@ -300,11 +376,11 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldEcho( OncRpcTcpTestClient client )
     {
-        Logger.Writer.LogInformation( "About to echo: " );
+        Logger.Writer.LogInformation( $"{client.Host} About to echo: " );
         string expected = "Hello, Remote Tea!";
         string actual = client.CallRemoteProcedureEcho( expected );
         Assert.AreEqual( expected, actual );
-        Logger.Writer.LogInformation( $"Echoed '{actual}'" );
+        Logger.Writer.LogInformation( $"{client.Host} echoed '{actual}'" );
     }
 
     /// <summary>   Assert client should concatenate. </summary>
@@ -317,7 +393,7 @@ public class OncRpcTcpTests
         string expected = "Hello, Remote Tea!";
         string actual = client.CallRemoteProcedureConcatenateInputParameters( strings );
         Assert.AreEqual( expected, actual );
-        Logger.Writer.LogInformation( $"concatenated '{actual}'" );
+        Logger.Writer.LogInformation( $"{client.Host} concatenated '{actual}'" );
     }
 
     /// <summary>   Assert client should concatenate exactly. </summary>
@@ -328,7 +404,7 @@ public class OncRpcTcpTests
         string expected = "(1:Hello )(2:Remote )(3:Tea!)";
         string actual = client.CallRemoteProcedureConcatenatedThreeItems( "(1:Hello )", "(2:Remote )", "(3:Tea!)" );
         Assert.AreEqual( expected, actual );
-        Logger.Writer.LogInformation( $"concatenated '{actual}'" );
+        Logger.Writer.LogInformation( $"{client.Host} concatenated '{actual}'" );
     }
 
     /// <summary>   Assert client should check for foo. </summary>
@@ -343,7 +419,7 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldGetFoo( OncRpcTcpTestClient client )
     {
-        Logger.Writer.LogInformation( "About to get a foo: " );
+        Logger.Writer.LogInformation( $"{client.Host} About to get a foo: " );
         Assert.AreEqual( client.CallRemoteProcedureReturnEnumFooValue(), ( int ) EnumFoo.FOO, $"oops: got a {EnumFoo.BAR} instead of a {EnumFoo.FOO}!" );
     }
 
@@ -351,18 +427,18 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldGetNumberedFoo( OncRpcTcpTestClient client )
     {
-        Logger.Writer.LogInformation( "About to get a numbered foo string: " );
+        Logger.Writer.LogInformation( $"{client.Host} About to get a numbered foo string: " );
         EnumFoo expectedValue = EnumFoo.FOO;
         string expected = OncRpcTcpServer.ReturnYouAreFooValue( ( int ) expectedValue );
         string echo = client.CallRemoteProcedureReturnYouAreFooValue( expectedValue );
-        Assert.AreEqual( expected, echo, $"oops: should echo '{expected}')" );
+        Assert.AreEqual( expected, echo, $"{client.Host} oops: should echo '{expected}')" );
     }
 
     /// <summary>   Assert client should prepend linked list. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldPrependLinkedList( OncRpcTcpTestClient client )
     {
-        Logger.Writer.LogInformation( "Linked List test: " );
+        Logger.Writer.LogInformation( $"{client.Host} Linked List test: " );
         LinkedListCodec node1 = new() {
             Foo = 0
         };
@@ -396,7 +472,7 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldLinkLinkedList( OncRpcTcpTestClient client )
     {
-        Logger.Writer.LogInformation( "Linking Linked Lists test: " );
+        Logger.Writer.LogInformation( $"{client.Host} Linking Linked Lists test: " );
         LinkedListCodec node1 = new() {
             Foo = 0
         };
@@ -428,6 +504,28 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) client should call remote procedures. </summary>
+    /// <remarks>
+    /// <code>
+    /// Standard Output: 
+    ///   2023-02-02 20:00:24.743,Connecting...
+    ///   2023-02-02 20:00:24.744,connected.
+    ///   2023-02-02 20:00:24.744,Pinging...
+    ///   2023-02-02 20:00:24.744,pined.
+    ///   2023-02-02 20:00:24.744,About to echo:
+    ///   2023-02-02 20:00:24.745,Echoed 'Hello, Remote Tea!'
+    ///   2023-02-02 20:00:24.745,About to concatenate:
+    ///   2023-02-02 20:00:24.746,concatenated 'Hello, Remote Tea!'
+    ///   2023-02-02 20:00:24.746,About to concatenating exactly three strings:
+    ///   2023-02-02 20:00:24.746, concatenated '(1:Hello )(2:Remote )(3:Tea!)'
+    ///   2023-02-02 20:00:24.747, About to get a foo:
+    ///   2023-02-02 20:00:24.748, About to get a numbered foo string:
+    ///   2023-02-02 20:00:24.748,Linked List test:
+    ///   2023-02-02 20:00:24.749,built list 42, 0, 8, 15,
+    ///   2023-02-02 20:00:24.749, Linking Linked Lists test:
+    ///   2023-02-02 20:00:24.750,built list 8, 0,
+    ///   2023-02-02 20:00:24.750, All tests passed.
+    /// </code>
+    /// </remarks>    
     [TestMethod]
     public void ClientShouldCallRemoteProcedures()
     {

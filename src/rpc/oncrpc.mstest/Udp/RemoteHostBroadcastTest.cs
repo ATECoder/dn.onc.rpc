@@ -156,6 +156,21 @@ public class RemoteHostBroadcastTest
     /// The following instruments were not found:  </para><para>
     /// Keithley 7510 at 192.168.0.144 </para><para>
     /// Keithley 2450 at 192.168.0.153 </para>
+    /// 
+    /// <code>
+    /// Standard Output: 
+    ///   2023-02-02 20:10:03.809,cc.isr.ONC.RPC.MSTest.Udp.RemoteHostBroadcastTest.RemoteHostBroadcastTest
+    ///   2023-02-02 20:10:03.810,ClientShouldBroadcast at 192.168.4.255
+    ///   2023-02-02 20:10:03.810, pinging port mappers in subnet 192.168.4.255:
+    ///   2023-02-02 20:10:05.827,done.
+    ///   2023-02-02 20:10:05.827,Found: 127.0.0.1:111
+    ///   2023-02-02 20:10:05.827,ClientShouldBroadcast at 192.168.0.255
+    ///   2023-02-02 20:10:05.827, pinging port mappers in subnet 192.168.0.255:
+    ///   2023-02-02 20:10:07.830,done.
+    ///   2023-02-02 20:10:07.830,Found: 127.0.0.1:111
+    ///   2023-02-02 20:10:07.830,Found: 192.168.0.40:111
+    ///   2023-02-02 20:10:07.830,Found: 192.168.0.154:111
+    /// </code>
     /// </remarks>
     [TestMethod]
     [TestCategory( "broadcast" )]
