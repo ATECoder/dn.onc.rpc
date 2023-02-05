@@ -450,7 +450,7 @@ public class OncRpcPortmapClient : ICloseable
     ///                                 that no Portmap service is currently available [100]. </param>
     /// <param name="transmitTimeout">  (Optional) The transmit timeout; defaults to 25 ms. </param>
     /// <returns>   True if it succeeds, false if it fails. </returns>
-    public static bool TryPingPortmapService( int ioTimeout = 100, int transmitTimeout = 25 )
+    public static bool TryPingPortmapService( int ioTimeout = 10, int transmitTimeout = 5 )
     {
         return OncRpcPortmapClient.TryPingPortmapService( IPAddress.Loopback, ioTimeout, transmitTimeout );
     }
@@ -464,7 +464,7 @@ public class OncRpcPortmapClient : ICloseable
     /// <returns>
     /// <see langword="true"/>, if a Portmap service is running and can be contacted.
     /// </returns>
-    public static bool TryPingPortmapService( IPAddress host, int ioTimeout = 100, int transmitTimeout = 25 )
+    public static bool TryPingPortmapService( IPAddress host, int ioTimeout = 10, int transmitTimeout = 5 )
     {
         using OncRpcPortmapClient portmap = new( host, OncRpcProtocol.OncRpcUdp, transmitTimeout );
         portmap.OncRpcClient!.IOTimeout = ioTimeout;

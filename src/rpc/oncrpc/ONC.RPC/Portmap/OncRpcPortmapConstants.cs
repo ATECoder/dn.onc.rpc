@@ -2,7 +2,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 
 /// <summary>
 /// A collection of constants used for ONC/RPC messages to identify the 
-/// ONC/RPC port mappers p[ort, program and version.
+/// ONC/RPC port mappers port, program and version.
 /// </summary>
 /// <remarks> <para>
 /// 

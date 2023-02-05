@@ -158,17 +158,14 @@ public class RemoteHostBroadcastTest
     /// 
     /// <code>
     /// Standard Output: 
-    ///   2023-02-02 20:10:03.809,cc.isr.ONC.RPC.MSTest.Udp.RemoteHostBroadcastTest.RemoteHostBroadcastTest
-    ///   2023-02-02 20:10:03.810,ClientShouldBroadcast at 192.168.4.255
-    ///   2023-02-02 20:10:03.810, pinging port mappers in subnet 192.168.4.255:
-    ///   2023-02-02 20:10:05.827,done.
-    ///   2023-02-02 20:10:05.827,Found: 127.0.0.1:111
-    ///   2023-02-02 20:10:05.827,ClientShouldBroadcast at 192.168.0.255
-    ///   2023-02-02 20:10:05.827, pinging port mappers in subnet 192.168.0.255:
-    ///   2023-02-02 20:10:07.830,done.
-    ///   2023-02-02 20:10:07.830,Found: 127.0.0.1:111
-    ///   2023-02-02 20:10:07.830,Found: 192.168.0.40:111
-    ///   2023-02-02 20:10:07.830,Found: 192.168.0.154:111
+    /// 2023-02-04 19:26:57.352,cc.isr.ONC.RPC.MSTest.Udp.RemoteHostBroadcastTest.RemoteHostBroadcastTest
+    /// 2023-02-04 19:26:57.365,ClientShouldBroadcast at 192.168.4.255
+    /// 2023-02-04 19:26:57.367, pinging port mappers in subnet 192.168.4.255:
+    /// 2023-02-04 19:26:59.376,done.
+    /// 2023-02-04 19:26:59.378,ClientShouldBroadcast at 192.168.0.255
+    /// 2023-02-04 19:26:59.378, pinging port mappers in subnet 192.168.0.255:
+    /// 2023-02-04 19:27:01.384,done.
+    /// 2023-02-04 19:27:01.384,Found: 192.168.0.154:111
     /// </code>
     /// </remarks>
     [TestMethod]

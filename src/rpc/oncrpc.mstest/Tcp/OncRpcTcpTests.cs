@@ -140,6 +140,13 @@ public class OncRpcTcpTests
     }
 
     /// <summary>   (Unit Test Method) server should be listening. </summary>
+    /// <remarks>
+    /// <code>
+    /// Standard Output: 
+    /// 2023-02-04 19:28:24.828,Running set to False
+    /// 2023-02-04 19:28:24.841, Running True; server disposed in 15.7 ms
+    /// </code>
+    /// </remarks>
     [TestMethod]
     public void ServerShouldBeListening()
     {
@@ -162,8 +169,8 @@ public class OncRpcTcpTests
     /// <remarks>
     /// <code>
     /// Standard Output: 
-    ///   2023-02-02 20:00:24.750,Connecting...
-    ///   2023-02-02 20:00:24.751,connected.
+    /// 2023-02-04 19:28:24.815,Connecting...
+    /// 2023-02-04 19:28:24.815,127.0.0.1 connected.
     /// </code>
     /// </remarks>
     [TestMethod]
@@ -177,8 +184,8 @@ public class OncRpcTcpTests
     /// <remarks>
     /// <code>
     /// Standard Output: 
-    ///   2023-02-02 20:00:24.751,Connecting...
-    ///   2023-02-02 20:00:24.751,connected.
+    /// 2023-02-04 19:28:24.816,Connecting...
+    /// 2023-02-04 19:28:24.816,127.0.0.1 connected.
     /// </code>
     /// </remarks>
     [TestMethod]
@@ -201,10 +208,10 @@ public class OncRpcTcpTests
     /// <remarks>
     /// <code>
     /// Standard Output: 
-    ///   2023-02-02 20:00:24.755,Connecting...
-    ///   2023-02-02 20:00:24.756,connected.
-    ///   2023-02-02 20:00:24.756,Pinging...
-    ///   2023-02-02 20:00:24.756,pinged.
+    /// 2023-02-04 19:28:24.819,Connecting...
+    /// 2023-02-04 19:28:24.820,127.0.0.1 connected.
+    /// 2023-02-04 19:28:24.820,Pinging...
+    /// 2023-02-04 19:28:24.820,127.0.0.1 pinged.
     /// </code>
     /// </remarks>
     [TestMethod]
@@ -219,10 +226,10 @@ public class OncRpcTcpTests
     /// <remarks>
     /// <code>
     /// Standard Output: 
-    ///   2023-02-02 20:00:24.756,Connecting...
-    ///   2023-02-02 20:00:24.757,connected.
-    ///   2023-02-02 20:00:24.757,Pinging...
-    ///   2023-02-02 20:00:24.757,pined.
+    /// 2023-02-04 19:28:24.820,Connecting...
+    /// 2023-02-04 19:28:24.821,127.0.0.1 connected.
+    /// 2023-02-04 19:28:24.821,Pinging...
+    /// 2023-02-04 19:28:24.821,127.0.0.1 pinged.
     /// </code>
     /// </remarks>
     [TestMethod]
@@ -267,9 +274,9 @@ public class OncRpcTcpTests
     /// <remarks>
     /// <code>
     /// Standard Output: 
-    ///   2023-02-02 20:00:24.754,Connecting...
-    ///   2023-02-02 20:00:24.754,connected.
-    ///   checking OncRpcAuthTypeUnix on machine: limedevb with invalid credentials user id: 0 & Group ID = 0:
+    /// 2023-02-04 19:28:24.818,Connecting...
+    /// 2023-02-04 19:28:24.819,127.0.0.1 connected.
+    /// 2023-02-04 19:28:24.819,127.0.0.1 checking OncRpcAuthTypeUnix on machine: limedevb with invalid credentials user id: 0 & Group ID = 0:
     /// </code>
     /// </remarks>
     [TestMethod]
@@ -303,19 +310,20 @@ public class OncRpcTcpTests
     /// <remarks>
     /// <code>
     /// Standard Output: 
-    ///   2023-02-02 20:00:17.657,cc.isr.ONC.RPC.MSTest.Tcp.OncRpcTcpTests.OncRpcTcpTests
-    ///   2023-02-02 20:00:17.658,OncRpcTcpServer waiting listening 17.658
-    ///   2023-02-02 20:00:17.658,starting the Portmap service; this takes ~3.5 seconds...
-    ///   2023-02-02 20:00:17.658,Checking for Portmap service
-    ///   2023-02-02 20:00:17.763, No Portmap service available.
-    ///   2023-02-02 20:00:17.763,Creating embedded Portmap instance
-    ///   2023-02-02 20:00:17.977, Portmap service started; checked 105.2 ms.
-    ///   2023-02-02 20:00:17.978,starting the server task; this takes ~2.4 seconds...
-    ///   2023-02-02 20:00:17.980,Running set to True
-    ///   2023-02-02 20:00:24.736, OncRpcTcpServer is running  24.736
-    ///   2023-02-02 20:00:24.737,Connecting...
-    ///   2023-02-02 20:00:24.738,connected.
-    ///   checking OncRpcAuthTypeUnix on machine: limedevb with valid credentials user id: 42 & Group ID = 815: 2023-02-02 20:00:24.741, valid credentials authenticated
+    /// 2023-02-04 19:28:17.695,cc.isr.ONC.RPC.MSTest.Tcp.OncRpcTcpTests.OncRpcTcpTests
+    /// 2023-02-04 19:28:17.701,OncRpcTcpServer waiting listening 17.701
+    /// 2023-02-04 19:28:17.701,starting the Portmap service; this takes ~3.5 seconds...
+    /// 2023-02-04 19:28:17.702,Checking for Portmap service
+    /// 2023-02-04 19:28:17.720,No Portmap service available.
+    /// 2023-02-04 19:28:17.720,Creating embedded Portmap instance
+    /// 2023-02-04 19:28:17.931,Portmap service started; checked 18.1 ms.
+    /// 2023-02-04 19:28:17.931,starting the server task; this takes ~2.4 seconds...
+    /// 2023-02-04 19:28:17.938,Running set to True
+    /// 2023-02-04 19:28:24.779, OncRpcTcpServer is running  24.779
+    /// 2023-02-04 19:28:24.784,Connecting...
+    /// 2023-02-04 19:28:24.787,127.0.0.1 connected.
+    /// 2023-02-04 19:28:24.787,127.0.0.1 checking OncRpcAuthTypeUnix on machine: limedevb with valid credentials user id: 42 & Group ID = 815:
+    /// 2023-02-04 19:28:24.790,127.0.0.1 valid credentials authenticated
     /// </code>
     /// </remarks>
     [TestMethod]
@@ -346,20 +354,31 @@ public class OncRpcTcpTests
     /// <summary>   (Unit Test Method) client should echo messages. </summary>
     /// <remarks>
     /// <code>
-    /// Standard Output: 
-    ///   2023-02-02 20:00:24.752,Connecting...
-    ///   2023-02-02 20:00:24.752,connected.
-    ///   checking OncRpcAuthTypeUnix on machine: limedevb with valid credentials user id: 42 & Group ID = 815: 2023-02-02 20:00:24.752, valid credentials authenticated
-    ///   checking echo of UNIX: 2023-02-02 20:00:24.752, echoed UNIX
-    ///   checking echo of AUTH: 2023-02-02 20:00:24.753,echoed AUTH
-    ///   checking echo of is like: 2023-02-02 20:00:24.753,echoed is like
-    ///   checking echo of *NO* authentication: 2023-02-02 20:00:24.753, echoed *NO* authentication
-    ///   checking echo of --: 2023-02-02 20:00:24.753,echoed --
-    ///   checking echo of it: 2023-02-02 20:00:24.753, echoed it
-    ///   checking echo of uses: 2023-02-02 20:00:24.753,echoed uses
-    ///   checking echo of* NO CRYPTOGRAPHY*: 2023-02-02 20:00:24.753,echoed* NO CRYPTOGRAPHY*
-    ///   checking echo of for securing: 2023-02-02 20:00:24.753,echoed for securing
-    ///   checking echo of ONC/RPC messages: 2023-02-02 20:00:24.754, echoed ONC/RPC messages
+    ///  Standard Output: 
+    /// 2023-02-04 19:28:24.816,Connecting...
+    /// 2023-02-04 19:28:24.817,127.0.0.1 connected.
+    /// 2023-02-04 19:28:24.817,127.0.0.1 checking OncRpcAuthTypeUnix on machine: limedevb with valid credentials user id: 42 & Group ID = 815:
+    /// 2023-02-04 19:28:24.817,127.0.0.1 valid credentials authenticated
+    /// 2023-02-04 19:28:24.817,127.0.0.1 checking echo of UNIX:
+    /// 2023-02-04 19:28:24.817,127.0.0.1 echoed UNIX
+    /// 2023-02-04 19:28:24.817,127.0.0.1 checking echo of AUTH:
+    /// 2023-02-04 19:28:24.817,127.0.0.1 echoed AUTH
+    /// 2023-02-04 19:28:24.817,127.0.0.1 checking echo of is like:
+    /// 2023-02-04 19:28:24.818,127.0.0.1 echoed is like
+    /// 2023-02-04 19:28:24.818,127.0.0.1 checking echo of* NO* authentication:
+    /// 2023-02-04 19:28:24.818,127.0.0.1 echoed* NO* authentication
+    /// 2023-02-04 19:28:24.818,127.0.0.1 checking echo of --:
+    /// 2023-02-04 19:28:24.818,127.0.0.1 echoed --
+    /// 2023-02-04 19:28:24.818,127.0.0.1 checking echo of it:
+    /// 2023-02-04 19:28:24.818,127.0.0.1 echoed it
+    /// 2023-02-04 19:28:24.818,127.0.0.1 checking echo of uses:
+    /// 2023-02-04 19:28:24.818,127.0.0.1 echoed uses
+    /// 2023-02-04 19:28:24.818,127.0.0.1 checking echo of* NO CRYPTOGRAPHY*:
+    /// 2023-02-04 19:28:24.818,127.0.0.1 echoed* NO CRYPTOGRAPHY*
+    /// 2023-02-04 19:28:24.818,127.0.0.1 checking echo of for securing:
+    /// 2023-02-04 19:28:24.818,127.0.0.1 echoed for securing
+    /// 2023-02-04 19:28:24.818,127.0.0.1 checking echo of ONC/RPC messages:
+    /// 2023-02-04 19:28:24.818,127.0.0.1 echoed ONC/RPC messages
     /// </code>
     /// </remarks>
     [TestMethod]
@@ -507,23 +526,23 @@ public class OncRpcTcpTests
     /// <remarks>
     /// <code>
     /// Standard Output: 
-    ///   2023-02-02 20:00:24.743,Connecting...
-    ///   2023-02-02 20:00:24.744,connected.
-    ///   2023-02-02 20:00:24.744,Pinging...
-    ///   2023-02-02 20:00:24.744,pined.
-    ///   2023-02-02 20:00:24.744,About to echo:
-    ///   2023-02-02 20:00:24.745,Echoed 'Hello, Remote Tea!'
-    ///   2023-02-02 20:00:24.745,About to concatenate:
-    ///   2023-02-02 20:00:24.746,concatenated 'Hello, Remote Tea!'
-    ///   2023-02-02 20:00:24.746,About to concatenating exactly three strings:
-    ///   2023-02-02 20:00:24.746, concatenated '(1:Hello )(2:Remote )(3:Tea!)'
-    ///   2023-02-02 20:00:24.747, About to get a foo:
-    ///   2023-02-02 20:00:24.748, About to get a numbered foo string:
-    ///   2023-02-02 20:00:24.748,Linked List test:
-    ///   2023-02-02 20:00:24.749,built list 42, 0, 8, 15,
-    ///   2023-02-02 20:00:24.749, Linking Linked Lists test:
-    ///   2023-02-02 20:00:24.750,built list 8, 0,
-    ///   2023-02-02 20:00:24.750, All tests passed.
+    /// 2023-02-04 19:28:24.805,Connecting...
+    /// 2023-02-04 19:28:24.806,127.0.0.1 connected.
+    /// 2023-02-04 19:28:24.806,Pinging...
+    /// 2023-02-04 19:28:24.806,127.0.0.1 pinged.
+    /// 2023-02-04 19:28:24.806,127.0.0.1 About to echo:
+    /// 2023-02-04 19:28:24.808,127.0.0.1 echoed 'Hello, Remote Tea!'
+    /// 2023-02-04 19:28:24.808,About to concatenate:
+    /// 2023-02-04 19:28:24.809,127.0.0.1 concatenated 'Hello, Remote Tea!'
+    /// 2023-02-04 19:28:24.809,About to concatenating exactly three strings:
+    /// 2023-02-04 19:28:24.810,127.0.0.1 concatenated '(1:Hello )(2:Remote )(3:Tea!)'
+    /// 2023-02-04 19:28:24.811,127.0.0.1 About to get a foo:
+    /// 2023-02-04 19:28:24.812,127.0.0.1 About to get a numbered foo string:
+    /// 2023-02-04 19:28:24.812,127.0.0.1 Linked List test:
+    /// 2023-02-04 19:28:24.813,built list 42, 0, 8, 15,
+    /// 2023-02-04 19:28:24.813,127.0.0.1 Linking Linked Lists test:
+    /// 2023-02-04 19:28:24.814, built list 8, 0,
+    /// 2023-02-04 19:28:24.814,All tests passed.
     /// </code>
     /// </remarks>    
     [TestMethod]

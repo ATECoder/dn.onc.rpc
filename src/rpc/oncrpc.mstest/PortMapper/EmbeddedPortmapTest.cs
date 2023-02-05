@@ -20,19 +20,19 @@ public class EmbeddedPortmapTest
     /// <remarks>
     /// <code>
     /// Standard Output: 
-    ///   2023-02-02 20:00:17.305,Starting the embedded Portmap service
-    ///   2023-02-02 20:00:17.305,Checking for Portmap service
-    ///   2023-02-02 20:00:17.413, No Portmap service available.
-    ///   2023-02-02 20:00:17.413,Creating embedded Portmap instance
-    ///   2023-02-02 20:00:17.636, Portmap service started; checked 107.8 ms.
-    ///   2023-02-02 20:00:17.636,The embedded Portmap service started in 330.8 ms
-    ///   2023-02-02 20:00:17.636,Deregistering non-existing program;
-    ///   2023-02-02 20:00:17.637,deregistering a non-existing program was ignored.
-    ///   2023-02-02 20:00:17.637,Registering dummy program;
-    ///   2023-02-02 20:00:17.637,Registering a dummy program worked.
-    ///   2023-02-02 20:00:17.637,Deregistering dummy program;
-    ///   2023-02-02 20:00:17.637,Deregistering the registered dummy program worked.
-    ///   2023-02-02 20:00:17.637, Exiting test method; OncRpcEmbeddedPortmapServiceStub will be disposed...
+    /// 2023-02-04 19:34:46.368,Starting the embedded Portmap service
+    /// 2023-02-04 19:34:46.371,Checking for Portmap service
+    /// 2023-02-04 19:34:46.401, No Portmap service available.
+    /// 2023-02-04 19:34:46.401,Creating embedded Portmap instance
+    /// 2023-02-04 19:34:46.613, Portmap service started; checked 29.9 ms.
+    /// 2023-02-04 19:34:46.613,The embedded Portmap service started in 242.3 ms
+    /// 2023-02-04 19:34:46.613,Deregistering non-existing program;
+    /// 2023-02-04 19:34:46.618,deregistering a non-existing program was ignored.
+    /// 2023-02-04 19:34:46.618, Registering dummy program;
+    /// 2023-02-04 19:34:46.618,Registering a dummy program worked.
+    /// 2023-02-04 19:34:46.618,Deregistering dummy program;
+    /// 2023-02-04 19:34:46.619,Deregistering the registered dummy program worked.
+    /// 2023-02-04 19:34:46.619, Exiting test method; OncRpcEmbeddedPortmapServiceStub will be disposed...
     /// </code>
     /// </remarks>
     [TestMethod]

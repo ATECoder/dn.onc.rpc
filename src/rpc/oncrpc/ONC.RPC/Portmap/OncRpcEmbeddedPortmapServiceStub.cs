@@ -98,7 +98,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// <param name="transmitTimeout">  (Optional) The transmit timeout; defaults to 25 ms. </param>
     /// <param name="validate">         (Optional) True to validate the port map after onset. </param>
     /// <returns>   An OncRpcEmbeddedPortmapService. </returns>
-    public static OncRpcEmbeddedPortmapServiceStub StartEmbeddedPortmapService( int ioTimeout = 100, int transmitTimeout = 25, bool validate = false )
+    public static OncRpcEmbeddedPortmapServiceStub StartEmbeddedPortmapService( int ioTimeout = 10, int transmitTimeout = 5, bool validate = false )
     {
         Logger.Writer.LogInformation( $"Checking for Portmap service" );
         Stopwatch sw = Stopwatch.StartNew();
@@ -297,7 +297,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// <see langword="true"/>, if a Portmap service (either external or embedded) is running and can
     /// be contacted.
     /// </returns>
-    public static bool TryPingPortmapService1( int ioTimeout = 100, int transmitTimeout = 25 )
+    public static bool TryPingPortmapService1( int ioTimeout = 10, int transmitTimeout = 5 )
     {
         using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, transmitTimeout );
         pmapClient.OncRpcClient!.IOTimeout = ioTimeout;

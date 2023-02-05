@@ -15,29 +15,29 @@ public class APortmapGetPortTest
     /// so we changed the order for now. 
     /// <code>
     /// Standard Output: 
-    ///   2023-02-02 20:00:16.956,Checking for Portmap service
-    ///   2023-02-02 20:00:17.062, No Portmap service available.
-    ///   2023-02-02 20:00:17.062,Creating embedded Portmap instance
-    ///   2023-02-02 20:00:17.289, Portmap service started; checked 105.5 ms.
-    ///   2023-02-02 20:00:17.290,Host: 192.168.4.28
-    ///   2023-02-02 20:00:17.290,pinging port mapper;
-    ///   2023-02-02 20:00:17.294,port mapper pinged.
-    ///   2023-02-02 20:00:17.294,GetPort for non-existing program
-    ///   2023-02-02 20:00:17.295, succeeded; received error code( OncRpcProgramNotRegistered(15).
-    ///   2023-02-02 20:00:17.295,SetPort dummy server identification:
-    ///   2023-02-02 20:00:17.296, SetPort succeeded.
-    ///   2023-02-02 20:00:17.296,executing ListRegisteredServers
-    ///   2023-02-02 20:00:17.296, ListRegisteredServers succeeded.
-    ///   2023-02-02 20:00:17.296,listing Registered servers
-    ///   2023-02-02 20:00:17.296, Program Version Protocol Port
-    ///   2023-02-02 20:00:17.297,100000 2 OncRpcTcp 111
-    ///   2023-02-02 20:00:17.297,100000 2 OncRpcUdp 111
-    ///   2023-02-02 20:00:17.297,1 42 OncRpcUdp 65535
-    ///   2023-02-02 20:00:17.297,executing UnsetPort dummy server identification:
-    ///   2023-02-02 20:00:17.297,UnsetPort succeeded.
-    ///   2023-02-02 20:00:17.297, executing ListRegisteredServers
-    ///   2023-02-02 20:00:17.297, ListRegisteredServerssucceeded.
-    ///   2023-02-02 20:00:17.298, Exiting test method; OncRpcEmbeddedPortmapServiceStub will be disposed...
+    /// 2023-02-04 19:34:06.719,Checking for Portmap service
+    /// 2023-02-04 19:34:06.745, No Portmap service available.
+    /// 2023-02-04 19:34:06.745,Creating embedded Portmap instance
+    /// 2023-02-04 19:34:06.957, Portmap service started; checked 23.3 ms.
+    /// 2023-02-04 19:34:06.958,Host: 192.168.4.28
+    /// 2023-02-04 19:34:06.958,pinging port mapper;
+    /// 2023-02-04 19:34:06.962,port mapper pinged.
+    /// 2023-02-04 19:34:06.962,GetPort for non-existing program
+    /// 2023-02-04 19:34:06.963, succeeded; received error code( OncRpcProgramNotRegistered(15).
+    /// 2023-02-04 19:34:06.963,SetPort dummy server identification:
+    /// 2023-02-04 19:34:06.964, SetPort succeeded.
+    /// 2023-02-04 19:34:06.964,executing ListRegisteredServers
+    /// 2023-02-04 19:34:06.965, ListRegisteredServers succeeded.
+    /// 2023-02-04 19:34:06.965,listing Registered servers
+    /// 2023-02-04 19:34:06.965, Program Version Protocol Port
+    /// 2023-02-04 19:34:06.965,100000 2 OncRpcTcp 111
+    /// 2023-02-04 19:34:06.965,100000 2 OncRpcUdp 111
+    /// 2023-02-04 19:34:06.965,1 42 OncRpcUdp 65535
+    /// 2023-02-04 19:34:06.965,executing UnsetPort dummy server identification:
+    /// 2023-02-04 19:34:06.965,UnsetPort succeeded.
+    /// 2023-02-04 19:34:06.965, executing ListRegisteredServers
+    /// 2023-02-04 19:34:06.966, ListRegisteredServerssucceeded.
+    /// 2023-02-04 19:34:06.966, Exiting test method; OncRpcEmbeddedPortmapServiceStub will be disposed...
     /// </code>
     /// </remarks>
     [TestMethod]
