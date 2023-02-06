@@ -451,7 +451,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
             if ( this.Running )
                 this.StopRpcProcessing();
 
-            // await for the port map service to stop running
+            // await for the server to stop running
             DateTime endTime = DateTime.Now.AddMilliseconds( timeout );
             while ( this.Running && endTime > DateTime.Now )
             {
