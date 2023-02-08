@@ -357,7 +357,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                         // credentials.
                         if ( refreshesLeft > 0 && replyHeader.ReplyStatus == OncRpcReplyStatus.OncRpcMessageDenied
                                                && replyHeader.RejectStatus == OncRpcRejectStatus.OncRpcAuthError
-                                               && this.Auth is not null && this.Auth.CanRefreshCredential() )
+                                               && ( this.Auth?.CanRefreshCredential() ?? false ) )
                             // continue Refresh;
                             continue;
                         // Nope. No chance. This gets tough.

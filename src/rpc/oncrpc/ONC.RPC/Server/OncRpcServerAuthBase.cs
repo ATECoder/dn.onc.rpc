@@ -64,7 +64,7 @@ public abstract class OncRpcServerAuthBase
         // object.
 
         OncRpcAuthType authType = decoder.DecodeInt().ToAuthType();
-        if ( recycle is not null && recycle.AuthType == authType )
+        if ( recycle?.AuthType == authType )
         {
 
             // Simply recycle authentication object and pull its new state

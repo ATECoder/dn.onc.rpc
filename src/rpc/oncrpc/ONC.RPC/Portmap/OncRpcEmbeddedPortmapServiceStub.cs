@@ -308,7 +308,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// <returns>   True if it succeeds, false if it fails. </returns>
     private bool EmbeddedPortmapServiceStartedImmediate()
     {
-        return this._embeddedPortmapService is not null && this._embeddedPortmapService.Running;
+        return ( this._embeddedPortmapService?.Running ?? false );
     }
 
     /// <summary>   Checks if the embedded Portmap service has started. </summary>
