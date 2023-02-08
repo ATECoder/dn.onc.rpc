@@ -477,7 +477,7 @@ public abstract class OncRpcClientBase : ICloseable
     public int Program { get; private set; }
 
     /// <summary>   Gets or sets (<see langword="private"/>) the version number of the ONC/RPC program. </summary>
-    /// <value> The ONC/RPC version number of ONC/RPC program.. </value>
+    /// <value> The ONC/RPC version number of ONC/RPC program. </value>
     public int Version { get; private set; }
 
     /// <summary>
@@ -490,7 +490,7 @@ public abstract class OncRpcClientBase : ICloseable
     /// <summary>
     /// Get or set (<see langword="private"/>) the port number at which the ONC/RPC server can be contacted.
     /// </summary>
-    /// <value> The port number of ONC/RPC server.. </value>
+    /// <value> The port number of ONC/RPC server. </value>
     public int Port { get; private set; }
 
     /// <summary>   Gets the IP endpoint. </summary>

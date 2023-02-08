@@ -117,7 +117,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     /// <value> The locals. </value>
     private readonly IPAddress[] _locals = Array.Empty<IPAddress>();
 
-    /// <summary>   Gets the List of IP addresses assigned to this host.. </summary>
+    /// <summary>   Gets the List of IP addresses assigned to this host. </summary>
     /// <returns>   An array of IP address. </returns>
     public IPAddress[] GetLocals()
     {
