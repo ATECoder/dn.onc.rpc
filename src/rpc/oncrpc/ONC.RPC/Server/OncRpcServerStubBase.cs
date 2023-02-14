@@ -263,7 +263,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// <summary>   Checks if server started. </summary>
     /// <param name="timeout">      The timeout in milliseconds. </param>
     /// <param name="loopDelay">    The loop delay time in milliseconds. </param>
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns>   <see langword="true"/> if it succeeds; otherwise, <see langword="false"/>. </returns>
     public bool ServerStarted( int timeout = 200, int loopDelay = 5 )
     {
         DateTime endTime = DateTime.Now.AddMilliseconds( timeout );

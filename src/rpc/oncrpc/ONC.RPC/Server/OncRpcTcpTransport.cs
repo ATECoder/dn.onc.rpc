@@ -391,7 +391,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
 
         /// <summary>   Remove given transport from list of open transports. </summary>
         /// <param name="item">    The item to remove. </param>
-        /// <returns>   True if it succeeds, false if it fails. </returns>
+        /// <returns>   <see langword="true"/> if it succeeds; otherwise, <see langword="false"/>. </returns>
         public virtual bool Remove( OncRpcTcpConnTransport item )
         {
             Node node = this._head.Next!;

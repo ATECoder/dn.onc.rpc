@@ -305,7 +305,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     }
 
     /// <summary>   Determines if we can embedded Portmap service started without waiting for timeout. </summary>
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns>   <see langword="true"/> if it succeeds; otherwise, <see langword="false"/>. </returns>
     private bool EmbeddedPortmapServiceStartedImmediate()
     {
         return ( this._embeddedPortmapService?.Running ?? false );
@@ -315,7 +315,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// <remarks>   2023-01-31. </remarks>
     /// <param name="timeout">      (Optional) The timeout; defaults to 200 ms. </param>
     /// <param name="loopDelay">    (Optional) The loop delay in milliseconds. </param>
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns>   <see langword="true"/> if it succeeds; otherwise, <see langword="false"/>. </returns>
     public virtual bool EmbeddedPortmapServiceStarted( int timeout = 200, int loopDelay = 5 )
     {
         DateTime endTime = DateTime.Now.AddMilliseconds( timeout );

@@ -430,7 +430,7 @@ public class OncRpcPortmapClient : ICloseable
     }
 
     /// <summary>   Attempts to ping the Portmap service by calling the null procedure (0). </summary>
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns>   <see langword="true"/> if it succeeds; otherwise, <see langword="false"/>. </returns>
     public virtual bool TryPingPortmapService()
     {
         try
@@ -449,7 +449,7 @@ public class OncRpcPortmapClient : ICloseable
     /// <param name="ioTimeout">        (Optional) timeout in milliseconds to wait before assuming
     ///                                 that no Portmap service is currently available [100]. </param>
     /// <param name="transmitTimeout">  (Optional) The transmit timeout; defaults to 25 ms. </param>
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns>   <see langword="true"/> if it succeeds; otherwise, <see langword="false"/>. </returns>
     public static bool TryPingPortmapService( int ioTimeout = 10, int transmitTimeout = 5 )
     {
         return OncRpcPortmapClient.TryPingPortmapService( IPAddress.Loopback, ioTimeout, transmitTimeout );

@@ -270,7 +270,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     /// <summary>   Compare parameters to <see cref="EnumFoo.FOO"/>; return true if <paramref name="expected"/> equals <see cref="EnumFoo.FOO"/>. </summary>
     /// <param name="expected">   expected value. </param>
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns>   <see langword="true"/> if it succeeds; otherwise, <see langword="false"/>. </returns>
     public static bool CompareInputToFoo( int expected )
     {
         return expected == ( int ) EnumFoo.FOO;
