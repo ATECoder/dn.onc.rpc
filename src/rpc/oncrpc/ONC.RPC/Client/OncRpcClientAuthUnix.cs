@@ -235,7 +235,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
         // If we don't use a shorthand credential at this time, then there's
         // no hope to refresh the credentials.
 
-        if ( ( this._shorthandCredentials?.Length ?? 0 ) == 0 )
+        if ( (this._shorthandCredentials?.Length ?? 0) == 0 )
             return false;
 
         // Otherwise just dump the shorthand credentials and let the caller

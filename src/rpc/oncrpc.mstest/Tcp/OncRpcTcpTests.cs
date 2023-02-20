@@ -113,7 +113,7 @@ public class OncRpcTcpTests
         switch ( e.PropertyName )
         {
             case nameof( OncRpcTcpServer.ReadMessage ):
-                Logger.Writer.LogInformation( ( ( OncRpcTcpServer ) sender).ReadMessage );
+                Logger.Writer.LogInformation( (( OncRpcTcpServer ) sender).ReadMessage );
                 break;
             case nameof( OncRpcTcpServer.WriteMessage ):
                 Logger.Writer.LogInformation( (( OncRpcTcpServer ) sender).WriteMessage );

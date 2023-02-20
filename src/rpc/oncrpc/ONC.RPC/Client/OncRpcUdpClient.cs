@@ -404,7 +404,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                                         if ( refreshesLeft > 0 && replyHeader.ReplyStatus == OncRpcReplyStatus.OncRpcMessageDenied
                                                                && replyHeader.RejectStatus == OncRpcRejectStatus.OncRpcAuthError
-                                                               && ( this.Auth?.CanRefreshCredential() ?? false ) )
+                                                               && (this.Auth?.CanRefreshCredential() ?? false) )
                                         {
 
                                             // Think about using a TAB size of four ;)

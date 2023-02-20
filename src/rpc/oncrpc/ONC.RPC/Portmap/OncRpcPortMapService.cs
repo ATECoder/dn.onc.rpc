@@ -267,7 +267,7 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     /// <returns>   True if local end point, false if not. </returns>
     internal virtual bool IsLocalEndPoint( IPEndPoint? endPoint )
     {
-        return this.IsLocalAddress( ( endPoint?.Address ?? IPAddress.Any ) );
+        return this.IsLocalAddress( (endPoint?.Address ?? IPAddress.Any) );
     }
 
     /// <summary>   Dispatch incoming ONC/RPC calls to the individual handler functions. </summary>

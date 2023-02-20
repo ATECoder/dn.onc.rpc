@@ -174,7 +174,7 @@ public class RemoteHostBroadcastTest
     {
         foreach ( IPAddress ip in GetLocalBroadcastAddresses() )
         {
-            Logger.Writer.LogInformation( $"{nameof(ClientShouldBroadcast)} at {ip}" ) ;
+            Logger.Writer.LogInformation( $"{nameof( ClientShouldBroadcast )} at {ip}" );
             RemoteHostBroadcastTest.AssertClientShouldBroadcast( ip, 2001 );
         }
     }

@@ -108,7 +108,7 @@ public class LocalHostBroadcastTest
         switch ( e.PropertyName )
         {
             case nameof( OncRpcTcpServer.ReadMessage ):
-                Logger.Writer.LogInformation( ((OncRpcUdpServer ) sender).ReadMessage );
+                Logger.Writer.LogInformation( (( OncRpcUdpServer ) sender).ReadMessage );
                 break;
             case nameof( OncRpcTcpServer.WriteMessage ):
                 Logger.Writer.LogInformation( (( OncRpcUdpServer ) sender).WriteMessage );
