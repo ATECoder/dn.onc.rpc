@@ -2,114 +2,125 @@ using System.Runtime.CompilerServices;
 
 namespace cc.isr.ONC.RPC.Logging;
 
-public interface ILogger
+public interface ILogWriter
 {
 
-    public abstract void Write( LogLevel level, string message );
+    public abstract void Write( LogWriterLevel level, string message );
 
-    public abstract bool IsEnabled( LogLevel level );
+    public abstract bool IsEnabled( LogWriterLevel level );
 
 }
 
-public enum LogLevel
+/// <summary>   Values that represent log writer levels. </summary>
+/// <remarks>   2023-03-23. </remarks>
+public enum LogWriterLevel
 { None, Error, Warning, Information, Verbose }
 
-/// <summary>   A logging extensions. </summary>
-public static class LoggingExtensions
+/// <summary>   A log writer extensions. </summary>
+/// <remarks>   2023-03-23. </remarks>
+public static class LogWriterExtensions
 {
 
-    /// <summary>   An ILogger extension method that logs a verbose. </summary>
-    /// <param name="logger">   The logger to act on. </param>
-    /// <param name="message">  The message. </param>
-    public static void LogVerbose( this ILogger logger, string message )
+    /// <summary>   An <see cref="ILogWriter"/> extension method that logs a verbose. </summary>
+    /// <remarks>   2023-03-23. </remarks>
+    /// <param name="logWriter">    The <see cref="ILogWriter"/> to act on. </param>
+    /// <param name="message">      The message. </param>
+    public static void LogVerbose( this ILogWriter logWriter, string message )
     {
-        if ( logger.IsEnabled( LogLevel.Verbose ) )
-            logger.Write( LogLevel.Verbose, BuildMessage( message ) );
+        if ( logWriter.IsEnabled( LogWriterLevel.Verbose ) )
+            logWriter.Write( LogWriterLevel.Verbose, BuildMessage( message ) );
     }
 
-    /// <summary>   An ILogger extension method that logs member verbose. </summary>
-    /// <param name="logger">           The logger to act on. </param>
+    /// <summary>   An <see cref="ILogWriter"/> extension method that logs member verbose. </summary>
+    /// <remarks>   2023-03-23. </remarks>
+    /// <param name="logWriter">        The <see cref="ILogWriter"/> to act on. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the member. </param>
     /// <param name="sourceFilePath">   (Optional) Full pathname of the source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Source line number. </param>
-    public static void LogMemberVerbose( this ILogger logger, string message, [CallerMemberName] string memberName = "",
+    public static void LogMemberVerbose( this ILogWriter logWriter, string message, [CallerMemberName] string memberName = "",
                                                                            [CallerFilePath] string sourceFilePath = "",
                                                                            [CallerLineNumber] int sourceLineNumber = 0 )
     {
-        if ( logger.IsEnabled( LogLevel.Verbose ) )
-            logger.Write( LogLevel.Error, BuildMessage( message, memberName, sourceFilePath, sourceLineNumber ) );
+        if ( logWriter.IsEnabled( LogWriterLevel.Verbose ) )
+            logWriter.Write( LogWriterLevel.Error, BuildMessage( message, memberName, sourceFilePath, sourceLineNumber ) );
     }
 
-    /// <summary>   An ILogger extension method that logs an information. </summary>
-    /// <param name="logger">   The logger to act on. </param>
-    /// <param name="message">  The message. </param>
-    public static void LogInformation( this ILogger logger, string message )
+    /// <summary>   An <see cref="ILogWriter"/> extension method that logs an information. </summary>
+    /// <remarks>   2023-03-23. </remarks>
+    /// <param name="logWriter">    The <see cref="ILogWriter"/> to act on. </param>
+    /// <param name="message">      The message. </param>
+    public static void LogInformation( this ILogWriter logWriter, string message )
     {
-        if ( logger.IsEnabled( LogLevel.Information ) )
-            logger.Write( LogLevel.Information, BuildMessage( message ) );
+        if ( logWriter.IsEnabled( LogWriterLevel.Information ) )
+            logWriter.Write( LogWriterLevel.Information, BuildMessage( message ) );
     }
 
-    /// <summary>   An ILogger extension method that logs member information. </summary>
-    /// <param name="logger">           The logger to act on. </param>
+    /// <summary>   An <see cref="ILogWriter"/> extension method that logs member information. </summary>
+    /// <remarks>   2023-03-23. </remarks>
+    /// <param name="logWriter">        The <see cref="ILogWriter"/> to act on. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the member. </param>
     /// <param name="sourceFilePath">   (Optional) Full pathname of the source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Source line number. </param>
-    public static void LogMemberInfo( this ILogger logger, string message, [CallerMemberName] string memberName = "",
+    public static void LogMemberInfo( this ILogWriter logWriter, string message, [CallerMemberName] string memberName = "",
                                                                            [CallerFilePath] string sourceFilePath = "",
                                                                            [CallerLineNumber] int sourceLineNumber = 0 )
     {
-        if ( logger.IsEnabled( LogLevel.Information ) )
-            logger.Write( LogLevel.Error, BuildMessage( message, memberName, sourceFilePath, sourceLineNumber ) );
+        if ( logWriter.IsEnabled( LogWriterLevel.Information ) )
+            logWriter.Write( LogWriterLevel.Error, BuildMessage( message, memberName, sourceFilePath, sourceLineNumber ) );
     }
 
-    /// <summary>   An ILogger extension method that logs a warning. </summary>
-    /// <param name="logger">   The logger to act on. </param>
-    /// <param name="message">  The message. </param>
-    public static void LogWarning( this ILogger logger, string message )
+    /// <summary>   An <see cref="ILogWriter"/> extension method that logs a warning. </summary>
+    /// <remarks>   2023-03-23. </remarks>
+    /// <param name="logWriter">    The <see cref="ILogWriter"/> to act on. </param>
+    /// <param name="message">      The message. </param>
+    public static void LogWarning( this ILogWriter logWriter, string message )
     {
-        if ( logger.IsEnabled( LogLevel.Warning ) )
-            logger.Write( LogLevel.Warning, BuildMessage( message ) );
+        if ( logWriter.IsEnabled( LogWriterLevel.Warning ) )
+            logWriter.Write( LogWriterLevel.Warning, BuildMessage( message ) );
     }
 
-    /// <summary>   An ILogger extension method that logs member warning. </summary>
-    /// <param name="logger">           The logger to act on. </param>
+    /// <summary>   An <see cref="ILogWriter"/> extension method that logs member warning. </summary>
+    /// <remarks>   2023-03-23. </remarks>
+    /// <param name="logWriter">        The <see cref="ILogWriter"/> to act on. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the member. </param>
     /// <param name="sourceFilePath">   (Optional) Full pathname of the source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Source line number. </param>
-    public static void LogMemberWarning( this ILogger logger, string message, [CallerMemberName] string memberName = "",
+    public static void LogMemberWarning( this ILogWriter logWriter, string message, [CallerMemberName] string memberName = "",
                                                                            [CallerFilePath] string sourceFilePath = "",
                                                                            [CallerLineNumber] int sourceLineNumber = 0 )
     {
-        if ( logger.IsEnabled( LogLevel.Warning ) )
-            logger.Write( LogLevel.Error, BuildMessage( message, memberName, sourceFilePath, sourceLineNumber ) );
+        if ( logWriter.IsEnabled( LogWriterLevel.Warning ) )
+            logWriter.Write( LogWriterLevel.Error, BuildMessage( message, memberName, sourceFilePath, sourceLineNumber ) );
     }
 
-    /// <summary>   An ILogger extension method that writes an error. </summary>
-    /// <param name="logger">   The logger to act on. </param>
-    /// <param name="message">  The message. </param>
-    /// <param name="ex">       The exception. </param>
-    public static void LogError( this ILogger logger, string message, Exception ex )
+    /// <summary>   An <see cref="ILogWriter"/> extension method that writes an error. </summary>
+    /// <remarks>   2023-03-23. </remarks>
+    /// <param name="logWriter">    The <see cref="ILogWriter"/> to act on. </param>
+    /// <param name="message">      The message. </param>
+    /// <param name="ex">           The exception. </param>
+    public static void LogError( this ILogWriter logWriter, string message, Exception ex )
     {
-        if ( logger.IsEnabled( LogLevel.Error ) )
-            logger.Write( LogLevel.Error, BuildMessage( message, ex ) );
+        if ( logWriter.IsEnabled( LogWriterLevel.Error ) )
+            logWriter.Write( LogWriterLevel.Error, BuildMessage( message, ex ) );
     }
 
     /// <summary>   Console write exception. </summary>
-    /// <param name="logger">           The logger to act on. </param>
+    /// <remarks>   2023-03-23. </remarks>
+    /// <param name="logWriter">        The <see cref="ILogWriter"/> to act on. </param>
     /// <param name="message">          The message. </param>
     /// <param name="ex">               The exception. </param>
     /// <param name="memberName">       (Optional) Name of the member. </param>
     /// <param name="sourceFilePath">   (Optional) Full pathname of the source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Source line number. </param>
-    public static void LogMemberError( this ILogger logger, string message, Exception ex, [CallerMemberName] string memberName = "",
+    public static void LogMemberError( this ILogWriter logWriter, string message, Exception ex, [CallerMemberName] string memberName = "",
                                                                                             [CallerFilePath] string sourceFilePath = "",
                                                                                             [CallerLineNumber] int sourceLineNumber = 0 )
     {
-        if ( logger.IsEnabled( LogLevel.Error ) )
-            logger.Write( LogLevel.Error, BuildMessage( message, ex, memberName, sourceFilePath, sourceLineNumber ) );
+        if ( logWriter.IsEnabled( LogWriterLevel.Error ) )
+            logWriter.Write( LogWriterLevel.Error, BuildMessage( message, ex, memberName, sourceFilePath, sourceLineNumber ) );
     }
 
     /// <summary>   Builds exception message. </summary>
