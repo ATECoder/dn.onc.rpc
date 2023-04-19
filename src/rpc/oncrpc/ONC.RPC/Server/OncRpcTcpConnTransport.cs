@@ -14,7 +14,7 @@ namespace cc.isr.ONC.RPC.Server;
 public class OncRpcTcpConnTransport : OncRpcTransportBase
 {
 
-    #region " construction and cleanup "
+    #region " Construction and Cleanup "
 
     /// <summary>
     /// Create a new instance of a <see cref="OncRpcTcpConnTransport"/>

@@ -20,7 +20,7 @@ namespace cc.isr.ONC.RPC;
 public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
 {
 
-    #region " construction and cleanup "
+    #region " Construction and Cleanup "
 
     /// <summary>
     /// (Immutable)

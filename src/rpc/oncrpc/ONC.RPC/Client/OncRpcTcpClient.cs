@@ -36,7 +36,7 @@ public class OncRpcTcpClient : OncRpcClientBase
 
 
 
-    #region " construction and cleanup "
+    #region " Construction and Cleanup "
 
     /// <summary>
     /// Constructs a new server <see cref="OncRpcTcpClient"/> object, which connects to the ONC/RPC server at

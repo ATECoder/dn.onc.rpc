@@ -8,7 +8,7 @@ namespace cc.isr.ONC.RPC
         /// </summary>
         /// <remarks> This implementation of close and dispose follows the implementation of
         /// the <see cref="System.Net.Sockets.TcpClient"/> at
-        /// <see href="https://github.com/microsoft/referencesource/blob/master/System/net/System/Net/Sockets/TCPClient.cs"/>
+        /// <see href="https://GitHub.com/microsoft/referencesource/blob/master/System/net/System/Net/Sockets/TCPClient.cs"/>
         /// with the following modifications:
         /// <list type="bullet"> <item>
         /// <see cref="Close()"/> is not <see langword="virtual"/> </item><item>

@@ -15,7 +15,7 @@ namespace cc.isr.ONC.RPC.MSTest.Udp;
 public partial class OncRpcUdpServer : OncRpcUdpServerBase
 {
 
-    #region " construction and cleanup "
+    #region " Construction and Cleanup "
 
     /// <summary>   Default constructor. </summary>
     public OncRpcUdpServer() : this( 0 )

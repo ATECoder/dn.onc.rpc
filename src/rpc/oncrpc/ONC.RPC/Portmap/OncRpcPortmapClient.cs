@@ -108,7 +108,7 @@ public class OncRpcPortmapClient : ICloseable
     /// <value> The TCP connect timeout default. </value>
     public static int ConnectTimeoutDefault { get; set; } = 3000;
 
-    #region " construction and cleanup "
+    #region " Construction and Cleanup "
 
     /// <summary>
     /// Constructs and initializes an ONC/RPC client object, which can communicate with the
@@ -165,7 +165,7 @@ public class OncRpcPortmapClient : ICloseable
     /// <remarks>
     /// This implementation of close and dispose follows the implementation of the <see cref="System.Net.Sockets.TcpClient"/>
     /// at
-    /// <see href="https://github.com/microsoft/referencesource/blob/master/System/net/System/Net/Sockets/TCPClient.cs"/>
+    /// <see href="https://GitHub.com/microsoft/referencesource/blob/master/System/net/System/Net/Sockets/TCPClient.cs"/>
     /// with the following modifications:
     /// <list type="bullet"> <item>
     /// <see cref="Close()"/> is not <see langword="virtual"/> </item><item>

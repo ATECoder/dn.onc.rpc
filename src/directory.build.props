@@ -51,7 +51,7 @@
     <LangVersion>latest</LangVersion>
   	<Authors>David Hary</Authors>
     <Owners>Integrated Scientific Resources</Owners>
-    <Company>Integrated Scientific Resources</Company>
+    <Company>isr.cc</Company>
     <Copyright>(c) 2022 Integrated Scientific Resources, Inc. All rights reserved.</Copyright>
     <NeutralLanguage>en-US</NeutralLanguage>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>

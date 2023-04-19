@@ -15,7 +15,7 @@ namespace cc.isr.ONC.RPC.Server;
 public class OncRpcUdpTransport : OncRpcTransportBase
 {
 
-    #region " construction and cleanup "
+    #region " Construction and Cleanup "
 
     /// <summary>
     /// Create a new instance of a <see cref="OncRpcUdpTransport"/> which encapsulates UDP/IP-

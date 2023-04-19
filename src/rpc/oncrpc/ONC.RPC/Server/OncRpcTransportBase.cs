@@ -23,7 +23,7 @@ namespace cc.isr.ONC.RPC.Server;
 public abstract class OncRpcTransportBase : ICloseable
 {
 
-    #region " construction and cleanup "
+    #region " Construction and Cleanup "
 
     /// <summary>
     /// Create a new instance of a server <see cref="OncRpcTransportBase"/> which encapsulates

@@ -32,7 +32,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <value> The i/o timeout default. </value>
     public static int IOTimeoutDefault { get; set; } = 3000;
 
-    #region " construction and cleanup "
+    #region " Construction and Cleanup "
 
     /// <summary>
     /// Constructs a new <see cref="OncRpcUdpClient"/> object, which connects to the ONC/RPC server at
