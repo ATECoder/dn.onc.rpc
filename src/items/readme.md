@@ -1,14 +1,14 @@
 ### About
 
-[ISR's ONC RPC] is a C### implementation of the [Sun RPC] ported from the [Java ONC RPC] implementation termed Remote Tea.
+[ISR's ONC RPC] is a C# implementation of the [Sun RPC] ported from the [Java ONC RPC] implementation termed Remote Tea.
 
 #### History
 
 [ISR's ONC RPC] is a fork of [GB1.RemoteTea.Net], which was forked from [Wes Day's RemoteTea.Net], which is a fork of [Jay Walter's SourceForge repository], which is a port of [Java ONC RPC] as documented in [org.acplt.oncrpc package].
 
-[ISR's ONC RPC] uses [ISR's XDR], which is a C### implementation of the [XDR: External Data Representation Standard (May 2006)] as implemented in [Java ONC RPC] implementation called Remote Tea. [ISR's XDR] was split off from [GB1.RemoteTea.Net].
+[ISR's ONC RPC] uses [ISR's XDR], which is a C# implementation of the [XDR: External Data Representation Standard (May 2006)] as implemented in [Java ONC RPC] implementation called Remote Tea. [ISR's XDR] was split off from [GB1.RemoteTea.Net].
 
-[ISR's ONC RPC] is used in [ISR's VXI-11], which is a partial C### implementation of the [VXI Bus Specification].
+[ISR's ONC RPC] is used in [ISR's VXI-11], which is a partial C# implementation of the [VXI Bus Specification].
 
 [ISR's VXI-11] is a fork of [VXI11.CSharp].
 
