@@ -1,14 +1,14 @@
-# Remote Tea ONC/RPC Java Library
+### Remote Tea ONC/RPC Java Library
 
 The whole release shebang is summarized in our [change log].
 
 The most current information about the Remote Tea Java Library, as well as updates, can be found on the web at the [Remote Tea ONC/RPC Home Page]
 
-## Licensing
+#### Licensing
 
 The Remote Tea Java Library is licensed under the terms of the [GNU General Public License v2.0 (LGPL)].
 
-### Rationale
+##### Rationale
 
 while the LGPL does not restrict the use of my packages even in commercial applications, I am ensuring this way that modifications to the source code __must__ be given back to the community.
 
@@ -18,7 +18,7 @@ License details can be found in the [LGPL terms].
 
 The individual file headers were moved to the [Remote Tea License] and [Remote Tea Header] files.
 
-## Project Structure
+#### Project Structure
 
 The directory structure is as follows. Due to the transition to the Eclipse IDE and Ant not everything is currently in place and perfect shape.
 
@@ -38,7 +38,7 @@ The "Remote Tea" ONC/RPC Java package was developed and tested using Eclipse on 
 
 Those who like to compile the sources by themselves might want to use either the Eclipse `.project` file or the Ant makefile `build.xml` (this is not really functional yet), both are located in the root directory of this package.
 
-## Who's to blame
+#### Who's to blame
 
 The "Remote Tea" Java Package was written by [Harald Albrecht]  
 (C)&nbsp;1999, 2003 Chair of Process Control Engineering,  

@@ -1,4 +1,4 @@
-# ONC RPC
+### ONC RPC
 
 Implementation of Sun's ONC/RPC Remote Procedure Protocol, including client and server functionality and some associated tools.
 
@@ -16,32 +16,32 @@ Implementation of Sun's ONC/RPC Remote Procedure Protocol, including client and 
 - [Closed Software](#Closed-software)
 - [Legal Notices](#Legal-Notices)
 
-## Description
+#### Description
 
-[ISR's ONC RPC] is a C# implementation of the [Sun RPC] ported from the [Java ONC RPC] implementation termed Remote Tea.
+[ISR's ONC RPC] is a C### implementation of the [Sun RPC] ported from the [Java ONC RPC] implementation termed Remote Tea.
 
-## History
+#### History
 
 [ISR's ONC RPC] is a fork of [GB1.RemoteTea.Net], which was forked from [Wes Day's RemoteTea.Net], which is a fork of [Jay Walter's SourceForge repository], which is a port of [Java ONC RPC] as documented in [org.acplt.oncrpc package].
 
-[ISR's ONC RPC] uses [ISR's XDR], which is a C# implementation of the [XDR: External Data Representation Standard (May 2006)] as implemented in [Java ONC RPC] implementation called Remote Tea. [ISR's XDR] was split off from [GB1.RemoteTea.Net].
+[ISR's ONC RPC] uses [ISR's XDR], which is a C### implementation of the [XDR: External Data Representation Standard (May 2006)] as implemented in [Java ONC RPC] implementation called Remote Tea. [ISR's XDR] was split off from [GB1.RemoteTea.Net].
 
-[ISR's ONC RPC] is used in [ISR's VXI-11], which is a partial C# implementation of the [VXI Bus Specification].
+[ISR's ONC RPC] is used in [ISR's VXI-11], which is a partial C### implementation of the [VXI Bus Specification].
 
 [ISR's VXI-11] is a fork of [VXI11.CSharp].
 
 
-### Standards
+##### Standards
 
 * [XDR: External Data Representation Standard (May 2006)]
 * Open Network Computing Remote Procedure Call (ONC RPC)
 	* [RPC: Remote Procedure Call Protocol Specification Version 2 (May 2009)]
 	* [Binding Protocols for ONC RPC Version 2 (August 1995)]
 
-## Source Code
+#### Source Code
 Clone the repository along with its requisite repositories to their respective relative path.
 
-### Repositories
+##### Repositories
 The repositories listed in [external repositories] are required:
 * [IDE Repository] - IDE support files.
 * [ISR's XDR] - eXternal Data Representation.
@@ -62,7 +62,7 @@ Clone the repositories into the following folders (parents of the .git folder):
 where %dnlib% and %vslib% are  the root folders of the .NET libraries, e.g., %my%\lib\vs 
 and %my%\libraries\vs, respectively, and %my% is the root folder of the .NET solutions
 
-### Global Configuration Files
+##### Global Configuration Files
 ISR libraries use a global editor configuration file and a global test run settings file. 
 These files can be found in the [IDE Repository].
 
@@ -79,41 +79,41 @@ xcopy /Y %vslib%\core\ide\code\.runsettings %userprofile%\.runsettings
 ```
 where %userprofile% is the root user folder.
 
-### Packages
+##### Packages
 TBA
 
 <a name="FacilitatedBy"></a>
-## Facilitated By
+#### Facilitated By
 * [Visual Studio]
 * [Atomineer Code Documentation]
 * [EW Software Spell Checker]
 * [Funduc Search and Replace]
 * [IVI Foundation] - IVI Foundation VISA
 
-## Repository Owner
+#### Repository Owner
 * [ATE Coder]
 
 <a name="Authors"></a>
-## Authors
+#### Authors
 * [ATE Coder]  
 
 <a name="Acknowledgments"></a>
-## Acknowledgments
+#### Acknowledgments
 * [Its all a remix] -- we are but a spec on the shoulders of giants  
 * [John Simmons] - outlaw programmer  
 * [Stack overflow] - Joel Spolsky  
 * [.Net Foundation] - The .NET Foundation
 
 <a name="Open-Source"></a>
-## Open source
+#### Open source
 Open source used by this software is described and licensed at the following sites:  
 
 <a name="Closed-software"></a>
-## Closed software
+#### Closed software
 Closed software used by this software are described and licensed on the following sites:  
 
 <a name="Legal-Notices"></a>
-## Legal Notices
+#### Legal Notices
 
 Integrated Scientific Resources, Inc., and any contributors grant you a license to the documentation and other content
 in this repository under the [Creative Commons Attribution 4.0 International Public License](https://creativecommons.org/licenses/by/4.0/legalcode), see the [LICENSE](LICENSE) file, and grant you a license to any code in the repository under the [MIT License](https://opensource.org/licenses/MIT), see the [LICENSE-CODE](LICENSE-CODE) file.
