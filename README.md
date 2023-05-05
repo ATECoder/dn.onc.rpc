@@ -2,20 +2,24 @@
 
 Implementation of Sun's ONC/RPC Remote Procedure Protocol, including client and server functionality and some associated tools.
 
-- [Description](#Description)
-	- [History](#History)
-	- [Standards](#Standards)
-- [Source Code](#Source-Code)
-  - [Repositories](#Repositories)
-  - [Global Configuration Files](#Global-Configuration-Files)
-- [Facilitated By](#FacilitatedBy)
-- [Repository Owner](#Repository-Owner)
-- [Authors](#Authors)
-- [Acknowledgments](#Acknowledgments)
-- [Open Source](#Open-Source)
-- [Closed Software](#Closed-software)
-- [Legal Notices](#Legal-Notices)
-
+* [Description](#Description)
+  * [History](#History)
+  * [Standards](#Standards)
+* [Runtime Pre-Requisites](#Runtime-Pre-Requisites)
+* [Known Issues](#Known-Issues)
+* Project README files:
+  * [cc.isr.ONC.RPC](/src/rpc/oncrpc/readme.md) 
+* [Attributions](Attributions.md)
+* [Change Log](./CHANGELOG.md)
+* [Cloning](Cloning.md)
+* [Code of Conduct](code_of_conduct.md)
+* [Contributing](contributing.md)
+* [Legal Notices](#legal-notices)
+* [License](LICENSE)
+* [Open Source](Open-Source.md)
+* [Repository Owner](#Repository-Owner)
+* [Security](security.md)
+	
 #### Description
 
 [ISR's ONC RPC] is a C# implementation of the [Sun RPC] ported from the [Java ONC RPC] implementation termed Remote Tea.
@@ -30,7 +34,6 @@ Implementation of Sun's ONC/RPC Remote Procedure Protocol, including client and 
 
 [ISR's VXI-11] is a fork of [VXI11.CSharp].
 
-
 ##### Standards
 
 * [XDR: External Data Representation Standard (May 2006)]
@@ -38,79 +41,13 @@ Implementation of Sun's ONC/RPC Remote Procedure Protocol, including client and 
 	* [RPC: Remote Procedure Call Protocol Specification Version 2 (May 2009)]
 	* [Binding Protocols for ONC RPC Version 2 (August 1995)]
 
-#### Source Code
-Clone the repository along with its requisite repositories to their respective relative path.
-
-##### Repositories
-The repositories listed in [external repositories] are required:
-* [IDE Repository] - IDE support files.
-* [ISR's XDR] - eXternal Data Representation.
-* [ISR's ONC RPC] - ONC/RPC.
-
-```
-git clone git@bitbucket.org:davidhary/vs.ide.git
-git clone https://github.com/ATECoder/dn.xdr.git
-git clone https://github.com/ATECoder/dn.onc.rpc.git
-```
-
-Clone the repositories into the following folders (parents of the .git folder):
-```
-%vslib%\core\ide
-%dnlib%\iot\xdr
-%dnlib%\iot\oncrpc
-```
-where %dnlib% and %vslib% are  the root folders of the .NET libraries, e.g., %my%\lib\vs 
-and %my%\libraries\vs, respectively, and %my% is the root folder of the .NET solutions
-
-##### Global Configuration Files
-ISR libraries use a global editor configuration file and a global test run settings file. 
-These files can be found in the [IDE Repository].
-
-Restoring Editor Configuration:
-```
-xcopy /Y %my%\.editorconfig %my%\.editorconfig.bak
-xcopy /Y %vslib%\core\ide\code\.editorconfig %my%\.editorconfig
-```
-
-Restoring Run Settings:
-```
-xcopy /Y %userprofile%\.runsettings %userprofile%\.runsettings.bak
-xcopy /Y %vslib%\core\ide\code\.runsettings %userprofile%\.runsettings
-```
-where %userprofile% is the root user folder.
-
-##### Packages
-TBA
-
-<a name="FacilitatedBy"></a>
-#### Facilitated By
-* [Visual Studio]
-* [Atomineer Code Documentation]
-* [EW Software Spell Checker]
-* [Funduc Search and Replace]
-* [IVI Foundation] - IVI Foundation VISA
-
+<a name="Repository-Owner"></a>
 #### Repository Owner
-* [ATE Coder]
+[ATE Coder]
 
 <a name="Authors"></a>
 #### Authors
 * [ATE Coder]  
-
-<a name="Acknowledgments"></a>
-#### Acknowledgments
-* [Its all a remix] -- we are but a spec on the shoulders of giants  
-* [John Simmons] - outlaw programmer  
-* [Stack overflow] - Joel Spolsky  
-* [.Net Foundation] - The .NET Foundation
-
-<a name="Open-Source"></a>
-#### Open source
-Open source used by this software is described and licensed at the following sites:  
-
-<a name="Closed-software"></a>
-#### Closed software
-Closed software used by this software are described and licensed on the following sites:  
 
 <a name="Legal-Notices"></a>
 #### Legal Notices
@@ -122,6 +59,12 @@ Integrated Scientific Resources, Inc., and/or other Integrated Scientific Resour
 
 Integrated Scientific Resources, Inc., and any contributors reserve all other rights, whether under their respective copyrights, patents, or trademarks, whether by implication, estoppel or otherwise.
 
+[Creative Commons Attribution 4.0 International Public License]:(https://creativecommons.org/licenses/by/4.0/legalcode)
+[MIT License]:(https://opensource.org/licenses/MIT)
+ 
+[ATE Coder]: https://www.IntegratedScientificResources.com
+[dn.core]: https://www.bitbucket.org/davidhary/dn.core
+
 [ISR's ONC RPC]: https://github.com/ATECoder/dn.onc.rpc
 [IDE Repository]: https://www.bitbucket.org/davidhary/vs.ide
 [external repositories]: ExternalReposCommits.csv
@@ -130,22 +73,6 @@ Integrated Scientific Resources, Inc., and any contributors reserve all other ri
 [ISR's VXI-11]: https://github.com/ATECoder/dn.vxi11
 [ISR's VXI-11 IEEE488]: https://github.com/ATECoder/dn.vxi11/src/vxi/ieee488
 [XDR: External Data Representation Standard (May 2006)]: http://tools.ietf.org/html/rfc4506
-
-[ATE Coder]: https://www.IntegratedScientificResources.com
-[Its all a remix]: https://www.everythingisaremix.info
-[John Simmons]: https://www.codeproject.com/script/Membership/View.aspx?mid=7741
-[Stack overflow]: https://www.stackoveflow.com
-
-[Visual Studio]: https://www.visualstudio.com/
-[Jarte RTF Editor]: https://www.jarte.com/ 
-[WiX Toolset]: https://www.wixtoolset.org/
-[Atomineer Code Documentation]: https://www.atomineerutils.com/
-[EW Software Spell Checker]: https://github.com/EWSoftware/VSSpellChecker/wiki/
-[Code Converter]: https://github.com/icsharpcode/CodeConverter
-[Funduc Search and Replace]: http://www.funduc.com/search_replace.htm
-
-[.Net Foundation]: https://source.dot.net
-[Microsoft .NET Framework]: https://dotnet.microsoft.com/download
 
 [IVI Foundation]: https://www.ivifoundation.org
 
