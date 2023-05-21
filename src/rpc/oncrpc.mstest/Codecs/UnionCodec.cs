@@ -18,9 +18,7 @@ public class UnionCodec : IXdrCodec
 
     /// <summary>   Default constructor. </summary>
     public UnionCodec()
-    {
-    }
-
+    { }
     /// <summary>   Constructor. </summary>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public UnionCodec( XdrDecodingStreamBase decoder ) : this()

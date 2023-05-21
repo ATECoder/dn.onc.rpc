@@ -13,9 +13,7 @@ public class EmbeddedPortmapTest
     /// <summary>   Cleanup fixture. </summary>
     [ClassCleanup]
     public static void CleanupFixture()
-    {
-    }
-
+    { }
     /// <summary>   (Unit Test Method) embedded Portmap service should pass. </summary>
     /// <remarks>
     /// <code>

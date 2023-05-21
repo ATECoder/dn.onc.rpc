@@ -64,9 +64,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// <param name="userId">       Caller's effective user ID. </param>
     /// <param name="groupId">      Caller's effective group ID. </param>
     public OncRpcClientAuthUnix( string machinename, int userId, int groupId ) : this( machinename, userId, groupId, Array.Empty<int>() )
-    {
-    }
-
+    { }
     #endregion
 
     #region " members "

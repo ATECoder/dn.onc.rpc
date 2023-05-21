@@ -36,9 +36,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     ///                             containing ONC/RPC call and reply messages. </param>
     public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, int port, int program, int version, int bufferSize ) : this( dispatcher, port, new
         OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) }, bufferSize )
-    {
-    }
-
+    { }
     /// <summary>
     /// Create a new instance of a <see cref="OncRpcUdpTransport"/> which encapsulates UDP/IP-
     /// based XDR streams of an ONC/RPC server.
@@ -58,9 +56,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     ///                             containing ONC/RPC call and reply messages. </param>
     public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, int port, OncRpcProgramInfo[] info, int bufferSize )
                                                             : this( dispatcher, IPAddress.Any, port, info, bufferSize )
-    {
-    }
-
+    { }
     /// <summary>
     /// Create a new instance of a <see cref="OncRpcUdpTransport"/> which encapsulates UDP/IP-
     /// based XDR streams of an ONC/RPC server.

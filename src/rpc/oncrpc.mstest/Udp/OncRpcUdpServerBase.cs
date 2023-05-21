@@ -12,13 +12,9 @@ public abstract class OncRpcUdpServerBase : OncRpcServerStubBase, IOncRpcDispatc
 {
 
     public OncRpcUdpServerBase() : this( 0 )
-    {
-    }
-
+    { }
     public OncRpcUdpServerBase( int port ) : this( IPAddress.Any, port )
-    {
-    }
-
+    { }
     public OncRpcUdpServerBase( IPAddress bindAddr, int port )
     {
         OncRpcProgramInfo[] registeredPrograms = new OncRpcProgramInfo[] {
@@ -49,6 +45,4 @@ public abstract class OncRpcUdpServerBase : OncRpcServerStubBase, IOncRpcDispatc
     /// <param name="version">      Version number requested. </param>
     /// <param name="procedure">    Procedure number requested. </param>
     public virtual void DispatchOncRpcCall( OncRpcCallHandler call, int program, int version, int procedure )
-    {
-    }
-}
+    { }}

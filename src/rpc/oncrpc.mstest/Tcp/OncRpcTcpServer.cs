@@ -20,15 +20,11 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     /// <summary>   Default constructor. </summary>
     public OncRpcTcpServer() : this( 0 )
-    {
-    }
-
+    { }
     /// <summary>   Constructor. </summary>
     /// <param name="port"> The port number where the server will wait for incoming calls. </param>
     public OncRpcTcpServer( int port ) : this( IPAddress.Any, port )
-    {
-    }
-
+    { }
     /// <summary>   Constructor. </summary>
     /// <param name="device">   current device. </param>
     /// <param name="bindAddr"> The local Internet Address the server will bind to. </param>
@@ -372,9 +368,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// <param name="d">    An int to process. </param>
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Style", "IDE0060:Remove unused parameter", Justification = "<Pending>" )]
     public static void ProcessFourArguments( string a, int b, int c, int d )
-    {
-    }
-
+    { }
     #endregion
 
 }

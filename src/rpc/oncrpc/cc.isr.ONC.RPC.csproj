@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
 
     <AssemblyName>cc.isr.ONC.RPC</AssemblyName>
+    <!-- Assembly Info -->
     <RootNamespace>cc.isr</RootNamespace>
 	
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -27,8 +28,6 @@
 
     <!-- Documentation -->
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
-    <PackageReadmeFile>readme.md</PackageReadmeFile>
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
   </PropertyGroup>
 
   <ItemGroup>

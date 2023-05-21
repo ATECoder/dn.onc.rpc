@@ -148,7 +148,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// <summary>   Executes the <see cref="ThreadExceptionOccurred"/> event. </summary>
     /// <param name="sender">   Source of the event. </param>
     /// <param name="e">        Event information to send to registered event handlers. </param>
-    protected virtual void OnThreadException( object sender, ThreadExceptionEventArgs e )
+    protected virtual void OnThreadException( object? sender, ThreadExceptionEventArgs e )
     {
         if ( sender is not null ) { this.OnThreadException( e ); };
     }

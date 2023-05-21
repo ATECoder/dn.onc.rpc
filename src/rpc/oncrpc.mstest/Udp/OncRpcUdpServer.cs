@@ -19,15 +19,11 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
 
     /// <summary>   Default constructor. </summary>
     public OncRpcUdpServer() : this( 0 )
-    {
-    }
-
+    { }
     /// <summary>   Constructor. </summary>
     /// <param name="port"> The port number where the server will wait for incoming calls. </param>
     public OncRpcUdpServer( int port ) : this( IPAddress.Any, port )
-    {
-    }
-
+    { }
     /// <summary>   Constructor. </summary>
     /// <param name="device">   current device. </param>
     /// <param name="bindAddr"> The local Internet Address the server will bind to. </param>

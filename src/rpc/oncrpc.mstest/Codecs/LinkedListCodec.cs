@@ -17,9 +17,7 @@ public class LinkedListCodec : IXdrCodec
 
     /// <summary>   Default constructor. </summary>
     public LinkedListCodec()
-    {
-    }
-
+    { }
     /// <summary>   Constructor. </summary>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public LinkedListCodec( XdrDecodingStreamBase decoder ) : this()

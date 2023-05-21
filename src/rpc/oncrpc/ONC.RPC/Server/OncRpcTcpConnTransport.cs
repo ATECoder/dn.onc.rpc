@@ -28,9 +28,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     public OncRpcTcpConnTransport( OncRpcTcpTransport parent, Socket socket ) : this( parent.Dispatcher, socket,
                                                             parent.RegisteredPrograms, parent.BufferSize,
                                                             parent, parent.TransmitTimeout )
-    {
-    }
-
+    { }
     /// <summary>
     /// Create a new instance of a <see cref="OncRpcTcpConnTransport"/>
     /// which encapsulates TCP/IP-based XDR streams of an ONC/RPC server.
@@ -54,9 +52,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
                                    OncRpcTcpTransport parent, int transmitTimeout ) : this( dispatcher, socket,
                                                                 new OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) },
                                                                 bufferSize, parent, transmitTimeout )
-    {
-    }
-
+    { }
     /// <summary>
     /// Create a new instance of a <see cref="OncRpcTcpConnTransport"/>
     /// which encapsulates TCP/IP-based XDR streams of an ONC/RPC server.
