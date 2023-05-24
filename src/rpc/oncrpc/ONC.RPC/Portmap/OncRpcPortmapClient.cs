@@ -108,7 +108,7 @@ public class OncRpcPortmapClient : ICloseable
     /// <value> The TCP connect timeout default. </value>
     public static int ConnectTimeoutDefault { get; set; } = 3000;
 
-    #region " Construction and Cleanup "
+    #region " construction and cleanup "
 
     /// <summary>
     /// Constructs and initializes an ONC/RPC client object, which can communicate with the

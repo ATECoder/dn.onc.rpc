@@ -14,7 +14,7 @@ namespace cc.isr.ONC.RPC.Server;
 public class OncRpcTcpConnTransport : OncRpcTransportBase
 {
 
-    #region " Construction and Cleanup "
+    #region " construction and cleanup "
 
     /// <summary>
     /// Create a new instance of a <see cref="OncRpcTcpConnTransport"/>
@@ -219,7 +219,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
 
     #endregion
 
-    #region " Operation Methods "
+    #region " operation methods "
 
     /// <summary>   Do not call. </summary>
     /// <exception cref="Exception">    because this method must not be called for an individual

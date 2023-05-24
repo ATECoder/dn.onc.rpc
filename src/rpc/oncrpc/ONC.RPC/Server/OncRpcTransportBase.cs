@@ -23,7 +23,7 @@ namespace cc.isr.ONC.RPC.Server;
 public abstract class OncRpcTransportBase : ICloseable
 {
 
-    #region " Construction and Cleanup "
+    #region " construction and cleanup "
 
     /// <summary>
     /// Create a new instance of a server <see cref="OncRpcTransportBase"/> which encapsulates
@@ -376,7 +376,7 @@ public abstract class OncRpcTransportBase : ICloseable
 
     #endregion
 
-    #region " Encoding / Decoding "
+    #region " encoding / decoding "
 
     /// <summary>   Retrieves the parameters sent within an ONC/RPC call message. </summary>
     /// <remarks>

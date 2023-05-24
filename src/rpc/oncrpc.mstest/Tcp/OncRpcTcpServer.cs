@@ -16,7 +16,7 @@ namespace cc.isr.ONC.RPC.MSTest.Tcp;
 public partial class OncRpcTcpServer : OncRpcTcpServerBase
 {
 
-    #region " Construction and Cleanup "
+    #region " construction and cleanup "
 
     /// <summary>   Default constructor. </summary>
     public OncRpcTcpServer() : this( 0 )
@@ -38,7 +38,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     #endregion
 
-    #region " Server Properties "
+    #region " server properties "
 
     private int _portNumber;
     /// <summary>   Gets or sets the port number. </summary>
@@ -60,7 +60,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     #endregion
 
-    #region " I/O messages "
+    #region " i/o messages "
 
     private string _writeMessage;
     /// <summary>   Gets or sets a message that was sent to the device. </summary>
@@ -82,7 +82,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     #endregion
 
-    #region " Handle Procedure calls "
+    #region " handle procedure calls "
 
     /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>
     /// <remarks>
@@ -248,7 +248,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     #endregion
 
-    #region " Remote Procedures "
+    #region " remote procedures "
 
     /// <summary>   No operation. </summary>
     public static void Nop()

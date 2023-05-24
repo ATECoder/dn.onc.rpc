@@ -20,7 +20,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
 {
 
-    #region " Construction and Cleanup "
+    #region " construction and cleanup "
 
     /// <summary> 
     /// Creates a new Portmap service instance. Creates the transport registration information and UDP and TCP-

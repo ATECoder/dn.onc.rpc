@@ -19,7 +19,7 @@ namespace cc.isr.ONC.RPC.Client;
 public abstract partial class OncRpcClientStubBase : ICloseable
 {
 
-    #region " Construction and Cleanup "
+    #region " construction and cleanup "
 
     /// <summary>
     /// Constructs a new <see cref="OncRpcClientStubBase"/> for communication with a remote ONC/RPC

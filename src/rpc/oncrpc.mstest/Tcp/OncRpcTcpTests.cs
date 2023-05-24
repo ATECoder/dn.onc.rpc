@@ -22,7 +22,7 @@ public class OncRpcTcpTests
     public static int ServerStartLoopDelay { get; set; } = 100;
 
 
-    #region " fixture Construction and Cleanup "
+    #region " fixture construction and cleanup "
 
     /// <summary>   Initializes the fixture. </summary>
     /// <param name="testContext"> Gets or sets the test context which provides information about

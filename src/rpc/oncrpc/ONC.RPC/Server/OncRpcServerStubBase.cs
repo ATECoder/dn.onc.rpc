@@ -13,7 +13,7 @@ namespace cc.isr.ONC.RPC.Server;
 public abstract partial class OncRpcServerStubBase : ICloseable
 {
 
-    #region " Construction and Cleanup "
+    #region " construction and cleanup "
 
     public OncRpcServerStubBase()
     {

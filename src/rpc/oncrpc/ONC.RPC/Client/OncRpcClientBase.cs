@@ -188,7 +188,7 @@ namespace cc.isr.ONC.RPC.Client;
 public abstract class OncRpcClientBase : ICloseable
 {
 
-    #region " Construction and Cleanup "
+    #region " construction and cleanup "
 
     /// <summary>   Constructs an <see cref="OncRpcClientBase"/> object (the generic part). </summary>
     /// <remarks>
