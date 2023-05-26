@@ -8,10 +8,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     
-    <AssemblyName>cc.isr.ONC.RPC.MSTest</AssemblyName>
     <!-- Assembly Info -->
     <RootNamespace>cc.isr.ONC.RPC.MSTest</RootNamespace>
+    <AssemblyName>cc.isr.ONC.RPC.MSTest</AssemblyName>
+
     <IsPackable>false</IsPackable>
+
   </PropertyGroup>
   
   <ItemGroup>

@@ -6,9 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
-    <AssemblyName>cc.isr.ONC.RPC</AssemblyName>
     <!-- Assembly Info -->
     <RootNamespace>cc.isr</RootNamespace>
+    <AssemblyName>cc.isr.ONC.RPC</AssemblyName>
 	
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <OutputType>Library</OutputType>
