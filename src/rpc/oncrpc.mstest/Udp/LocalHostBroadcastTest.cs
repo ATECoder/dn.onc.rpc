@@ -1,6 +1,6 @@
 using System.ComponentModel;
+using System.Diagnostics;
 
-using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.MSTest.Tcp;
 using cc.isr.ONC.RPC.Portmap;
 using cc.isr.ONC.RPC.Server;
@@ -12,6 +12,8 @@ namespace cc.isr.ONC.RPC.MSTest.Udp;
 public class LocalHostBroadcastTest
 {
 
+    #region " construction and cleanup "
+
     /// <summary>   Gets or sets the server start time typical. </summary>
     /// <value> The server start time typical. </value>
     public static int ServerStartTimeTypical { get; set; } = 3500;
@@ -21,60 +23,67 @@ public class LocalHostBroadcastTest
     public static int ServerStartLoopDelay { get; set; } = 100;
 
 
-    /// <summary>   Initializes the fixture. </summary>
+    /// <summary> Initializes the test class before running the first test. </summary>
     /// <param name="testContext"> Gets or sets the test context which provides information about
     /// and functionality for the current test run. </param>
-    [ClassInitialize]
-    public static void InitializeFixture( TestContext testContext )
+    /// <remarks>Use ClassInitialize to run code before running the first test in the class</remarks>
+    [ClassInitialize()]
+    public static void InitializeTestClass( TestContext testContext )
     {
         try
         {
-            _classTestContext = context;
-            Logger.Writer.LogInformation( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}" );
+
+            string methodFullName = $"{testContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}";
+            if ( Logger is null )
+                Console.WriteLine( methodFullName );
+            else
+                Logger?.LogMemberInfo( methodFullName );
             _server = new();
 
             // _server.PropertyChanged += OnServerPropertyChanged;
             _server.ThreadExceptionOccurred += OnThreadException;
 
             _ = Task.Factory.StartNew( () => {
-                Logger.Writer.LogInformation( "starting the embedded port map service; this takes ~3.5 seconds..." );
+                Logger?.LogInformation( "starting the embedded port map service; this takes ~3.5 seconds..." );
                 using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
                 epm.EmbeddedPortmapService!.ThreadExceptionOccurred += OnThreadException;
 
-                Logger.Writer.LogInformation( "starting the server task; this takes ~2.5 seconds..." );
+                Logger?.LogInformation( "starting the server task; this takes ~2.5 seconds..." );
                 _server.Run();
             } );
 
-            Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
+            Logger?.LogInformation( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
 
             // because the initializing task is not awaited, we need to wait for the server to start here.
 
             if ( !_server.ServerStarted( 2 * LocalHostBroadcastTest.ServerStartTimeTypical, LocalHostBroadcastTest.ServerStartLoopDelay ) )
                 throw new InvalidOperationException( "failed starting the ONC/RPC server." );
 
-            Logger.Writer.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Running ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
+            Logger?.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Running ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
         }
         catch ( Exception ex )
         {
-            Logger.Writer.LogMemberError( "Failed initializing fixture:", ex );
-            CleanupFixture();
+            if ( Logger is null )
+                Console.WriteLine( $"Failed initializing the test class: {ex}" );
+            else
+                Logger.LogMemberError( "Failed initializing the test class:", ex );
+
+            // cleanup to meet strong guarantees
+
+            try
+            {
+                CleanupTestClass();
+            }
+            finally
+            {
+            }
         }
     }
 
-    /// <summary>   Gets or sets a context for the test. </summary>
-    /// <value> The test context. </value>
-    /// <summary>
-    /// Gets or sets the test context which provides information about and functionality for the
-    /// current test run.
-    /// </summary>
-    /// <value> The test context. </value>
-    public TestContext? TestContext { get; set; }
-
-    private static TestContext? _classTestContext;
-
-    /// <summary>   Cleanup fixture. </summary>
-    [ClassCleanup]
-    public static void CleanupFixture()
+    /// <summary> Cleans up the test class after all tests in the class have run. </summary>
+    /// <remarks> Use <see cref="CleanupTestClass"/> to run code after all tests in the class have run. </remarks>
+    [ClassCleanup()]
+    public static void CleanupTestClass()
     {
         OncRpcUdpServer? server = _server;
         if ( server is not null )
@@ -87,15 +96,85 @@ public class LocalHostBroadcastTest
             }
             catch ( Exception ex )
             {
-                Logger.Writer.LogError( "Exception cleaning up fixture", ex );
+                Logger?.LogError( "Exception cleaning up fixture", ex );
             }
             finally
             {
                 _server = null;
-                _classTestContext = null;
             }
         }
     }
+
+    private IDisposable? _loggerScope;
+
+    private LoggerTraceListener<LocalHostBroadcastTest>? _traceListener;
+
+    /// <summary> Initializes the test class instance before each test runs. </summary>
+    [TestInitialize()]
+    public void InitializeBeforeEachTest()
+    {
+        if ( Logger is not null )
+        {
+            this._loggerScope = Logger.BeginScope( this.TestContext?.TestName ?? string.Empty );
+            this._traceListener = new LoggerTraceListener<LocalHostBroadcastTest>( Logger );
+            _ = Trace.Listeners.Add( this._traceListener );
+        }
+    }
+
+    /// <summary> Cleans up the test class instance after each test has run. </summary>
+    [TestCleanup()]
+    public void CleanupAfterEachTest()
+    {
+        Assert.IsFalse( this._traceListener?.Any( TraceEventType.Error ),
+            $"{nameof( this._traceListener )} should have no {TraceEventType.Error} messages" );
+        this._loggerScope?.Dispose();
+        this._traceListener?.Dispose();
+        Trace.Listeners.Clear();
+    }
+
+    /// <summary>
+    /// Gets or sets the test context which provides information about and functionality for the
+    /// current test run.
+    /// </summary>
+    /// <value> The test context. </value>
+    public TestContext? TestContext { get; set; }
+
+    /// <summary>   Gets a logger instance for this category. </summary>
+    /// <value> The logger. </value>
+    public static ILogger<LocalHostBroadcastTest>? Logger { get; } = LoggerProvider.InitLogger<LocalHostBroadcastTest>();
+
+    #endregion
+
+    #region " initialization tests "
+
+    /// <summary>   (Unit Test Method) 00 logger should be enabled. </summary>
+    /// <remarks>   2023-05-31. </remarks>
+    [TestMethod]
+    public void A00LoggerShouldBeEnabled()
+    {
+        Assert.IsNotNull( Logger, $"{nameof( Logger )} should initialize" );
+        Assert.IsTrue( Logger.IsEnabled( LogLevel.Information ),
+            $"{nameof( Logger )} should be enabled for the {LogLevel.Information} {nameof( LogLevel )}" );
+    }
+
+    /// <summary>   (Unit Test Method) 01 logger trace listener should have messages. </summary>
+    /// <remarks>   2023-06-01. </remarks>
+    [TestMethod]
+    public void A01LoggerTraceListenerShouldHaveMessages()
+    {
+        Assert.IsNotNull( this._traceListener, $"{nameof( this._traceListener )} should initialize" );
+        Assert.IsTrue( Trace.Listeners.Count > 0, $"{nameof( Trace )} should have non-zero {nameof( Trace.Listeners )}" );
+        Trace.TraceError( "Testing tracing an error" ); Trace.Flush();
+        Assert.IsTrue( this._traceListener?.Any( TraceEventType.Error ), $"{nameof( this._traceListener )} should have {TraceEventType.Error} messages" );
+
+        // no need to report errors for this test.
+
+        this._traceListener?.Clear();
+    }
+
+    #endregion
+
+    #region " codec tests "
 
     private static OncRpcUdpServer? _server;
 
@@ -105,7 +184,7 @@ public class LocalHostBroadcastTest
         if ( sender is OncRpcUdpServer ) name = nameof( OncRpcUdpServer );
         if ( sender is OncRpcServerStubBase ) name = nameof( OncRpcServerStubBase );
 
-        Logger.Writer.LogError( $"{name} encountered an exception during an asynchronous operation", e.Exception );
+        Logger?.LogError( $"{name} encountered an exception during an asynchronous operation", e.Exception );
     }
 
     private static void OnServerPropertyChanged( object? sender, PropertyChangedEventArgs e )
@@ -114,19 +193,19 @@ public class LocalHostBroadcastTest
         switch ( e.PropertyName )
         {
             case nameof( OncRpcTcpServer.ReadMessage ):
-                Logger.Writer.LogInformation( (( OncRpcUdpServer ) sender).ReadMessage );
+                Logger?.LogInformation( (( OncRpcUdpServer ) sender).ReadMessage );
                 break;
             case nameof( OncRpcTcpServer.WriteMessage ):
-                Logger.Writer.LogInformation( (( OncRpcUdpServer ) sender).WriteMessage );
+                Logger?.LogInformation( (( OncRpcUdpServer ) sender).WriteMessage );
                 break;
             case nameof( OncRpcTcpServer.PortNumber ):
-                Logger.Writer.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).PortNumber}" );
+                Logger?.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).PortNumber}" );
                 break;
             case nameof( OncRpcTcpServer.IPv4Address ):
-                Logger.Writer.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).IPv4Address}" );
+                Logger?.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).IPv4Address}" );
                 break;
             case nameof( OncRpcTcpServer.Running ):
-                Logger.Writer.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).Running}" );
+                Logger?.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).Running}" );
                 break;
         }
     }
@@ -178,5 +257,7 @@ public class LocalHostBroadcastTest
         IPAddress address = IPAddress.Loopback;
         RemoteHostBroadcastTest.AssertClientShouldBroadcast( address, 1001 );
     }
+
+    #endregion
 
 }

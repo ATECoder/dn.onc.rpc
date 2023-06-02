@@ -1,5 +1,6 @@
+using System.Diagnostics;
 using System.Net.Sockets;
-using cc.isr.ONC.RPC.Logging;
+
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.ONC.RPC.Portmap;
 
@@ -9,6 +10,119 @@ namespace cc.isr.ONC.RPC.MSTest.PortMapper;
 [TestClass]
 public class APortmapGetPortTest
 {
+
+    #region " construction and cleanup "
+
+    /// <summary> Initializes the test class before running the first test. </summary>
+    /// <param name="testContext"> Gets or sets the test context which provides information about
+    /// and functionality for the current test run. </param>
+    /// <remarks>Use ClassInitialize to run code before running the first test in the class</remarks>
+    [ClassInitialize()]
+    public static void InitializeTestClass( TestContext testContext )
+    {
+        try
+        {
+            string methodFullName = $"{testContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}";
+            if ( Logger is null )
+                Console.WriteLine( methodFullName );
+            else
+                Logger?.LogMemberInfo( methodFullName );
+        }
+        catch ( Exception ex )
+        {
+            if ( Logger is null )
+                Console.WriteLine( $"Failed initializing the test class: {ex}" );
+            else
+                Logger.LogMemberError( "Failed initializing the test class:", ex );
+
+            // cleanup to meet strong guarantees
+
+            try
+            {
+                CleanupTestClass();
+            }
+            finally
+            {
+            }
+        }
+    }
+
+    /// <summary> Cleans up the test class after all tests in the class have run. </summary>
+    /// <remarks> Use <see cref="CleanupTestClass"/> to run code after all tests in the class have run. </remarks>
+    [ClassCleanup()]
+    public static void CleanupTestClass()
+    { }
+
+    private IDisposable? _loggerScope;
+
+    private LoggerTraceListener<APortmapGetPortTest>? _traceListener;
+
+    /// <summary> Initializes the test class instance before each test runs. </summary>
+    [TestInitialize()]
+    public void InitializeBeforeEachTest()
+    {
+        if ( Logger is not null )
+        {
+            this._loggerScope = Logger.BeginScope( this.TestContext?.TestName ?? string.Empty );
+            this._traceListener = new LoggerTraceListener<APortmapGetPortTest>( Logger );
+            _ = Trace.Listeners.Add( this._traceListener );
+        }
+    }
+
+    /// <summary> Cleans up the test class instance after each test has run. </summary>
+    [TestCleanup()]
+    public void CleanupAfterEachTest()
+    {
+        Assert.IsFalse( this._traceListener?.Any( TraceEventType.Error ),
+            $"{nameof( this._traceListener )} should have no {TraceEventType.Error} messages" );
+        this._loggerScope?.Dispose();
+        this._traceListener?.Dispose();
+        Trace.Listeners.Clear();
+    }
+
+    /// <summary>
+    /// Gets or sets the test context which provides information about and functionality for the
+    /// current test run.
+    /// </summary>
+    /// <value> The test context. </value>
+    public TestContext? TestContext { get; set; }
+
+    /// <summary>   Gets a logger instance for this category. </summary>
+    /// <value> The logger. </value>
+    public static ILogger<APortmapGetPortTest>? Logger { get; } = LoggerProvider.InitLogger<APortmapGetPortTest>();
+
+    #endregion
+
+    #region " initialization tests "
+
+    /// <summary>   (Unit Test Method) 00 logger should be enabled. </summary>
+    /// <remarks>   2023-05-31. </remarks>
+    [TestMethod]
+    public void A00LoggerShouldBeEnabled()
+    {
+        Assert.IsNotNull( Logger, $"{nameof( Logger )} should initialize" );
+        Assert.IsTrue( Logger.IsEnabled( LogLevel.Information ),
+            $"{nameof( Logger )} should be enabled for the {LogLevel.Information} {nameof( LogLevel )}" );
+    }
+
+    /// <summary>   (Unit Test Method) 01 logger trace listener should have messages. </summary>
+    /// <remarks>   2023-06-01. </remarks>
+    [TestMethod]
+    public void A01LoggerTraceListenerShouldHaveMessages()
+    {
+        Assert.IsNotNull( this._traceListener, $"{nameof( this._traceListener )} should initialize" );
+        Assert.IsTrue( Trace.Listeners.Count > 0, $"{nameof( Trace )} should have non-zero {nameof( Trace.Listeners )}" );
+        Trace.TraceError( "Testing tracing an error" ); Trace.Flush();
+        Assert.IsTrue( this._traceListener?.Any( TraceEventType.Error ), $"{nameof( this._traceListener )} should have {TraceEventType.Error} messages" );
+
+        // no need to report errors for this test.
+
+        this._traceListener?.Clear();
+    }
+
+    #endregion
+
+    #region " port map get port tests "
 
     /// <summary>   (Unit Test Method) portmap should get port. </summary>
     /// <remarks> THIS TEST OFTEN FAILED WHEN RUN AFTER THE EMBEDDED PORTMAP TEST. 
@@ -36,7 +150,7 @@ public class APortmapGetPortTest
     /// 2023-02-04 19:34:06.965,executing UnsetPort dummy server identification:
     /// 2023-02-04 19:34:06.965,UnsetPort succeeded.
     /// 2023-02-04 19:34:06.965, executing ListRegisteredServers
-    /// 2023-02-04 19:34:06.966, ListRegisteredServerssucceeded.
+    /// 2023-02-04 19:34:06.966, ListRegisteredServersSucceeded.
     /// 2023-02-04 19:34:06.966, Exiting test method; OncRpcEmbeddedPortmapServiceStub will be disposed...
     /// </code>
     /// </remarks>
@@ -53,7 +167,7 @@ public class APortmapGetPortTest
         var ipAddress = host
             .AddressList
             .FirstOrDefault( ip => ip.AddressFamily == AddressFamily.InterNetwork );
-        Logger.Writer.LogInformation( $"Host: {ipAddress}" );
+        Logger?.LogInformation( $"Host: {ipAddress}" );
 
         // Create a portmap client object, which can then be used to contact
         // a local or remote ONC/RPC portmap process. In this test we contact
@@ -66,14 +180,14 @@ public class APortmapGetPortTest
 
         // Ping the port mapper...
 
-        Logger.Writer.LogInformation( "pinging port mapper;" );
+        Logger?.LogInformation( "pinging port mapper;" );
         portmap.PingPortmapService();
-        Logger.Writer.LogInformation( "port mapper pinged." );
+        Logger?.LogInformation( "port mapper pinged." );
 
         // Ask for a non-existent ONC/RPC server.
 
         int port;
-        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.GetPort )} for non-existing program" );
+        Logger?.LogInformation( $"{nameof( OncRpcPortmapClient.GetPort )} for non-existing program" );
         try
         {
             port = portmap.GetPort( 1, 1, OncRpcProtocol.OncRpcUdp );
@@ -85,12 +199,12 @@ public class APortmapGetPortTest
             {
                 Assert.Fail( $"method call failed unexpectedly: {e}" );
             }
-            Logger.Writer.LogInformation( $"succeeded; received error code ({OncRpcExceptionReason.OncRpcProgramNotRegistered}({( int ) OncRpcExceptionReason.OncRpcProgramNotRegistered})." );
+            Logger?.LogInformation( $"succeeded; received error code ({OncRpcExceptionReason.OncRpcProgramNotRegistered}({( int ) OncRpcExceptionReason.OncRpcProgramNotRegistered})." );
         }
 
         // Register dummy ONC/RPC server.
 
-        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.SetPort )} dummy server identification: " );
+        Logger?.LogInformation( $"{nameof( OncRpcPortmapClient.SetPort )} dummy server identification: " );
         try
         {
             _ = portmap.SetPort( 1, 42, OncRpcProtocol.OncRpcUdp, 65535 );
@@ -99,12 +213,13 @@ public class APortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.SetPort )} succeeded." );
+        Logger?.LogInformation( $"{nameof( OncRpcPortmapClient.SetPort )} succeeded." );
 
         // Now dump the current list of registered servers.
+
         OncRpcServerIdentifierCodec[] list = Array.Empty<OncRpcServerIdentifierCodec>();
         bool found = false;
-        Logger.Writer.LogInformation( $"executing {nameof( OncRpcPortmapClient.ListRegisteredServers )}" );
+        Logger?.LogInformation( $"executing {nameof( OncRpcPortmapClient.ListRegisteredServers )}" );
         try
         {
             list = portmap.ListRegisteredServers();
@@ -113,20 +228,21 @@ public class APortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.ListRegisteredServers )} succeeded." );
+        Logger?.LogInformation( $"{nameof( OncRpcPortmapClient.ListRegisteredServers )} succeeded." );
 
-        Logger.Writer.LogInformation( "listing Registered servers" );
-        Logger.Writer.LogInformation( $" Program Version Protocol Port" );
+        Logger?.LogInformation( "listing Registered servers" );
+        Logger?.LogInformation( $" Program Version Protocol Port" );
         foreach ( OncRpcServerIdentifierCodec value in list )
         {
             if ( value.Program == 1 && value.Version == 42 && value.Protocol == OncRpcProtocol.OncRpcUdp && value.Port == 65535 )
                 found = true;
-            Logger.Writer.LogInformation( $"{value.Program} {value.Version} {value.Protocol} {value.Port}" );
+            Logger?.LogInformation( $"{value.Program} {value.Version} {value.Protocol} {value.Port}" );
         }
         Assert.IsTrue( found, "expected dummy server was not found among the registered servers." );
 
         // Deregister dummy ONC/RPC server.
-        Logger.Writer.LogInformation( $"executing {nameof( OncRpcPortmapClient.UnsetPort )} dummy server identification: " );
+
+        Logger?.LogInformation( $"executing {nameof( OncRpcPortmapClient.UnsetPort )} dummy server identification: " );
         try
         {
             _ = portmap.UnsetPort( 1, 42 );
@@ -135,12 +251,13 @@ public class APortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.UnsetPort )} succeeded." );
+        Logger?.LogInformation( $"{nameof( OncRpcPortmapClient.UnsetPort )} succeeded." );
 
         // Now dump again the current list of registered servers.
+
         found = false;
         list = Array.Empty<OncRpcServerIdentifierCodec>();
-        Logger.Writer.LogInformation( $"executing {nameof( OncRpcPortmapClient.ListRegisteredServers )}" );
+        Logger?.LogInformation( $"executing {nameof( OncRpcPortmapClient.ListRegisteredServers )}" );
         try
         {
             list = portmap.ListRegisteredServers();
@@ -149,7 +266,7 @@ public class APortmapGetPortTest
         {
             Assert.Fail( $"method call failed unexpectedly: {e}" );
         }
-        Logger.Writer.LogInformation( $"{nameof( OncRpcPortmapClient.ListRegisteredServers )}succeeded." );
+        Logger?.LogInformation( $"{nameof( OncRpcPortmapClient.ListRegisteredServers )} succeeded." );
 
         foreach ( OncRpcServerIdentifierCodec value in list )
         {
@@ -158,9 +275,13 @@ public class APortmapGetPortTest
         }
 
         // Release resources bound by portmap client object as soon as possible
+
         portmap.Close();
 
-        // dispose of the Portmap service
-        Logger.Writer.LogInformation( $"Exiting test method; {nameof( OncRpcEmbeddedPortmapServiceStub )} will be disposed..." );
+        // which disposes of the Portmap service
+
+        Logger?.LogInformation( $"Exiting test method; {nameof( OncRpcEmbeddedPortmapServiceStub )} will be disposed..." );
     }
+
+    #endregion
 }

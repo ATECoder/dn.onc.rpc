@@ -206,6 +206,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     #region " event handlers "
 
+    /// <summary>   Event queue for all listeners interested in BroadcastReplyReceived events. </summary>
     public event EventHandler<OncRpcBroadcastEventArgs>? BroadcastReplyReceived;
 
     /// <summary>   Executes the <see cref="BroadcastReplyReceived"/> event. </summary>
@@ -216,6 +217,7 @@ public class OncRpcUdpClient : OncRpcClientBase
         handler?.Invoke( this, e );
     }
 
+    /// <summary>   Event queue for all listeners interested in BroadcastReplyFailed events. </summary>
     public event EventHandler<OncRpcBroadcastEventArgs>? BroadcastReplyFailed;
 
     /// <summary>   Executes the <see cref="BroadcastReplyFailed"/> event. </summary>
@@ -328,7 +330,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                     // In case of batched calls we don't need no answer, so
                     // we can do other, more interesting things.
 
-                    // @atecoder: this was replaced int he next statement: if ( this.IOTimeout == 0 )
+                    // @ATECoder: this was replaced int he next statement: if ( this.IOTimeout == 0 )
                     if ( this.UseCallBatching )
                         return;
 
@@ -502,7 +504,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                         catch ( OncRpcException e )
                         {
 
-                            // Ooops. An ONC/RPC exception. Let us rethrow this one,
+                            // OOPS. An ONC/RPC exception. Let us rethrow this one,
                             // as we won't have nothin' to do with it...
 
                             try
@@ -605,7 +607,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// identifier. For example, to send a broadcast to all hosts on the network identified by IP
     /// addresses starting with 192.168.1, use the address 192.168.1.255. </para> <para>
     /// 
-    /// @atecoder: added an event handler in place of the broadcast listener. </para>
+    /// @ATECoder: added an event handler in place of the broadcast listener. </para>
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="procedureNumber">  Procedure number of the procedure to call. </param>
@@ -652,7 +654,7 @@ public class OncRpcUdpClient : OncRpcClientBase
             // broadcast call to come in. In every case, we wait until the
             // (total) timeout expires.
 
-            // @atecoder: fix timeout; was ill defined.
+            // @ATECoder: fix timeout; was ill defined.
             DateTime stopTime = DateTime.Now.Add( TimeSpan.FromMilliseconds( timeout ) );
             while ( DateTime.Now < stopTime )
             {
@@ -664,7 +666,7 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                     TimeSpan timeRemaining = stopTime - DateTime.Now;
 
-                    // @atecoder: fix timeout; was .Seconds, that is, 1000 times larger.
+                    // @ATECoder: fix timeout; was .Seconds, that is, 1000 times larger.
                     // also, must be at least 1ms.
 
                     this._socket.ReceiveTimeout = ( int ) Math.Max( 1, timeRemaining.TotalMilliseconds );

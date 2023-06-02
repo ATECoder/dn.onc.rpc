@@ -5,7 +5,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// specific servers.
 /// </summary>
 /// <remarks>
-/// This class is typically only used by <c>rpcgen</c> generated servers, which
+/// This class is typically only used by <c>RPCGen</c> generated servers, which
 /// provide a particular set of remote procedures as defined in an x-file.  <para>
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
@@ -15,6 +15,8 @@ public abstract partial class OncRpcServerStubBase : ICloseable
 
     #region " construction and cleanup "
 
+    /// <summary>   Default constructor. </summary>
+    /// <remarks>   2023-06-01. </remarks>
     public OncRpcServerStubBase()
     {
         this._characterEncoding = Encoding.Default;
@@ -41,7 +43,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// </summary>
     /// <remarks>
     /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
-    /// within a try...finaly block. <para>
+    /// within a try...finally block. <para>
     ///
     /// Because this class is implementing <see cref="IDisposable"/> and is not sealed, then it
     /// should include the call to <see cref="GC.SuppressFinalize(object)"/> even if it does not
@@ -290,7 +292,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     public virtual void Run()
     {
 
-        // Ignore all problems during unregistration.
+        // Ignore all problems during un-registration.
         try
         {
             this.Unregister( this._transports );

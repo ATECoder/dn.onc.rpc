@@ -116,6 +116,17 @@ public partial class OncRpcServerStubBase : INotifyPropertyChanged
         return true;
     }
 
+    /// <summary>   Sets a property. </summary>
+    /// <remarks>   2023-06-01. </remarks>
+    /// <exception cref="ArgumentNullException">    Thrown when one or more required arguments are
+    ///                                             null. </exception>
+    /// <typeparam name="T">    Generic type parameter. </typeparam>
+    /// <param name="oldValue">     The current property value. </param>
+    /// <param name="newValue">     The property's value after the change occurred. </param>
+    /// <param name="callback">     The callback to invoke to set the target property value, if a
+    ///                             change has occurred. </param>
+    /// <param name="propertyName"> (Optional) Name of the property. </param>
+    /// <returns>   <see langword="true"/> if it succeeds; otherwise, <see langword="false"/>. </returns>
     protected bool SetProperty<T>( T oldValue, T newValue, Action callback, [CallerMemberName] string? propertyName = null )
     {
         if ( callback is null ) throw new ArgumentNullException( nameof( callback ) );

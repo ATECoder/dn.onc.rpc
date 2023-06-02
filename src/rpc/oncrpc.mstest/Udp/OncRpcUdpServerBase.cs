@@ -45,4 +45,5 @@ public abstract class OncRpcUdpServerBase : OncRpcServerStubBase, IOncRpcDispatc
     /// <param name="version">      Version number requested. </param>
     /// <param name="procedure">    Procedure number requested. </param>
     public virtual void DispatchOncRpcCall( OncRpcCallHandler call, int program, int version, int procedure )
-    { }}
+    { }
+}

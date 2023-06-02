@@ -291,7 +291,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                     this.Encoder!.BeginEncoding( new IPEndPoint( IPAddress.Any, 0 ) );
                     callHeader.Encode( this.Encoder! );
                     requestCodec.Encode( this.Encoder! );
-                    // @atecoder: thus was replace in the next statement if ( this.IOTimeout != 0 )
+                    // @ATECoder: thus was replace in the next statement if ( this.IOTimeout != 0 )
                     if ( !this.UseCallBatching )
                         this.Encoder?.EndEncoding();
                     else
@@ -304,7 +304,7 @@ public class OncRpcTcpClient : OncRpcClientBase
                 // Receive reply message from server -- at least try to do so...
                 // In case of batched calls we don't need no answer, so
                 // we can do other, more interesting things.
-                // @atecoder: thus was replace in the next statement if ( this.IOTimeout == 0 )
+                // @ATECoder: thus was replace in the next statement if ( this.IOTimeout == 0 )
                 if ( this.UseCallBatching )
                     return;
                 try

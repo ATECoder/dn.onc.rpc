@@ -54,7 +54,7 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
 
         this.VerifierAuthType = decoder.DecodeInt().ToAuthType();
         this.VerifierAuthMessageLength = decoder.DecodeInt();
-        // @atecoder was:
+        // @ATECoder: was:
         // if ( decoder.DecodeInt() != ( int ) OncRpcServerAuthNone.AuthType || decoder.DecodeInt() != OncRpcServerAuthNone.AuthMessageLength )
 
         if ( this.VerifierAuthType != this.AuthType || this.VerifierAuthMessageLength != this.AuthMessageLength )

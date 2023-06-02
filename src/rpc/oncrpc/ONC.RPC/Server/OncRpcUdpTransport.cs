@@ -1,6 +1,6 @@
+using System.Diagnostics;
 using System.Net.Sockets;
 
-using cc.isr.ONC.RPC.Logging;
 namespace cc.isr.ONC.RPC.Server;
 
 /// <summary>
@@ -37,6 +37,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, int port, int program, int version, int bufferSize ) : this( dispatcher, port, new
         OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) }, bufferSize )
     { }
+
     /// <summary>
     /// Create a new instance of a <see cref="OncRpcUdpTransport"/> which encapsulates UDP/IP-
     /// based XDR streams of an ONC/RPC server.
@@ -57,25 +58,26 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, int port, OncRpcProgramInfo[] info, int bufferSize )
                                                             : this( dispatcher, IPAddress.Any, port, info, bufferSize )
     { }
+
     /// <summary>
-    /// Create a new instance of a <see cref="OncRpcUdpTransport"/> which encapsulates UDP/IP-
-    /// based XDR streams of an ONC/RPC server.
+    /// Create a new instance of a <see cref="OncRpcUdpTransport"/> which encapsulates UDP/IP- based
+    /// XDR streams of an ONC/RPC server.
     /// </summary>
     /// <remarks>
     /// Using a server transport, ONC/RPC calls are received and the corresponding replies are sent
     /// back. This constructor is a convenience constructor for those transports handling only a
     /// single ONC/RPC program and version number.
     /// </remarks>
-    /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     /// <param name="dispatcher">   Reference to interface of an object capable of dispatching
     ///                             (handling) ONC/RPC calls. </param>
-    /// <param name="bindAddr">     The local Internet Address the server will bind to or <see cref="IPAddress.Any"/>. </param>
+    /// <param name="bindAddress">  The local Internet Address the server will bind to or <see cref="IPAddress.Any"/>.</param>
     /// <param name="port">         Number of port where the server will wait for incoming calls. </param>
     /// <param name="info">         Array of program and version number tuples of the ONC/RPC
     ///                             programs and versions handled by this transport. </param>
     /// <param name="bufferSize">   Size of buffer for receiving and sending UDP/IP datagrams
     ///                             containing ONC/RPC call and reply messages. </param>
-    public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddr, int port,
+    ///
+    public OncRpcUdpTransport( IOncRpcDispatchable dispatcher, IPAddress bindAddress, int port,
         OncRpcProgramInfo[] info, int bufferSize ) : base( dispatcher, port, OncRpcProtocol.OncRpcUdp, info )
     {
 
@@ -84,8 +86,8 @@ public class OncRpcUdpTransport : OncRpcTransportBase
 
         if ( bufferSize < OncRpcTransportBase.MinBufferSizeDefault ) bufferSize = OncRpcTransportBase.MinBufferSizeDefault;
         this._socket = new Socket( AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp );
-        bindAddr ??= IPAddress.Any;
-        IPEndPoint localEP = new( bindAddr, port );
+        bindAddress ??= IPAddress.Any;
+        IPEndPoint localEP = new( bindAddress, port );
         this._socket.Bind( localEP );
         if ( port == 0 )
             this.Port = (( IPEndPoint ) this._socket.LocalEndPoint).Port;
@@ -316,7 +318,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
     /// has been gone away after an IOException this means that the transport has been closed, so we
     /// end this task gracefully. </para><para>
     /// 
-    /// @atecode 2023-01-23: add cancellation. </para>
+    /// @ATECoder: 2023-01-23: add cancellation. </para>
     /// </remarks>
     /// <param name="cancelSource"> The cancellation source that allows processing to be canceled. </param>
     protected override void Listen( CancellationTokenSource cancelSource )
@@ -414,7 +416,8 @@ public class OncRpcUdpTransport : OncRpcTransportBase
             catch ( Exception ex )
             {
 
-                Logger.Writer.LogMemberError( $"Failed dispatching ONC/RPC call:", ex );
+                Trace.TraceError( $"Failed dispatching ONC/RPC call: {ex}" );
+                Trace.Flush();
 
                 // In case of some other runtime exception, we report back to
                 // the caller a system error.

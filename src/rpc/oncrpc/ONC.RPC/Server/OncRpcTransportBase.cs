@@ -332,7 +332,7 @@ public abstract class OncRpcTransportBase : ICloseable
     /// receiving multiple calls. Instead, later calls have to wait for the current call to finish
     /// before they are handled. </para>  <para>
     /// 
-    /// @atecode 20230131: replaced threads with tasks and error handling. </para>
+    /// @ATECoder: 20230131: replaced threads with tasks and error handling. </para>
     /// </remarks>
     /// <param name="cancelSource"> The cancel source. </param>
     public async Task ListenAsync( CancellationTokenSource cancelSource )
@@ -346,7 +346,7 @@ public abstract class OncRpcTransportBase : ICloseable
     /// Executes the listen operation: Handles incoming requests, dispatches them and sends back
     /// replies.
     /// </summary>
-    /// <remarks>   @atecode 2023-01-23: add cancellation. </remarks>
+    /// <remarks>   @ATECoder: 2023-01-23: add cancellation. </remarks>
     /// <param name="cancelSource"> The cancellation source that allows processing to be canceled. </param>
     protected abstract void Listen( CancellationTokenSource cancelSource );
 

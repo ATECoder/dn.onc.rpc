@@ -1,6 +1,5 @@
+using System.Diagnostics;
 using System.Net.Sockets;
-
-using cc.isr.ONC.RPC.Logging;
 
 namespace cc.isr.ONC.RPC.Server;
 
@@ -349,7 +348,7 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// has been gone away after an IOException this means that the transport has been closed, so we
     /// end this task gracefully. </para><para>
     /// 
-    /// @atecode 2023-01-23: add cancellation. </para>
+    /// @ATECoder: 2023-01-23: add cancellation. </para>
     /// </remarks>
     /// <param name="cancelSource"> A cancellation source that allows processing to be canceled. </param>
     protected override void Listen( CancellationTokenSource cancelSource )
@@ -448,7 +447,8 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
             }
             catch ( Exception ex )
             {
-                Logger.Writer.LogMemberError( $"Failed dispatching ONC/RPC Call:", ex );
+                Trace.TraceError( $"Failed dispatching ONC/RPC Call: {ex}" );
+                Trace.Flush();
 
                 // In case of some other runtime exception, we report back to
                 // the caller a system error. We cannot do this if we don't

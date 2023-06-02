@@ -49,14 +49,17 @@ namespace cc.isr.ONC.RPC.Portmap;
 ///   port = portmap.GetPort( 0x49678, 1, OncRpcProtocols.ONCRPC_UDP );
 /// } 
 /// catch ( OncRpcProgramNotRegisteredException e ) {
-///   Logger.Writer.LogInformation( "ONC/RPC program server not found" );
+///   Trace.TraceInformation( "ONC/RPC program server not found" );
+///   Trace.Flush();
 ///   System.exit(0);
 /// } 
 /// catch ( OncRpcException e ) {
-///   Logger.Writer.LogMemberError( "Could not contact portmapper:", e );
+///   Trace.TraceError( "Could not contact portmapper:", e );
+///   Trace.Flush();
 ///   System.exit( 0 );
 /// }
-/// Logger.Writer.LogInformation( $"Program available at port {port}" );
+/// Trace.TraceInformation( $"Program available at port {port}" );
+/// Trace.Flush();
 /// </code> <para>
 /// 
 /// In the call to <see cref="GetPort(int, int, OncRpcProtocol)"/>, the first parameter
@@ -81,11 +84,12 @@ namespace cc.isr.ONC.RPC.Portmap;
 ///   list = portmap.ListRegisteredServers();
 /// } 
 /// catch ( OncRpcException e ) {
-///   Logger.Writer.LogMemberError( "error listing registered servers", e );
+///   Logger?.LogMemberError( "error listing registered servers", e );
 ///   System.exit( 20 );
 /// }
 /// foreach ( var item in list ) {
-///   Logger.Writer.LogInformation( $"{item.program} {item.version} {item.protocol} {item.port}" );
+///   Trace.TraceInformation( $"{item.program} {item.version} {item.protocol} {item.port}" );
+///   Trace.Flush();
 /// }
 /// </code> <para>
 /// 
@@ -97,7 +101,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// </code> <para>
 /// 
 /// For another code example, please consult 
-/// <see href="../oncrpc.mstest/PortMapper/PortmapGetPortTest.cs"/> </para> <para>
+/// <see href="../ONCRPC.MSTest/PortMapper/PortmapGetPortTest.cs"/> </para> <para>
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
@@ -194,7 +198,7 @@ public class OncRpcPortmapClient : ICloseable
     /// </summary>
     /// <remarks>
     /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
-    /// within a try...finaly block. <para>
+    /// within a try...finally block. <para>
     /// 
     /// Because this class is implementing <see cref="IDisposable"/> and is not sealed, then it
     /// should include the call to <see cref="GC.SuppressFinalize(object)"/> even if it does not
@@ -315,14 +319,14 @@ public class OncRpcPortmapClient : ICloseable
         // throw an exception, that the program requested could not be
         // found.
 
-        // @atecode: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
+        // @ATECoder: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
         this.OncRpcClient?.Call( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber, requestCodec, replyCodec );
 
         // In case the program is not registered, throw an exception too.
-        // @atecode: the specific 'Program Not Registered' exception was removed in favor of
+        // @ATECoder: the specific 'Program Not Registered' exception was removed in favor of
         // keeping things simple and adding a suffix message.
         return replyCodec.Port == 0
             ? throw new OncRpcException( "; the Portmap service returned a port number 0 where a non-zero port, e.g., 1024 for VXI-11, was expected",
@@ -353,7 +357,7 @@ public class OncRpcPortmapClient : ICloseable
         // at this stage, then rethrow the exception as a generic portmap
         // failure exception.
 
-        // @atecode: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
+        // @ATECoder: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
@@ -383,7 +387,7 @@ public class OncRpcPortmapClient : ICloseable
         // at this stage, then rethrow the exception as a generic portmap
         // failure exception.
 
-        // @atecode: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
+        // @ATECoder: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
@@ -407,7 +411,7 @@ public class OncRpcPortmapClient : ICloseable
         // Try to contact the portmap process. On failure, rethrow the exception 
         // as a generic portmap failure exception.
 
-        // @atecode: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
+        // @ATECoder: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 
@@ -422,7 +426,7 @@ public class OncRpcPortmapClient : ICloseable
     /// <summary>   Pings the Portmap service by calling the null procedure (0). </summary>
     public virtual void PingPortmapService()
     {
-        // @atecode: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
+        // @ATECoder: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed
         // in favor of letting any exception pass through assuming that the stack trace will reveal the Portmap service
         // as the end point for these exceptions.
 

@@ -111,7 +111,7 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
 
         this.VerifierAuthType = decoder.DecodeInt().ToAuthType();
         this.VerifierAuthMessageLength = decoder.DecodeInt();
-        // @atecoder was:
+        // @ATECoder: was:
         // if ( decoder.DecodeInt() != ( int ) OncRpcAuthType.OncRpcAuthTypeNone || decoder.DecodeInt() != 0 )
         if ( this.VerifierAuthType != Client.OncRpcClientAuthUnix.VerifierAuthTypeDefault
             || this.VerifierAuthMessageLength != Client.OncRpcClientAuthUnix.VerifierAuthMessageLengthDefault )

@@ -67,7 +67,7 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
         // is not kosher and an authentication exception will be thrown.
         this.VerifierAuthType = decoder.DecodeInt().ToAuthType();
         this.VerifierAuthMessageLength = decoder.DecodeInt();
-        // @atecoder was:
+        // @ATECoder: was:
         // if ( decoder.DecodeInt() != ( int ) OncRpcClientAuthNone.AuthType || decoder.DecodeInt() != OncRpcClientAuthNone.AuthMessageLength )
         if ( this.VerifierAuthType != Server.OncRpcServerAuthNone.VerifierAuthTypeDefault
             || this.VerifierAuthMessageLength != Server.OncRpcServerAuthNone.VerifierAuthMessageLengthDefault )

@@ -1,6 +1,5 @@
 using System.Diagnostics;
 
-using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Server;
 
 namespace cc.isr.ONC.RPC.Portmap;
@@ -98,21 +97,25 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// <returns>   An OncRpcEmbeddedPortmapService. </returns>
     public static OncRpcEmbeddedPortmapServiceStub StartEmbeddedPortmapService( int ioTimeout = 10, int transmitTimeout = 5, bool validate = false )
     {
-        Logger.Writer.LogInformation( $"Checking for Portmap service" );
+        Trace.TraceInformation( "Checking for Portmap service" );
+        Trace.Flush();
         Stopwatch sw = Stopwatch.StartNew();
         bool alreadyRunning = OncRpcPortmapClient.TryPingPortmapService( ioTimeout, transmitTimeout );
         double checkTime = sw.Elapsed.TotalMilliseconds;
         if ( alreadyRunning )
-            Logger.Writer.LogInformation( "A Portmap service is already running." );
+            Trace.TraceInformation( "A Portmap service is already running." );
         else
-            Logger.Writer.LogInformation( "No Portmap service available." );
+            Trace.TraceInformation( "No Portmap service available." );
+        Trace.Flush();
 
-        Logger.Writer.LogInformation( "Creating embedded Portmap instance" );
+        Trace.TraceInformation( "Creating embedded Portmap instance" );
+        Trace.Flush();
         sw = Stopwatch.StartNew();
 
         if ( alreadyRunning )
         {
-            Logger.Writer.LogInformation( $"Found that an external Portmap service is running in {checkTime}ms" );
+            Trace.TraceInformation( $"Found that an external Portmap service is running in {checkTime}ms" );
+            Trace.Flush();
             return new OncRpcEmbeddedPortmapServiceStub( true );
         }
         else
@@ -127,17 +130,22 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
                 if ( validate )
                 {
                     int startTime = ( int ) sw.Elapsed.TotalMilliseconds;
-                    Logger.Writer.LogInformation( "Embedded service started; trying to ping using the port map service" );
+                    Trace.TraceInformation( "Embedded service started; trying to ping using the port map service" );
+                    Trace.Flush();
 
                     sw = Stopwatch.StartNew();
                     bool pinged = OncRpcPortmapClient.TryPingPortmapService();
                     if ( !pinged )
                         throw new InvalidOperationException( "Portmap service is not running." );
                     int pingTime = ( int ) sw.Elapsed.TotalMilliseconds;
-                    Logger.Writer.LogInformation( $"Portmap service is {(pinged ? "running" : "idle")}; checked in {checkTime}ms, started in {startTime}ms, pinged in {pingTime}ms " );
+                    Trace.TraceInformation( $"Portmap service is {(pinged ? "running" : "idle")}; checked in {checkTime}ms, started in {startTime}ms, pinged in {pingTime}ms " );
+                    Trace.Flush();
                 }
                 else
-                    Logger.Writer.LogInformation( $"Portmap service started; checked {checkTime:0.0} ms." );
+                {
+                    Trace.TraceInformation( $"Portmap service started; checked {checkTime:0.0} ms." );
+                    Trace.Flush();
+                }
 
             else
             {
@@ -182,7 +190,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// </summary>
     /// <remarks>
     /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
-    /// within a try...finaly block. <para>
+    /// within a try...finally block. <para>
     ///
     /// Because this class is implementing <see cref="IDisposable"/> and is not sealed, then it
     /// should include the call to <see cref="GC.SuppressFinalize(object)"/> even if it does not
@@ -204,7 +212,11 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
             this.Dispose( true );
 
         }
-        catch ( Exception ex ) { Logger.Writer.LogMemberError( "Exception disposing", ex ); }
+        catch ( Exception ex )
+        {
+            Trace.TraceError( $"Exception disposing: {ex}" );
+            Trace.Flush();
+        }
         finally
         {
             // this is included because this class is not sealed.
@@ -297,9 +309,9 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// </returns>
     public static bool TryPingPortmapService1( int ioTimeout = 10, int transmitTimeout = 5 )
     {
-        using OncRpcPortmapClient pmapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, transmitTimeout );
-        pmapClient.OncRpcClient!.IOTimeout = ioTimeout;
-        return pmapClient.TryPingPortmapService();
+        using OncRpcPortmapClient portMapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp, transmitTimeout );
+        portMapClient.OncRpcClient!.IOTimeout = ioTimeout;
+        return portMapClient.TryPingPortmapService();
     }
 
     /// <summary>   Determines if we can embedded Portmap service started without waiting for timeout. </summary>

@@ -11,7 +11,7 @@ namespace cc.isr.ONC.RPC;
 /// <remarks> <para>
 /// 
 /// Remote Tea authors: Harald Albrecht, Jay Walters. 
-/// @atecoder: renamed and changed to inherit from <see cref="System.EventArgs"/>. </para>
+/// @ATECoder: renamed and changed to inherit from <see cref="System.EventArgs"/>. </para>
 /// </remarks>
 public class OncRpcBroadcastEventArgs : EventArgs
 {

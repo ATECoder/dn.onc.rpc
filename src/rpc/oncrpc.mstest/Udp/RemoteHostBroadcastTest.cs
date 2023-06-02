@@ -1,7 +1,7 @@
-using cc.isr.ONC.RPC.Logging;
 using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Portmap;
 using System.Net.Sockets;
+using System.Diagnostics;
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
@@ -10,26 +10,77 @@ namespace cc.isr.ONC.RPC.MSTest.Udp;
 public class RemoteHostBroadcastTest
 {
 
-    /// <summary>   Initializes the fixture. </summary>
+    #region " construction and cleanup "
+
+    /// <summary> Initializes the test class before running the first test. </summary>
     /// <param name="testContext"> Gets or sets the test context which provides information about
     /// and functionality for the current test run. </param>
-    [ClassInitialize]
-    public static void InitializeFixture( TestContext testContext )
+    /// <remarks>Use ClassInitialize to run code before running the first test in the class</remarks>
+    [ClassInitialize()]
+    public static void InitializeTestClass( TestContext testContext )
     {
         try
         {
-            _classTestContext = context;
-            Logger.Writer.LogInformation( $"{_classTestContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}" );
+            string methodFullName = $"{testContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}";
+            if ( Logger is null )
+                Console.WriteLine( methodFullName );
+            else
+                Logger?.LogMemberInfo( methodFullName );
         }
         catch ( Exception ex )
         {
-            Logger.Writer.LogMemberError( "Failed initializing fixture:", ex );
-            CleanupFixture();
+            if ( Logger is null )
+                Console.WriteLine( $"Failed initializing the test class: {ex}" );
+            else
+                Logger.LogMemberError( "Failed initializing the test class:", ex );
+
+            // cleanup to meet strong guarantees
+
+            try
+            {
+                CleanupTestClass();
+            }
+            finally
+            {
+            }
         }
     }
 
     /// <summary>   Gets or sets a context for the test. </summary>
     /// <value> The test context. </value>
+    /// <summary> Cleans up the test class after all tests in the class have run. </summary>
+    /// <remarks> Use <see cref="CleanupTestClass"/> to run code after all tests in the class have run. </remarks>
+    [ClassCleanup()]
+    public static void CleanupTestClass()
+    { }
+
+    private IDisposable? _loggerScope;
+
+    private LoggerTraceListener<RemoteHostBroadcastTest>? _traceListener;
+
+    /// <summary> Initializes the test class instance before each test runs. </summary>
+    [TestInitialize()]
+    public void InitializeBeforeEachTest()
+    {
+        if ( Logger is not null )
+        {
+            this._loggerScope = Logger.BeginScope( this.TestContext?.TestName ?? string.Empty );
+            this._traceListener = new LoggerTraceListener<RemoteHostBroadcastTest>( Logger );
+            _ = Trace.Listeners.Add( this._traceListener );
+        }
+    }
+
+    /// <summary> Cleans up the test class instance after each test has run. </summary>
+    [TestCleanup()]
+    public void CleanupAfterEachTest()
+    {
+        Assert.IsFalse( this._traceListener?.Any( TraceEventType.Error ),
+            $"{nameof( this._traceListener )} should have no {TraceEventType.Error} messages" );
+        this._loggerScope?.Dispose();
+        this._traceListener?.Dispose();
+        Trace.Listeners.Clear();
+    }
+
     /// <summary>
     /// Gets or sets the test context which provides information about and functionality for the
     /// current test run.
@@ -37,14 +88,42 @@ public class RemoteHostBroadcastTest
     /// <value> The test context. </value>
     public TestContext? TestContext { get; set; }
 
-    private static TestContext? _classTestContext;
+    /// <summary>   Gets a logger instance for this category. </summary>
+    /// <value> The logger. </value>
+    public static ILogger<RemoteHostBroadcastTest>? Logger { get; } = LoggerProvider.InitLogger<RemoteHostBroadcastTest>();
 
-    /// <summary>   Cleanup fixture. </summary>
-    [ClassCleanup]
-    public static void CleanupFixture()
+    #endregion
+
+    #region " initialization tests "
+
+    /// <summary>   (Unit Test Method) 00 logger should be enabled. </summary>
+    /// <remarks>   2023-05-31. </remarks>
+    [TestMethod]
+    public void A00LoggerShouldBeEnabled()
     {
-        _classTestContext = null;
+        Assert.IsNotNull( Logger, $"{nameof( Logger )} should initialize" );
+        Assert.IsTrue( Logger.IsEnabled( LogLevel.Information ),
+            $"{nameof( Logger )} should be enabled for the {LogLevel.Information} {nameof( LogLevel )}" );
     }
+
+    /// <summary>   (Unit Test Method) 01 logger trace listener should have messages. </summary>
+    /// <remarks>   2023-06-01. </remarks>
+    [TestMethod]
+    public void A01LoggerTraceListenerShouldHaveMessages()
+    {
+        Assert.IsNotNull( this._traceListener, $"{nameof( this._traceListener )} should initialize" );
+        Assert.IsTrue( Trace.Listeners.Count > 0, $"{nameof( Trace )} should have non-zero {nameof( Trace.Listeners )}" );
+        Trace.TraceError( "Testing tracing an error" ); Trace.Flush();
+        Assert.IsTrue( this._traceListener?.Any( TraceEventType.Error ), $"{nameof( this._traceListener )} should have {TraceEventType.Error} messages" );
+
+        // no need to report errors for this test.
+
+        this._traceListener?.Clear();
+    }
+
+    #endregion
+
+    #region " remote host broadcast tests "
 
     private static readonly List<IPEndPoint> _portmappers = new();
 
@@ -94,7 +173,7 @@ public class RemoteHostBroadcastTest
     public static void ReplyFailed( object? sender, OncRpcBroadcastEventArgs e )
     {
         if ( e?.Exception is not null )
-            Logger.Writer.LogError( $"Exception receiving reply from {e.RemoteEndPoint}:", e.Exception );
+            Logger?.LogError( $"Exception receiving reply from {e.RemoteEndPoint}:", e.Exception );
     }
 
     /// <summary>   Assert client should broadcast. </summary>
@@ -119,7 +198,7 @@ public class RemoteHostBroadcastTest
         client.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
         // Ping all port mappers in this subnet...
 
-        Logger.Writer.LogInformation( $"pinging port mappers in subnet {address}: " );
+        Logger?.LogInformation( $"pinging port mappers in subnet {address}: " );
         try
         {
             client.BroadcastCall( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing,
@@ -127,15 +206,15 @@ public class RemoteHostBroadcastTest
         }
         catch ( OncRpcException e )
         {
-            Logger.Writer.LogMemberError( $"method call failed unexpectedly:", e );
+            Logger?.LogMemberError( $"method call failed unexpectedly:", e );
         }
-        Logger.Writer.LogInformation( "done." );
+        Logger?.LogInformation( "done." );
 
         // Print addresses of all port mappers found...
 
         foreach ( IPEndPoint endPoint in _portmappers )
         {
-            Logger.Writer.LogInformation( $"Found: {endPoint}" );
+            Logger?.LogInformation( $"Found: {endPoint}" );
         }
         // Release resources bound by portmap client object as soon as possible.
 
@@ -152,8 +231,8 @@ public class RemoteHostBroadcastTest
     /// Pinging port mappers in subnet 192.168.0.255: . </para><para>
     /// Exception receiving reply from 192.168.0.254:111: </para><para>
     ///   cc.isr.ONC.RPC.OncRpcException: Either a ONC/RPC server or client received the wrong type of ONC/RPC message when waiting for a request or reply.; expected OncRpcReplyMessageType(1); actual: OncRpcCallMessageType(0)
-    ///   at cc.isr.ONC.RPC.Client.OncRpcClientReplyMessage.Decode( XdrDecodingStreamBase decoder ) in C:\my\lib\vs\iot\oncrpc\src\rpc\oncrpc\ONC.RPC\Client\OncRpcClientReplyMessage.cs:line 71
-    ///   at cc.isr.ONC.RPC.Client.OncRpcUdpClient.BroadcastCall( Int32 procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec, Int32 timeout ) in C:\my\lib\vs\iot\oncrpc\src\rpc\oncrpc\ONC.RPC\Client\OncRpcUdpClient.cs:line 599
+    ///   at cc.isr.ONC.RPC.Client.OncRpcClientReplyMessage.Decode( XdrDecodingStreamBase decoder ) in C:\my\lib\vs\iot\ONCRPC\src\rpc\ONCRPC\ONC.RPC\Client\OncRpcClientReplyMessage.cs:line 71
+    ///   at cc.isr.ONC.RPC.Client.OncRpcUdpClient.BroadcastCall( Int32 procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec, Int32 timeout ) in C:\my\lib\vs\iot\ONCRPC\src\rpc\ONCRPC\ONC.RPC\Client\OncRpcUdpClient.cs:line 599
     /// .done. </para><para>
     /// Found: 192.168.0.154:111 </para><para>
     /// Found: 192.168.0.254:111 </para><para>
@@ -180,9 +259,10 @@ public class RemoteHostBroadcastTest
     {
         foreach ( IPAddress ip in GetLocalBroadcastAddresses() )
         {
-            Logger.Writer.LogInformation( $"{nameof( ClientShouldBroadcast )} at {ip}" );
+            Logger?.LogInformation( $"{nameof( ClientShouldBroadcast )} at {ip}" );
             RemoteHostBroadcastTest.AssertClientShouldBroadcast( ip, 2001 );
         }
     }
 
+    #endregion
 }
