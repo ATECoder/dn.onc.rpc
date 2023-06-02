@@ -128,7 +128,7 @@ public static class LogWriterExtensions
     /// <param name="memberName">       (Optional) Name of the member. </param>
     /// <param name="sourceFilePath">   (Optional) Full pathname of the source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Source line number. </param>
-    public static void LogMemberError<TCategory>( this ILogger<TCategory> logWriter, string message, Exception ex,
+    public static void LogMemberError<TCategory>( this ILogger<TCategory> logWriter, string message, System.Exception ex,
                                                     [CallerMemberName] string memberName = "",
                                                     [CallerFilePath] string sourceFilePath = "",
                                                     [CallerLineNumber] int sourceLineNumber = 0 )

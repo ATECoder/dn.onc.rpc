@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace cc.isr.MSTest;
 
 /// <summary>   A logger trace listener. </summary>
@@ -21,6 +23,39 @@ public class LoggerTraceListener<TCategory> : TraceMessageListener
     }
 
     /// <summary>
+    /// Writes trace information, a message, and event information to the listener specific output.
+    /// </summary>
+    /// <remarks>   2023-06-02. </remarks>
+    /// <param name="eventCache">   A <see cref="T:System.Diagnostics.TraceEventCache" /> object that
+    ///                             contains the current process ID, thread ID, and stack trace
+    ///                             information. </param>
+    /// <param name="source">       A name used to identify the output, typically the name of the
+    ///                             application that generated the trace event. </param>
+    /// <param name="eventType">    One of the <see cref="T:System.Diagnostics.TraceEventType" />
+    ///                             values specifying the type of event that has caused the trace. </param>
+    /// <param name="id">           A numeric identifier for the event. </param>
+    /// <param name="message">      A message to write. </param>
+    public override void TraceEvent( TraceEventCache? eventCache, string source, TraceEventType eventType, int id, string? message )
+    {
+        if ( !string.IsNullOrEmpty( message ) )
+        {
+            if ( TraceEventType.Critical == ( TraceEventType.Critical & eventType ) )
+                this._logger?.LogCritical( message );
+            else if ( TraceEventType.Error == (TraceEventType.Error & eventType) )
+                this._logger?.LogError( message );
+            else if ( TraceEventType.Information == (TraceEventType.Information & eventType) )
+                this._logger?.LogInformation( message );
+            else if ( TraceEventType.Verbose == (TraceEventType.Verbose & eventType) )
+                this._logger?.LogVerbose( message );
+            else if ( TraceEventType.Warning == (TraceEventType.Warning & eventType) )
+                this._logger?.LogWarning( message );
+            else
+                this._logger?.LogInformation( message );
+        }
+        base.TraceEvent( eventCache, source, eventType, id, message );
+    }
+
+    /// <summary>
     /// When overridden in a derived class, writes the specified message to the listener you create
     /// in the derived class.
     /// </summary>
@@ -28,8 +63,7 @@ public class LoggerTraceListener<TCategory> : TraceMessageListener
     /// <param name="message">  A message to write. </param>
     public override void Write( string? message )
     {
-        if ( message is not null )
-            this._logger?.LogInformation( message );
+        // if ( message is not null ) this._logger?.LogInformation( message );
     }
 
     /// <summary>
@@ -40,7 +74,6 @@ public class LoggerTraceListener<TCategory> : TraceMessageListener
     /// <param name="message">  A message to write. </param>
     public override void WriteLine( string? message )
     {
-        if ( message is not null )
-            this._logger?.LogInformation( message );
+        // if ( message is not null ) this._logger?.LogInformation( message );
     }
 }

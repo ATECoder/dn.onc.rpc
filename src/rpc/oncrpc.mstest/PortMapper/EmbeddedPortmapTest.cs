@@ -110,8 +110,8 @@ public class EmbeddedPortmapTest
     {
         Assert.IsNotNull( this._traceListener, $"{nameof( this._traceListener )} should initialize" );
         Assert.IsTrue( Trace.Listeners.Count > 0, $"{nameof( Trace )} should have non-zero {nameof( Trace.Listeners )}" );
-        Trace.TraceError( "Testing tracing an error" ); Trace.Flush();
-        Assert.IsTrue( this._traceListener?.Any( TraceEventType.Error ), $"{nameof( this._traceListener )} should have {TraceEventType.Error} messages" );
+        Trace.TraceInformation( "Testing tracing an info message" ); Trace.Flush();
+        Assert.IsTrue( this._traceListener?.Any( TraceEventType.Information ), $"{nameof( this._traceListener )} should have {TraceEventType.Error} messages" );
 
         // no need to report errors for this test.
 
