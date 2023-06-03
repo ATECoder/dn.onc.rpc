@@ -18,6 +18,7 @@ public class AnswerCodec : IXdrCodec
     /// <summary>   Default constructor. </summary>
     public AnswerCodec()
     { }
+
     /// <summary>   Constructor. </summary>
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public AnswerCodec( XdrDecodingStreamBase decoder )

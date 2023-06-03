@@ -36,6 +36,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// <param name="transmitTimeout">  The transmit timeout; defaults to 25 ms. </param>
     public OncRpcEmbeddedPortmapServiceStub( int ioTimeout, int transmitTimeout ) : this( OncRpcPortmapClient.TryPingPortmapService( ioTimeout, transmitTimeout ) )
     { }
+
     /// <summary>
     /// Constructs an embeddable Portmap service of class server <see cref="OncRpcEmbeddedPortmapServiceStub"/>
     /// if no other (external) Portmap service is available.

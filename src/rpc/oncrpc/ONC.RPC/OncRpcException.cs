@@ -25,6 +25,7 @@ public class OncRpcException : Exception
     /// </summary>
     public OncRpcException() : this( OncRpcExceptionReason.OncRpcFailed )
     { }
+
     /// <summary>
     /// Constructs an <see cref="OncRpcException"/> with the specified detail reason and message.
     /// </summary>
@@ -41,6 +42,7 @@ public class OncRpcException : Exception
     /// <param name="message"> The detail message. </param>
     public OncRpcException( string message ) : this( OncRpcExceptionReason.OncRpcFailed, message )
     { }
+
     /// <summary>
     /// Constructs an <see cref="OncRpcException"/> with the specified detail reason.
     /// </summary>
@@ -49,6 +51,7 @@ public class OncRpcException : Exception
     ///                         "public final static integers" -- defined in this interface. </param>
     public OncRpcException( OncRpcExceptionReason reason ) : this( reason, OncRpcEnumExtensions.GetDescription( reason ) )
     { }
+
     /// <summary>
     /// Constructs an <see cref="OncRpcException"/> with the specified detail reason and inner exception.
     /// </summary>
@@ -67,6 +70,7 @@ public class OncRpcException : Exception
     /// <param name="reason">           The detail reason. </param>
     public OncRpcException( string suffixMessage, OncRpcExceptionReason reason ) : this( reason, OncRpcEnumExtensions.GetDescription( reason ) + suffixMessage )
     { }
+
     /// <summary>   Converts a reason to a short description. </summary>
     /// <param name="reason">   The detail reason. </param>
     /// <returns>   Reason as a string. </returns>

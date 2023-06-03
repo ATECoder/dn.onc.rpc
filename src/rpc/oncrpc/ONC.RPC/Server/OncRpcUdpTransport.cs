@@ -38,7 +38,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
         OncRpcProgramInfo[] { new OncRpcProgramInfo( program, version ) }, bufferSize )
     { }
 
-    /// <summary>
+    ///<summary>
     /// Create a new instance of a <see cref="OncRpcUdpTransport"/> which encapsulates UDP/IP-
     /// based XDR streams of an ONC/RPC server.
     /// </summary>
@@ -59,7 +59,7 @@ public class OncRpcUdpTransport : OncRpcTransportBase
                                                             : this( dispatcher, IPAddress.Any, port, info, bufferSize )
     { }
 
-    /// <summary>
+    ///<summary>
     /// Create a new instance of a <see cref="OncRpcUdpTransport"/> which encapsulates UDP/IP- based
     /// XDR streams of an ONC/RPC server.
     /// </summary>

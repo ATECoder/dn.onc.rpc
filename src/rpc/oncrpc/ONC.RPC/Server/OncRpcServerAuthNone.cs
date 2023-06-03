@@ -30,6 +30,7 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
     /// <summary>   Default constructor. </summary>
     public OncRpcServerAuthNone() : base( OncRpcServerAuthNone.AuthTypeDefault )
     { }
+
     /// <summary>
     /// Decodes -- that is: deserializes -- an ONC/RPC authentication object (credential and
     /// verifier) on the server side.

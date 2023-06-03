@@ -12,10 +12,12 @@ public abstract class OncRpcTcpServerBase : OncRpcServerStubBase, IOncRpcDispatc
     /// <summary>   Default constructor. </summary>
     public OncRpcTcpServerBase() : this( 0 )
     { }
+
     /// <summary>   Constructor. </summary>
     /// <param name="port"> The port. </param>
     public OncRpcTcpServerBase( int port ) : this( IPAddress.Any, port )
     { }
+
     /// <summary>   Constructor. </summary>
     /// <param name="bindAddr"> The bind address. </param>
     /// <param name="port">     The port. </param>
