@@ -1,0 +1,5 @@
+# # # # # # # # # # # # # 
+# Spell checker settings
+# # # # # # # # # # # # # 
+
+spelling_exclusion_path = .\exclusion.dix

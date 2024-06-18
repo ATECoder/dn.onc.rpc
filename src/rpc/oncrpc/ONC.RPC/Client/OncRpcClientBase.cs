@@ -317,7 +317,7 @@ public abstract class OncRpcClientBase : ICloseable
     /// </summary>
     /// <remarks>
     /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
-    /// within a try...finaly block. <para>
+    /// within a try...finally block. <para>
     ///
     /// Because this class is implementing <see cref="IDisposable"/> and is not sealed, then it
     /// should include the call to <see cref="GC.SuppressFinalize(object)"/> even if it does not
