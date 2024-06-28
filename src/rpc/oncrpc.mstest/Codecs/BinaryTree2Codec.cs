@@ -7,8 +7,8 @@ public class BinaryTree2Codec : IXdrCodec
     /// <summary>   Default constructor. </summary>
     public BinaryTree2Codec()
     {
-        this.Key = String.Empty;
-        this.Value = String.Empty;
+        this.Key = string.Empty;
+        this.Value = string.Empty;
     }
 
     /// <summary>   Constructor. </summary>

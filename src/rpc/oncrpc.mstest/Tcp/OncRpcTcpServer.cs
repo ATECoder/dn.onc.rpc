@@ -260,7 +260,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     /// <summary>   Echo the specified parameters. </summary>
     /// <param name="input">   value to echo. </param>
-    /// <returns>   A string. </returns>
+    /// <returns>   A <see cref="string" />. </returns>
     public static string EchoInput( string input )
     {
         return input;
@@ -283,7 +283,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     /// <summary>   Concatenate input string vector. </summary>
     /// <param name="inputCodec">   the input codec. </param>
-    /// <returns>   A string. </returns>
+    /// <returns>   A <see cref="string" />. </returns>
     public static string ConcatenateInputStringVector( StringVectorCodec inputCodec )
     {
         StringBuilder reply = new();
@@ -328,7 +328,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     ///                             and to encode and decode. </param>
     /// <param name="secondValue">  The second parameter of type <see cref="string"/> to concatenate
     ///                             and to encode and decode. </param>
-    /// <returns>   A string. </returns>
+    /// <returns>   A <see cref="string" />. </returns>
     public static string ConcatenateTwoValues( string firstValue, string secondValue )
     {
         return $"{firstValue}{secondValue}";
@@ -339,7 +339,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     /// <param name="one">      The first parameter of type <see cref="string"/> to concatenate. </param>
     /// <param name="two">      The second parameter of type <see cref="string"/> to concatenate. </param>
     /// <param name="three">    The third parameter of type <see cref="string"/> to concatenate. </param>
-    /// <returns>   A string. </returns>
+    /// <returns>   A <see cref="string" />. </returns>
     public static string ConcatenateThreeItems( string one, string two, string three )
     {
         return $"{one}{two}{three}";
@@ -347,7 +347,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
 
     /// <summary>   Return 'you are Foo' value. </summary>
     /// <param name="foo">  The foo. </param>
-    /// <returns>   A string. </returns>
+    /// <returns>   A <see cref="string" />. </returns>
     public static string ReturnYouAreFooValue( int foo )
     {
         return $"You are foo {foo}.";
@@ -364,7 +364,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     /// <summary>   Process four arguments. </summary>
-    /// <param name="a">    A string to process. </param>
+    /// <param name="a">    A <see cref="string" /> to process. </param>
     /// <param name="b">    An int to process. </param>
     /// <param name="c">    An int to process. </param>
     /// <param name="d">    An int to process. </param>

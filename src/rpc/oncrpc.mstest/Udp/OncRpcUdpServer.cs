@@ -194,7 +194,7 @@ public partial class OncRpcUdpServer : OncRpcUdpServerBase
 
     /// <summary>   Echo the specified parameters. </summary>
     /// <param name="input">   value to echo. </param>
-    /// <returns>   A string. </returns>
+    /// <returns>   A <see cref="string" />. </returns>
     public static string EchoInput( string input )
     {
         return input;

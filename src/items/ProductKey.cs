@@ -1,8 +1,6 @@
 namespace cc.isr.ONC.RPC;
 
 /// <summary> Information about this and related projects in this solution. </summary>
-/// <remarks> (c) 2018 Integrated Scientific Resources, Inc. All rights reserved.<para>
-/// Licensed under The MIT License.</para> </remarks>
 internal static partial class SolutionInfo
 {
     /// <summary> The public key. </summary>

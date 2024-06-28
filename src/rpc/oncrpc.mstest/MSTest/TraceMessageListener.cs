@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace cc.isr.MSTest;
@@ -15,10 +14,7 @@ public abstract class TraceMessageListener : TraceListener
     /// <summary>   Constructor. </summary>
     /// <remarks>   2023-06-01. </remarks>
     /// <param name="logger">   The logger. </param>
-    protected TraceMessageListener()
-    {
-        this.Clear();
-    }
+    protected TraceMessageListener() => this.Clear();
 
     /// <summary>   Gets or sets the error messages. </summary>
     /// <value> The error messages. </value>
@@ -40,17 +36,17 @@ public abstract class TraceMessageListener : TraceListener
 
     /// <summary>   Check if the listener receive an <see cref="TraceEventType"/> messages. </summary>
     /// <remarks>   2023-06-01. </remarks>
-    /// <param name="eventType">    One of the <see cref="T:System.Diagnostics.TraceEventType" />
+    /// <param name="eventType">    One of the <see cref="Diagnostics.TraceEventType" />
     ///                             values specifying the type of event that has caused the trace. </param>
     /// <returns>   True if it succeeds, false if it fails. </returns>
     public bool Any( TraceEventType eventType )
     {
-        return this.Messages.ContainsKey( eventType ) && this.Messages[eventType].Any();
+        return this.Messages.ContainsKey( eventType ) && this.Messages[eventType].Count != 0;
     }
 
     /// <summary>   Parses the given event type. </summary>
     /// <remarks>   2023-06-01. </remarks>
-    /// <param name="eventType">    One of the <see cref="T:System.Diagnostics.TraceEventType" />
+    /// <param name="eventType">    One of the <see cref="Diagnostics.TraceEventType" />
     ///                             values specifying the type of event that has caused the trace. </param>
     /// <returns>   A TraceEventType. </returns>
     public static TraceEventType Parse( TraceEventType eventType )
@@ -70,7 +66,7 @@ public abstract class TraceMessageListener : TraceListener
 
     /// <summary>   Adds a message to <see cref="Messages"/>. </summary>
     /// <remarks>   2023-06-01. </remarks>
-    /// <param name="eventType">    One of the <see cref="T:System.Diagnostics.TraceEventType" />
+    /// <param name="eventType">    One of the <see cref="Diagnostics.TraceEventType" />
     ///                             values specifying the type of event that has caused the trace. </param>
     /// <param name="message">      A message to write. </param>
     /// <returns>   An int. </returns>
@@ -93,15 +89,17 @@ public abstract class TraceMessageListener : TraceListener
     /// Writes trace information, a message, and event information to the listener specific output.
     /// </summary>
     /// <remarks>   2023-06-01. </remarks>
-    /// <param name="eventCache">   A <see cref="T:System.Diagnostics.TraceEventCache" /> object that
+    /// <param name="eventCache">   A <see cref="Diagnostics.TraceEventCache" /> object that
     ///                             contains the current process ID, thread ID, and stack trace
     ///                             information. </param>
     /// <param name="source">       A name used to identify the output, typically the name of the
     ///                             application that generated the trace event. </param>
-    /// <param name="eventType">    One of the <see cref="T:System.Diagnostics.TraceEventType" />
+    /// <param name="eventType">    One of the <see cref="Diagnostics.TraceEventType" />
     ///                             values specifying the type of event that has caused the trace. </param>
     /// <param name="id">           A numeric identifier for the event. </param>
     /// <param name="message">      A message to write. </param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public override void TraceEvent( TraceEventCache? eventCache, string source, TraceEventType eventType, int id, string? message )
     {
         if ( !string.IsNullOrEmpty( message ) )

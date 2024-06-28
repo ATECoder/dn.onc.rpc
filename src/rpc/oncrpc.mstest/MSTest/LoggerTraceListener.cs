@@ -1,5 +1,3 @@
-using System.Diagnostics;
-
 namespace cc.isr.MSTest;
 
 /// <summary>   A logger trace listener. </summary>
@@ -9,37 +7,34 @@ namespace cc.isr.MSTest;
 /// <see href="https://learn.microsoft.com/en-us/dotnet/framework/debug-trace-profile/how-to-create-and-initialize-trace-listeners#to-create-and-use-a-trace-listener-in-code">Create and use a trace listener in code</see>
 /// </remarks>
 /// <typeparam name="TCategory">    Type of the category. </typeparam>
-public class LoggerTraceListener<TCategory> : TraceMessageListener
+/// <remarks>   Constructor. </remarks>
+/// <remarks>   2023-06-01. </remarks>
+/// <param name="logger">   The logger. </param>
+public class LoggerTraceListener<TCategory>( ILogger<TCategory> logger ) : TraceMessageListener()
 {
 
-    private readonly ILogger<TCategory> _logger;
-
-    /// <summary>   Constructor. </summary>
-    /// <remarks>   2023-06-01. </remarks>
-    /// <param name="logger">   The logger. </param>
-    public LoggerTraceListener( ILogger<TCategory> logger ) : base()
-    {
-        this._logger = logger;
-    }
+    private readonly ILogger<TCategory> _logger = logger;
 
     /// <summary>
     /// Writes trace information, a message, and event information to the listener specific output.
     /// </summary>
     /// <remarks>   2023-06-02. </remarks>
-    /// <param name="eventCache">   A <see cref="T:System.Diagnostics.TraceEventCache" /> object that
+    /// <param name="eventCache">   A <see cref="Diagnostics.TraceEventCache" /> object that
     ///                             contains the current process ID, thread ID, and stack trace
     ///                             information. </param>
     /// <param name="source">       A name used to identify the output, typically the name of the
     ///                             application that generated the trace event. </param>
-    /// <param name="eventType">    One of the <see cref="T:System.Diagnostics.TraceEventType" />
+    /// <param name="eventType">    One of the <see cref="Diagnostics.TraceEventType" />
     ///                             values specifying the type of event that has caused the trace. </param>
     /// <param name="id">           A numeric identifier for the event. </param>
     /// <param name="message">      A message to write. </param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public override void TraceEvent( TraceEventCache? eventCache, string source, TraceEventType eventType, int id, string? message )
     {
         if ( !string.IsNullOrEmpty( message ) )
         {
-            if ( TraceEventType.Critical == ( TraceEventType.Critical & eventType ) )
+            if ( TraceEventType.Critical == (TraceEventType.Critical & eventType) )
                 this._logger?.LogCritical( message );
             else if ( TraceEventType.Error == (TraceEventType.Error & eventType) )
                 this._logger?.LogError( message );

@@ -15,19 +15,20 @@ internal static class LoggerProvider
     /// <param name="utcTime">          (Optional) True to use UTC time. </param>
     /// <param name="timeStampFormat">  (Optional) The time stamp format. </param>
     /// <param name="minimumLevel">     (Optional) The minimum level. </param>
-    /// <returns>   An ILogger&lt;TCategory&gt; </returns>
+    /// <returns>   An <see cref="ILogger{TCategory}" /> </returns>
     public static ILogger<TCategory> InitLogger<TCategory>( bool includeScopes = true, bool singleLine = false,
                                                             bool utcTime = true, string timeStampFormat = "yyyyMMdd HH:mm:ss.fff ",
                                                             LogLevel minimumLevel = LogLevel.Information )
     {
         LogWriterExtensions.MemberMessageFormat = singleLine
-            ? LogWriterExtensions.SingleLineMemberMessageFormat
-            : LogWriterExtensions.MultiLineMemberMessageFormat;
+            ? LogWriterExtensions.SINGLE_LINE_MEMBER_MESSAGE_FORMAT
+            : LogWriterExtensions.MULTI_LINE_MEMBER_MESSAGE_FORMAT;
         LogWriterExtensions.MemberExceptionMessageFormat = singleLine
-            ? LogWriterExtensions.SingleLineMemberExceptionMessageFormat
-            : LogWriterExtensions.MultiLineMemberExceptionMessageFormat;
+            ? LogWriterExtensions.SINGLE_LINE_MEMBER_EXCEPTION_MESSAGE_FORMAT
+            : LogWriterExtensions.MULTI_LINE_MEMBER_EXCEPTION_MESSAGE_FORMAT;
         using ILoggerFactory loggerFactory = LoggerFactory.Create( builder =>
-            builder.AddSimpleConsole( options => {
+            builder.AddSimpleConsole( options =>
+            {
                 options.IncludeScopes = includeScopes;
                 options.SingleLine = singleLine;
                 options.UseUtcTimestamp = utcTime;
@@ -44,28 +45,34 @@ public static class LogWriterExtensions
 {
 
     /// <summary>   (Immutable) the multi line member message format. </summary>
-    public const string MultiLineMemberMessageFormat = "{message}\n  at '{sourceFilePath}' {memberName} line {sourceLineNumber})";
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>" )]
+    public const string MULTI_LINE_MEMBER_MESSAGE_FORMAT = "{message}\n  at '{sourceFilePath}' {memberName} line {sourceLineNumber})";
 
     /// <summary>   (Immutable) the single line member message format. </summary>
-    public const string SingleLineMemberMessageFormat = "{message} at '{sourceFilePath}' {memberName} line {sourceLineNumber})";
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>" )]
+    public const string SINGLE_LINE_MEMBER_MESSAGE_FORMAT = "{message} at '{sourceFilePath}' {memberName} line {sourceLineNumber})";
 
     /// <summary>   Gets or sets the member message format. </summary>
     /// <value> The member message format. </value>
-    public static string MemberMessageFormat { get; set; } = MultiLineMemberMessageFormat;
+    public static string MemberMessageFormat { get; set; } = MULTI_LINE_MEMBER_MESSAGE_FORMAT;
 
     /// <summary>   (Immutable) the multi line member exception message format. </summary>
-    public const string MultiLineMemberExceptionMessageFormat = "{message}\n  {ex}\n  at '{sourceFilePath}' {memberName} line {sourceLineNumber})";
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>" )]
+    public const string MULTI_LINE_MEMBER_EXCEPTION_MESSAGE_FORMAT = "{message}\n  {ex}\n  at '{sourceFilePath}' {memberName} line {sourceLineNumber})";
 
     /// <summary>   (Immutable) the single line member exception message format. </summary>
-    public const string SingleLineMemberExceptionMessageFormat = "{message} {ex} at '{sourceFilePath}' {memberName} line {sourceLineNumber})";
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>" )]
+    public const string SINGLE_LINE_MEMBER_EXCEPTION_MESSAGE_FORMAT = "{message} {ex} at '{sourceFilePath}' {memberName} line {sourceLineNumber})";
 
     /// <summary>   Gets or sets the member exception message format. </summary>
     /// <value> The member exception message format. </value>
-    public static string MemberExceptionMessageFormat { get; set; } = MultiLineMemberExceptionMessageFormat;
+    public static string MemberExceptionMessageFormat { get; set; } = MULTI_LINE_MEMBER_EXCEPTION_MESSAGE_FORMAT;
 
     /// <summary>   An <see cref="ILogger"/> extension method that logs a verbose. </summary>
     /// <param name="logWriter">    The <see cref="ILogger"/> to act on. </param>
     /// <param name="message">      The message. </param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public static void LogVerbose<TCategory>( this ILogger<TCategory> logWriter, string message )
     {
         if ( logWriter.IsEnabled( LogLevel.Trace ) )
@@ -79,6 +86,8 @@ public static class LogWriterExtensions
     /// <param name="memberName">       (Optional) Name of the member. </param>
     /// <param name="sourceFilePath">   (Optional) Full pathname of the source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Source line number. </param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public static void LogMemberVerbose<TCategory>( this ILogger<TCategory> logWriter, string message,
                                                         [CallerMemberName] string memberName = "",
                                                         [CallerFilePath] string sourceFilePath = "",
@@ -95,6 +104,8 @@ public static class LogWriterExtensions
     /// <param name="memberName">       (Optional) Name of the member. </param>
     /// <param name="sourceFilePath">   (Optional) Full pathname of the source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Source line number. </param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public static void LogMemberInfo<TCategory>( this ILogger<TCategory> logWriter, string message,
                                                     [CallerMemberName] string memberName = "",
                                                     [CallerFilePath] string sourceFilePath = "",
@@ -111,6 +122,8 @@ public static class LogWriterExtensions
     /// <param name="memberName">       (Optional) Name of the member. </param>
     /// <param name="sourceFilePath">   (Optional) Full pathname of the source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Source line number. </param>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public static void LogMemberWarning<TCategory>( this ILogger<TCategory> logWriter, string message,
                                                     [CallerMemberName] string memberName = "",
                                                     [CallerFilePath] string sourceFilePath = "",
@@ -128,7 +141,9 @@ public static class LogWriterExtensions
     /// <param name="memberName">       (Optional) Name of the member. </param>
     /// <param name="sourceFilePath">   (Optional) Full pathname of the source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Source line number. </param>
-    public static void LogMemberError<TCategory>( this ILogger<TCategory> logWriter, string message, System.Exception ex,
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
+    public static void LogMemberError<TCategory>( this ILogger<TCategory> logWriter, string message, Exception ex,
                                                     [CallerMemberName] string memberName = "",
                                                     [CallerFilePath] string sourceFilePath = "",
                                                     [CallerLineNumber] int sourceLineNumber = 0 )

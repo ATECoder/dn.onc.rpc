@@ -9,7 +9,7 @@ internal interface ICloseable : IDisposable
     /// Closes the connection to an ONC/RPC server and frees all network-related resources.
     /// </summary>
     /// <remarks> This implementation of close and dispose follows the implementation of
-    /// the <see cref="System.Net.Sockets.TcpClient"/> at
+    /// the <see cref="Net.Sockets.TcpClient"/> at
     /// <see href="https://GitHub.com/microsoft/referencesource/blob/master/System/net/System/Net/Sockets/TCPClient.cs"/>
     /// with the following modifications:
     /// <list type="bullet"> <item>

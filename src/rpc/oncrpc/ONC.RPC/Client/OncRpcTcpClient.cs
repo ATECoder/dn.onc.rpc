@@ -16,7 +16,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <summary>   Gets or sets the default timeout for sending calls or receiving replies. </summary>
     /// <remarks>
     /// This timeout interval is used to set the
-    /// <see cref="System.Net.Sockets.Socket"/> send and receive timeouts
+    /// <see cref="Net.Sockets.Socket"/> send and receive timeouts
     /// during TCP RPC calls.
     /// </remarks>
     /// <value> The transmit timeout default. </value>

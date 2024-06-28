@@ -23,10 +23,13 @@ public class OncRpcTcpTests
     public static int ServerStartLoopDelay { get; set; } = 100;
 
 
-    /// <summary> Initializes the test class before running the first test. </summary>
-    /// <param name="testContext"> Gets or sets the test context which provides information about
-    /// and functionality for the current test run. </param>
-    /// <remarks>Use ClassInitialize to run code before running the first test in the class</remarks>
+    /// <summary>   Initializes the test class before running the first test. </summary>
+    /// <remarks>
+    /// Use <see cref="InitializeTestClass(TestContext)"/> to run code before running the first test
+    /// in the class.
+    /// </remarks>
+    /// <param name="testContext">  Gets or sets the test context which provides information about
+    ///                             and functionality for the current test run. </param>
     [ClassInitialize()]
     public static void InitializeTestClass( TestContext testContext )
     {

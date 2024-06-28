@@ -97,12 +97,16 @@ public partial class OncRpcServerStubBase : INotifyPropertyChanged
     /// <remarks>
     /// The <see cref="PropertyChanged"/> event is not raised if the current and new value for the target property are the same.
     /// </remarks>
-    /// <exception cref="System.ArgumentNullException">Thrown if <paramref name="model"/> or <paramref name="callback"/> are (<see langword="null"/>).</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="model"/> or <paramref name="callback"/> are (<see langword="null"/>).</exception>
     protected bool SetProperty<TModel, T>( T oldValue, T newValue, TModel model, Action<TModel, T> callback, [CallerMemberName] string? propertyName = null )
         where TModel : class
     {
         if ( model is null ) throw new ArgumentNullException( nameof( model ) );
+#if NET8_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull( callback, nameof( callback ) );
+#else
         if ( callback is null ) throw new ArgumentNullException( nameof( callback ) );
+#endif
 
         if ( EqualityComparer<T>.Default.Equals( oldValue, newValue ) )
         {
@@ -129,7 +133,11 @@ public partial class OncRpcServerStubBase : INotifyPropertyChanged
     /// <returns>   <see langword="true"/> if it succeeds; otherwise, <see langword="false"/>. </returns>
     protected bool SetProperty<T>( T oldValue, T newValue, Action callback, [CallerMemberName] string? propertyName = null )
     {
+#if NET8_0_OR_GREATER
+        ArgumentNullException.ThrowIfNull( callback, nameof( callback ) );
+#else
         if ( callback is null ) throw new ArgumentNullException( nameof( callback ) );
+#endif
 
         if ( EqualityComparer<T>.Default.Equals( oldValue, newValue ) )
         {
