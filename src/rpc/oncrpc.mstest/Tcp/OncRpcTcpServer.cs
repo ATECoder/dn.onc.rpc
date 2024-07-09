@@ -15,9 +15,6 @@ namespace cc.isr.ONC.RPC.MSTest.Tcp;
 /// </remarks>
 public partial class OncRpcTcpServer : OncRpcTcpServerBase
 {
-
-    #region " construction and cleanup "
-
     /// <summary>   Default constructor. </summary>
     public OncRpcTcpServer() : this( 0 )
     { }

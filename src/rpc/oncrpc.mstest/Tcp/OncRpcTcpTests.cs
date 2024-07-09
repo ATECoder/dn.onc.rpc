@@ -11,7 +11,6 @@ namespace cc.isr.ONC.RPC.MSTest.Tcp;
 [TestClass]
 public class OncRpcTcpTests
 {
-
     #region " construction and cleanup "
 
     /// <summary>   Gets or sets the server start time typical. </summary>

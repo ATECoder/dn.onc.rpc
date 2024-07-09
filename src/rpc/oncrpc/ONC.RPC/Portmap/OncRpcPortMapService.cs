@@ -19,9 +19,6 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// </remarks>
 public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
 {
-
-    #region " construction and cleanup "
-
     /// <summary> 
     /// Creates a new Portmap service instance. Creates the transport registration information and UDP and TCP-
     /// based transports, which will be bound later to port 111.

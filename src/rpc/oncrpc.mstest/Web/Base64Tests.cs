@@ -7,6 +7,8 @@ namespace cc.isr.ONC.RPC.MSTest.Web;
 [TestClass]
 public class Base64Tests
 {
+    #region " construction and cleanup "
+
     /// <summary>   (Unit Test Method) base 64 should encode and decode. </summary>
     [TestMethod]
     public void Base64ShouldEncodeAndDecode()

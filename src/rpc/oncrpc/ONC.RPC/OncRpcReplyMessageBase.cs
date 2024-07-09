@@ -19,9 +19,6 @@ namespace cc.isr.ONC.RPC;
 /// </remarks>
 public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
 {
-
-    #region " construction and cleanup "
-
     /// <summary>
     /// (Immutable)
     /// Dummy, which can be used to identify unused parameters when constructing

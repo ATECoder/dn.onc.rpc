@@ -10,9 +10,6 @@ namespace cc.isr.ONC.RPC.MSTest.PortMapper;
 [TestClass]
 public class APortmapGetPortTest
 {
-
-    #region " construction and cleanup "
-
     /// <summary>   Initializes the test class before running the first test. </summary>
     /// <remarks>
     /// Use <see cref="InitializeTestClass(TestContext)"/> to run code before running the first test

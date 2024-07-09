@@ -187,9 +187,6 @@ namespace cc.isr.ONC.RPC.Client;
 /// </remarks>
 public abstract class OncRpcClientBase : ICloseable
 {
-
-    #region " construction and cleanup "
-
     /// <summary>   Constructs an <see cref="OncRpcClientBase"/> object (the generic part). </summary>
     /// <remarks>
     /// If no port number is given (that is, <paramref name="port"/> is <c>0</c>), then a port lookup

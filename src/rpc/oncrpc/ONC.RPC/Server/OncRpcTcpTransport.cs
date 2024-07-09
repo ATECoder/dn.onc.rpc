@@ -13,9 +13,6 @@ namespace cc.isr.ONC.RPC.Server;
 /// </remarks>
 public class OncRpcTcpTransport : OncRpcTransportBase
 {
-
-    #region " construction and cleanup "
-
     /// <summary>
     /// Create a new instance of a <see cref="OncRpcTcpTransport"/> which encapsulates TCP/IP-
     /// based XDR streams of an ONC/RPC server.

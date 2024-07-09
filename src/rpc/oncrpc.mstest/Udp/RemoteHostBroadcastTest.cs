@@ -9,9 +9,6 @@ namespace cc.isr.ONC.RPC.MSTest.Udp;
 [TestCategory( "broadcast" )]
 public class RemoteHostBroadcastTest
 {
-
-    #region " construction and cleanup "
-
     /// <summary>   Initializes the test class before running the first test. </summary>
     /// <remarks>
     /// Use <see cref="InitializeTestClass(TestContext)"/> to run code before running the first test

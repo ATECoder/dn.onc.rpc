@@ -20,9 +20,6 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// </remarks>
 public class OncRpcEmbeddedPortmapServiceStub : ICloseable
 {
-
-    #region " construction and cleanup "
-
     /// <summary>
     /// Constructs an embeddable Portmap service of class server <see cref="OncRpcEmbeddedPortmapServiceStub"/>
     /// and starts the service if no other (external) Portmap service is available.

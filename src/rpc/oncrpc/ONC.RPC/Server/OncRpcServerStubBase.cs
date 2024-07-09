@@ -12,9 +12,6 @@ namespace cc.isr.ONC.RPC.Server;
 /// </remarks>
 public abstract partial class OncRpcServerStubBase : ICloseable
 {
-
-    #region " construction and cleanup "
-
     /// <summary>   Default constructor. </summary>
     /// <remarks>   2023-06-01. </remarks>
     public OncRpcServerStubBase()

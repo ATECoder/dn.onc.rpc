@@ -22,9 +22,6 @@ namespace cc.isr.ONC.RPC.Server;
 /// </remarks>
 public abstract class OncRpcTransportBase : ICloseable
 {
-
-    #region " construction and cleanup "
-
     /// <summary>
     /// Create a new instance of a server <see cref="OncRpcTransportBase"/> which encapsulates
     /// XDR streams of an ONC/RPC server.

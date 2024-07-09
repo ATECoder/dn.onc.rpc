@@ -11,9 +11,6 @@ namespace cc.isr.ONC.RPC.MSTest.Udp;
 [TestCategory( "broadcast" )]
 public class LocalHostBroadcastTest
 {
-
-    #region " construction and cleanup "
-
     /// <summary>   Gets or sets the server start time typical. </summary>
     /// <value> The server start time typical. </value>
     public static int ServerStartTimeTypical { get; set; } = 3500;
