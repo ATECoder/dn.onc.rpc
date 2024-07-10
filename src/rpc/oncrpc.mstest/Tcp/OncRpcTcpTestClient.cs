@@ -6,7 +6,6 @@ namespace cc.isr.ONC.RPC.MSTest.Tcp;
 /// <summary>   An ONC/RPC TCP Test client. </summary>
 public class OncRpcTcpTestClient : IDisposable
 {
-
     #region " construction and cleanup "
 
     private OncRpcClientBase? _coreClient;
