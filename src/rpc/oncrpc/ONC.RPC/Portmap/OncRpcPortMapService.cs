@@ -1,5 +1,4 @@
 using System.Net.Sockets;
-
 using cc.isr.ONC.RPC.Codecs;
 using cc.isr.ONC.RPC.EnumExtensions;
 using cc.isr.ONC.RPC.Server;
@@ -350,5 +349,4 @@ public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
     }
 
     #endregion
-
 }

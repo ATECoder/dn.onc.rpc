@@ -472,5 +472,4 @@ public abstract class OncRpcTransportBase : ICloseable
     internal IOncRpcDispatchable Dispatcher { get; set; }
 
     #endregion
-
 }

@@ -205,5 +205,4 @@ internal sealed class TestSiteSettings : CommunityToolkit.Mvvm.ComponentModel.Ob
     }
 
     #endregion
-
 }

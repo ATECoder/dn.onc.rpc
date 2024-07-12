@@ -214,7 +214,6 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
         }
     }
 
-
     #endregion
 
     #region " operation methods "
@@ -506,5 +505,4 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     }
 
     #endregion
-
 }

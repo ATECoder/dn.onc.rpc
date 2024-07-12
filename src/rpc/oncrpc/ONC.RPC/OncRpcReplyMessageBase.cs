@@ -226,5 +226,4 @@ public abstract class OncRpcReplyMessageBase : OncRpcMessageBase
     }
 
     #endregion
-
 }

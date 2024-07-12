@@ -11,7 +11,6 @@ namespace cc.isr.MSTest;
 /// </remarks>
 public sealed class Asserts
 {
-
     #region " singleton "
 
     /// <summary>
@@ -255,5 +254,4 @@ public sealed class Asserts
     }
 	
     #endregion
-
 }

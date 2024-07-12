@@ -497,8 +497,5 @@ public abstract partial class OncRpcServerStubBase : ICloseable
                 .ContinueWith( failedTask => this.OnThreadException( new ThreadExceptionEventArgs( failedTask.Exception ) ), TaskContinuationOptions.OnlyOnFaulted );
     }
 
-
-
     #endregion
-
 }

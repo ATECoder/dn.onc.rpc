@@ -1,5 +1,4 @@
 using System.Diagnostics;
-
 using cc.isr.ONC.RPC.EnumExtensions;
 using cc.isr.ONC.RPC.Portmap;
 
@@ -9,7 +8,6 @@ namespace cc.isr.ONC.RPC.MSTest;
 [TestClass]
 public class SupportTests
 {
-
     #region " fixture construction and cleanup "
 
     /// <summary>   Initializes the test class before running the first test. </summary>
@@ -373,5 +371,4 @@ public class SupportTests
     }
 
     #endregion
-
 }

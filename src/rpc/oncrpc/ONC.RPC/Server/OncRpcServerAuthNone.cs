@@ -80,5 +80,4 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
     }
 
     #endregion
-
 }

@@ -1,7 +1,5 @@
 using cc.isr.ONC.RPC.Server;
 
-
-
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
 /// <summary>

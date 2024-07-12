@@ -1,5 +1,4 @@
 using System.ComponentModel;
-
 using cc.isr.ONC.RPC.EnumExtensions;
 
 namespace cc.isr.ONC.RPC;

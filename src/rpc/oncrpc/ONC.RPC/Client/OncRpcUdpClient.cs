@@ -201,7 +201,6 @@ public class OncRpcUdpClient : OncRpcClientBase
         }
     }
 
-
     #endregion
 
     #region " event handlers "
@@ -759,5 +758,4 @@ public class OncRpcUdpClient : OncRpcClientBase
     }
 
     #endregion
-
 }

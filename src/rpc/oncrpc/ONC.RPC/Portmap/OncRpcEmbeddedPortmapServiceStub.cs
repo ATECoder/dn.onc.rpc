@@ -1,5 +1,4 @@
 using System.Diagnostics;
-
 using cc.isr.ONC.RPC.Server;
 
 namespace cc.isr.ONC.RPC.Portmap;
@@ -333,5 +332,4 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     }
 
     #endregion
-
 }
