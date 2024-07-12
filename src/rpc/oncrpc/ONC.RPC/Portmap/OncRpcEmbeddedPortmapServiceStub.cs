@@ -77,7 +77,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     public virtual async Task ShutdownAsync()
     {
         OncRpcServerStubBase? oncRpcServerStub = this._embeddedPortmapService;
-        if ( oncRpcServerStub != null )
+        if ( oncRpcServerStub is not null )
             await oncRpcServerStub.ShutdownAsync();
     }
 

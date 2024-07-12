@@ -242,8 +242,9 @@ public abstract class OncRpcTransportBase : ICloseable
     public Encoding CharacterEncoding
     {
         get => this._characterEncoding;
-        set {
-            this._characterEncoding = value;
+        set
+        {
+             this._characterEncoding = value;
             if ( this.Encoder is not null ) this.Encoder.CharacterEncoding = value;
             if ( this.Decoder is not null ) this.Decoder.CharacterEncoding = value;
         }

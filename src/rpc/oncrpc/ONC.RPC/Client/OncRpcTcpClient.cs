@@ -233,8 +233,9 @@ public class OncRpcTcpClient : OncRpcClientBase
     public override Encoding CharacterEncoding
     {
         get => base.CharacterEncoding;
-        set {
-            base.CharacterEncoding = value;
+        set
+        {
+             base.CharacterEncoding = value;
             if ( this.Decoder is not null ) this.Decoder.CharacterEncoding = value;
             if ( this.Encoder is not null ) this.Encoder.CharacterEncoding = value;
         }

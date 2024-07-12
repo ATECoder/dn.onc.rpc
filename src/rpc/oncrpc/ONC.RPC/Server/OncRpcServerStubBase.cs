@@ -165,8 +165,9 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     public virtual Encoding CharacterEncoding
     {
         get => this._characterEncoding;
-        set {
-            this._characterEncoding = value;
+        set
+        {
+             this._characterEncoding = value;
             if ( this.SetProperty( this.CharacterEncoding, value, () => this._characterEncoding = value ) )
                 foreach ( var transport in this._transports )
                     transport.CharacterEncoding = value;
