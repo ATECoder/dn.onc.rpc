@@ -89,9 +89,9 @@ public static class LogWriterExtensions
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public static void LogMemberVerbose<TCategory>( this ILogger<TCategory> logWriter, string message,
-                                                        [CallerMemberName] string memberName = "",
-                                                        [CallerFilePath] string sourceFilePath = "",
-                                                        [CallerLineNumber] int sourceLineNumber = 0 )
+                                                        [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+                                                        [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+                                                        [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0 )
     {
         if ( logWriter.IsEnabled( LogLevel.Trace ) )
             logWriter.Log( LogLevel.Trace, MemberMessageFormat, message, sourceFilePath, memberName, sourceLineNumber );
@@ -107,9 +107,9 @@ public static class LogWriterExtensions
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public static void LogMemberInfo<TCategory>( this ILogger<TCategory> logWriter, string message,
-                                                    [CallerMemberName] string memberName = "",
-                                                    [CallerFilePath] string sourceFilePath = "",
-                                                    [CallerLineNumber] int sourceLineNumber = 0 )
+                                                    [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+                                                    [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+                                                    [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0 )
     {
         if ( logWriter.IsEnabled( LogLevel.Information ) )
             logWriter.Log( LogLevel.Information, MemberMessageFormat, message, sourceFilePath, memberName, sourceLineNumber );
@@ -125,9 +125,9 @@ public static class LogWriterExtensions
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public static void LogMemberWarning<TCategory>( this ILogger<TCategory> logWriter, string message,
-                                                    [CallerMemberName] string memberName = "",
-                                                    [CallerFilePath] string sourceFilePath = "",
-                                                    [CallerLineNumber] int sourceLineNumber = 0 )
+                                                    [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+                                                    [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+                                                    [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0 )
     {
         if ( logWriter.IsEnabled( LogLevel.Warning ) )
             logWriter.Log( LogLevel.Warning, MemberMessageFormat, message, sourceFilePath, memberName, sourceLineNumber );
@@ -144,9 +144,9 @@ public static class LogWriterExtensions
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public static void LogMemberError<TCategory>( this ILogger<TCategory> logWriter, string message, Exception ex,
-                                                    [CallerMemberName] string memberName = "",
-                                                    [CallerFilePath] string sourceFilePath = "",
-                                                    [CallerLineNumber] int sourceLineNumber = 0 )
+                                                    [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+                                                    [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+                                                    [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0 )
     {
         if ( logWriter.IsEnabled( LogLevel.Error ) )
             logWriter.Log( LogLevel.Error, MemberExceptionMessageFormat, message, ex, sourceFilePath, memberName, sourceLineNumber );
