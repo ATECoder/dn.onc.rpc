@@ -2,7 +2,6 @@ using System.ComponentModel;
 using cc.isr.ONC.RPC.EnumExtensions;
 
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// The class <see cref="OncRpcException"/> indicates ONC/RPC conditions that a reasonable
 /// application might want to catch.
@@ -18,7 +17,6 @@ namespace cc.isr.ONC.RPC;
 [Serializable]
 public class OncRpcException : Exception
 {
-
     /// <summary>
     /// Constructs an <see cref="OncRpcException"/> with a reason of <see cref="OncRpcExceptionReason.OncRpcFailed"/>.
     /// </summary>
@@ -114,13 +112,11 @@ public class OncRpcException : Exception
     public OncRpcExceptionReason Reason { get; private set; }
 
 }
-
 /// <summary>
 /// A collection of constants used to identify the <see cref="OncRpcException"/>.
 /// </summary>
 public enum OncRpcExceptionReason
 {
-
     /// <summary>   The remote procedure call was carried out successfully. <para>
     /// 
     /// Renamed from <c>RPC_SUCCESS (=0)</c>, which maps to VXI-11 Visa32.VISA.VI_SUCCESS.  </para></summary>

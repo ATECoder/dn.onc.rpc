@@ -2,7 +2,6 @@ using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Portmap;
 
 namespace cc.isr.ONC.RPC.Server;
-
 /// <summary>
 /// Instances of class server <see cref="OncRpcTransportBase"/> encapsulate XDR streams of
 /// ONC/RPC servers.

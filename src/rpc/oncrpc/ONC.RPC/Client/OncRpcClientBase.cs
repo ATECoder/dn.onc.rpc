@@ -1,7 +1,6 @@
 using cc.isr.ONC.RPC.Portmap;
 
 namespace cc.isr.ONC.RPC.Client;
-
 /// <summary>
 /// The abstract <see cref="OncRpcClientBase"/> class is the foundation for protocol-specific ONC/RPC
 /// clients.

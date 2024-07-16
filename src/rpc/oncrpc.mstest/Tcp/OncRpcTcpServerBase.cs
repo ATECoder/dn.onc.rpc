@@ -1,14 +1,12 @@
 using cc.isr.ONC.RPC.Server;
 
 namespace cc.isr.ONC.RPC.MSTest.Tcp;
-
 /// <summary>
 /// The abstract TCP server <see cref="OncRpcTcpServerBase"/> class is the base class upon which to build ONC/RPC 
 /// program-specific TCP servers.
 /// </summary>
 public abstract class OncRpcTcpServerBase : OncRpcServerStubBase, IOncRpcDispatchable
 {
-
     /// <summary>   Default constructor. </summary>
     public OncRpcTcpServerBase() : this( 0 )
     { }

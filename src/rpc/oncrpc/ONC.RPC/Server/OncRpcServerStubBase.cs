@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC.Server;
-
 /// <summary>
 /// The abstract server <see cref="OncRpcServerStubBase"/> class is the base class upon which to build ONC/RPC-program
 /// specific servers.

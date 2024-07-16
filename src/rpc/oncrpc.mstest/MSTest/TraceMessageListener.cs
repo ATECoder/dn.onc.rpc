@@ -10,7 +10,6 @@ namespace cc.isr.MSTest;
 /// </remarks>
 public abstract class TraceMessageListener : TraceListener
 {
-
     /// <summary>   Constructor. </summary>
     /// <remarks>   2023-06-01. </remarks>
     /// <param name="logger">   The logger. </param>

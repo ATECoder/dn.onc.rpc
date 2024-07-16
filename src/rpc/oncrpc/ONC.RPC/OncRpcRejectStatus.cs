@@ -1,7 +1,6 @@
 using System.ComponentModel;
 
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// A collection of constants used to describe why a remote procedure call message was rejected.
 /// </summary>

@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// The abstract <see cref="OncRpcCallMessageBase"/> class represents a remote procedure call
 /// message as defined by ONC/RPC in RFC 1831.

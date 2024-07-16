@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC.Codecs;
-
 /// <summary>
 /// The server <see cref="OncRpcGetPortCodec"/> class represents the result from a 
 /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber"/> remote

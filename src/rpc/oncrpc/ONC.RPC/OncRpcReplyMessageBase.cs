@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// The <see cref="OncRpcReplyMessageBase"/> class represents an ONC/RPC reply message as defined by
 /// ONC/RPC in RFC 1831.

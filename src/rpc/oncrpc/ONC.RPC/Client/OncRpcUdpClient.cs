@@ -2,7 +2,6 @@
 using System.Net.Sockets;
 
 namespace cc.isr.ONC.RPC.Client;
-
 /// <summary>
 /// ONC/RPC client which communicates with ONC/RPC servers over the network using the datagram-
 /// oriented protocol UDP/IP.
@@ -13,7 +12,6 @@ namespace cc.isr.ONC.RPC.Client;
 /// </remarks>
 public class OncRpcUdpClient : OncRpcClientBase
 {
-
     /// <summary>   Gets or sets the default timeout for sending calls or receiving replies. </summary>
     /// <remarks>
     /// This timeout interval is used to set the
@@ -110,7 +108,6 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// XDR decoding stream used when receiving replies via UDP/IP from an ONC/RPC server.
     /// </summary>
     private XdrUdpDecodingStream? _decoder;
-
 
     /// <summary>
     /// Releases unmanaged, large objects and (optionally) managed resources used by this class.

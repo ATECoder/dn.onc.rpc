@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC.Client;
-
 /// <summary>
 /// The abstract <see cref="OncRpcClientStubBase"/> class is the base class upon which to build ONC/RPC
 /// program-specific clients.

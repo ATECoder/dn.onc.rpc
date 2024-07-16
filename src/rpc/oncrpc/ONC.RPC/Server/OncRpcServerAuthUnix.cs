@@ -1,7 +1,6 @@
 using cc.isr.ONC.RPC.EnumExtensions;
 
 namespace cc.isr.ONC.RPC.Server;
-
 /// <summary>
 /// The server <see cref="OncRpcServerAuthNone"/> class handles all protocol issues of the ONC/RPC
 /// authentication <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> on the server side.
@@ -12,7 +11,6 @@ namespace cc.isr.ONC.RPC.Server;
 /// </remarks>
 public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
 {
-
     /// <summary>   (Immutable) the default type of type the 'UNIX' authentication. </summary>
     public const OncRpcAuthType AuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeUnix;
 

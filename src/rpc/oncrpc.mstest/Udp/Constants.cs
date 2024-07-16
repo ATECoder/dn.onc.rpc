@@ -9,7 +9,6 @@ public static class RpcProgramConstants
     /// <summary>   (Immutable) the RPC program version one. </summary>
     public const int Version = 1;
 }
-
 /// <summary>
 /// A class that enumerates the remote procedures for ONC/RPC program.
 /// </summary>

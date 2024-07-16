@@ -1,7 +1,6 @@
 using cc.isr.ONC.RPC.EnumExtensions;
 
 namespace cc.isr.ONC.RPC.Client;
-
 /// <summary>
 /// The <see cref="OncRpcReplyMessageBase"/> class represents an ONC/RPC reply message as defined by
 /// ONC/RPC in RFC 1831.
@@ -21,7 +20,6 @@ namespace cc.isr.ONC.RPC.Client;
 /// </remarks>
 public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
 {
-
     /// <summary>
     /// Initializes a new <see cref="OncRpcReplyMessageBase"/> object to represent an invalid state.
     /// </summary>

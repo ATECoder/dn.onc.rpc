@@ -18,7 +18,6 @@ public class LocalHostBroadcastTest
     /// <value> The server start loop delay. </value>
     public static int ServerStartLoopDelay { get; set; } = 100;
 
-
     /// <summary>   Initializes the test class before running the first test. </summary>
     /// <remarks>
     /// Use <see cref="InitializeTestClass(TestContext)"/> to run code before running the first test

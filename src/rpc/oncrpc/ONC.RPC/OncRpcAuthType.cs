@@ -1,7 +1,6 @@
 using System.ComponentModel;
 
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// A collection of constants used to identify the authentication schemes available for ONC/RPC.
 /// </summary>

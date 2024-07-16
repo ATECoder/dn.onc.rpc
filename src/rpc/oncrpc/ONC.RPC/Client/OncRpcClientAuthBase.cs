@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC.Client;
-
 /// <summary>
 /// The <see cref="OncRpcClientAuthBase"/> class is the base class for handling all protocol issues of
 /// ONC/RPC authentication on the client side.
@@ -23,7 +22,6 @@ namespace cc.isr.ONC.RPC.Client;
 /// </remarks>
 public abstract class OncRpcClientAuthBase
 {
-
     /// <summary>   Specialized constructor for use only by derived class. </summary>
     /// <param name="authType"> The type of the authentication. </param>
     protected OncRpcClientAuthBase( OncRpcAuthType authType )

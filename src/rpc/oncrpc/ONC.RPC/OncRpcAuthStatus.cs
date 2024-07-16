@@ -1,7 +1,6 @@
 using System.ComponentModel;
 
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// A collection of constants used to identify the authentication status (or any authentication
 /// errors) in ONC/RPC replies of the corresponding ONC/RPC calls.

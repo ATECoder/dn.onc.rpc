@@ -7,7 +7,6 @@ namespace cc.isr.ONC.RPC.EnumExtensions;
 /// <summary>   A support class for enum extensions. </summary>
 public static class OncRpcEnumExtensions
 {
-
     /// <summary>   Gets a description from an Enum. </summary>
     /// <param name="value">    An enum constant representing the value option. </param>
     /// <returns>   The description. </returns>

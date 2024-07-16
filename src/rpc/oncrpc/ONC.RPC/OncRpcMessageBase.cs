@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// The abstract <see cref="OncRpcMessageBase"/> class is a superclass for the <see cref="OncRpcMessageType.OncRpcCallMessageType"/> 
 /// and <see cref="OncRpcMessageType.OncRpcReplyMessageType"/> message types defined by the ONC/RPC standard.
@@ -12,7 +11,6 @@ namespace cc.isr.ONC.RPC;
 /// </remarks>
 public abstract class OncRpcMessageBase
 {
-
     /// <summary>   The default message identifier. </summary>
     /// <value> The message identifier default. </value>
     public static int MessageIdDefault { get; set; } = 0;

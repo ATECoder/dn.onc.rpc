@@ -4,7 +4,6 @@ namespace cc.isr.ONC.RPC;
 /// <remarks>   2023-06-02. </remarks>
 internal interface ICloseable : IDisposable
 {
-
     /// <summary>
     /// Closes the connection to an ONC/RPC server and frees all network-related resources.
     /// </summary>

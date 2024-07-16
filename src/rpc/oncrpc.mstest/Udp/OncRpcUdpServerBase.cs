@@ -1,7 +1,6 @@
 using cc.isr.ONC.RPC.Server;
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
-
 /// <summary>
 /// The abstract UDP server <see cref="OncRpcTcpServerBase"/> class is the base class upon which to build ONC/RPC 
 /// program-specific UDP servers.

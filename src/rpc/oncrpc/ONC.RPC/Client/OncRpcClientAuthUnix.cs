@@ -2,7 +2,6 @@
 using cc.isr.ONC.RPC.EnumExtensions;
 
 namespace cc.isr.ONC.RPC.Client;
-
 /// <summary>
 /// The <see cref="OncRpcClientAuthUnix"/> class handles protocol issues of ONC/RPC 
 /// <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> (and thus <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>)
@@ -14,7 +13,6 @@ namespace cc.isr.ONC.RPC.Client;
 /// </remarks>
 public class OncRpcClientAuthUnix : OncRpcClientAuthBase
 {
-
     /// <summary>   (Immutable) the default type of type the 'UNIX' authentication. </summary>
     public const OncRpcAuthType AuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeUnix;
 

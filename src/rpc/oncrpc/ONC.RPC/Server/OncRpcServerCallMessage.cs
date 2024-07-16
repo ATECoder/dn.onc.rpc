@@ -1,7 +1,6 @@
 using cc.isr.ONC.RPC.EnumExtensions;
 
 namespace cc.isr.ONC.RPC.Server;
-
 /// <summary>
 /// The server <see cref="OncRpcServerCallMessage"/> class represents an ONC/RPC call message on the
 /// server side.

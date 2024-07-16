@@ -11,7 +11,6 @@ namespace cc.isr.ONC.RPC;
 /// </remarks>
 public enum OncRpcProtocol
 {
-
     /// <summary>   An enum constant representing the not specified option. </summary>
     [Description( "Unspecified network communication protocol. " )]
     NotSpecified = 0,

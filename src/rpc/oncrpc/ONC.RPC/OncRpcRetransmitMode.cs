@@ -2,7 +2,6 @@ using System.ComponentModel;
 using cc.isr.ONC.RPC.Client;
 
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// A collection of constants used to identify the retransmit schemes 
 /// when using <see cref="OncRpcUdpClient">UDP/IP-based ONC/RPC clients</see>.  

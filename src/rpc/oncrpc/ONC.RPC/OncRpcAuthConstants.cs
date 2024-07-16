@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// A collection of constants related to authentication and generally useful for ONC/RPC.
 /// </summary>

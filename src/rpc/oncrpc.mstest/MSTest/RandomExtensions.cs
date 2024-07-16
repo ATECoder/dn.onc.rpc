@@ -2,7 +2,6 @@ namespace cc.isr.MSTest;
 
 internal sealed partial class RandomExtensions
 {
-
     /// <summary> Generates normally distributed doubles. </summary>
     /// <remarks> David, 2020-09-23. </remarks>
     /// <param name="generator"> The random number generator. </param>

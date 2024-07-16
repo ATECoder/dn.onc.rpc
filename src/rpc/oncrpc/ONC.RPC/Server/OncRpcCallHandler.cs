@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC.Server;
-
 /// <summary>
 /// The <see cref="OncRpcCallHandler"/> received and decodes call information and then encodes
 /// and replies to the call.

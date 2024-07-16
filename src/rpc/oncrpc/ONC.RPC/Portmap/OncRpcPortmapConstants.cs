@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC.Portmap;
-
 /// <summary>
 /// A collection of constants used for ONC/RPC messages to identify the 
 /// ONC/RPC port mappers port, program and version.
@@ -10,7 +9,6 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// </remarks>
 public class OncRpcPortmapConstants
 {
-
     /// <summary>
     /// (Immutable) Well-known port where the portmap process can be found on Internet hosts. <para>
     /// 

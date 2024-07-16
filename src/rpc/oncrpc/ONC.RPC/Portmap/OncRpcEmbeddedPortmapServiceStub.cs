@@ -2,7 +2,6 @@ using System.Diagnostics;
 using cc.isr.ONC.RPC.Server;
 
 namespace cc.isr.ONC.RPC.Portmap;
-
 /// <summary>
 /// The class server <see cref="OncRpcEmbeddedPortmapServiceStub"/> provides an embeddable
 /// Portmap service, which is automatically started in its own task if the (operating) system

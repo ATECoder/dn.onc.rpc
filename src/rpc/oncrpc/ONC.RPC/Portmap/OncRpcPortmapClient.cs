@@ -2,7 +2,6 @@ using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Codecs;
 
 namespace cc.isr.ONC.RPC.Portmap;
-
 /// <summary>
 /// The class <see cref="OncRpcPortmapClient"/> is a specialized ONC/RPC client, which can talk to
 /// the portmapper on a given host using the famous UDP/IP datagram-oriented Internet protocol.
@@ -107,7 +106,6 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// </remarks>
 public class OncRpcPortmapClient : ICloseable
 {
-
     /// <summary>   Gets or sets the TCP connect timeout default. </summary>
     /// <value> The TCP connect timeout default. </value>
     public static int ConnectTimeoutDefault { get; set; } = 3000;

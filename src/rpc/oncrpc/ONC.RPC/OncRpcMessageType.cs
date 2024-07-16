@@ -1,7 +1,6 @@
 using System.ComponentModel;
 
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// A collection of constants used for ONC/RPC messages to identify the type of message.
 /// </summary>
@@ -14,7 +13,6 @@ namespace cc.isr.ONC.RPC;
 /// </remarks>
 public enum OncRpcMessageType
 {
-
     /// <summary>   An enum constant representing the not specified option. </summary>
     [Description( "Unspecified ONC/RPC message type." )] NotSpecified = -1,
 

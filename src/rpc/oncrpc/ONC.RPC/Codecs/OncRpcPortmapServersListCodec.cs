@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC.Codecs;
-
 /// <summary>
 /// Objects of class <see cref="OncRpcPortmapServersListCodec"/> represent the outcome of the 
 /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers"/>
@@ -11,7 +10,6 @@ namespace cc.isr.ONC.RPC.Codecs;
 /// </remarks>
 public class OncRpcPortmapServersListCodec : IXdrCodec
 {
-
     /// <summary>   Initialize an <see cref="OncRpcPortmapServersListCodec"/> object. </summary>
     /// <remarks>
     /// Afterwards, the <see cref="ServerIdentifiers"/> field is initialized to contain no elements.

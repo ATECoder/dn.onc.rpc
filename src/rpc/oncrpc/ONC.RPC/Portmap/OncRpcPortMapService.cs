@@ -4,7 +4,6 @@ using cc.isr.ONC.RPC.EnumExtensions;
 using cc.isr.ONC.RPC.Server;
 
 namespace cc.isr.ONC.RPC.Portmap;
-
 /// <summary>
 /// The class <see cref="OncRpcPortMapService"/> implements a C#-based ONC/RPC port map service, speaking the
 /// widely deployed protocol version 2.

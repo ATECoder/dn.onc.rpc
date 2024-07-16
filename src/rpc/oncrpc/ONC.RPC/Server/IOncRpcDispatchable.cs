@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC.Server;
-
 /// <summary>
 /// Tags classes as being able to dispatch and handle ONC/RPC requests from clients.
 /// </summary>

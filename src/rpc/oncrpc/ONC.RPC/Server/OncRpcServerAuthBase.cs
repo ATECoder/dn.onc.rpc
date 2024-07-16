@@ -2,7 +2,6 @@
 using cc.isr.ONC.RPC.EnumExtensions;
 
 namespace cc.isr.ONC.RPC.Server;
-
 /// <summary>
 /// The server <see cref="OncRpcServerAuthBase"/> class is the base class and factory for handling all
 /// protocol issues of ONC/RPC authentication on the server side.
@@ -13,7 +12,6 @@ namespace cc.isr.ONC.RPC.Server;
 /// </remarks>
 public abstract class OncRpcServerAuthBase
 {
-
     /// <summary>   Specialized constructor for use only by derived class. </summary>
     /// <param name="authType">   Authentication type used by this authentication object. </param>
     protected OncRpcServerAuthBase( OncRpcAuthType authType )

@@ -1,7 +1,6 @@
 using cc.isr.ONC.RPC.EnumExtensions;
 
 namespace cc.isr.ONC.RPC.Client;
-
 /// <summary>
 /// The <see cref="OncRpcClientAuthNone"/> class handles protocol issues of ONC/RPC 
 /// <see cref="OncRpcAuthType.OncRpcAuthTypeNone"/> authentication.
@@ -12,7 +11,6 @@ namespace cc.isr.ONC.RPC.Client;
 /// </remarks>
 public class OncRpcClientAuthNone : OncRpcClientAuthBase
 {
-
     /// <summary>   (Immutable) the default type of type the 'none' authentication. </summary>
     public const OncRpcAuthType AuthTypeDefault = OncRpcAuthType.OncRpcAuthTypeNone;
 

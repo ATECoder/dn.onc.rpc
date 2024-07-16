@@ -1,7 +1,6 @@
 using System.ComponentModel;
 
 namespace cc.isr.ONC.RPC.Portmap;
-
 /// <summary>
 /// A collection of constants used for ONC/RPC messages to identify the remote procedure calls
 /// offered by ONC/RPC port mappers.
@@ -12,7 +11,6 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// </remarks>
 public enum OncRpcPortmapServiceProcedure
 {
-
     /// <summary>
     /// Procedure number for the portmap ping. <para>
     /// 

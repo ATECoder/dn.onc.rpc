@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// The class <see cref="OncRpcAuthException"/> indicates an authentication exception.
 /// </summary>

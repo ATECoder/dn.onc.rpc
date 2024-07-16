@@ -1,7 +1,6 @@
 using cc.isr.ONC.RPC.Client;
 
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// The class <see cref="OncRpcBroadcastEventArgs"/> defines the event arguments for the 
 /// an event fired by <see cref="OncRpcUdpClient">UDP/IP-based clients</see> whenever replies to a
@@ -15,7 +14,6 @@ namespace cc.isr.ONC.RPC;
 /// </remarks>
 public class OncRpcBroadcastEventArgs : EventArgs
 {
-
     /// <summary>
     /// Creates a new <see cref="OncRpcBroadcastEventArgs"/> object and initializes its state.
     /// </summary>

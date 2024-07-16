@@ -1,7 +1,6 @@
 using System.Net.Sockets;
 
 namespace cc.isr.ONC.RPC.Client;
-
 /// <summary>
 /// ONC/RPC client which communicates with ONC/RPC servers over the network using the stream-
 /// oriented protocol TCP/IP.
@@ -12,7 +11,6 @@ namespace cc.isr.ONC.RPC.Client;
 /// </remarks>
 public class OncRpcTcpClient : OncRpcClientBase
 {
-
     /// <summary>   Gets or sets the default timeout for sending calls or receiving replies. </summary>
     /// <remarks>
     /// This timeout interval is used to set the

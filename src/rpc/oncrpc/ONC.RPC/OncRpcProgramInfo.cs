@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC;
-
 /// <summary>
 /// The class <see cref="OncRpcProgramInfo"/> holds individual program and their
 /// a program and their associated version numbers.

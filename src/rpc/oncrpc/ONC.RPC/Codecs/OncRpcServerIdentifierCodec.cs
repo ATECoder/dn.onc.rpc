@@ -1,7 +1,6 @@
 using cc.isr.ONC.RPC.EnumExtensions;
 
 namespace cc.isr.ONC.RPC.Codecs;
-
 /// <summary>
 /// The class server <see cref="OncRpcServerIdentifierCodec"/> represents a tuple
 /// {program, version, protocol, port} uniquely identifying a particular
@@ -17,7 +16,6 @@ namespace cc.isr.ONC.RPC.Codecs;
 /// </remarks>
 public class OncRpcServerIdentifierCodec : IXdrCodec
 {
-
     /// <summary>
     /// Constructs an server <see cref="OncRpcServerIdentifierCodec"/> object with senseless default values for the
     /// requested program number, version number, protocol type and port number.

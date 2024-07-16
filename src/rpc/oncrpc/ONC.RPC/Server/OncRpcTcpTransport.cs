@@ -1,7 +1,6 @@
 using System.Net.Sockets;
 
 namespace cc.isr.ONC.RPC.Server;
-
 /// <summary>
 /// Instances of class <see cref="OncRpcTcpTransport"/> encapsulate TCP/IP-based XDR streams
 /// of ONC/RPC servers.

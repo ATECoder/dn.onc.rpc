@@ -6,7 +6,6 @@ namespace cc.isr.MSTest;
 /// <remarks>   2023-05-09. </remarks>
 internal static class LoggerProvider
 {
-
     /// <summary>   Initializes the logger. </summary>
     /// <remarks>   2023-04-24. </remarks>
     /// <typeparam name="TCategory">    Type of the category. </typeparam>
@@ -39,11 +38,9 @@ internal static class LoggerProvider
     }
 
 }
-
 /// <summary>   A logging extensions. </summary>
 public static class LogWriterExtensions
 {
-
     /// <summary>   (Immutable) the multi line member message format. </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Naming", "CA1707:Identifiers should not contain underscores", Justification = "<Pending>" )]
     public const string MULTI_LINE_MEMBER_MESSAGE_FORMAT = "{message}\n  at '{sourceFilePath}' {memberName} line {sourceLineNumber})";

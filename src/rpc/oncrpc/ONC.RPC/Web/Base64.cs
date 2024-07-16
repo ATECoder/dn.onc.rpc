@@ -1,5 +1,4 @@
 namespace cc.isr.ONC.RPC.Web;
-
 /// <summary>
 /// The <see cref="Base64"/> class provides static methods to convert back and forth
 /// between binary and base64-encoded data.
