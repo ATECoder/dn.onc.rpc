@@ -99,7 +99,7 @@ The port mapper must be started before any other RPC servers are started.
 * Power Programming with RPC, John Bloomer, O’Reilly & Associates, Inc., 1999.
 * RPC: Remote Procedure Call Protocol Specification, Request for Comments 1057, Sun Microsystems, DDN Network Information Center, SRI International, June, 1988.
 
-[port mapper]: (https://en.wikipedia.org/wiki/Portmap)
+[port mapper]: https://en.wikipedia.org/wiki/Portmap
 [GB1.RemoteTea.Net]: https://github.com/galenbancroft/RemoteTea.Net
 [Sun RPC]: https://en.wikipedia.org/wiki/Sun_RPC
 
