@@ -13,7 +13,6 @@
     <ApplicationTitle>cc.isr.ONC.RPC</ApplicationTitle>
     <ApplicationId>cc.isr.onc.rpc</ApplicationId>
 
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
