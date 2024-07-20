@@ -37,7 +37,7 @@ public abstract class TraceMessageListener : TraceListener
     /// <remarks>   2023-06-01. </remarks>
     /// <param name="eventType">    One of the <see cref="Diagnostics.TraceEventType" />
     ///                             values specifying the type of event that has caused the trace. </param>
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns>   True if it succeeds; otherwise, false. </returns>
     public bool Any( TraceEventType eventType )
     {
         return this.Messages.ContainsKey( eventType ) && this.Messages[eventType].Count != 0;
