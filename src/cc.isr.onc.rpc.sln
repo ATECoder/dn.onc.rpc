@@ -5,12 +5,12 @@ VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "`docs", "`docs", "{2E941AE7-C93A-4A37-A244-3036961E091C}"
 	ProjectSection(SolutionItems) = preProject
-		cc.isr.onc.rpc.sln.vsspell = cc.isr.onc.rpc.sln.vsspell
 		..\CHANGELOG.md = ..\CHANGELOG.md
 		items\ignored.dic = items\ignored.dic
 		..\onc.rpc.md = ..\onc.rpc.md
 		..\README.md = ..\README.md
 		items\readme.md = items\readme.md
+
 		..\RemoteTeaJavaLibrary.md = ..\RemoteTeaJavaLibrary.md
 		..\TODO.md = ..\TODO.md
 	EndProjectSection
