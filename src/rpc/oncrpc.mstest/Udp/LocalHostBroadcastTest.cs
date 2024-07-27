@@ -3,6 +3,7 @@ using System.Diagnostics;
 using cc.isr.ONC.RPC.MSTest.Tcp;
 using cc.isr.ONC.RPC.Portmap;
 using cc.isr.ONC.RPC.Server;
+using cc.isr.MSTest.Exceptions;
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
@@ -35,29 +36,29 @@ public class LocalHostBroadcastTest
             if ( Logger is null )
                 Console.WriteLine( methodFullName );
             else
-                Logger?.LogMemberInfo( methodFullName );
+                Logger?.LogInformationMultiLineMessage( methodFullName );
             _server = new();
 
             // _server.PropertyChanged += OnServerPropertyChanged;
             _server.ThreadExceptionOccurred += OnThreadException;
 
             _ = Task.Factory.StartNew( () => {
-                Logger?.LogInformation( "starting the embedded port map service; this takes ~3.5 seconds..." );
+                Logger?.LogInformationMessage( "starting the embedded port map service; this takes ~3.5 seconds..." );
                 using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
                 epm.EmbeddedPortmapService!.ThreadExceptionOccurred += OnThreadException;
 
-                Logger?.LogInformation( "starting the server task; this takes ~2.5 seconds..." );
+                Logger?.LogInformationMessage( "starting the server task; this takes ~2.5 seconds..." );
                 _server.Run();
             } );
 
-            Logger?.LogInformation( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
+            Logger?.LogInformationMessage( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
 
             // because the initializing task is not awaited, we need to wait for the server to start here.
 
             if ( !_server.ServerStarted( 2 * LocalHostBroadcastTest.ServerStartTimeTypical, LocalHostBroadcastTest.ServerStartLoopDelay ) )
                 throw new InvalidOperationException( "failed starting the ONC/RPC server." );
 
-            Logger?.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Running ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
+            Logger?.LogInformationMessage( $"{nameof( OncRpcTcpServer )} is {(_server.Running ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
         }
         catch ( Exception ex )
         {
@@ -139,7 +140,7 @@ public class LocalHostBroadcastTest
 
     /// <summary>   Gets a logger instance for this category. </summary>
     /// <value> The logger. </value>
-    public static ILogger<LocalHostBroadcastTest>? Logger { get; } = LoggerProvider.InitLogger<LocalHostBroadcastTest>();
+    public static ILogger<LocalHostBroadcastTest>? Logger { get; } = LoggerProvider.CreateLogger<LocalHostBroadcastTest>();
 
     #endregion
 
@@ -191,19 +192,19 @@ public class LocalHostBroadcastTest
         switch ( e.PropertyName )
         {
             case nameof( OncRpcTcpServer.ReadMessage ):
-                Logger?.LogInformation( (( OncRpcUdpServer ) sender).ReadMessage );
+                Logger?.LogInformationMessage( (( OncRpcUdpServer ) sender).ReadMessage );
                 break;
             case nameof( OncRpcTcpServer.WriteMessage ):
-                Logger?.LogInformation( (( OncRpcUdpServer ) sender).WriteMessage );
+                Logger?.LogInformationMessage( (( OncRpcUdpServer ) sender).WriteMessage );
                 break;
             case nameof( OncRpcTcpServer.PortNumber ):
-                Logger?.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).PortNumber}" );
+                Logger?.LogInformationMessage( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).PortNumber}" );
                 break;
             case nameof( OncRpcTcpServer.IPv4Address ):
-                Logger?.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).IPv4Address}" );
+                Logger?.LogInformationMessage( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).IPv4Address}" );
                 break;
             case nameof( OncRpcTcpServer.Running ):
-                Logger?.LogInformation( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).Running}" );
+                Logger?.LogInformationMessage( $"{e.PropertyName} set to {(( OncRpcUdpServer ) sender).Running}" );
                 break;
         }
     }

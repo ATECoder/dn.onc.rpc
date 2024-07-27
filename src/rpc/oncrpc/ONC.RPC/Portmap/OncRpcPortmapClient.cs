@@ -83,7 +83,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 ///   list = portmap.ListRegisteredServers();
 /// } 
 /// catch ( OncRpcException e ) {
-///   Logger?.LogMemberError( "error listing registered servers", e );
+///   Logger?.LogErrorMultilineMessage( "error listing registered servers", e );
 ///   System.exit( 20 );
 /// }
 /// foreach ( var item in list ) {

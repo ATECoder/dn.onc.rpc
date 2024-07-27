@@ -2,6 +2,7 @@ using cc.isr.ONC.RPC.Client;
 using cc.isr.ONC.RPC.Portmap;
 using System.Net.Sockets;
 using System.Diagnostics;
+using cc.isr.MSTest.Exceptions;
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
@@ -25,7 +26,7 @@ public class RemoteHostBroadcastTest
             if ( Logger is null )
                 Console.WriteLine( methodFullName );
             else
-                Logger?.LogMemberInfo( methodFullName );
+                Logger?.LogInformationMultiLineMessage( methodFullName );
         }
         catch ( Exception ex )
         {
@@ -90,7 +91,7 @@ public class RemoteHostBroadcastTest
 
     /// <summary>   Gets a logger instance for this category. </summary>
     /// <value> The logger. </value>
-    public static ILogger<RemoteHostBroadcastTest>? Logger { get; } = LoggerProvider.InitLogger<RemoteHostBroadcastTest>();
+    public static ILogger<RemoteHostBroadcastTest>? Logger { get; } = LoggerProvider.CreateLogger<RemoteHostBroadcastTest>();
 
     #endregion
 
@@ -198,7 +199,7 @@ public class RemoteHostBroadcastTest
         client.IOTimeout = OncRpcUdpClient.IOTimeoutDefault;
         // Ping all port mappers in this subnet...
 
-        Logger?.LogInformation( $"pinging port mappers in subnet {address}: " );
+        Logger?.LogInformationMessage( $"pinging port mappers in subnet {address}: " );
         try
         {
             client.BroadcastCall( ( int ) OncRpcPortmapServiceProcedure.OncRpcPortmapPing,
@@ -206,15 +207,15 @@ public class RemoteHostBroadcastTest
         }
         catch ( OncRpcException e )
         {
-            Logger?.LogMemberError( $"method call failed unexpectedly:", e );
+            Logger?.LogErrorMultilineMessage( $"method call failed unexpectedly:", e );
         }
-        Logger?.LogInformation( "done." );
+        Logger?.LogInformationMessage( "done." );
 
         // Print addresses of all port mappers found...
 
         foreach ( IPEndPoint endPoint in _portmappers )
         {
-            Logger?.LogInformation( $"Found: {endPoint}" );
+            Logger?.LogInformationMessage( $"Found: {endPoint}" );
         }
         // Release resources bound by portmap client object as soon as possible.
 
@@ -259,7 +260,7 @@ public class RemoteHostBroadcastTest
     {
         foreach ( IPAddress ip in GetLocalBroadcastAddresses() )
         {
-            Logger?.LogInformation( $"{nameof( ClientShouldBroadcast )} at {ip}" );
+            Logger?.LogInformationMessage( $"{nameof( ClientShouldBroadcast )} at {ip}" );
             RemoteHostBroadcastTest.AssertClientShouldBroadcast( ip, 2001 );
         }
     }

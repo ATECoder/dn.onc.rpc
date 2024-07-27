@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using cc.isr.ONC.RPC.Portmap;
+using cc.isr.MSTest.Exceptions;
 
 namespace cc.isr.ONC.RPC.MSTest.PortMapper;
 
@@ -23,7 +24,7 @@ public class EmbeddedPortmapTest
             if ( Logger is null )
                 Console.WriteLine( methodFullName );
             else
-                Logger?.LogMemberInfo( methodFullName );
+                Logger?.LogInformationMultiLineMessage( methodFullName );
         }
         catch ( Exception ex )
         {
@@ -86,7 +87,7 @@ public class EmbeddedPortmapTest
 
     /// <summary>   Gets a logger instance for this category. </summary>
     /// <value> The logger. </value>
-    public static ILogger<EmbeddedPortmapTest>? Logger { get; } = LoggerProvider.InitLogger<EmbeddedPortmapTest>();
+    public static ILogger<EmbeddedPortmapTest>? Logger { get; } = LoggerProvider.CreateLogger<EmbeddedPortmapTest>();
 
     #endregion
 
@@ -142,7 +143,7 @@ public class EmbeddedPortmapTest
     public void EmbeddedPortmapServiceShouldPass()
     {
 
-        Logger?.LogInformation( "Starting the embedded Portmap service" );
+        Logger?.LogInformationMessage( "Starting the embedded Portmap service" );
 
         Stopwatch stopwatch = Stopwatch.StartNew();
         using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService(); // AssertPortmapServiceShouldStart();
@@ -150,7 +151,7 @@ public class EmbeddedPortmapTest
         // It is assumed that no external Portmap services are available.
         Assert.IsFalse( epm.UsingExternalPortmapService, $"External Portmap services are not expected." );
 
-        Logger?.LogInformation( $"The embedded Portmap service started in {stopwatch.Elapsed.TotalMilliseconds:0.0} ms" );
+        Logger?.LogInformationMessage( $"The embedded Portmap service started in {stopwatch.Elapsed.TotalMilliseconds:0.0} ms" );
 
         // Now register dummy ONC/RPC program. Note that the embedded
         // Portmap service must not automatically spin down when deregistering
@@ -163,24 +164,24 @@ public class EmbeddedPortmapTest
         using OncRpcPortmapClient portMapClient = new( IPAddress.Loopback, OncRpcProtocol.OncRpcUdp,
                                                                        Client.OncRpcUdpClient.TransmitTimeoutDefault );
 
-        Logger?.LogInformation( "Deregistering non-existing program;" );
+        Logger?.LogInformationMessage( "Deregistering non-existing program;" );
 
         bool actual = portMapClient.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsFalse( actual );
-        Logger?.LogInformation( "deregistering a non-existing program was ignored." );
+        Logger?.LogInformationMessage( "deregistering a non-existing program was ignored." );
 
-        Logger?.LogInformation( "Registering dummy program;" );
+        Logger?.LogInformationMessage( "Registering dummy program;" );
         actual = portMapClient.SetPort( dummyProgram, dummyVersion, OncRpcProtocol.OncRpcTcp, dummyPort );
         Assert.IsTrue( actual );
-        Logger?.LogInformation( "Registering a dummy program worked." );
+        Logger?.LogInformationMessage( "Registering a dummy program worked." );
 
-        Logger?.LogInformation( "Deregistering dummy program;" );
+        Logger?.LogInformationMessage( "Deregistering dummy program;" );
         actual = portMapClient.UnsetPort( dummyProgram, dummyVersion );
         Assert.IsTrue( actual );
-        Logger?.LogInformation( "Deregistering the registered dummy program worked." );
+        Logger?.LogInformationMessage( "Deregistering the registered dummy program worked." );
 
         // dispose of the Portmap service
-        Logger?.LogInformation( $"Exiting test method; {nameof( OncRpcEmbeddedPortmapServiceStub )} will be disposed..." );
+        Logger?.LogInformationMessage( $"Exiting test method; {nameof( OncRpcEmbeddedPortmapServiceStub )} will be disposed..." );
 
     }
 }

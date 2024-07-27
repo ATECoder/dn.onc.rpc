@@ -1,3 +1,5 @@
+using cc.isr.MSTest.Exceptions;
+
 namespace cc.isr.MSTest;
 
 /// <summary>   A logger trace listener. </summary>
@@ -28,8 +30,6 @@ public class LoggerTraceListener<TCategory>( ILogger<TCategory> logger ) : Trace
     ///                             values specifying the type of event that has caused the trace. </param>
     /// <param name="id">           A numeric identifier for the event. </param>
     /// <param name="message">      A message to write. </param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public override void TraceEvent( TraceEventCache? eventCache, string source, TraceEventType eventType, int id, string? message )
     {
         if ( !string.IsNullOrEmpty( message ) )
@@ -39,13 +39,13 @@ public class LoggerTraceListener<TCategory>( ILogger<TCategory> logger ) : Trace
             else if ( TraceEventType.Error == (TraceEventType.Error & eventType) )
                 this._logger?.LogError( message );
             else if ( TraceEventType.Information == (TraceEventType.Information & eventType) )
-                this._logger?.LogInformation( message );
+                this._Logger?.LogInformationMessage( message );
             else if ( TraceEventType.Verbose == (TraceEventType.Verbose & eventType) )
                 this._logger?.LogVerbose( message );
             else if ( TraceEventType.Warning == (TraceEventType.Warning & eventType) )
                 this._logger?.LogWarning( message );
             else
-                this._logger?.LogInformation( message );
+                this._Logger?.LogInformationMessage( message );
         }
         base.TraceEvent( eventCache, source, eventType, id, message );
     }
@@ -58,7 +58,7 @@ public class LoggerTraceListener<TCategory>( ILogger<TCategory> logger ) : Trace
     /// <param name="message">  A message to write. </param>
     public override void Write( string? message )
     {
-        // if ( message is not null ) this._logger?.LogInformation( message );
+        // if ( message is not null ) this._Logger?.LogInformationMessage( message );
     }
 
     /// <summary>
@@ -69,6 +69,6 @@ public class LoggerTraceListener<TCategory>( ILogger<TCategory> logger ) : Trace
     /// <param name="message">  A message to write. </param>
     public override void WriteLine( string? message )
     {
-        // if ( message is not null ) this._logger?.LogInformation( message );
+        // if ( message is not null ) this._Logger?.LogInformationMessage( message );
     }
 }

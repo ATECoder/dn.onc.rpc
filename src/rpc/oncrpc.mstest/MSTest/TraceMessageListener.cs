@@ -97,8 +97,6 @@ public abstract class TraceMessageListener : TraceListener
     ///                             values specifying the type of event that has caused the trace. </param>
     /// <param name="id">           A numeric identifier for the event. </param>
     /// <param name="message">      A message to write. </param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1848:Use the LoggerMessage delegates", Justification = "<Pending>" )]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage( "Usage", "CA2254:Template should be a static expression", Justification = "<Pending>" )]
     public override void TraceEvent( TraceEventCache? eventCache, string source, TraceEventType eventType, int id, string? message )
     {
         if ( !string.IsNullOrEmpty( message ) )

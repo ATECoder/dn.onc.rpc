@@ -4,6 +4,7 @@ using System.Text;
 using cc.isr.ONC.RPC.MSTest.Codecs;
 using cc.isr.ONC.RPC.Portmap;
 using cc.isr.ONC.RPC.Server;
+using cc.isr.MSTest.Exceptions;
 
 namespace cc.isr.ONC.RPC.MSTest.Tcp;
 
@@ -37,7 +38,7 @@ public class OncRpcTcpTests
             if ( Logger is null )
                 Console.WriteLine( methodFullName );
             else
-                Logger?.LogMemberInfo( methodFullName );
+                Logger?.LogInformationMultiLineMessage( methodFullName );
 
             _server = new();
 
@@ -45,22 +46,22 @@ public class OncRpcTcpTests
             _server.ThreadExceptionOccurred -= OnThreadException;
             _ = Task.Factory.StartNew( () => {
 
-                Logger?.LogInformation( "starting the Portmap service; this takes ~3.5 seconds..." );
+                Logger?.LogInformationMessage( "starting the Portmap service; this takes ~3.5 seconds..." );
                 using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
                 epm.EmbeddedPortmapService!.ThreadExceptionOccurred += OnThreadException;
 
-                Logger?.LogInformation( "starting the server task; this takes ~2.4 seconds..." );
+                Logger?.LogInformationMessage( "starting the server task; this takes ~2.4 seconds..." );
                 _server.Run();
             } );
 
-            Logger?.LogInformation( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
+            Logger?.LogInformationMessage( $"{nameof( OncRpcTcpServer )} waiting listening {DateTime.Now:ss.fff}" );
 
             // because the initializing task is not awaited, we need to wait for the server to start here.
 
             if ( !_server.ServerStarted( 2 * OncRpcTcpTests.ServerStartTimeTypical, OncRpcTcpTests.ServerStartLoopDelay ) )
                 throw new InvalidOperationException( "failed starting the ONC/RPC server." );
 
-            Logger?.LogInformation( $"{nameof( OncRpcTcpServer )} is {(_server.Running ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
+            Logger?.LogInformationMessage( $"{nameof( OncRpcTcpServer )} is {(_server.Running ? "running" : "idle")}  {DateTime.Now:ss.fff}" );
         }
         catch ( Exception ex )
         {
@@ -102,7 +103,7 @@ public class OncRpcTcpTests
 
                 // it takes 35 ms to dispose the server with 25 ms loop delay and 4 ms with 5 ms loop delay.
 
-                Logger?.LogInformation( $"Running {running}; server disposed in {sw.Elapsed.TotalMilliseconds:0.0} ms" );
+                Logger?.LogInformationMessage( $"Running {running}; server disposed in {sw.Elapsed.TotalMilliseconds:0.0} ms" );
                 running = server.Running;
 
                 server.PropertyChanged -= OnServerPropertyChanged;
@@ -157,7 +158,7 @@ public class OncRpcTcpTests
 
     /// <summary>   Gets a logger instance for this category. </summary>
     /// <value> The logger. </value>
-    public static ILogger<OncRpcTcpTests>? Logger { get; } = LoggerProvider.InitLogger<OncRpcTcpTests>();
+    public static ILogger<OncRpcTcpTests>? Logger { get; } = LoggerProvider.CreateLogger<OncRpcTcpTests>();
 
     private static OncRpcTcpServer? _server;
 
@@ -198,19 +199,19 @@ public class OncRpcTcpTests
         switch ( e.PropertyName )
         {
             case nameof( OncRpcTcpServer.ReadMessage ):
-                Logger?.LogInformation( (( OncRpcTcpServer ) sender).ReadMessage );
+                Logger?.LogInformationMessage( (( OncRpcTcpServer ) sender).ReadMessage );
                 break;
             case nameof( OncRpcTcpServer.WriteMessage ):
-                Logger?.LogInformation( (( OncRpcTcpServer ) sender).WriteMessage );
+                Logger?.LogInformationMessage( (( OncRpcTcpServer ) sender).WriteMessage );
                 break;
             case nameof( OncRpcTcpServer.PortNumber ):
-                Logger?.LogInformation( $"{e.PropertyName} set to {(( OncRpcTcpServer ) sender).PortNumber}" );
+                Logger?.LogInformationMessage( $"{e.PropertyName} set to {(( OncRpcTcpServer ) sender).PortNumber}" );
                 break;
             case nameof( OncRpcTcpServer.IPv4Address ):
-                Logger?.LogInformation( $"{e.PropertyName} set to {(( OncRpcTcpServer ) sender).IPv4Address}" );
+                Logger?.LogInformationMessage( $"{e.PropertyName} set to {(( OncRpcTcpServer ) sender).IPv4Address}" );
                 break;
             case nameof( OncRpcTcpServer.Running ):
-                Logger?.LogInformation( $"{e.PropertyName} set to {(( OncRpcTcpServer ) sender).Running}" );
+                Logger?.LogInformationMessage( $"{e.PropertyName} set to {(( OncRpcTcpServer ) sender).Running}" );
                 break;
         }
     }
@@ -244,10 +245,10 @@ public class OncRpcTcpTests
     /// <param name="version">  The version. </param>
     private static void AssertClientShouldConnect( OncRpcTcpTestClient client, IPAddress host, int version )
     {
-        Logger?.LogInformation( "Connecting... " );
+        Logger?.LogInformationMessage( "Connecting... " );
         client.Connect( host, version );
         Assert.IsTrue( client.Connected, "should be connected" );
-        Logger?.LogInformation( $"{client.Host} connected." );
+        Logger?.LogInformationMessage( $"{client.Host} connected." );
     }
 
     /// <summary>   (Unit Test Method) client should connect. </summary>
@@ -284,9 +285,9 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldPing( OncRpcTcpTestClient client )
     {
-        Logger?.LogInformation( "Pinging..." );
+        Logger?.LogInformationMessage( "Pinging..." );
         client.CallRemoteProcedureNull();
-        Logger?.LogInformation( $"{client.Host} pinged." );
+        Logger?.LogInformationMessage( $"{client.Host} pinged." );
     }
 
     /// <summary>   Assert client should ping. </summary>
@@ -332,7 +333,7 @@ public class OncRpcTcpTests
         int userId = 0;
         int groupId = 0;
         string machineName = AuthenticationConstants.MachineName;
-        Logger?.LogInformation( $"{client.Host} checking  {nameof( OncRpcAuthType.OncRpcAuthTypeUnix )} on machine: {machineName} with invalid credentials user id: {userId} & Group ID = {groupId}: " );
+        Logger?.LogInformationMessage( $"{client.Host} checking  {nameof( OncRpcAuthType.OncRpcAuthTypeUnix )} on machine: {machineName} with invalid credentials user id: {userId} & Group ID = {groupId}: " );
         try
         {
             client.CallAuthenticate( AuthenticationConstants.MachineName, userId, groupId );
@@ -343,7 +344,7 @@ public class OncRpcTcpTests
             {
                 Assert.Fail( $"received {nameof( OncRpcAuthException )} with a incorrect status of {ae.AuthStatus}" );
             }
-            Logger?.LogInformation( $"{client.Host} expected exception thrown." );
+            Logger?.LogInformationMessage( $"{client.Host} expected exception thrown." );
         }
         catch ( OncRpcException e )
         {
@@ -379,11 +380,11 @@ public class OncRpcTcpTests
         int userId = AuthenticationConstants.UserIdentity;
         int groupId = AuthenticationConstants.GroupIdentity;
         string machineName = AuthenticationConstants.MachineName;
-        Logger?.LogInformation( $"{client.Host} checking {nameof( OncRpcAuthType.OncRpcAuthTypeUnix )} on machine: {machineName} with valid credentials user id: {userId} & Group ID = {groupId}: " );
+        Logger?.LogInformationMessage( $"{client.Host} checking {nameof( OncRpcAuthType.OncRpcAuthTypeUnix )} on machine: {machineName} with valid credentials user id: {userId} & Group ID = {groupId}: " );
         try
         {
             client.CallAuthenticate( AuthenticationConstants.MachineName, userId, groupId );
-            Logger?.LogInformation( $"{client.Host} valid credentials authenticated" );
+            Logger?.LogInformationMessage( $"{client.Host} valid credentials authenticated" );
         }
         catch ( OncRpcAuthException ae )
         {
@@ -429,10 +430,10 @@ public class OncRpcTcpTests
     {
         foreach ( string message in messages )
         {
-            Logger?.LogInformation( $"{client.Host} checking echo of {message}: " );
+            Logger?.LogInformationMessage( $"{client.Host} checking echo of {message}: " );
             string echoed = client.CallRemoteProcedureEcho( message );
             Assert.AreEqual( message, echoed, $"{client.Host} answer '{echoed}' does not match '{message}' call" );
-            Logger?.LogInformation( $"{client.Host} echoed {echoed}" );
+            Logger?.LogInformationMessage( $"{client.Host} echoed {echoed}" );
         }
     }
 
@@ -480,35 +481,35 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldEcho( OncRpcTcpTestClient client )
     {
-        Logger?.LogInformation( $"{client.Host} About to echo: " );
+        Logger?.LogInformationMessage( $"{client.Host} About to echo: " );
         string expected = "Hello, Remote Tea!";
         string actual = client.CallRemoteProcedureEcho( expected );
         Assert.AreEqual( expected, actual );
-        Logger?.LogInformation( $"{client.Host} echoed '{actual}'" );
+        Logger?.LogInformationMessage( $"{client.Host} echoed '{actual}'" );
     }
 
     /// <summary>   Assert client should concatenate. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldConcatenate( OncRpcTcpTestClient client )
     {
-        Logger?.LogInformation( "About to concatenate: " );
+        Logger?.LogInformationMessage( "About to concatenate: " );
         StringVectorCodec strings = new();
         strings.SetValues( new StringCodec[] { new StringCodec( "Hello, " ), new StringCodec( "Remote " ), new StringCodec( "Tea!" ) } );
         string expected = "Hello, Remote Tea!";
         string actual = client.CallRemoteProcedureConcatenateInputParameters( strings );
         Assert.AreEqual( expected, actual );
-        Logger?.LogInformation( $"{client.Host} concatenated '{actual}'" );
+        Logger?.LogInformationMessage( $"{client.Host} concatenated '{actual}'" );
     }
 
     /// <summary>   Assert client should concatenate exactly. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldConcatenateExactly( OncRpcTcpTestClient client )
     {
-        Logger?.LogInformation( "About to concatenating exactly three strings: " );
+        Logger?.LogInformationMessage( "About to concatenating exactly three strings: " );
         string expected = "(1:Hello )(2:Remote )(3:Tea!)";
         string actual = client.CallRemoteProcedureConcatenatedThreeItems( "(1:Hello )", "(2:Remote )", "(3:Tea!)" );
         Assert.AreEqual( expected, actual );
-        Logger?.LogInformation( $"{client.Host} concatenated '{actual}'" );
+        Logger?.LogInformationMessage( $"{client.Host} concatenated '{actual}'" );
     }
 
     /// <summary>   Assert client should check for foo. </summary>
@@ -523,7 +524,7 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldGetFoo( OncRpcTcpTestClient client )
     {
-        Logger?.LogInformation( $"{client.Host} About to get a foo: " );
+        Logger?.LogInformationMessage( $"{client.Host} About to get a foo: " );
         Assert.AreEqual( client.CallRemoteProcedureReturnEnumFooValue(), ( int ) EnumFoo.FOO, $"oops: got a {EnumFoo.BAR} instead of a {EnumFoo.FOO}!" );
     }
 
@@ -531,7 +532,7 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldGetNumberedFoo( OncRpcTcpTestClient client )
     {
-        Logger?.LogInformation( $"{client.Host} About to get a numbered foo string: " );
+        Logger?.LogInformationMessage( $"{client.Host} About to get a numbered foo string: " );
         EnumFoo expectedValue = EnumFoo.FOO;
         string expected = OncRpcTcpServer.ReturnYouAreFooValue( ( int ) expectedValue );
         string echo = client.CallRemoteProcedureReturnYouAreFooValue( expectedValue );
@@ -542,7 +543,7 @@ public class OncRpcTcpTests
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldPrependLinkedList( OncRpcTcpTestClient client )
     {
-        Logger?.LogInformation( $"{client.Host} Linked List test: " );
+        Logger?.LogInformationMessage( $"{client.Host} Linked List test: " );
         LinkedListCodec node1 = new() {
             Foo = 0
         };
@@ -569,14 +570,14 @@ public class OncRpcTcpTests
             actual = actual.Next;
             expected = expected.Next;
         }
-        Logger?.LogInformation( $"built list {builder}" );
+        Logger?.LogInformationMessage( $"built list {builder}" );
     }
 
     /// <summary>   Assert client should link linked list. </summary>
     /// <param name="client">   The client. </param>
     private static void AssertClientShouldLinkLinkedList( OncRpcTcpTestClient client )
     {
-        Logger?.LogInformation( $"{client.Host} Linking Linked Lists test: " );
+        Logger?.LogInformationMessage( $"{client.Host} Linking Linked Lists test: " );
         LinkedListCodec node1 = new() {
             Foo = 0
         };
@@ -604,7 +605,7 @@ public class OncRpcTcpTests
             actual = actual.Next;
             expected = expected.Next;
         }
-        Logger?.LogInformation( $"built list {builder}" );
+        Logger?.LogInformationMessage( $"built list {builder}" );
     }
 
     /// <summary>   (Unit Test Method) client should call remote procedures. </summary>
@@ -644,7 +645,7 @@ public class OncRpcTcpTests
         AssertClientShouldGetNumberedFoo( client );
         AssertClientShouldPrependLinkedList( client );
         AssertClientShouldLinkLinkedList( client );
-        Logger?.LogInformation( "All tests passed." );
+        Logger?.LogInformationMessage( "All tests passed." );
     }
 
 }
