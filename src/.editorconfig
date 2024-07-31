@@ -2,4 +2,6 @@
 # Spell checker settings
 # # # # # # # # # # # # # 
 
+[*.{cs,csx,cake,vb,vbx,md,txt}]
+
 spelling_exclusion_path = .\exclusion.dic
