@@ -33,7 +33,6 @@ public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
         this._shorthandVerfier = Array.Empty<byte>();
     }
 
-
     /// <summary>   Gets or sets (<see langword="private"/>) the timestamp as supplied through credential. </summary>
     /// <value> The timestamp. </value>
     public int Timestamp { get; private set; }

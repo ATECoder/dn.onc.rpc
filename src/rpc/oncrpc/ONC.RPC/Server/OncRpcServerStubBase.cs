@@ -156,6 +156,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     #region " members "
 
     private Encoding _characterEncoding;
+
     /// <summary>
     /// Gets or sets the encoding to use when serializing strings. If (<see langword="null"/>), the system's
     /// default encoding is to be used.
@@ -174,6 +175,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     }
 
     private bool _running;
+
     /// <summary>   Gets or sets a value indicating whether the server is running. </summary>
     /// <value> True if running, false if not. </value>
     public virtual bool Running
@@ -187,6 +189,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     #region " transports "
 
     private OncRpcTransportBase[] _transports;
+
     /// <summary>
     /// Sets the array containing ONC/RPC server transport objects which describe what transports an
     /// ONC/RPC server offers for handling ONC/RPC calls.

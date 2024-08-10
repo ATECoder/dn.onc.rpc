@@ -39,7 +39,6 @@ public class LinkedListCodec : IXdrCodec
         }
     }
 
-
     /// <summary>   Gets or sets the foo. </summary>
     /// <value> The foo. </value>
     public virtual int Foo { get; set; }
@@ -47,7 +46,6 @@ public class LinkedListCodec : IXdrCodec
     /// <summary>   Gets or sets the next. </summary>
     /// <value> The next. </value>
     public virtual LinkedListCodec? Next { get; set; }
-
 
     /// <summary>
     /// Encodes -- that is: serializes -- an object into a XDR stream in compliance to RFC 1832.

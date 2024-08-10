@@ -40,6 +40,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     #region " server properties "
 
     private int _portNumber;
+
     /// <summary>   Gets or sets the port number. </summary>
     /// <value> The port number. </value>
     public int PortNumber
@@ -49,6 +50,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     private string _iPv4Address;
+
     /// <summary>   Gets or sets the IPv4 address. </summary>
     /// <value> The IPv4 address. </value>
     public string IPv4Address
@@ -62,6 +64,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     #region " i/o messages "
 
     private string _writeMessage;
+
     /// <summary>   Gets or sets a message that was sent to the device. </summary>
     /// <value> The message that was sent to the device. </value>
     public string WriteMessage
@@ -71,6 +74,7 @@ public partial class OncRpcTcpServer : OncRpcTcpServerBase
     }
 
     private string _readMessage;
+
     /// <summary>   Gets or sets a message that was received from the device. </summary>
     /// <value> A message that was received from the device. </value>
     public string ReadMessage

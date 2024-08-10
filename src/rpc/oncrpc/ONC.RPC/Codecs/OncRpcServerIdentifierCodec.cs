@@ -76,7 +76,6 @@ public class OncRpcServerIdentifierCodec : IXdrCodec
     /// <value> The port. </value>
     public int Port { get; set; }
 
-
     /// <summary>
     /// Encodes -- that is: serializes -- an OncRpcServerIdent object into a XDR stream.
     /// </summary>

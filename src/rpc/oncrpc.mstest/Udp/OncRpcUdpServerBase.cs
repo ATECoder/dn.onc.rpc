@@ -25,7 +25,6 @@ public abstract class OncRpcUdpServerBase : OncRpcServerStubBase, IOncRpcDispatc
         this.SetTransports( transports );
     }
 
-
     /// <summary>   Dispatch (handle) an ONC/RPC request from a client. </summary>
     /// <remarks>
     /// This interface has some fairly deep semantics, so please read the description above for how

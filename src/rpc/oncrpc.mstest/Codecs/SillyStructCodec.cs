@@ -78,6 +78,7 @@ public class SillyStructCodec : IXdrCodec
     /// <summary>   Gets the buffer. </summary>
     /// <value> The buffer. </value>
     public virtual byte[] Buffer => this._buffer;
+
     /// <summary>   Gets a buffer. </summary>
     /// <param name="index">    Zero-based index of the. </param>
     /// <returns>   The buffer. </returns>
@@ -104,6 +105,7 @@ public class SillyStructCodec : IXdrCodec
     /// <summary>   Gets the fixed bytes. </summary>
     /// <value> The fixed bytes. </value>
     public virtual byte[] FixedBytes => this._fixedBytes;
+
     /// <summary>   Gets fixed bytes. </summary>
     /// <param name="index">    Zero-based index of the. </param>
     /// <returns>   The fixed bytes. </returns>
@@ -130,6 +132,7 @@ public class SillyStructCodec : IXdrCodec
     /// <summary>   Gets the bytes. </summary>
     /// <value> The bytes. </value>
     public virtual byte[] Bytes => this._bytes;
+
     /// <summary>   Gets the bytes. </summary>
     /// <param name="index">    Zero-based index of the. </param>
     /// <returns>   The bytes. </returns>

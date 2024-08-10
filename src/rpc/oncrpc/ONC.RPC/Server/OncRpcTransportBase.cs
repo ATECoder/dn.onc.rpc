@@ -231,6 +231,7 @@ public abstract class OncRpcTransportBase : ICloseable
     internal OncRpcProtocol Protocol { get; private set; }
 
     private Encoding _characterEncoding;
+
     /// <summary>
     /// Gets or sets the character encoding for serializing strings. 
     /// </summary>

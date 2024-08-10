@@ -6,6 +6,7 @@ public static class RpcProgramConstants
 {
     /// <summary>   (Immutable) the RPC gen program number. </summary>
     public const int ProgramNumber = 0x20049678;
+
     /// <summary>   (Immutable) the RPC program version one. </summary>
     public const int Version = 1;
 }

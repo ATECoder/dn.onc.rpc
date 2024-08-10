@@ -355,7 +355,6 @@ public class OncRpcTcpTestClient : IDisposable
         this.Call( ( int ) RemoteProceduresVersion2.ProcessFourArguments, RpcProgramConstants.Version2, request, result );
     }
 
-
     /// <summary>   Call authenticate. </summary>
     /// <param name="machineName">      Name of the machine. </param>
     /// <param name="userIdentity">     The user identity. </param>

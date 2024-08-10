@@ -47,6 +47,7 @@ internal sealed class TestSiteSettings : CommunityToolkit.Mvvm.ComponentModel.Ob
     #region " test site configuration "
 
     private TraceLevel _messageLevel = TraceLevel.Off;
+
     /// <summary>   Gets or sets the trace level. </summary>
     /// <remarks>
     /// This property name is different from the <see cref="Text.Json"/> property name in
@@ -63,6 +64,7 @@ internal sealed class TestSiteSettings : CommunityToolkit.Mvvm.ComponentModel.Ob
     }
 
     private bool _enabled = true;
+
     /// <summary>   Gets or sets a value indicating whether this object is enabled. </summary>
     /// <value> True if enabled, false if not. </value>
     [System.ComponentModel.Description( "True if testing is enabled for this test class" )]
@@ -73,6 +75,7 @@ internal sealed class TestSiteSettings : CommunityToolkit.Mvvm.ComponentModel.Ob
     }
 
     private bool _all = true;
+
     /// <summary> Gets or sets all. </summary>
     /// <value> all. </value>
     [System.ComponentModel.Description( "True if all testing is enabled for this test class" )]
@@ -87,6 +90,7 @@ internal sealed class TestSiteSettings : CommunityToolkit.Mvvm.ComponentModel.Ob
     #region " test site location information "
 
     private string _iPv4Prefixes = "192.168|10.1";
+
     /// <summary>   Gets or sets the candidate IPv4 prefixes for this location. </summary>
     /// <value> The IPv4 prefixes. </value>
     [System.ComponentModel.Description( "Specifies the IPv4 prefixes of the Internet addresses of known test sites; used to select settings that are test-site specific" )]
@@ -97,6 +101,7 @@ internal sealed class TestSiteSettings : CommunityToolkit.Mvvm.ComponentModel.Ob
     }
 
     private string _timeZones = "Pacific Standard Time|Central Standard Time";
+
     /// <summary> Gets or sets the candidate time zones of this location. </summary>
     /// <value> The candidate time zones of the test site. </value>
     [System.ComponentModel.Description( "Specifies the time zone identities of known test sites corresponding to the set of IPv4 prefixes" )]
@@ -107,6 +112,7 @@ internal sealed class TestSiteSettings : CommunityToolkit.Mvvm.ComponentModel.Ob
     }
 
     private string _timeZoneOffsets = "-8|-6";
+
     /// <summary> Gets or sets the candidate time zone offsets of this location. </summary>
     /// <value> The time zone offsets. </value>
     [System.ComponentModel.Description( "Specifies the time zone offsets of known test sites corresponding to the set of IPv4 prefixes" )]
@@ -121,6 +127,7 @@ internal sealed class TestSiteSettings : CommunityToolkit.Mvvm.ComponentModel.Ob
     #region " test site location identification "
 
     private string _timeZone = "Pacific Standard Time";
+
     /// <summary> Gets the time zone of the test site. </summary>
     /// <value> The time zone of the test site. </value>
     [System.ComponentModel.Description( "Gets the time zone identity of the test site" )]
@@ -132,6 +139,7 @@ internal sealed class TestSiteSettings : CommunityToolkit.Mvvm.ComponentModel.Ob
     }
 
     private double _timeZoneOffset = double.MinValue;
+
     /// <summary> Gets the time zone offset of the test site. </summary>
     /// <value> The time zone offset of the test site. </value>
     [System.ComponentModel.Description( "Gets the time zone offset of the test site" )]
@@ -151,6 +159,7 @@ internal sealed class TestSiteSettings : CommunityToolkit.Mvvm.ComponentModel.Ob
     }
 
     private System.Net.IPAddress _hostAddress = System.Net.IPAddress.None;
+
     /// <summary> Gets the IP address of the test site. </summary>
     /// <value> The IP address of the test site. </value>
     [System.ComponentModel.Description( "Gets the host address of the test site" )]
@@ -167,6 +176,7 @@ internal sealed class TestSiteSettings : CommunityToolkit.Mvvm.ComponentModel.Ob
     }
 
     private int _hostInfoIndex = -1;
+
     /// <summary> Gets the index into the host information strings. </summary>
     /// <value> The index into the host information strings. </value>
     [System.ComponentModel.Description( "Gets the host info index of the test site that corresponds to the IPv4 prefix that matches the host address" )]
