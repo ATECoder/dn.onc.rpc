@@ -45,7 +45,6 @@ public class OncRpcTcpTests
             _server.PropertyChanged += OnServerPropertyChanged;
             _server.ThreadExceptionOccurred -= OnThreadException;
             _ = Task.Factory.StartNew( () => {
-
                 Logger?.LogInformationMessage( "starting the Portmap service; this takes ~3.5 seconds..." );
                 using OncRpcEmbeddedPortmapServiceStub epm = OncRpcEmbeddedPortmapServiceStub.StartEmbeddedPortmapService();
                 epm.EmbeddedPortmapService!.ThreadExceptionOccurred += OnThreadException;

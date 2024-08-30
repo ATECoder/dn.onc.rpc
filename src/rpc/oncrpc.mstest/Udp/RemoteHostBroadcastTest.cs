@@ -181,7 +181,6 @@ public class RemoteHostBroadcastTest
     /// <param name="address">  The address. </param>
     public static void AssertClientShouldBroadcast( IPAddress address, int timeout )
     {
-
         // Create a portmap client object, which can then be used to contact
         // the remote ONC/RPC instruments.
         // OncRpcUdpClient client = new( IPAddress.Parse( "255.255.255.255" ), 100000, 2, 111 );

@@ -29,7 +29,6 @@ public class OncRpcEmbeddedPortmapService : OncRpcPortMapService
         BooleanXdrCodec ok = base.UnsetPort( serverIdentification );
         if ( ok.Value )
         {
-
             // Check for registered programs other than OncRpcPortmapConstants.OncRpcPortmapProgramNumber.
 
             bool onlyPmap = true;

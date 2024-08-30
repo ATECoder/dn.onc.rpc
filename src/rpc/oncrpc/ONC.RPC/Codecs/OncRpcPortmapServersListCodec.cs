@@ -38,7 +38,6 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
             encoder.EncodeBoolean( false );
         else
         {
-
             // Now encode all server <see cref="OncRpcServerIdent"/> objects into the XDR stream. Each
             // object is preceded by a boolean, which indicates to the receiver
             // whether an object follows. After the last object has been
@@ -65,7 +64,6 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
     /// <param name="decoder">  XDR stream from which decoded information is retrieved. </param>
     public virtual void Decode( XdrDecodingStreamBase decoder )
     {
-
         this.ServerIdentifiers.Clear();
 
         // Pull the server identifier Codec off the XDR stream. Each object is

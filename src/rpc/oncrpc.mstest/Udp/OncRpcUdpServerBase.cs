@@ -7,7 +7,6 @@ namespace cc.isr.ONC.RPC.MSTest.Udp;
 /// </summary>
 public abstract class OncRpcUdpServerBase : OncRpcServerStubBase, IOncRpcDispatchable
 {
-
     public OncRpcUdpServerBase() : this( 0 )
     { }
     public OncRpcUdpServerBase( int port ) : this( IPAddress.Any, port )

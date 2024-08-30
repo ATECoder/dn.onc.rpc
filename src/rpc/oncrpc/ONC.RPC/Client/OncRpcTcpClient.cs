@@ -68,7 +68,6 @@ public class OncRpcTcpClient : OncRpcClientBase
     public OncRpcTcpClient( IPAddress host, int program, int version, int port,
                                             int bufferSize, int connectTimeout ) : base( host, program, version, port, OncRpcProtocol.OncRpcTcp )
     {
-
         // Constructs the inherited part of our object. This will also try to
         // lookup the port of the desired ONC/RPC server, if no port number
         // was specified (port = 0).

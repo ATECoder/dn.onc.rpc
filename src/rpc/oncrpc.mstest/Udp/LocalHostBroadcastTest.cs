@@ -31,7 +31,6 @@ public class LocalHostBroadcastTest
     {
         try
         {
-
             string methodFullName = $"{testContext.FullyQualifiedTestClassName}.{System.Reflection.MethodBase.GetCurrentMethod()?.DeclaringType?.Name}";
             if ( Logger is null )
                 Console.WriteLine( methodFullName );

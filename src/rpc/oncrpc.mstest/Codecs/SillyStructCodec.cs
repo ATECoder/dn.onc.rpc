@@ -4,7 +4,6 @@ namespace cc.isr.ONC.RPC.MSTest.Codecs;
 [Serializable]
 public class SillyStructCodec : IXdrCodec
 {
-
     /* Remote Tea leftover:
      The serialization runtime associates with each serializable class a version number, called a serialVersionUID, 
      which is used during deserialization to verify that the sender and receiver of a serialized object have loaded 

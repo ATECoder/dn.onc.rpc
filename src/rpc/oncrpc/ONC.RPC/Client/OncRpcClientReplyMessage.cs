@@ -69,7 +69,6 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
         {
             case OncRpcReplyStatus.OncRpcMessageAccepted:
                 {
-
                     // Decode the information returned for accepted message calls.
                     // If we have an associated client-side authentication protocol
                     // object, we use that. Otherwise we fall back to the default
@@ -79,7 +78,6 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
                         this.Auth.DecodeVerfier( decoder );
                     else
                     {
-
                         // If we don't have a protocol handler and the server sent its
                         // reply using another authentication scheme than 'none', we
                         // will throw an exception. Also we check that no-one is
@@ -117,7 +115,6 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
 
                         default:
                             {
-
                                 // Otherwise "open ended set of problem", like the author
                                 // of Sun's ONC/RPC source once wrote...
 
@@ -129,7 +126,6 @@ public class OncRpcClientReplyMessage : OncRpcReplyMessageBase
 
             case OncRpcReplyStatus.OncRpcMessageDenied:
                 {
-
                     // Encode the information returned for denied message calls.
 
                     this.RejectStatus = decoder.DecodeInt().ToRejectStatus();

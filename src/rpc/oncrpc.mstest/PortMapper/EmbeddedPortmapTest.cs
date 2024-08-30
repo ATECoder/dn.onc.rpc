@@ -142,7 +142,6 @@ public class EmbeddedPortmapTest
     [TestMethod]
     public void EmbeddedPortmapServiceShouldPass()
     {
-
         Logger?.LogInformationMessage( "Starting the embedded Portmap service" );
 
         Stopwatch stopwatch = Stopwatch.StartNew();

@@ -89,7 +89,6 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// <param name="decoder">  XDR stream from which the authentication object is restored. </param>
     public sealed override void DecodeCredentialAndVerfier( XdrDecodingStreamBase decoder )
     {
-
         // Reset the authentication object's state properly...
 
         this._shorthandCredential = Array.Empty<byte>();
@@ -126,7 +125,6 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     {
         if ( this._shorthandVerfier is not null )
         {
-
             // Encode 'short' shorthand verifier (credential).
 
             encoder.EncodeInt( ( int ) OncRpcServerAuthShort.VerifierAuthTypeDefault );
@@ -134,7 +132,6 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
         }
         else
         {
-
             // Encode an 'none' verifier with zero length, if no shorthand
             // verifier (credential) has been supplied by now.
 

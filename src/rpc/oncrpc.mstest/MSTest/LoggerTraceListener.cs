@@ -14,7 +14,6 @@ namespace cc.isr.MSTest;
 /// <param name="logger">   The logger. </param>
 public class LoggerTraceListener<TCategory>( ILogger<TCategory> logger ) : TraceMessageListener()
 {
-
     private readonly ILogger<TCategory> _logger = logger;
 
     /// <summary>

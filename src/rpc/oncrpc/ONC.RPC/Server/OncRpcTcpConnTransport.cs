@@ -270,7 +270,6 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
     /// <param name="state">    ONC/RPC reply header indicating success or failure. </param>
     internal override void BeginEncoding( OncRpcCallHandler callInfo, OncRpcServerReplyMessage state )
     {
-
         // In case decoding has not been properly finished, do it now to
         // free up pending resources, etc.
 
@@ -354,7 +353,6 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
         OncRpcCallHandler callInfo = new( this );
         for (; ; )
         {
-
             // break if cancellation is required
             if ( cancelSource.IsCancellationRequested ) { break; }
 
@@ -372,7 +370,6 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
             }
             catch ( System.IO.IOException )
             {
-
                 // In case of I/O Exceptions (especially socket exceptions)
                 // close the file and leave the stage. There's nothing we can
                 // do anymore.
@@ -382,7 +379,6 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
             }
             catch ( OncRpcException )
             {
-
                 // In case of ONC/RPC exceptions at this stage kill the
                 // connection.
 
@@ -391,14 +387,12 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
             }
             try
             {
-
                 // Pull off the ONC/RPC call header of the XDR stream.
 
                 callInfo.CallMessage.Decode( this.Decoder );
             }
             catch ( System.IO.IOException )
             {
-
                 // In case of I/O Exceptions (especially socket exceptions)
                 // close the file and leave the stage. There's nothing we can
                 // do anymore.
@@ -408,7 +402,6 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
             }
             catch ( OncRpcException )
             {
-
                 // In case of ONC/RPC exceptions at this stage we're silently
                 // ignoring that there was some data coming in, as we're not
                 // sure we got enough information to send a matching reply
@@ -434,7 +427,6 @@ public class OncRpcTcpConnTransport : OncRpcTransportBase
             }
             try
             {
-
                 // Let the dispatcher retrieve the call parameters, work on
                 // it and Sends back the reply.
                 // To make it once again clear: the dispatch called has to

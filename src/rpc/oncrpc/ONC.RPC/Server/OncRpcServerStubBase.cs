@@ -291,7 +291,6 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
     public virtual void Run()
     {
-
         // Ignore all problems during un-registration.
         try
         {
@@ -327,7 +326,6 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// <param name="closeTransportsUponShutdown">    True to close transports upon stopping the server. </param>
     public virtual void Run( OncRpcTransportBase[] transports, bool closeTransportsUponShutdown )
     {
-
         this.Running = true;
 
         // Create the cancellation source.
@@ -335,7 +333,6 @@ public abstract partial class OncRpcServerStubBase : ICloseable
 
         try
         {
-
             foreach ( var transport in transports )
                 _ = transport.ListenAsync( cts );
 
@@ -360,7 +357,6 @@ public abstract partial class OncRpcServerStubBase : ICloseable
         }
         finally
         {
-
             foreach ( var transport in transports )
                 transport.Unlisten( cts );
 

@@ -297,7 +297,6 @@ public class OncRpcUdpClient : OncRpcClientBase
                 int resendTimeout = this.TransmitTimeout;
                 do
                 {
-
                     // Now enter the great loop where we send calls out to the server
                     // and then sit there waiting for a reply. If none comes, we first
                     // resend our call after one second, then two seconds, four seconds,
@@ -308,7 +307,6 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                     try
                     {
-
                         // Send call message to server. Remember that we've already
                         // "connected" the datagram socket, so the destination for the 
                         // datagram packets is already set.
@@ -358,7 +356,6 @@ public class OncRpcUdpClient : OncRpcClientBase
 
                             if ( this.Host.Equals( this._decoder.RemoteEndPoint.Address ) )
                             {
-
                                 // First, pull off the reply message header of the
                                 // XDR stream. In case we also received a verifier
                                 // from the server and this verifier was invalid, broken
@@ -374,7 +371,6 @@ public class OncRpcUdpClient : OncRpcClientBase
                                 }
                                 catch ( OncRpcException e )
                                 {
-
                                     // ** SF bug #1262106 **
 
                                     // We ran into some sort of trouble. Usually this will have
@@ -405,7 +401,6 @@ public class OncRpcUdpClient : OncRpcClientBase
                                                                && replyHeader.RejectStatus == OncRpcRejectStatus.OncRpcAuthError
                                                                && (this.Auth?.CanRefreshCredential() ?? false) )
                                         {
-
                                             // Think about using a TAB size of four ;)
 
                                             // Another instance of "CONTINUE considered
@@ -431,7 +426,6 @@ public class OncRpcUdpClient : OncRpcClientBase
                                     }
                                     catch ( OncRpcException e )
                                     {
-
                                         // ** SF bug #1262106 **
 
                                         // We ran into some sort of trouble. Usually this will have
@@ -454,7 +448,6 @@ public class OncRpcUdpClient : OncRpcClientBase
                         }
                         catch ( SocketException )
                         {
-
                             // The message id did no match -- probably some
                             // old UDP datagram which just popped up from the
                             // middle of the Internet.
@@ -484,7 +477,6 @@ public class OncRpcUdpClient : OncRpcClientBase
                         }
                         catch ( IOException e )
                         {
-
                             // Argh. Trouble with the transport. Seems like we can't
                             // receive data. Gosh. Go away!
 
@@ -500,7 +492,6 @@ public class OncRpcUdpClient : OncRpcClientBase
                         }
                         catch ( OncRpcException e )
                         {
-
                             // OOPS. An ONC/RPC exception. Let us rethrow this one,
                             // as we won't have nothin' to do with it...
 
@@ -613,11 +604,9 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <param name="timeout">          The timeout in milliseconds. </param>
     public virtual void BroadcastCall( int procedureNumber, IXdrCodec requestCodec, IXdrCodec replyCodec, int timeout )
     {
-
         if ( this._socket is null || this._encoder is null || this._decoder is null ) return;
         lock ( this._lock )
         {
-
             // First, build the ONC/RPC call header. Then put the sending
             // stream into a known state and encode the parameters to be
             // sent. Finally tell the encoding stream to broadcast all its data.
@@ -632,7 +621,6 @@ public class OncRpcUdpClient : OncRpcClientBase
 
             try
             {
-
                 // Send call message to server. Remember that we've already
                 // "connected" the datagram socket, so the destination of the 
                 // datagram packets is already set.
@@ -657,7 +645,6 @@ public class OncRpcUdpClient : OncRpcClientBase
             {
                 try
                 {
-
                     // Calculate timeout until the total timeout is reached, so
                     // we can try to meet the overall deadline.
 
@@ -737,7 +724,6 @@ public class OncRpcUdpClient : OncRpcClientBase
                 }
                 catch ( IOException e )
                 {
-
                     // Note that we only catch timeouts here, but no other
                     // exceptions. Those others will go up further until someone
                     // catches them. If we get the timeout we know that it

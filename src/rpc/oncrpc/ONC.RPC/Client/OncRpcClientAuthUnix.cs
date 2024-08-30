@@ -131,7 +131,6 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     {
         if ( this._shorthandCredentials == null )
         {
-
             // Encode the credential, which contains some unsecured information
             // about user and group ID, etc. Note that the credential itself
             // is encoded as a variable-sized bunch of octets.
@@ -184,7 +183,6 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
         {
             case OncRpcAuthType.OncRpcAuthTypeNone:
                 {
-
                     // The verifier sent in response to 'UNIX' or 'SHORT' authentication credentials
                     // can only be 'none' or 'short'. In the latter case we drop
                     // any old shorthand credential and use the new one.
@@ -202,7 +200,6 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
 
             case OncRpcAuthType.OncRpcAuthTypeShortHandUnix:
                 {
-
                     // Fetch the credential from the XDR stream and make sure that
                     // it does conform to the length restriction as set forth in
                     // the ONC/RPC protocol.
@@ -216,7 +213,6 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
 
             default:
                 {
-
                     // Do not accept any other kind of verifier sent.
 
                     throw new OncRpcAuthException( OncRpcAuthStatus.OncRpcAuthInvalidResponse );
@@ -228,7 +224,6 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
     /// <returns>   true, if the credential can be refreshed. </returns>
     public override bool CanRefreshCredential()
     {
-
         // If we don't use a shorthand credential at this time, then there's
         // no hope to refresh the credentials.
 

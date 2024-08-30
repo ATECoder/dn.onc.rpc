@@ -64,7 +64,6 @@ public abstract class OncRpcServerAuthBase
         OncRpcAuthType authType = decoder.DecodeInt().ToAuthType();
         if ( recycle?.AuthType == authType )
         {
-
             // Simply recycle authentication object and pull its new state
             // of the XDR stream.
 
@@ -76,7 +75,6 @@ public abstract class OncRpcServerAuthBase
             {
                 case OncRpcAuthType.OncRpcAuthTypeNone:
                     {
-
                         // Create a new authentication object and pull its state off
                         // the XDR stream.
 
@@ -99,7 +97,6 @@ public abstract class OncRpcServerAuthBase
 
                 default:
                     {
-
                         // In case of an unknown or unsupported type, throw an exception.
                         // Note: using 'rejected credentials' status is in sync with the way Sun's
                         // ONC/RPC implementation does it. But don't ask me why they do

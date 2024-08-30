@@ -56,7 +56,6 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
         {
             case OncRpcReplyStatus.OncRpcMessageAccepted:
                 {
-
                     // Encode the information returned for accepted message calls.
 
                     // First encode the authentication data. If someone has
@@ -90,7 +89,6 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
 
                         default:
                             {
-
                                 // Otherwise "open ended set of problem", like the author
                                 // of Sun's ONC/RPC source once wrote...
 
@@ -102,7 +100,6 @@ public class OncRpcServerReplyMessage : OncRpcReplyMessageBase
 
             case OncRpcReplyStatus.OncRpcMessageDenied:
                 {
-
                     // Encode the information returned for denied message calls.
 
                     encoder.EncodeInt( ( int ) this.RejectStatus );

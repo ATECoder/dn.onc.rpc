@@ -39,7 +39,6 @@ public sealed class OncRpcServerAuthNone : OncRpcServerAuthBase
     /// <param name="decoder">  XDR stream from which the authentication object is restored. </param>
     public sealed override void DecodeCredentialAndVerfier( XdrDecodingStreamBase decoder )
     {
-
         // As the authentication type has already been pulled off the XDR
         // stream, we only need to make sure that really no opaque data follows.
         this.AuthMessageLength = decoder.DecodeInt();

@@ -37,7 +37,6 @@ public class OncRpcClientAuthNone : OncRpcClientAuthBase
     /// <param name="encoder">  XDR stream where to encode the credential and the verifier to. </param>
     internal override void EncodeCredentialAndVerfier( XdrEncodingStreamBase encoder )
     {
-
         // The credential only consists of the indication of no authentication (none) with
         // no opaque authentication data following.
         encoder.EncodeInt( ( int ) this.AuthType );

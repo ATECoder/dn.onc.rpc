@@ -354,7 +354,6 @@ public class OncRpcTcpTransport : OncRpcTransportBase
 
     private class TransportList
     {
-
         /// <summary>   Create a new instance of a list of open transports. </summary>
         public TransportList()
         {
@@ -411,7 +410,6 @@ public class OncRpcTcpTransport : OncRpcTransportBase
         /// <returns>   An object. </returns>
         public virtual OncRpcTcpConnTransport? RemoveFirst()
         {
-
             // Do not remove the header node.
 
             if ( this._size == 0 )
