@@ -1,4 +1,4 @@
-namespace cc.isr.MSTest;
+namespace cc.isr.Std.MSTest;
 
 /// <summary>   Provides settings for all tests. </summary>
 /// <remarks>   2023-04-24. </remarks>

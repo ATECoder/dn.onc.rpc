@@ -1,4 +1,4 @@
-namespace cc.isr.MSTest.Extensions;
+namespace cc.isr.Std.Tests.Extensions;
 
 /// <summary>
 /// <see cref="Microsoft"/>.<see cref="Microsoft.Extensions"/>.<see cref="Microsoft.Extensions.Logging"/>.<see cref="Microsoft.Extensions.Logging.ILogger"/>

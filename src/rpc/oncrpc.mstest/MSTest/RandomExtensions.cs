@@ -1,4 +1,4 @@
-namespace cc.isr.MSTest;
+namespace cc.isr.Std.MSTest;
 
 internal sealed partial class RandomExtensions
 {

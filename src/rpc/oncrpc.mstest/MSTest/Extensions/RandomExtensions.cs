@@ -1,4 +1,4 @@
-namespace cc.isr.MSTest.Extensions;
+namespace cc.isr.Std.Tests.Extensions;
 
 /// <summary>   A <see cref="System.Random"/> extensions. </summary>
 /// <remarks>   2024-07-26. </remarks>

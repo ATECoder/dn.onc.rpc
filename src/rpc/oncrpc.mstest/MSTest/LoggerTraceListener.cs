@@ -1,6 +1,6 @@
-using cc.isr.MSTest.Exceptions;
+using cc.isr.Std.MSTest.Exceptions;
 
-namespace cc.isr.MSTest;
+namespace cc.isr.Std.MSTest;
 
 /// <summary>   A logger trace listener. </summary>
 /// <remarks>

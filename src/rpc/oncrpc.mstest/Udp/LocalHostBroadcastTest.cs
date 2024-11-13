@@ -3,7 +3,7 @@ using System.Diagnostics;
 using cc.isr.ONC.RPC.MSTest.Tcp;
 using cc.isr.ONC.RPC.Portmap;
 using cc.isr.ONC.RPC.Server;
-using cc.isr.MSTest.Exceptions;
+using cc.isr.Std.MSTest.Exceptions;
 
 namespace cc.isr.ONC.RPC.MSTest.Udp;
 
@@ -111,6 +111,7 @@ public class LocalHostBroadcastTest
     [TestInitialize()]
     public void InitializeBeforeEachTest()
     {
+        Console.WriteLine( $"{this.TestContext?.FullyQualifiedTestClassName}: {DateTime.Now} {System.TimeZoneInfo.Local}" );
         if ( Logger is not null )
         {
             this._loggerScope = Logger.BeginScope( this.TestContext?.TestName ?? string.Empty );

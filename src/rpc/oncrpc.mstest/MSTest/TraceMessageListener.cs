@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace cc.isr.MSTest;
+namespace cc.isr.Std.MSTest;
 
 /// <summary>   An abstract trace message listener with message cache. </summary>
 /// <remarks>

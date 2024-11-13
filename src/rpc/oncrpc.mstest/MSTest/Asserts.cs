@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace cc.isr.MSTest;
+namespace cc.isr.Std.MSTest;
 
 /// <summary> Assert. </summary>
 /// <remarks> David, 2016-12-12 <para>

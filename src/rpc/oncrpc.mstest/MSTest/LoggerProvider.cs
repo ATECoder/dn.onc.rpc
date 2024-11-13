@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace cc.isr.MSTest;
+namespace cc.isr.Std.MSTest;
 
 /// <summary>   Provides (Creates) an <see cref="Microsoft.Extensions.Logging.ILogger"/>. </summary>
 /// <remarks>   2023-05-09. </remarks>
