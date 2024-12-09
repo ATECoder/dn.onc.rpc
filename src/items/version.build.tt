@@ -8,6 +8,7 @@
   <PropertyGroup>
     <AssemblyVersion><#= this.Major #>.<#= this.Minor #>.<#= this.BuildNumber #>.<#= this.RevisionNumber #></AssemblyVersion>
     <FileVersion><#= this.Major #>.<#= this.Minor #>.<#= this.BuildNumber #>.<#= this.RevisionNumber #></FileVersion>
+    <InformationalVersion><#= this.Major #>.<#= this.Minor #>.<#= this.BuildNumber #>.<#= this.RevisionNumber #></InformationalVersion>
     <Version><#= this.Major #>.<#= this.Minor #>.<#= this.BuildNumber #></Version>
     <ApplicationDisplayVersion><#= this.Major #>.<#= this.Minor #>.<#= this.BuildNumber #></ApplicationDisplayVersion>
     <ApplicationVersion><#= this.Major #></ApplicationVersion>
