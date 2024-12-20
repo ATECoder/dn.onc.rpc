@@ -1,4 +1,4 @@
-### ONC RPC
+# ONC RPC
 
 Implementation of Sun's ONC/RPC Remote Procedure Protocol, including client and server functionality and some associated tools.
 
@@ -20,11 +20,11 @@ Implementation of Sun's ONC/RPC Remote Procedure Protocol, including client and 
 * [Repository Owner](#Repository-Owner)
 * [Security](security.md)
 	
-#### Description
+## Description
 
 [ISR's ONC RPC] is a C# implementation of the [Sun RPC] ported from the [Java ONC RPC] implementation termed Remote Tea.
 
-#### History
+## History
 
 [ISR's ONC RPC] is a fork of [GB1.RemoteTea.Net], which was forked from [Wes Day's RemoteTea.Net], which is a fork of [Jay Walter's SourceForge repository], which is a port of [Java ONC RPC] as documented in [org.acplt.oncrpc package].
 
@@ -34,7 +34,7 @@ Implementation of Sun's ONC/RPC Remote Procedure Protocol, including client and 
 
 [ISR's VXI-11] is a fork of [VXI11.CSharp].
 
-##### Standards
+### Standards
 
 * [XDR: External Data Representation Standard (May 2006)]
 * Open Network Computing Remote Procedure Call (ONC RPC)
@@ -42,15 +42,15 @@ Implementation of Sun's ONC/RPC Remote Procedure Protocol, including client and 
 	* [Binding Protocols for ONC RPC Version 2 (August 1995)]
 
 <a name="Repository-Owner"></a>
-#### Repository Owner
+## Repository Owner
 [ATE Coder]
 
 <a name="Authors"></a>
-#### Authors
+## Authors
 * [ATE Coder]  
 
 <a name="Legal-Notices"></a>
-#### Legal Notices
+## Legal Notices
 
 Integrated Scientific Resources, Inc., and any contributors grant you a license to the documentation and other content
 in this repository under the [Creative Commons Attribution 4.0 International Public License](https://creativecommons.org/licenses/by/4.0/legalcode), see the [LICENSE](LICENSE) file, and grant you a license to any code in the repository under the [MIT License](https://opensource.org/licenses/MIT), see the [LICENSE-CODE](LICENSE-CODE) file.

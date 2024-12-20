@@ -1,4 +1,4 @@
-### Open Source
+# Open Source
 
 Implementation of Sun's ONC/RPC Remote Procedure Protocol, including client and server functionality and some associated tools.
 
@@ -6,11 +6,11 @@ Implementation of Sun's ONC/RPC Remote Procedure Protocol, including client and 
 * [Closed Software](#Closed-software)
 
 <a name="Open-Source"></a>
-#### Open source
+## Open source
 Open source used by this software is described and licensed at the following sites:  
 
 <a name="Closed-software"></a>
-#### Closed software
+## Closed software
 Closed software used by this software are described and licensed on the following sites:  
 
 [ISR's ONC RPC]: https://github.com/ATECoder/dn.onc.rpc

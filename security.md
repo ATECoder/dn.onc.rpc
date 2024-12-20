@@ -1,4 +1,4 @@
-### Security
+# Security
 
 This project follows the principle of [Coordinated Vulnerability Disclosure](https://www.microsoft.com/en-us/msrc/cvd).
 
@@ -6,7 +6,7 @@ This project follows the principle of [Coordinated Vulnerability Disclosure](htt
 
 If you believe you have found a security vulnerability that meets [Microsoft's definition of a security vulnerability](https://docs.microsoft.com/en-us/previous-versions/tn-archive/cc751383(v=technet.10)), please report it to us as described below.
 
-#### Reporting Security Issues
+## Reporting Security Issues
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
