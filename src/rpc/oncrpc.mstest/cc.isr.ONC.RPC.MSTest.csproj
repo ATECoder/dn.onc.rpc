@@ -24,6 +24,8 @@
     <DefineConstants>$(DefineConstants);MYPROJREF;</DefineConstants>
   </PropertyGroup>
 
+  <Import Project="..\oncrpc\version.build.props" />
+
   <Choose>
     <When Condition="$(DefineConstants.Contains(';PROJREF;')) OR $(DefineConstants.Contains(';MYPROJREF;'))">
       <ItemGroup>
