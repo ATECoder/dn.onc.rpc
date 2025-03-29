@@ -7,7 +7,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// oriented protocol UDP/IP.
 /// </summary>
 /// <remarks> <para>
-/// 
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcUdpClient : OncRpcClientBase
@@ -23,8 +23,8 @@ public class OncRpcUdpClient : OncRpcClientBase
 
     /// <summary>   Gets or sets the default timeout for TCP I/O calls. </summary>
     /// <remarks>
-    /// With UDP, the I/O timeout sets the total timeout of the RPC call, which is broken to 
-    /// shorter <see cref="OncRpcClientBase.TransmitTimeout"/>. The <see cref="RetransmitMode"/> 
+    /// With UDP, the I/O timeout sets the total timeout of the RPC call, which is broken to
+    /// shorter <see cref="OncRpcClientBase.TransmitTimeout"/>. The <see cref="RetransmitMode"/>
     /// then is used to determine retransmission in case of failure.
     /// </remarks>
     /// <value> The i/o timeout default. </value>
@@ -99,7 +99,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// </summary>
     private Socket? _socket;
 
-    /// <summary> 
+    /// <summary>
     /// XDR encoding stream used for sending requests via UDP/IP to an ONC/RPC server.
     /// </summary>
     private XdrUdpEncodingStream? _encoder;
@@ -236,7 +236,7 @@ public class OncRpcUdpClient : OncRpcClientBase
     public OncRpcRetransmitMode RetransmitMode { get; set; } = OncRpcRetransmitMode.OncRpcFixedTimeout;
 
     /// <summary>
-    /// Gets or sets the encoding to use when serializing strings. 
+    /// Gets or sets the encoding to use when serializing strings.
     /// </summary>
     /// <value> The character encoding. </value>
     public override Encoding CharacterEncoding
@@ -308,7 +308,7 @@ public class OncRpcUdpClient : OncRpcClientBase
                     try
                     {
                         // Send call message to server. Remember that we've already
-                        // "connected" the datagram socket, so the destination for the 
+                        // "connected" the datagram socket, so the destination for the
                         // datagram packets is already set.
 
                         this._encoder.BeginEncoding( new IPEndPoint( this.Host, this.Port ) );
@@ -561,40 +561,40 @@ public class OncRpcUdpClient : OncRpcClientBase
     /// <remarks>
     /// For this you'll need to specify either a multi-cast address or the subnet's broadcast address
     /// when creating a <see cref="OncRpcUdpClient"/>. <para>
-    /// 
+    ///
     /// For every reply received, a <see cref="BroadcastReplyReceived"/> event is invoked with data
     /// <see cref="OncRpcBroadcastEventArgs"/> information about the reply. </para><para>
-    /// 
+    ///
     /// In contrast to the <see cref="OncRpcClientBase.Call(int, IXdrCodec, IXdrCodec)"/>
     /// method, <see cref="BroadcastCall"/> sends the ONC/RPC call once. It then waits for answers
     /// until the <paramref name="timeout"/> timeout expires. </para> <para>
-    /// 
+    ///
     /// Note that using authentication types other than <see cref="OncRpcClientAuthNone"/>
     /// might yield unwanted results, causing messed up authentication protocol handling objects.
     /// This depends on the type of authentication used. For <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/>
     /// nothing bad happens as long as none of the servers replies with a shorthand verifier. If it
     /// does, then this shorthand will be used on all subsequent ONC/RPC calls, something you
     /// probably do not want at all. </para> <para>
-    /// 
+    ///
     /// Special network addresses are used to support UDP broadcast messages on IP-based networks.
     /// The following discussion uses the IP version 4 address family used on the Internet as an
     /// example.  </para> <para>
-    /// 
+    ///
     /// IP version 4 addresses use 32 bits to specify a network address.For class C addresses using a
     /// netmask of 255.255.255.0, these bits are separated into four octets.When expressed in decimal,
     /// the four octets form the familiar dotted-quad notation, such as 192.168.100.2. The first two
     /// octets(192.168 in this example) form the network number, the third octet(100) defines the
     /// subnet, and the final octet(2) is the host identifier.  </para> <para>
-    /// 
+    ///
     /// Setting all the bits of an IP address to one, or 255.255.255.255, forms the limited broadcast
     /// address.Sending a UDP datagram to this address delivers the message to any host on the local
     /// network segment. Because routers never forward messages sent to this address, only hosts on
     /// the network segment receive the broadcast message.  </para> <para>
-    /// 
+    ///
     /// Broadcasts can be directed to specific portions of a network by setting all bits of the host
     /// identifier. For example, to send a broadcast to all hosts on the network identified by IP
     /// addresses starting with 192.168.1, use the address 192.168.1.255. </para> <para>
-    /// 
+    ///
     /// @ATECoder: added an event handler in place of the broadcast listener. </para>
     /// </remarks>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
@@ -622,7 +622,7 @@ public class OncRpcUdpClient : OncRpcClientBase
             try
             {
                 // Send call message to server. Remember that we've already
-                // "connected" the datagram socket, so the destination of the 
+                // "connected" the datagram socket, so the destination of the
                 // datagram packets is already set.
 
                 this._encoder.BeginEncoding( new IPEndPoint( this.Host, this.Port ) );

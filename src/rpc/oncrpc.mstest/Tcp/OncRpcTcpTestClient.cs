@@ -45,7 +45,7 @@ public class OncRpcTcpTestClient : IDisposable
     /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
     /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
     /// method. </para> <para>
-    /// 
+    ///
     /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
     /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
     ///
@@ -85,7 +85,7 @@ public class OncRpcTcpTestClient : IDisposable
     /// you need to do so. The reason for this behavior is that the portmapper removes all entries
     /// regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC program number and version.
     /// <para>
-    /// 
+    ///
     /// Calling this method on a <see cref="OncRpcTcpTransport"/> results in the listening TCP
     /// network socket immediately being closed. In addition, all server transports handling the
     /// individual TCP/IP connections will also be closed. The handler tasks will therefore either

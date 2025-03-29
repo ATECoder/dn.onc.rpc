@@ -7,7 +7,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// </summary>
 /// <remarks>
 /// This server transport class is responsible for accepting new ONC/RPC connections over TCP/IP. <para>
-/// 
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcTcpTransport : OncRpcTransportBase
@@ -40,7 +40,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     }
 
     /// <summary>
-    /// Create a new instance of a <see cref="OncRpcTcpTransport"/> which encapsulates 
+    /// Create a new instance of a <see cref="OncRpcTcpTransport"/> which encapsulates
     /// TCP/IP-based XDR streams of an ONC/RPC server.
     /// </summary>
     /// <remarks>
@@ -126,7 +126,7 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// you need to do so. The reason for this behavior is, that the portmapper removes all entries
     /// regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC program number and version.
     /// <para>
-    /// 
+    ///
     /// Calling this method on a <see cref="OncRpcTcpTransport"/> results in the listening TCP
     /// network socket immediately being closed. In addition, all server transports handling the
     /// individual TCP/IP connections will also be closed. The handler tasks will therefore either
@@ -302,17 +302,17 @@ public class OncRpcTcpTransport : OncRpcTransportBase
     /// <remarks>
     /// For every incoming TCP/IP connection a handler task is created to handle ONC/RPC calls on
     /// this particular connection. <para>
-    /// 
+    ///
     /// Now wait for (new) connection requests to come in. </para><para>
-    /// 
+    ///
     /// Let the newly created transport object handle this connection. Note that it will create its
     /// own task for handling. </para><para>
-    /// 
+    ///
     /// We are just ignoring most of the IOExceptions as they might be thrown, for instance, if a
     /// client attempts a connection and resets it before it is pulled off by accept(). If the socket
     /// has been gone away after an IOException this means that the transport has been closed, so we
     /// end this task gracefully. </para><para>
-    /// 
+    ///
     /// @ATECoder: 2023-01-23: add cancellation. </para>
     /// </remarks>
     /// <param name="cancelSource"> The cancel source. </param>

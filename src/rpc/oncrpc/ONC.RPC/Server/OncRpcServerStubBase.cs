@@ -6,7 +6,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// <remarks>
 /// This class is typically only used by <c>RPCGen</c> generated servers, which
 /// provide a particular set of remote procedures as defined in an x-file.  <para>
-/// 
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public abstract partial class OncRpcServerStubBase : ICloseable
@@ -46,7 +46,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
     /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
     /// method. </para> <para>
-    /// 
+    ///
     /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
     /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
     ///
@@ -317,7 +317,7 @@ public abstract partial class OncRpcServerStubBase : ICloseable
     /// To end processing and to shut the server down signal the <see cref="ShutdownSignal"/> object.
     /// Note that the task on which <see cref="Run()"/> is called will ignore any interruptions and
     /// will silently swallow them. <para>
-    /// 
+    ///
     /// <see href="https://www.albahari.com/threading/part4.aspx"/>
     /// </para>
     /// </remarks>

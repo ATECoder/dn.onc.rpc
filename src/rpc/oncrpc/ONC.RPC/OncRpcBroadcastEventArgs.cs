@@ -2,14 +2,14 @@ using cc.isr.ONC.RPC.Client;
 
 namespace cc.isr.ONC.RPC;
 /// <summary>
-/// The class <see cref="OncRpcBroadcastEventArgs"/> defines the event arguments for the 
+/// The class <see cref="OncRpcBroadcastEventArgs"/> defines the event arguments for the
 /// an event fired by <see cref="OncRpcUdpClient">UDP/IP-based clients</see> whenever replies to a
 /// <see cref="OncRpcUdpClient.BroadcastCall(int, IXdrCodec, IXdrCodec, int)"/>
-/// are received.  
+/// are received.
 /// </summary>
 /// <remarks> <para>
-/// 
-/// Remote Tea authors: Harald Albrecht, Jay Walters. 
+///
+/// Remote Tea authors: Harald Albrecht, Jay Walters.
 /// @ATECoder: renamed and changed to inherit from <see cref="EventArgs"/>. </para>
 /// </remarks>
 public class OncRpcBroadcastEventArgs : EventArgs

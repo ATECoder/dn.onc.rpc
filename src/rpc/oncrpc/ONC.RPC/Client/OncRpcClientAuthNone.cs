@@ -2,11 +2,11 @@ using cc.isr.ONC.RPC.EnumExtensions;
 
 namespace cc.isr.ONC.RPC.Client;
 /// <summary>
-/// The <see cref="OncRpcClientAuthNone"/> class handles protocol issues of ONC/RPC 
+/// The <see cref="OncRpcClientAuthNone"/> class handles protocol issues of ONC/RPC
 /// <see cref="OncRpcAuthType.OncRpcAuthTypeNone"/> authentication.
 /// </summary>
 /// <remarks> <para>
-///  
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcClientAuthNone : OncRpcClientAuthBase

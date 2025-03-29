@@ -6,7 +6,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// authentication <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/> on the server side.
 /// </summary>
 /// <remarks> <para>
-///  
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
@@ -79,7 +79,7 @@ public sealed class OncRpcServerAuthShort : OncRpcServerAuthBase
     /// The value of the discriminant in the response verifier of the reply message from the server
     /// is either <see cref="OncRpcAuthType.OncRpcAuthTypeNone"/> or <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>.
     /// If the value is the later, the bytes of the response verifier's string encode an opaque structure.
-    /// The new opaque structure can then be passed to the server in place of the original 
+    /// The new opaque structure can then be passed to the server in place of the original
     /// <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> credentials. The server maintains a cache that
     /// maps shorthand opaque structures (passed back by way of an AUTH_SHORT-style response
     /// verifier) to the original credentials of the caller. The caller saves network bandwidth and

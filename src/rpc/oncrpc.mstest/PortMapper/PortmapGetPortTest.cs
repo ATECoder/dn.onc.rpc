@@ -126,8 +126,8 @@ public class APortmapGetPortTest
     #region " port map get port tests "
 
     /// <summary>   (Unit Test Method) portmap should get port. </summary>
-    /// <remarks> THIS TEST OFTEN FAILED WHEN RUN AFTER THE EMBEDDED PORTMAP TEST. 
-    /// so we changed the order for now. 
+    /// <remarks> THIS TEST OFTEN FAILED WHEN RUN AFTER THE EMBEDDED PORTMAP TEST.
+    /// so we changed the order for now.
     /// <code>
     /// Standard Output: 
     /// 2023-02-04 19:34:06.719,Checking for Portmap service

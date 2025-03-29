@@ -7,7 +7,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// protocol issues of ONC/RPC authentication on the server side.
 /// </summary>
 /// <remarks> <para>
-/// 
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public abstract class OncRpcServerAuthBase
@@ -50,7 +50,7 @@ public abstract class OncRpcServerAuthBase
     ///                         is of the same authentication type as the new one just arriving from
     ///                         the XDR stream. </param>
     /// <returns>
-    /// Authentication information encapsulated in an object, whose class is derived from 
+    /// Authentication information encapsulated in an object, whose class is derived from
     /// <see cref="OncRpcServerAuthBase"/>.
     /// </returns>
     public static OncRpcServerAuthBase NewOncRpcServerAuth( XdrDecodingStreamBase decoder, OncRpcServerAuthBase recycle )

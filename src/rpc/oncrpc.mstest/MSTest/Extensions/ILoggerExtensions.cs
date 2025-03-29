@@ -27,7 +27,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 1, LogLevel.Trace, "{message} at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogTraceSingleLineMessage" )]
     public static partial void LogTraceSingleLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -44,7 +44,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 2, LogLevel.Trace, "{message}\n at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogTraceMultiLineMessage" )]
     public static partial void LogTraceMultiLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -73,7 +73,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 4, LogLevel.Trace, "[{sourcePath}].{memberName}.Line#{sourceLineNumber}, {message}", EventName = "LogVerboseSingleLineMessage" )]
     public static partial void LogVerboseSingleLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -93,7 +93,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 5, LogLevel.Trace, "[{sourcePath}].{memberName}.Line#{sourceLineNumber}, {message}", EventName = "LogVerboseMultiLineMessage" )]
     public static partial void LogVerboseMultiLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -119,7 +119,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 11, LogLevel.Debug, "{message} at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogDebugSingleLineMessage" )]
     public static partial void LogDebugSingleLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -136,7 +136,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 12, LogLevel.Debug, "{message}\n at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogDebugMultiLineMessage" )]
     public static partial void LogDebugMultiLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -162,7 +162,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 21, LogLevel.Information, "{message} at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogInformationSingleLineMessage" )]
     public static partial void LogInformationSingleLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -179,7 +179,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 22, LogLevel.Information, "{message}\n at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogInformationMultiLineMessage" )]
     public static partial void LogInformationMultiLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -205,7 +205,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 31, LogLevel.Warning, "{message} at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogWarningSingleLineMessage" )]
     public static partial void LogWarningSingleLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -222,7 +222,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 32, LogLevel.Warning, "{message}\n at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogWarningMultiLineMessage" )]
     public static partial void LogWarningMultiLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -248,7 +248,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 41, LogLevel.Error, "{message} at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogErrorSingleLineMessage" )]
     public static partial void LogErrorSingleLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -265,7 +265,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 42, LogLevel.Error, "{message}\n at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogErrorMultiLineMessage" )]
     public static partial void LogErrorMultiLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -291,7 +291,7 @@ public static partial class ILoggerExtensions
     /// <param name="message">          The message. </param>
     /// <param name="exception">        The exception. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 44, LogLevel.Error, "{message} at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogExceptionSingleLineMessage" )]
     public static partial void LogExceptionSingleLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -309,7 +309,7 @@ public static partial class ILoggerExtensions
     /// <param name="message">          The message. </param>
     /// <param name="exception">        The exception. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 45, LogLevel.Error, "{message}\n at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogExceptionMultiLineMessage" )]
     public static partial void LogExceptionMultiLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -335,7 +335,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 51, LogLevel.Critical, "{message} at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogCriticalSingleLineMessage" )]
     public static partial void LogCriticalSingleLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -352,7 +352,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 52, LogLevel.Critical, "{message}\n at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogCriticalMultiLineMessage" )]
     public static partial void LogCriticalMultiLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -378,7 +378,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 54, LogLevel.Critical, "{message} at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogFatalSingleLineMessage" )]
     public static partial void LogFatalSingleLineMessage( this Microsoft.Extensions.Logging.ILogger logger,
@@ -395,7 +395,7 @@ public static partial class ILoggerExtensions
     /// <param name="logger">           The logger. </param>
     /// <param name="message">          The message. </param>
     /// <param name="memberName">       (Optional) Name of the caller member. </param>
-    /// <param name="sourcePath">       (Optional) Full pathname of the caller source file. </param>
+    /// <param name="sourcePath">       (Optional) full path name of the caller source file. </param>
     /// <param name="sourceLineNumber"> (Optional) Line number in the caller source file. </param>
     [LoggerMessage( 55, LogLevel.Critical, "{message}\n at [{sourcePath}].{memberName}.Line#{sourceLineNumber}", EventName = "LogFatalMultiLineMessage" )]
     public static partial void LogFatalMultiLineMessage( this Microsoft.Extensions.Logging.ILogger logger,

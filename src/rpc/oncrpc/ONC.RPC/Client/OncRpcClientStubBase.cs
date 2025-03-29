@@ -6,13 +6,13 @@ namespace cc.isr.ONC.RPC.Client;
 /// <remarks>
 /// This class is typically only used by <c>rpcgen</c>-generated clients, which provide a particular
 /// set of remote procedures as defined in a x-file. <para>
-///  
+///
 /// When you do not need the client proxy object any longer, you should return the resources
 /// it occupies to the system. Use the <see cref="Close()"/> method for this. </para>
 /// <code>
 /// client.Close();
 /// client = null; // Hint to the garbage collector.
-/// </code> 
+/// </code>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.
 /// </remarks>
 public abstract partial class OncRpcClientStubBase : ICloseable
@@ -49,10 +49,10 @@ public abstract partial class OncRpcClientStubBase : ICloseable
     /// Close the connection to an ONC/RPC server and free all network-related resources.
     /// </summary>
     /// <remarks>
-    /// The general contract of <see cref="Close()"/> is that it closes and disposes of the 
+    /// The general contract of <see cref="Close()"/> is that it closes and disposes of the
     /// ONC/RPC client. A closed client cannot perform RPC calls and cannot be reopened. <para>
-    /// 
-    /// The <see cref="Close()"/> method of calls <see cref="Dispose(bool)"/> and is not 
+    ///
+    /// The <see cref="Close()"/> method of calls <see cref="Dispose(bool)"/> and is not
     /// <see langword="virtual"/>.</para>
     /// </remarks>
     public void Close()
@@ -75,7 +75,7 @@ public abstract partial class OncRpcClientStubBase : ICloseable
     /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
     /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
     /// method. </para> <para>
-    /// 
+    ///
     /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
     /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
     ///

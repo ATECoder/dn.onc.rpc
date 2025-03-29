@@ -156,7 +156,7 @@ public class RemoteHostBroadcastTest
 
     /// <summary>
     /// List of addresses of port mappers that replied to our call...
-    /// 
+    ///
     /// Remember addresses of replies for later processing. Please note that you should not do any
     /// lengthy things (like DNS name lookups)
     /// in this event handler, as you will otherwise miss some incoming replies because the OS will
@@ -164,7 +164,7 @@ public class RemoteHostBroadcastTest
     /// </summary>
     /// <param name="sender">   Source of the event. </param>
     /// <param name="e">        ONC/RPC broadcast event information. </param>
-	public static void ReplyReceived( object? sender, OncRpcBroadcastEventArgs e )
+    public static void ReplyReceived( object? sender, OncRpcBroadcastEventArgs e )
     {
         _portmappers.Add( e.RemoteEndPoint );
     }
@@ -185,7 +185,7 @@ public class RemoteHostBroadcastTest
         // Create a portmap client object, which can then be used to contact
         // the remote ONC/RPC instruments.
         // OncRpcUdpClient client = new( IPAddress.Parse( "255.255.255.255" ), 100000, 2, 111 );
-        // 
+        //
         using OncRpcUdpClient client = new( address,
                                                          OncRpcPortmapConstants.OncRpcPortmapProgramNumber,
                                                          OncRpcPortmapConstants.OncRpcPortmapProgramVersionNumber,
@@ -223,12 +223,12 @@ public class RemoteHostBroadcastTest
     }
 
     /// <summary>   (Unit Test Method) client should broadcast. </summary>
-    /// <remarks>  
-    /// NOTE!: This test often fails after running the other tests. Then it takes a bit of time for the 
+    /// <remarks>
+    /// NOTE!: This test often fails after running the other tests. Then it takes a bit of time for the
     /// test to run. <para>
     /// With a set of two network cards, setting the server to any located the server on 192.168.0.40
     /// as the local host. </para><para>
-    /// 
+    ///
     /// Pinging port mappers in subnet 192.168.0.255: . </para><para>
     /// Exception receiving reply from 192.168.0.254:111: </para><para>
     ///   cc.isr.ONC.RPC.OncRpcException: Either a ONC/RPC server or client received the wrong type of ONC/RPC message when waiting for a request or reply.; expected OncRpcReplyMessageType(1); actual: OncRpcCallMessageType(0)
@@ -237,11 +237,11 @@ public class RemoteHostBroadcastTest
     /// .done. </para><para>
     /// Found: 192.168.0.154:111 </para><para>
     /// Found: 192.168.0.254:111 </para><para>
-    /// 
+    ///
     /// The following instruments were not found:  </para><para>
     /// Keithley 7510 at 192.168.0.144 </para><para>
     /// Keithley 2450 at 192.168.0.153 </para>
-    /// 
+    ///
     /// <code>
     /// Standard Output: 
     /// 2023-02-04 19:26:57.352,cc.isr.ONC.RPC.MSTest.Udp.RemoteHostBroadcastTest.RemoteHostBroadcastTest

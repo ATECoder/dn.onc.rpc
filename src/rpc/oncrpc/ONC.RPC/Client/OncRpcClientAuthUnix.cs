@@ -3,12 +3,12 @@ using cc.isr.ONC.RPC.EnumExtensions;
 
 namespace cc.isr.ONC.RPC.Client;
 /// <summary>
-/// The <see cref="OncRpcClientAuthUnix"/> class handles protocol issues of ONC/RPC 
+/// The <see cref="OncRpcClientAuthUnix"/> class handles protocol issues of ONC/RPC
 /// <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> (and thus <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>)
 /// authentication as defined in <see href="https://www.ibm.com/docs/en/aix/7.1?topic=authentication-unix"/>
 /// </summary>
 /// <remarks> <para>
-///  
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcClientAuthUnix : OncRpcClientAuthBase
@@ -153,7 +153,7 @@ public class OncRpcClientAuthUnix : OncRpcClientAuthBase
         }
         else
         {
-            // if having short hand credentials, 
+            // if having short hand credentials,
             // Use shorthand credentials instead of original credentials.
 
             encoder.EncodeInt( ( int ) OncRpcAuthType.OncRpcAuthTypeShortHandUnix );

@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace cc.isr.ONC.RPC.Server;
 
-public partial class OncRpcServerStubBase : INotifyPropertyChanged
+public partial class OncRpcServerStubBase : System.ComponentModel.INotifyPropertyChanged
 {
     /// <summary>   Occurs when a property value changes. </summary>
     public event PropertyChangedEventHandler? PropertyChanged;
@@ -48,7 +48,7 @@ public partial class OncRpcServerStubBase : INotifyPropertyChanged
 
     /// <summary>
     /// Compares the current and new values for a given nested property. If the value has changed,
-    /// updates the property and then raises the <see cref="PropertyChanged"/> event. 
+    /// updates the property and then raises the <see cref="PropertyChanged"/> event.
     /// The behavior mirrors that of <see cref="SetProperty{T}(ref T,T,string)"/>,
     /// with the difference being that this method is used to relay properties from a wrapped model in the
     /// current instance. This type is useful when creating wrapping, bindable objects that operate over

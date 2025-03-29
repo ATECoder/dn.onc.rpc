@@ -630,7 +630,7 @@ public class OncRpcTcpTests
     /// 2023-02-04 19:28:24.814, built list 8, 0,
     /// 2023-02-04 19:28:24.814,All tests passed.
     /// </code>
-    /// </remarks>    
+    /// </remarks>
     [TestMethod]
     public void ClientShouldCallRemoteProcedures()
     {

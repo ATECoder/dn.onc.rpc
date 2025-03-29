@@ -1,10 +1,10 @@
 namespace cc.isr.ONC.RPC.Codecs;
 /// <summary>
-/// The server <see cref="OncRpcGetPortCodec"/> class represents the result from a 
+/// The server <see cref="OncRpcGetPortCodec"/> class represents the result from a
 /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapGetPortNumber"/> remote
 /// procedure call to the ONC/RPC portmapper.
 /// </summary>
-/// <remarks> <para> 
+/// <remarks> <para>
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcGetPortCodec : IXdrCodec

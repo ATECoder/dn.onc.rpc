@@ -1,11 +1,11 @@
 namespace cc.isr.ONC.RPC.Codecs;
 /// <summary>
-/// Objects of class <see cref="OncRpcPortmapServersListCodec"/> represent the outcome of the 
+/// Objects of class <see cref="OncRpcPortmapServersListCodec"/> represent the outcome of the
 /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers"/>
 /// operation on a portmapper.
 /// </summary>
 /// <remarks> <para>
-/// 
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcPortmapServersListCodec : IXdrCodec
@@ -27,7 +27,7 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
     public List<OncRpcServerIdentifierCodec> ServerIdentifiers { get; set; }
 
     /// <summary>
-    /// Encodes -- that is: serializes -- the result of a 
+    /// Encodes -- that is: serializes -- the result of a
     /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers"/> operating into a XDR stream.
     /// </summary>
     /// <exception cref="OncRpcException">  Thrown when an ONC/RPC error condition occurs. </exception>
@@ -56,7 +56,7 @@ public class OncRpcPortmapServersListCodec : IXdrCodec
     }
 
     /// <summary>
-    /// Decodes -- that is: deserializes -- the result from a 
+    /// Decodes -- that is: deserializes -- the result from a
     /// <see cref="Portmap.OncRpcPortmapServiceProcedure.OncRpcPortmapListRegisteredServers"/> remote procedure call from a
     /// XDR stream.
     /// </summary>

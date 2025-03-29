@@ -6,39 +6,39 @@ namespace cc.isr.ONC.RPC.Server;
 /// <remarks>
 /// The handler is handed to ONC/RPC <see cref="IOncRpcDispatchable">call dispatchers</see>, so
 /// it can Sends back the reply to the appropriate caller, etc. <para>
-/// 
-/// 
+///
+///
 /// Use this call handler objects only to retrieve call parameters and send back replies because, in
 /// the future UDP/IP-based transports may become multi-threaded handling. The call handler is
-/// controls access to the underlaying transport, so never mess with the transport directly. </para> <para> 
-/// 
+/// controls access to the underlaying transport, so never mess with the transport directly. </para> <para>
+///
 /// Note that this class provides two different patterns for accessing parameters sent by clients
 /// within the ONC/RPC call and sending back replies as described below. </para>
-/// 
+///
 /// <list type="bullet">The convenient high-level access: <item>
-/// 
+///
 /// <see cref="RetrieveCall(IXdrCodec)"/> retrieves the parameters of the call and deserialize it
 /// into a parameter object.</item><item>
-/// 
+///
 /// <see cref="Reply(IXdrCodec)"/> sends back the reply by serializing a reply/result object. </item><item>
-/// 
+///
 /// <i>Fail*</i> methods to send back an error indication in place of a reply. </item><item>
-/// 
+///
 /// The lower-level access provides more control over how and when data is deserialized and
 /// serialized: </item></list><list type="bullet"><item>
-/// 
-/// <see cref="GetXdrDecodingStream()"/> gets a reference to the XDR stream from which to 
+///
+/// <see cref="GetXdrDecodingStream()"/> gets a reference to the XDR stream from which to
 /// deserialize the call's parameter.</item> <item>
-/// 
+///
 /// When you are finished deserializing, call <see cref="EndDecoding()"/>. </item><item>
-/// 
+///
 /// To Sends back the reply/result, call <see cref="BeginEncoding(OncRpcServerReplyMessage)"/>. </item><item>
-/// 
-/// Using the XDR stream returned by <see cref="GetXdrEncodingStream()"/>, 
+///
+/// Using the XDR stream returned by <see cref="GetXdrEncodingStream()"/>,
 /// serialize the reply/result.  </item><item>
-/// 
+///
 /// Finally finish the serializing step by calling <see cref="EndEncoding()"/>. </item></list><para>
-/// 
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcCallHandler

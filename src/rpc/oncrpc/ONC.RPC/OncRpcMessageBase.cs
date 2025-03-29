@@ -1,12 +1,12 @@
 namespace cc.isr.ONC.RPC;
 /// <summary>
-/// The abstract <see cref="OncRpcMessageBase"/> class is a superclass for the <see cref="OncRpcMessageType.OncRpcCallMessageType"/> 
+/// The abstract <see cref="OncRpcMessageBase"/> class is a superclass for the <see cref="OncRpcMessageType.OncRpcCallMessageType"/>
 /// and <see cref="OncRpcMessageType.OncRpcReplyMessageType"/> message types defined by the ONC/RPC standard.
 /// </summary>
 /// <remarks>
 /// The only things common to all ONC/RPC messages are a message identifier and the message type.
 /// All other things do not come in until derived classes are introduced. <para>
-///  
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public abstract class OncRpcMessageBase

@@ -10,10 +10,10 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// <remarks>
 /// If an embedded Portmap service is started it will stop only after the last ONC/RPC program
 /// has been deregistered. <para>
-/// 
+///
 /// This class need not be disposable as the service will automatically terminate after the last
 /// program deregisters. </para><para>
-/// 
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcEmbeddedPortmapServiceStub : ICloseable
@@ -193,7 +193,7 @@ public class OncRpcEmbeddedPortmapServiceStub : ICloseable
     /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
     /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
     /// method. </para> <para>
-    /// 
+    ///
     /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
     /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
     ///

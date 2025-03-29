@@ -6,7 +6,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// oriented protocol TCP/IP.
 /// </summary>
 /// <remarks> <para>
-///  
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcTcpClient : OncRpcClientBase
@@ -51,7 +51,7 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <param name="host">         The host where the ONC/RPC server resides. </param>
     /// <param name="program">      Program number of the ONC/RPC server to call. </param>
     /// <param name="version">      Program version number. </param>
-    /// <param name="port">         The port number where the ONC/RPC server can be contacted. If 
+    /// <param name="port">         The port number where the ONC/RPC server can be contacted. If
     ///                             <c>0</c>, then the <see cref="OncRpcUdpClient"/> object will ask
     ///                             the portmapper at <paramref name="host"/> for the port number. </param>
     /// <param name="bufferSize">   Size of receive and send buffers. In contrast to UDP-based
@@ -248,10 +248,10 @@ public class OncRpcTcpClient : OncRpcClientBase
     /// <remarks>
     /// Note!: <para>
     /// While this code was set for using the <see cref="OncRpcClientBase.IOTimeout"/>
-    /// with a value of zero as a flag for batch operation, the same timeout is used for 
-    /// setting the XDR request I/O timeout. In order to maintain the API of the 
-    /// <see cref="Call(int, int, IXdrCodec, IXdrCodec)"/> method intact, a batch member was 
-    ///                                                    
+    /// with a value of zero as a flag for batch operation, the same timeout is used for
+    /// setting the XDR request I/O timeout. In order to maintain the API of the
+    /// <see cref="Call(int, int, IXdrCodec, IXdrCodec)"/> method intact, a batch member was
+    ///
     /// </para>
     /// Please note that while this method supports call batching by setting the communication
     /// timeout to zero (<see cref="Timeout"/> to <c>0</c>) you should better use

@@ -9,14 +9,14 @@ namespace cc.isr.ONC.RPC.Server;
 /// <remarks>
 /// Using server transports, ONC/RPC calls are received and the corresponding replies are later
 /// sent back after handling. <para>
-/// 
+///
 /// Note that the server-specific dispatcher handling requests (done through <see cref="IOncRpcDispatchable"/>
 /// will only directly deal with <see cref="OncRpcCallHandler"/> objects. These call
 /// information objects reference OncRpcServerTransport object, but the server programmer
 /// typically will never touch them, as the call information object already contains all
 /// necessary information about a call, so replies can be sent back (and this is definitely a
 /// sentence containing too many words). </para> <para>
-/// 
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public abstract class OncRpcTransportBase : ICloseable
@@ -28,7 +28,7 @@ public abstract class OncRpcTransportBase : ICloseable
     /// <remarks>
     /// Using a server transport, ONC/RPC calls are received and the corresponding replies are sent
     /// back. <para>
-    /// 
+    ///
     /// We do not create any XDR streams here, as it is the responsibility of derived classes to
     /// create appropriate XDR stream objects for the respective kind of transport mechanism used
     /// (like TCP/IP and UDP/IP).</para>
@@ -57,7 +57,7 @@ public abstract class OncRpcTransportBase : ICloseable
     /// have to do it manually if you need to do so. The reason for this behavior is, that the port
     /// mapper removes all entries regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC
     /// program number and version. <para>
-    /// 
+    ///
     /// Derived classes can choose between different behavior for shutting down the associated
     /// transport handler tasks: </para> <list type="bullet"> <item>
     /// Close the transport immediately and let the tasks stumble on the closed network connection.</item>
@@ -85,7 +85,7 @@ public abstract class OncRpcTransportBase : ICloseable
     /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
     /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
     /// method. </para> <para>
-    /// 
+    ///
     /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
     /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
     ///
@@ -127,7 +127,7 @@ public abstract class OncRpcTransportBase : ICloseable
     /// you need to do so. The reason for this behavior is that the portmapper removes all entries
     /// regardless of the protocol (TCP/IP or UDP/IP) for a given ONC/RPC program number and version.
     /// <para>
-    /// 
+    ///
     /// Calling this method on a <see cref="OncRpcTcpTransport"/> results in the listening TCP
     /// network socket immediately being closed. In addition, all server transports handling the
     /// individual TCP/IP connections will also be closed. The handler tasks will therefore either
@@ -233,7 +233,7 @@ public abstract class OncRpcTransportBase : ICloseable
     private Encoding _characterEncoding;
 
     /// <summary>
-    /// Gets or sets the character encoding for serializing strings. 
+    /// Gets or sets the character encoding for serializing strings.
     /// </summary>
     /// <value>
     /// The encoding for serializing strings. If (<see langword="null"/>), then the
@@ -325,11 +325,11 @@ public abstract class OncRpcTransportBase : ICloseable
     /// Note that you have to supply an implementation for this abstract method in derived classes.
     /// Your implementation needs to create a new task to wait for incoming requests. The method
     /// has to return immediately for the calling task. <para>
-    /// 
+    ///
     /// Currently only one call after the other is dispatched, so no multi tasking is done when
     /// receiving multiple calls. Instead, later calls have to wait for the current call to finish
     /// before they are handled. </para>  <para>
-    /// 
+    ///
     /// @ATECoder: 20230131: replaced threads with tasks and error handling. </para>
     /// </remarks>
     /// <param name="cancelSource"> The cancel source. </param>
@@ -435,7 +435,7 @@ public abstract class OncRpcTransportBase : ICloseable
     /// This is rather a low-level method, typically not used by applications. Dispatcher handling
     /// ONC/RPC calls have to use the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
     /// method instead on the call object supplied to the handler. <para>
-    /// 
+    ///
     /// An appropriate implementation has to be provided in derived classes as it is dependent on the
     /// type of transport (whether UDP/IP or TCP/IP)
     /// used. </para>
@@ -453,7 +453,7 @@ public abstract class OncRpcTransportBase : ICloseable
     /// This is rather a low-level method, typically not used by applications. Dispatcher handling
     /// ONC/RPC calls have to use the <see cref="OncRpcCallHandler.Reply(IXdrCodec)"/>
     /// method instead on the call object supplied to the handler. <para>
-    /// 
+    ///
     /// An appropriate implementation has to be provided in derived classes as it is dependent on the
     /// type of transport (whether UDP/IP or TCP/IP)
     /// used. </para>

@@ -18,15 +18,15 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// that widely in use due to the brain-damaged design of XTI. If you should
 /// ever have programmed using XTI (transport independent interface) then you'll
 /// know what I mean and probably agree with me. Otherwise, in case you find XTI
-/// the best thing since the Win32 API, please implement the 
+/// the best thing since the Win32 API, please implement the
 /// <see href="https://www.freesoft.org/CIE/RFC/1833/2.htm">RPCBIND</see> program protocol
 /// versions 3 and 4 and give it to the community -- thank you. <para>
-/// 
+///
 /// Here are some simple examples of how to use the portmapper proxy object.
 /// We first start with one of the most interesting operations, which can be
 /// performed on port mappers, querying the port of a local or remote ONC/RPC
 /// server. </para> <para>
-/// 
+///
 /// To query the port number of an ONC/RPC server, we need to contact the
 /// portmapper at the host machine where the server is running. The following
 /// code snippet just contacts the local portmapper. <see langword="try"/> blocks
@@ -35,7 +35,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// <code>
 /// using OncRpcPortmapClient portmap = new OncRpcPortmapClient( IPAddress.Loopback );
 /// </code> <para>
-/// 
+///
 /// With the portmapper proxy object in our hands we can now ask for the port number of a
 /// particular ONC/RPC server. In this (fictitious) example we ask for the ONC/RPC program
 /// (server) number <c>0x49678</c> (by coincidence this happens to be the program number of
@@ -46,12 +46,12 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// int port;
 /// try {
 ///   port = portmap.GetPort( 0x49678, 1, OncRpcProtocols.ONCRPC_UDP );
-/// } 
+/// }
 /// catch ( OncRpcProgramNotRegisteredException e ) {
 ///   Trace.TraceInformation( "ONC/RPC program server not found" );
 ///   Trace.Flush();
 ///   System.exit(0);
-/// } 
+/// }
 /// catch ( OncRpcException e ) {
 ///   Trace.TraceError( "Could not contact portmapper:", e );
 ///   Trace.Flush();
@@ -60,20 +60,20 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// Trace.TraceInformation( $"Program available at port {port}" );
 /// Trace.Flush();
 /// </code> <para>
-/// 
+///
 /// In the call to <see cref="GetPort(int, int, OncRpcProtocol)"/>, the first parameter
 /// specifies the ONC/RPC program number, the second parameter specifies the program's version
 /// number, and the third parameter specifies the IP protocol to use when issuing ONC/RPC calls.
 /// Currently, only <see cref="OncRpcProtocol.OncRpcUdp"/> and <see cref="OncRpcProtocol.OncRpcTcp"/>
 /// are supported. But who needs other protocols anyway?! </para> <para>
-/// 
+///
 /// In case <see cref="GetPort(int, int, OncRpcProtocol)"/>
 /// succeeds, it returns the number of the port where the appropriate ONC/RPC server waits for
 /// incoming ONC/RPC calls. If the ONC/RPC program is not registered with the particular ONC/RPC
 /// portmapper, an <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/>
 /// is thrown (which is a subclass of <see cref="OncRpcException"/>
 /// with a <see cref="OncRpcException.Reason"/> of <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/>. </para> <para>
-/// 
+///
 /// A second typical example of how to use the portmapper is retrieving a list of the
 /// currently registered servers. We use the <see cref="ListRegisteredServers()"/>
 /// method for this purpose in the following example, and print the list we got. </para>
@@ -81,7 +81,7 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// OncRpcServerIdent [] list = null;
 /// try {
 ///   list = portmap.ListRegisteredServers();
-/// } 
+/// }
 /// catch ( OncRpcException e ) {
 ///   Logger?.LogErrorMultilineMessage( "error listing registered servers", e );
 ///   System.exit( 20 );
@@ -91,17 +91,17 @@ namespace cc.isr.ONC.RPC.Portmap;
 ///   Trace.Flush();
 /// }
 /// </code> <para>
-/// 
+///
 /// When you do not need the client proxy object any longer, you should return the resources
 /// it occupies to the system. Use the <see cref="Close()"/> method for this. </para>
 /// <code>
 /// portmap.Close();
 /// portmap = null; // Hint to the garbage collector
 /// </code> <para>
-/// 
-/// For another code example, please consult 
+///
+/// For another code example, please consult
 /// <see href="../ONCRPC.MSTest/PortMapper/PortmapGetPortTest.cs"/> </para> <para>
-/// 
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcPortmapClient : ICloseable
@@ -197,13 +197,13 @@ public class OncRpcPortmapClient : ICloseable
     /// <remarks>
     /// Takes account of and updates <see cref="IsDisposed"/>. Encloses <see cref="Dispose(bool)"/>
     /// within a try...finally block. <para>
-    /// 
+    ///
     /// Because this class is implementing <see cref="IDisposable"/> and is not sealed, then it
     /// should include the call to <see cref="GC.SuppressFinalize(object)"/> even if it does not
     /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
     /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
     /// method. </para> <para>
-    /// 
+    ///
     /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
     /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
     ///
@@ -406,7 +406,7 @@ public class OncRpcPortmapClient : ICloseable
         // Fill in the request parameters.
         OncRpcPortmapServersListCodec result = new();
 
-        // Try to contact the portmap process. On failure, rethrow the exception 
+        // Try to contact the portmap process. On failure, rethrow the exception
         // as a generic portmap failure exception.
 
         // @ATECoder: re-throwing an OncRcpException( reason: OncRpcPortMapServiceFailure ) exception was changed

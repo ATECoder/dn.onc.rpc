@@ -6,7 +6,7 @@ namespace cc.isr.ONC.RPC.Server;
 /// authentication <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/> on the server side.
 /// </summary>
 /// <remarks> <para>
-/// 
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
@@ -111,7 +111,7 @@ public sealed class OncRpcServerAuthUnix : OncRpcServerAuthBase
         // If not, throw an exception, as there is something strange going on!
 
         // length = length of timestamp + length of machine name + length of user id +
-        //          length of group id + length of the vector of group identities. 
+        //          length of group id + length of the vector of group identities.
 
         int expectedLength = 4 + (this.MachineName.Length + 7 & ~3) + 4 + 4 + this._groupIds.Length * 4 + 4;
         if ( this.AuthMessageLength != expectedLength )

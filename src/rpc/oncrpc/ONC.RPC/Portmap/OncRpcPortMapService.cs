@@ -12,12 +12,12 @@ namespace cc.isr.ONC.RPC.Portmap;
 /// This class can be either used stand-alone (a static <c>main</c> is provided for this
 /// purpose) or as part of an application. In this case you should check first for another
 /// portmap already running before starting your own one.<para>
-/// 
+///
 /// Remote Tea authors: Harald Albrecht, Jay Walters.</para>
 /// </remarks>
 public class OncRpcPortMapService : OncRpcServerStubBase, IOncRpcDispatchable
 {
-    /// <summary> 
+    /// <summary>
     /// Creates a new Portmap service instance. Creates the transport registration information and UDP and TCP-
     /// based transports, which will be bound later to port 111.
     /// </summary>

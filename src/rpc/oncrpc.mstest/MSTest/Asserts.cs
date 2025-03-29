@@ -252,6 +252,6 @@ public sealed class Asserts
     {
         return this.Throws<T>( function, string.Format( System.Globalization.CultureInfo.CurrentCulture, format, args ) );
     }
-	
+
     #endregion
 }

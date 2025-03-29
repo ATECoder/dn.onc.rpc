@@ -9,7 +9,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// It encapsulates protocol-independent functionality, like port resolving, if no port
 /// was specified for the ONC/RPC server to contact. This class also provides the method skeleton,
 /// for instance for executing procedure calls. <para>
-///  
+///
 /// In order to communicate with an ONC/RPC server, you need to create an
 /// ONC/RPC client, represented by classes derived from <see cref="OncRpcClientBase"/>. The most
 /// generic way to generate an ONC/RPC client is as follows: use
@@ -20,7 +20,7 @@ namespace cc.isr.ONC.RPC.Client;
 /// the program's version number,</item><item>
 /// and finally the IP protocol to use when talking to the server. This can be either
 /// <see cref="OncRpcProtocol.OncRpcUdp"/> or <see cref="OncRpcProtocol.OncRpcTcp"/>.</item></list> <para>
-///  
+///
 /// The next code snippet shows how to create an ONC/RPC client, which can
 /// communicate over UDP/IP with the ONC/RPC server for program number
 /// <c>0x49678</c> on the same host (by coincidence, this is the program
@@ -35,17 +35,17 @@ namespace cc.isr.ONC.RPC.Client;
 /// catch ( OncRpcProgramNotRegisteredException e ) {
 ///     Logger.LogError(e, "ONC/RPC program server not found");
 ///     System.exit(0);
-/// } 
+/// }
 /// catch ( OncRpcException e ) {
 ///    Logger.LogError(e, "Could not contact port mapper:");
 ///    System.exit(0);
-/// } 
+/// }
 /// catch ( IOException e )  {
 ///    Logger.LogError(e, "Could not contact port mapper:");
 ///    System.exit(0);
 /// }
 /// </code> <para>
-/// 
+///
 /// This code snippet also shows exception handling. The most common error you'll see is
 /// probably an <see cref="OncRpcExceptionReason.OncRpcProgramNotRegistered"/> exception,
 /// in case no such program number is currently registered at the specified host.
@@ -53,12 +53,12 @@ namespace cc.isr.ONC.RPC.Client;
 /// <see cref="OncRpcExceptionReason.OncRpcProcedureCallTimedOut"/> instead.
 /// You might also get an IOException when using TCP/IP and the server
 /// cannot be contacted because it does not accept new connections.  </para> <para>
-/// 
+///
 /// Instead of calling <see cref="NewOncRpcClient(IPAddress, int, int, OncRpcProtocol, int)"/>
 /// you can also directly create objects of classes <see cref="OncRpcTcpClient"/>
 /// and <see cref="OncRpcUdpClient"/>
 /// if you know at compile time which kind of IP protocol you will use. </para> <para>
-/// 
+///
 /// With a client proxy in your hands, you can now issue ONC/RPC calls. As
 /// a really, really simple example -- did I say "simple example"? -- we start
 /// with the famous ONC/RPC ping call. This call sends no parameters and expects
@@ -75,24 +75,24 @@ namespace cc.isr.ONC.RPC.Client;
 /// }
 /// Logger.LogInformation("server is alive.");
 /// </code> <para>
-/// 
+///
 /// By definition, the ONC/RPC ping call has program number 0 and expects no parameters and
 /// replies with no result. Thus we just specify an empty parameter and result in the form of the
-/// static <see cref="VoidXdrCodec.VoidXdrCodecInstance"/> object, when calling the ping procedure in 
+/// static <see cref="VoidXdrCodec.VoidXdrCodecInstance"/> object, when calling the ping procedure in
 /// the server using the <see cref="Call(int, IXdrCodec, IXdrCodec)"/> method. </para> <para>
-/// 
+///
 /// For more complex and sometimes more useful ONC/RPC calls, you will need
 /// to write appropriate ONC/RPC parameter and reply classes. Unfortunately, at this time there's
-/// no compiler available to compile <c>.x</c> files, which define the XDR data structures, into 
+/// no compiler available to compile <c>.x</c> files, which define the XDR data structures, into
 /// appropriate classes. </para> <para>
-/// 
+///
 /// For the next example, let's pretend our server provides the answer to all questions when
 /// called with procedure number 42. Let's also pretend that this ONC/RPC call expects a question
 /// in form of a string and returns the answer as an integer. So we need to define two classes,
 /// one for the call's parameters and one for the reply. But let us first examine the class
 /// containing a call's parameters: </para>
 /// <code>
-/// class StringCodec : XdrCodec 
+/// class StringCodec : XdrCodec
 /// {
 ///   public String question;
 ///   public void Encode(XdrEncodingStream encoder)
@@ -103,15 +103,15 @@ namespace cc.isr.ONC.RPC.Client;
 ///   question = decoder.DecodeString();
 /// }
 /// </code> <para>
-/// 
+///
 /// The <c>StringCodec</c> class implements <see cref="IXdrCodec"/>, so instances
 /// of it can be sent and received over the network using Sun's XDR protocol. What exactly is
 /// sent over the wire is up to the two methods <see cref="IXdrCodec.Encode(XdrEncodingStreamBase)"/>
 /// and <see cref="IXdrCodec.Decode(XdrDecodingStreamBase)"/>. The <see cref="IXdrCodec.Encode"/>
 /// method encodes the data to be sent over the network, whereas <see cref="IXdrCodec.Decode"/>
-/// restores the object's state from the data received over the network. In our example, 
+/// restores the object's state from the data received over the network. In our example,
 /// these methods either send or receive a string. </para> <para>
-/// 
+///
 /// The class defining the reply of our the-answer-to-all-questions ONC/RPC
 /// call is now straightforward:</para>
 /// <code>
@@ -126,7 +126,7 @@ namespace cc.isr.ONC.RPC.Client;
 ///   }
 /// }
 /// </code> <para>
-/// 
+///
 /// Finally, to ask a question, you need to create the parameter object and fill it with the
 /// parameters to be sent. Then create the object later receiving the reply. Finally issue the
 /// ONC/RPC call: </para>
@@ -136,34 +136,34 @@ namespace cc.isr.ONC.RPC.Client;
 /// AnswerCoded answer = new AnswerCodec();
 /// try {
 ///   client.Call(42, parameters, answer);
-/// } 
+/// }
 /// catch ( OncRpcException e ) {
-/// } 
+/// }
 /// catch ( IOException e ) {
 /// }
 /// Logger.LogInformation(parameters.question);
 /// Logger.LogInformation($"And the answer is: {answer.DefinitiveAnswer}");
 /// </code> <para>
-/// 
+///
 /// When you do not need the client proxy object any longer, you should return the resources
 /// it occupies to the system. Use the <see cref="Close()"/> method for this.</para>
 /// <code>
 /// client.Close();
-/// client = null; 
+/// client = null;
 /// </code>
 /// <see cref="OncRpcClientAuthBase">Authentication</see> can be done as follows:  <para>
-/// 
+///
 /// just create an authentication object and hand it over to the ONC/RPC client object. </para>
 /// <code>
 /// OncRpcClientAuthBase auth = new OncRpcClientAuthUnix("marvin@ford.prefect", 42, 1001, new int[0]);
 /// client.Auth = auth;
 /// </code> <para>
-/// 
+///
 /// The <see cref="OncRpcClientAuthUnix"/> <see cref="OncRpcAuthType.OncRpcAuthTypeUnix"/>
 /// will handle shorthand credentials (of type <see cref="OncRpcAuthType.OncRpcAuthTypeShortHandUnix"/>) transparently. If you do
 /// not set any authentication object after creating an ONC/RPC client object, <see cref="OncRpcAuthType.OncRpcAuthTypeNone"/>
 /// is used automatically. </para> <para>
-/// 
+///
 /// TCP-based ONC/RPC clients also support call batching (exception handling
 /// omitted for clarity): </para>
 /// <code>
@@ -198,7 +198,7 @@ public abstract class OncRpcClientBase : ICloseable
     ///                         if this is not known and the portmap process located at host should
     ///                         be contacted to find out the port. </param>
     /// <param name="protocol"> <see cref="OncRpcProtocol">Protocol</see> to be used for
-    ///                         ONC/RPC calls. This information is necessary, so port lookups through 
+    ///                         ONC/RPC calls. This information is necessary, so port lookups through
     ///                         the portmapper can be done. </param>
     internal OncRpcClientBase( IPAddress host, int program, int version, int port, OncRpcProtocol protocol )
     {
@@ -207,7 +207,7 @@ public abstract class OncRpcClientBase : ICloseable
         this.Program = program;
         this.Version = version;
 
-        // Initialize the message identifier 
+        // Initialize the message identifier
         this.MessageId = OncRpcClientBase.GetNextMessageId();
 
         // If the port number of the ONC/RPC server to contact is not yet
@@ -294,10 +294,10 @@ public abstract class OncRpcClientBase : ICloseable
     /// Close the connection to an ONC/RPC server and free all network-related resources.
     /// </summary>
     /// <remarks>
-    /// The general contract of <see cref="Close()"/> is that it closes and disposes of the 
+    /// The general contract of <see cref="Close()"/> is that it closes and disposes of the
     /// ONC/RPC client. A closed client cannot perform RPC calls and cannot be reopened. <para>
-    /// 
-    /// The <see cref="Close()"/> method of calls <see cref="Dispose(bool)"/> and is not 
+    ///
+    /// The <see cref="Close()"/> method of calls <see cref="Dispose(bool)"/> and is not
     /// <see langword="virtual"/>.</para>
     /// </remarks>
     public void Close()
@@ -320,7 +320,7 @@ public abstract class OncRpcClientBase : ICloseable
     /// include a user-defined finalizer. This is necessary to ensure proper semantics for derived
     /// types that add a user-defined finalizer but only override the protected <see cref="Dispose(bool)"/>
     /// method. </para> <para>
-    /// 
+    ///
     /// To this end, call <see cref="GC.SuppressFinalize(object)"/>, where <see langword="Object"/> = <see langword="this"/> in the <see langword="Finally"/> segment of
     /// the <see langword="try"/>...<see langword="catch"/> clause. </para><para>
     ///
@@ -423,18 +423,18 @@ public abstract class OncRpcClientBase : ICloseable
     /// communication with an ONC/RPC server.
     /// </summary>
     /// <remarks>
-    /// With TCP, the <see cref="IOTimeout"/> is used only for setting the ONC/RPC server timeouts 
+    /// With TCP, the <see cref="IOTimeout"/> is used only for setting the ONC/RPC server timeouts
     /// by way of the <see cref="IXdrCodec"/> payloads for the RPC calls. <para>
-    /// 
-    /// With UDP, the I/O timeout sets the total timeout of the RPC call, which is broken to shorter 
+    ///
+    /// With UDP, the I/O timeout sets the total timeout of the RPC call, which is broken to shorter
     /// <see cref="OncRpcClientBase.TransmitTimeout"/> intervals. The <see cref="OncRpcRetransmitMode"/>
     /// is used to determine how timeouts are changed on retransmission in case of failures.
     /// </para>
-    /// 
+    ///
     /// The <see cref="Call(int, IXdrCodec, IXdrCodec)"/> method will throw a <see cref="ThreadInterruptedException"/>
     /// exception if no answer from the ONC/RPC server is received within the timeout time span. <para>
-    /// 
-    /// The timeout must be non-negative. </para>  
+    ///
+    /// The timeout must be non-negative. </para>
     /// </remarks>
     /// <value> The timeout in milliseconds. </value>
     public int IOTimeout { get; set; }
@@ -458,8 +458,8 @@ public abstract class OncRpcClientBase : ICloseable
     /// During retransmission, the actual timeout gets modified depending on the
     /// <see cref="OncRpcRetransmitMode"/>.  </para><para>
     /// Device Connection:  </para><para>
-    /// For connection, the transmit timeout might be increased as necessary to establish connection 
-    /// with the RPC server, in which case, the connection code should work within a 
+    /// For connection, the transmit timeout might be increased as necessary to establish connection
+    /// with the RPC server, in which case, the connection code should work within a
     /// Try..Catch..Finally construct to ensure the restoration of the <see cref="TransmitTimeout"/>.
     /// </para>
     /// </remarks>
@@ -503,7 +503,7 @@ public abstract class OncRpcClientBase : ICloseable
     public OncRpcClientAuthBase Auth { get; set; }
 
     /// <summary>
-    /// Gets or sets the encoding to use when serializing strings. 
+    /// Gets or sets the encoding to use when serializing strings.
     /// </summary>
     /// <value> The character encoding. </value>
     public virtual Encoding CharacterEncoding { get; set; } = XdrDecodingStreamBase.EncodingDefault;

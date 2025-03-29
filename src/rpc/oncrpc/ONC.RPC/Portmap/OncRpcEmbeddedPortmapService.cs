@@ -34,7 +34,7 @@ public class OncRpcEmbeddedPortmapService : OncRpcPortMapService
             bool onlyPmap = true;
             foreach ( OncRpcServerIdentifierCodec codec in this.ServerIdentifierCodecs )
             {
-                // check if the server has registered programs other than a portmap 
+                // check if the server has registered programs other than a portmap
                 if ( codec.Program != OncRpcPortmapConstants.OncRpcPortmapProgramNumber )
                 {
                     onlyPmap = false;

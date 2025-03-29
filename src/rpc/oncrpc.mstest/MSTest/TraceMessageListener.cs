@@ -84,7 +84,7 @@ public abstract class TraceMessageListener : TraceListener
             return 0;
     }
 
-    /// <summary>  
+    /// <summary>
     /// Writes trace information, a message, and event information to the listener specific output.
     /// </summary>
     /// <remarks>   2023-06-01. </remarks>
