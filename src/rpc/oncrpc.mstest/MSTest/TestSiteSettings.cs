@@ -37,7 +37,7 @@ internal sealed class TestSiteSettings : cc.isr.Std.Tests.TestSiteSettings
 
         // must copy application context settings here to clear any bad settings files.
 
-        AppSettingsScribe.InitializeSettingsFiles( ai );
+        AppSettingsScribe.InitializeSettingsFiles( ai, true, true );
 
         // set the settings path and section name for reading and writing the settings as necessary.
 
