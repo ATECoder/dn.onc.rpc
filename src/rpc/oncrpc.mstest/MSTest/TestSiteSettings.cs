@@ -35,11 +35,9 @@ internal sealed class TestSiteSettings : cc.isr.Std.Tests.TestSiteSettings
 
         // must copy application context settings here to clear any bad settings files.
 
-        if ( !System.IO.File.Exists( ai.AllUsersAssemblyFilePath! ) )
-            AppSettingsScribe.CopySettings( ai.AppContextAssemblyFilePath!, ai.AllUsersAssemblyFilePath! );
+        // must copy application context settings here to clear any bad settings files.
 
-        if ( !System.IO.File.Exists( ai.ThisUserAssemblyFilePath! ) )
-            AppSettingsScribe.CopySettings( ai.AppContextAssemblyFilePath!, ai.ThisUserAssemblyFilePath! );
+        AppSettingsScribe.InitializeSettingsFiles( ai );
 
         // set the settings path and section name for reading and writing the settings as necessary.
 
