@@ -65,7 +65,7 @@ public class OncRpcTcpTests
         catch ( Exception ex )
         {
             if ( Logger is null )
-                Console.WriteLine( $"Failed initializing the test class: {ex}" );
+                Console.WriteLine( $"{methodFullName} failed initializing:\r\n\t{ex}" );
             else
                 Logger.LogExceptionMultiLineMessage( "Failed initializing the test class:", ex );
 
