@@ -1,5 +1,16 @@
 <Project>
 
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <NuGetAudit>true</NuGetAudit>
+    <WaningsNotAsErrors>NU1900;NU1901;NU1802</WaningsNotAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(DefineConstants.Contains(';PACK;GitHub;'))" >
+    <!-- Suppress warning about newton soft 9.0.1 which is part of the .net fx testing extensions code coverage. -->
+    <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-5crp-9r3c-p9vr" />
+  </ItemGroup>
+
   <!--
   <PropertyGroup>
     <DefineConstants>$(DefineConstants);TRACE;PROJREF_;PACK;GitHub;</DefineConstants>
@@ -77,7 +88,7 @@
     </None>
   </ItemGroup>
   
-  <Import Project="items\Version.build.props" />
+  <Import Project="items\version.build.props" />
 
 </Project>
 
