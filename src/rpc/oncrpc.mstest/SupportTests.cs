@@ -159,7 +159,7 @@ public class SupportTests
             maxValue = value > maxValue ? value : maxValue;
             AssertIntShouldCastToAuthType( value );
         }
-        _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToAuthType( maxValue + 1 ); } );
+        _ = Assert.ThrowsExactly<ArgumentException>( () => { AssertIntShouldCastToAuthType( maxValue + 1 ); } );
     }
 
     /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcAcceptStatus"/>. </summary>
@@ -182,7 +182,7 @@ public class SupportTests
             maxValue = value > maxValue ? value : maxValue;
             AssertIntShouldCastToAcceptStatus( value );
         }
-        _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToAcceptStatus( maxValue + 1 ); } );
+        _ = Assert.ThrowsExactly<ArgumentException>( () => { AssertIntShouldCastToAcceptStatus( maxValue + 1 ); } );
     }
 
     /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcAuthStatus"/>. </summary>
@@ -205,7 +205,7 @@ public class SupportTests
             maxValue = value > maxValue ? value : maxValue;
             AssertIntShouldCastToAuthStatus( value );
         }
-        _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToAuthStatus( maxValue + 1 ); } );
+        _ = Assert.ThrowsExactly<ArgumentException>( () => { AssertIntShouldCastToAuthStatus( maxValue + 1 ); } );
     }
 
     /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcMessageType"/>. </summary>
@@ -228,7 +228,7 @@ public class SupportTests
             maxValue = value > maxValue ? value : maxValue;
             AssertIntShouldCastToMessageType( value );
         }
-        _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToMessageType( maxValue + 1 ); } );
+        _ = Assert.ThrowsExactly<ArgumentException>( () => { AssertIntShouldCastToMessageType( maxValue + 1 ); } );
     }
 
     /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcExceptionReason"/>. </summary>
@@ -251,7 +251,7 @@ public class SupportTests
             maxValue = value > maxValue ? value : maxValue;
             AssertIntShouldCastToExceptionReason( value );
         }
-        _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToExceptionReason( maxValue + 1 ); } );
+        _ = Assert.ThrowsExactly<ArgumentException>( () => { AssertIntShouldCastToExceptionReason( maxValue + 1 ); } );
     }
 
     /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcProtocol"/>. </summary>
@@ -274,7 +274,7 @@ public class SupportTests
             maxValue = value > maxValue ? value : maxValue;
             AssertIntShouldCastToProtocols( value );
         }
-        _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToProtocols( maxValue + 1 ); } );
+        _ = Assert.ThrowsExactly<ArgumentException>( () => { AssertIntShouldCastToProtocols( maxValue + 1 ); } );
     }
 
     /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcRejectStatus"/>. </summary>
@@ -297,7 +297,7 @@ public class SupportTests
             maxValue = value > maxValue ? value : maxValue;
             AssertIntShouldCastToRejectStatus( value );
         }
-        _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToRejectStatus( maxValue + 1 ); } );
+        _ = Assert.ThrowsExactly<ArgumentException>( () => { AssertIntShouldCastToRejectStatus( maxValue + 1 ); } );
     }
 
     /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcReplyStatus"/>. </summary>
@@ -320,7 +320,7 @@ public class SupportTests
             maxValue = value > maxValue ? value : maxValue;
             AssertIntShouldCastToReplyStatus( value );
         }
-        _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToReplyStatus( maxValue + 1 ); } );
+        _ = Assert.ThrowsExactly<ArgumentException>( () => { AssertIntShouldCastToReplyStatus( maxValue + 1 ); } );
     }
 
     /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcRetransmitMode"/>. </summary>
@@ -343,7 +343,7 @@ public class SupportTests
             maxValue = value > maxValue ? value : maxValue;
             AssertIntShouldCastToRetransmitMode( value );
         }
-        _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToRetransmitMode( maxValue + 1 ); } );
+        _ = Assert.ThrowsExactly<ArgumentException>( () => { AssertIntShouldCastToRetransmitMode( maxValue + 1 ); } );
     }
 
     /// <summary>   Assert <see cref="int"/> should cast to <see cref="OncRpcPortmapServiceProcedure"/>. </summary>
@@ -366,7 +366,7 @@ public class SupportTests
             maxValue = value > maxValue ? value : maxValue;
             AssertIntShouldCastToPortmapServiceProcedure( value );
         }
-        _ = Assert.ThrowsException<ArgumentException>( () => { AssertIntShouldCastToPortmapServiceProcedure( maxValue + 1 ); } );
+        _ = Assert.ThrowsExactly<ArgumentException>( () => { AssertIntShouldCastToPortmapServiceProcedure( maxValue + 1 ); } );
     }
 
     #endregion
