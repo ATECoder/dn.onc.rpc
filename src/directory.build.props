@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>preview</LangVersion>
     <NuGetAudit>true</NuGetAudit>
     <WaningsNotAsErrors>NU1900;NU1901;NU1802</WaningsNotAsErrors>
   </PropertyGroup>
@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <PropertyGroup Condition="$(DefineConstants.Contains(';GitHub;'))" >
-	<GitRepositoryRemoteName>hub</GitRepositoryRemoteName>
+    <GitRepositoryRemoteName>hub</GitRepositoryRemoteName>
     <PackageProjectUrl>https://github.com/AteCoder/dn.onc.rpc</PackageProjectUrl>
   </PropertyGroup>
 
@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <PropertyGroup Condition="$(DefineConstants.Contains(';GitHub_;'))" >
-	<GitRepositoryRemoteName>origin</GitRepositoryRemoteName>
+    <GitRepositoryRemoteName>origin</GitRepositoryRemoteName>
     <PackageProjectUrl>https://bitbucket.org/davidhary/dn.onc.rpc</PackageProjectUrl>
   </PropertyGroup>
   -->
@@ -56,8 +56,7 @@
   <PropertyGroup>
     <Datestamp>$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd"))</Datestamp>
     <Timestamp>$([System.DateTime]::UtcNow.ToString("yyyy-MM-ddHHmm"))</Timestamp>
-    <LangVersion>latest</LangVersion>
-  	<Authors>David Hary</Authors>
+    <Authors>David Hary</Authors>
     <Owners>Integrated Scientific Resources</Owners>
     <Company>isr.cc</Company>
     <Copyright>(c) 2022 Integrated Scientific Resources, Inc. All rights reserved.</Copyright>
@@ -68,9 +67,9 @@
 
   <PropertyGroup>
     <!-- NuGet -->
-	<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-	<RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
-	<RepositoryType>Git</RepositoryType>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>ms-icon-70x70.png</PackageIcon>
     <PackageOutputDir>..\..\.nuget\artifacts</PackageOutputDir>

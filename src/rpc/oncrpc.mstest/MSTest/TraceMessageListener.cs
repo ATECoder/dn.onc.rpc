@@ -21,7 +21,7 @@ public abstract class TraceMessageListener : TraceListener
 
     /// <summary>   Clears this object to its blank/initial state. </summary>
     /// <remarks>   2023-06-01. </remarks>
-    [MemberNotNull( nameof( Messages ) )]
+    [System.Diagnostics.CodeAnalysis.MemberNotNull( nameof( Messages ) )]
     public void Clear()
     {
         this.Messages = new Dictionary<TraceEventType, List<string>> {

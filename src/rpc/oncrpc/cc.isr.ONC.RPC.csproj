@@ -1,19 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard20</TargetFrameworks>
-    <OutputType>Library</OutputType>
-    <LangVersion>latest</LangVersion>
+    <TargetFramework>netstandard20</TargetFramework>
+    <LangVersion>preview</LangVersion>
 
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!-- Assembly Info -->
     <RootNamespace>cc.isr</RootNamespace>
     <AssemblyName>cc.isr.ONC.RPC</AssemblyName>
     <ApplicationTitle>cc.isr.ONC.RPC</ApplicationTitle>
     <ApplicationId>cc.isr.onc.rpc</ApplicationId>
-
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
     <!-- Coding -->
     <OptionExplicit>On</OptionExplicit>
@@ -56,7 +55,6 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
-
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="7.0.1" />
