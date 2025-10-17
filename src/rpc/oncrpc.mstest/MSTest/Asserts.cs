@@ -152,9 +152,9 @@ public sealed class Asserts
     [System.Diagnostics.CodeAnalysis.SuppressMessage( "Performance", "CA1822:Mark members as static", Justification = "<Pending>" )]
     public void IsSingle( IEnumerable<object> items, string format, params object[] args )
     {
-        Assert.IsTrue( items is object, format, args );
-        Assert.IsTrue( items.Any(), format, args );
-        Assert.AreEqual( 1, items.Count(), format, args );
+        Assert.IsTrue( items is object, string.Format( System.Globalization.CultureInfo.CurrentCulture, format, args ) );
+        Assert.IsTrue( items.Any(), string.Format( System.Globalization.CultureInfo.CurrentCulture, format, args ) );
+        Assert.AreEqual( 1, items.Count(), string.Format( System.Globalization.CultureInfo.CurrentCulture, format, args ) );
     }
 
     #endregion
@@ -183,7 +183,7 @@ public sealed class Asserts
     {
         if ( items is object )
         {
-            Assert.IsFalse( items.Any(), format, args );
+            Assert.IsFalse( items.Any(), string.Format( System.Globalization.CultureInfo.CurrentCulture, format, args ) );
         }
     }
 

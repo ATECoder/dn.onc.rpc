@@ -2,7 +2,25 @@
 Notable changes to this solution are documented in this file using the 
 [Keep a Changelog] style. The dates specified are in coordinated universal time (UTC).
 
-[1.1.9371]: https://github.com/ATECoder/dn.onc.rpc
+[1.1.9421]: https://github.com/ATECoder/dn.onc.rpc
+
+## [1.1.9421] - 2025-10-17
+- Update packages:
+  - .NET Test SDK to 4.0.1.
+  - Microsoft Extensions to 9.0.10.
+  - XUnit from 3.1.4 to 3.1.5.
+  - Fluent Assertions from 8.6.0 to 8.7.1. 
+  - Microsoft.Net.Test.SDK from 17.14.1 to 18.0.0.
+  - BenchmarkDotNet from 0.14.0 to 0.15.4.
+- Test projects
+  - Use [TestMethod( DisplayName = "...']
+  - Change [ClassCleanup( ClassCleanupBehavior.EndOfClass )] to [ClassCleanup]
+  - Add parallelize to the assembly attributes.
+  - change Assert...( ..., format, args ); to Assert...(... string.Format( System.Globalization.CultureInfo.CurrentCulture, format, args ) );
+  - Use Assert.HasCount<T> in place of Assert.AreEquals( count, [T].Length ).
+- directory.build.props
+  - update packages.
+  - point to the current repository.
 
 ## [1.1.9371] - 2025-08-28
 - Update MSTest SDK to 3.10.3
