@@ -2,7 +2,16 @@
 Notable changes to this solution are documented in this file using the 
 [Keep a Changelog] style. The dates specified are in coordinated universal time (UTC).
 
-[1.1.9421]: https://github.com/ATECoder/dn.onc.rpc
+[1.1.9428]: https://github.com/ATECoder/dn.onc.rpc
+
+## [1.1.9428] - 2025-10-24
+- Remove Std MSTest project from solution.
+- Add Exists to settings file and remove enabled and all from settigns files and classes.
+- MS Test:
+  - Remove reference to the cc.isr.Std.MSTest project.
+  - Replace test site settings with Location Settings subclass of the JSon location settings base.
+  - Use Settings base class from the JSon Application Settings library.
+  - Use Settings Container base class from the JSon Application Settings library.
 
 ## [1.1.9421] - 2025-10-17
 - Update packages:
