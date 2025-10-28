@@ -17,16 +17,17 @@ internal sealed class LocationSettings : cc.isr.Json.AppSettings.Settings.Locati
     /// <returns>   The new instance. </returns>
     private static LocationSettings CreateInstance()
     {
-        // Get the method declaring type for the assembly file information and the settings section name.
+        // Get the type of the class that declares this method.
         Type declaringType = System.Reflection.MethodBase.GetCurrentMethod()!.DeclaringType!;
 
-        // get assembly files using the .Settings suffix.
+        // Get the AssemblyFileInfo for the assembly that contains the declaring type and
+        // append '.Settings' to the assembly name to build the JSon settings file name.
 
         AssemblyFileInfo ai = new( declaringType.Assembly, null, ".Settings", ".json" );
 
-        // must copy application context settings here to clear any bad settings files.
+        // copy application context settings if files do not exist or to clear corrupted settings.
 
-        AppSettingsScribe.InitializeSettingsFiles( ai, true, true );
+        AppSettingsScribe.InitializeSettingsFiles( ai, System.Diagnostics.Debugger.IsAttached, System.Diagnostics.Debugger.IsAttached );
 
         // read the settings using the default serializer and document options.
 
@@ -35,7 +36,15 @@ internal sealed class LocationSettings : cc.isr.Json.AppSettings.Settings.Locati
             FilePath = ai.AllUsersAssemblyFilePath ?? ai.ThisUserAssemblyFilePath ?? ai.AppContextAssemblyFilePath ?? string.Empty,
             SectionName = declaringType.Name
         };
+
+        ti.Scribe = new( [ti.SectionName], [ti], ai );
+
+        ti.FilePath = ti.Scribe.UserSettingsPath;
+
         ti.ReadSettings();
+
+        if ( !ti.Scribe.SettingsExist( ti.FilePath, out string details ) )
+            throw new InvalidOperationException( $"Failed reading the settings; {details}" );
 
         return ti;
     }
@@ -45,24 +54,6 @@ internal sealed class LocationSettings : cc.isr.Json.AppSettings.Settings.Locati
     public static LocationSettings Instance => _instance.Value;
 
     private static readonly Lazy<LocationSettings> _instance = new( LocationSettings.CreateInstance, true );
-
-    #endregion
-
-    #region " i/o "
-
-    /// <summary>   Reads the settings. </summary>
-    /// <remarks>   2023-05-23. </remarks>
-    public override void ReadSettings()
-    {
-        base.ReadSettings( this );
-    }
-
-    /// <summary>   Saves the settings. </summary>
-    /// <remarks>   2023-05-23. </remarks>
-    public override void SaveSettings()
-    {
-        base.SaveSettings( this );
-    }
 
     #endregion
 }
