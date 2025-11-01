@@ -15,7 +15,9 @@ internal sealed class LocationSettings : cc.isr.Json.AppSettings.Settings.Locati
     /// <remarks>   2025-10-30. </remarks>
     public override void CreateScribe()
     {
-        this.Scribe = new( [this.SectionName], [this] );
+        this.Scribe = string.IsNullOrWhiteSpace( this.SectionName )
+            ? new( [this] )
+            : new( [this.SectionName], [this] );
     }
 
     /// <summary>   Creates an instance of the <see cref="LocationSettings"/> after restoring the
