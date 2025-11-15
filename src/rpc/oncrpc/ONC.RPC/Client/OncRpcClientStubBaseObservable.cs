@@ -102,7 +102,7 @@ public partial class OncRpcClientStubBase : System.ComponentModel.INotifyPropert
         where TModel : class
     {
         if ( model is null ) throw new ArgumentNullException( nameof( model ) );
-#if NET8_0_OR_GREATER
+#if NET5_0_OR_GREATER
         ArgumentNullException.ThrowIfNull( callback, nameof( callback ) );
 #else
         if ( callback is null ) throw new ArgumentNullException( nameof( callback ) );
@@ -133,7 +133,7 @@ public partial class OncRpcClientStubBase : System.ComponentModel.INotifyPropert
     /// <returns>   <see langword="true"/> if it succeeds; otherwise, <see langword="false"/>. </returns>
     protected bool SetProperty<T>( T oldValue, T newValue, Action callback, [System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null )
     {
-#if NET8_0_OR_GREATER
+#if NET5_0_OR_GREATER
         ArgumentNullException.ThrowIfNull( callback, nameof( callback ) );
 #else
         if ( callback is null ) throw new ArgumentNullException( nameof( callback ) );

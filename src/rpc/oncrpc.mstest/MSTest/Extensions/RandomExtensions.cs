@@ -33,7 +33,7 @@ public static partial class RandomExtensions
     /// <returns>   A Double. </returns>
     public static double NextNormal( this Random random )
     {
-#if NET8_0_OR_GREATER
+#if NET5_0_OR_GREATER
         ArgumentNullException.ThrowIfNull( random, nameof( random ) );
 #else
         if ( random is null ) throw new ArgumentNullException( nameof( random ) );
