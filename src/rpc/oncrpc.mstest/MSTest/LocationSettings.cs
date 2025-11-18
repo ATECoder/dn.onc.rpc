@@ -34,7 +34,9 @@ internal sealed class LocationSettings : cc.isr.Json.AppSettings.Settings.Locati
             SectionName = declaringType.Name
         };
 
-        ti.ReadSettings( declaringType, ".Settings", System.Diagnostics.Debugger.IsAttached, System.Diagnostics.Debugger.IsAttached );
+        bool overwrite = Json.AppSettings.Models.AppSettingsScribe.IsDebuggingOrTesting();
+
+        ti.ReadSettings( declaringType, ".Settings", overwrite, overwrite );
 
         return ti;
     }
