@@ -1,38 +1,46 @@
 <Project>
 
   <PropertyGroup>
+    <DefineConstants>$(DefineConstants);TRACE;PROJREF_;PACK_;GitHub;</DefineConstants>
+  </PropertyGroup>
+
+  <Import Project="c:\my\lib\vs\directory.build.props" />
+
+<!-- imported from c:\my\lib\vs\directory.build.props
+
+  <PropertyGroup>
     <LangVersion>preview</LangVersion>
     <NuGetAudit>true</NuGetAudit>
     <WaningsNotAsErrors>NU1900;NU1901;NU1802</WaningsNotAsErrors>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <DefineConstants>$(DefineConstants);TRACE;PROJREF_;PACK_;GitHub;</DefineConstants>
-  </PropertyGroup>
-
-  <ItemGroup Condition="$(DefineConstants.Contains(';PACK;GitHub;'))" >
-    <!-- Suppress warning about newton soft 9.0.1 which is part of the .net fx testing extensions code coverage. -->
+  <ItemGroup>
     <NuGetAuditSuppress Include="https://github.com/advisories/GHSA-5crp-9r3c-p9vr" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SourceLink.Copy.PdbFiles" Version="2.8 .3" PrivateAssets="All" />
+  </ItemGroup>
  
-  <ItemGroup Condition="$(DefineConstants.Contains(';PACK;'))" >
+  <PropertyGroup Condition="$(DefineConstants.Contains(';PACK;'))" >
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <PackageReference Include="SourceLink.Copy.PdbFiles" Version="2.8.3" PrivateAssets="All" />
   </PropertyGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains(';PACK;GitHub;'))" >
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.203" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0 .203" PrivateAssets="All" />
   </ItemGroup>
+
+  <ItemGroup Condition="$(DefineConstants.Contains(';PACK;GitHub_;'))" >
+    <PackageReference Include="Microsoft.SourceLink.Bitbucket.Git" Version="10.0 .203" PrivateAssets="All" />
+  </ItemGroup>
+
+-->
 
   <PropertyGroup Condition="$(DefineConstants.Contains(';GitHub;'))" >
     <GitRepositoryRemoteName>hub</GitRepositoryRemoteName>
     <PackageProjectUrl>https://github.com/AteCoder/dn.onc.rpc</PackageProjectUrl>
   </PropertyGroup>
-
-  <ItemGroup Condition="$(DefineConstants.Contains(';PACK;GitHub_;'))" >
-    <PackageReference Include="Microsoft.SourceLink.Bitbucket.Git" Version="10.0.203" PrivateAssets="All" />
-  </ItemGroup>
 
   <PropertyGroup Condition="$(DefineConstants.Contains(';GitHub_;'))" >
     <GitRepositoryRemoteName>origin</GitRepositoryRemoteName>
