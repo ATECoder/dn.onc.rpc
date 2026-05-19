@@ -4,9 +4,9 @@
     <DefineConstants>$(DefineConstants);TRACE;PROJREF_;PACK_;GitHub;</DefineConstants>
   </PropertyGroup>
 
-  <Import Project="c:\my\lib\vs\directory.build.props" />
+  <Import Project="c:\my\lib\vs\core\ide\src\my\lib\vs\directory.build.props" />
 
-<!-- imported from c:\my\lib\vs\directory.build.props
+<!-- imported from c:\my\lib\vs\core\ide\src\my\lib\vs\directory.build.props
 
   <PropertyGroup>
     <LangVersion>preview</LangVersion>
