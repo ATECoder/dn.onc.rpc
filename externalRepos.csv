@@ -1,4 +1,4 @@
 RemoteRepoName,LocalRepoName,RemoteRepoURL,TargetDirectory
-vs.ide,ide,https://git@bitbucket.org/davidhary/vs.ide.git,libraries\vs\core
+vs.ide,ide,https://github.com/ATECoder/vs.ide.git,lib\vs\core
 dn.xdr,xdr,https://github.com/ATECoder/dn.xdr.git,lib\vs\iot
 dn.onc.rpc,oncrpc,https://github.com/ATECoder/dn.onc.rpc.git,lib\vs\iot
