@@ -35,7 +35,9 @@ These files can be found in the [IDE Repository].
 Restoring Editor Configuration:
 ```
 xcopy /Y %my%\.editorconfig %my%\.editorconfig.bak
-xcopy /Y %dnlib%\core\ide\code\.editorconfig %my%\.editorconfig
+xcopy /Y %dnlib%\core\ide\my\.editorconfig %my%\.editorconfig
+xcopy /Y %dnlib%\core\ide\my\lib\vs\directory.build.props %my%\lib\vs\directory.build.props
+xcopy /Y %dnlib%\core\ide\my\lib\vs\global.json %my%\lib\vs\global.json
 ```
 
 Restoring Run Settings:
