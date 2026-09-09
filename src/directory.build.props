@@ -21,17 +21,7 @@
     <SolutionDir Condition="'$(SolutionDir)'==''">$(MSBuildThisFileDirectory)..\..\</SolutionDir>
   </PropertyGroup>
   
-  <PropertyGroup>
-    <Datestamp>$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd"))</Datestamp>
-    <Timestamp>$([System.DateTime]::UtcNow.ToString("yyyy-MM-ddHHmm"))</Timestamp>
-    <Authors>David Hary</Authors>
-    <Owners>Integrated Scientific Resources</Owners>
-    <Company>isr.cc</Company>
-    <Copyright>(c) 2022 Integrated Scientific Resources, Inc. All rights reserved.</Copyright>
-    <NeutralLanguage>en-US</NeutralLanguage>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
-  </PropertyGroup>
+  <Import Project="items\directory.build.props" />
 
   <PropertyGroup>
     <!-- NuGet -->
@@ -58,4 +48,3 @@
   <Import Project="items\version.build.props" />
 
 </Project>
-
